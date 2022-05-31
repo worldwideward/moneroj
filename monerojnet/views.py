@@ -18,12 +18,140 @@ from requests import Session
 from psaw import PushshiftAPI    #library Pushshift
 from django.contrib.staticfiles.storage import staticfiles_storage  
 
+
+###########################################
+# Set some parameters 
+###########################################
+
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-api = PushshiftAPI()    
+# This loads Reddit stats about a subreddit
+api = PushshiftAPI() 
 
 ###########################################
 # Useful Functions
 ###########################################
+
+# Get most recent metrics from a data provider of your choice
+def get_metrics(symbol):
+    update = True
+    days = 1
+    now = datetime.datetime.now()
+    current_time = int(now.strftime("%H"))
+    if current_time >= 2:
+        print('Hour > 2')
+        day1 = date.today() - timedelta(1)
+        try:
+            coin = Coin.objects.filter(name=symbol).filter(date=day1)
+            if (coin.inflation > 0) and (coin.priceusd > 0) and (coin.hashrate > 0)
+                update = False
+        except:
+
+        getthem = False
+        day1 = date.today() - timedelta(1)
+        coins = Coin.objects.filter(name=symbol).filter(date=day1)
+        if coins:
+            for coin in coins:
+                if coin.inflation == inflation and coin.priceusd == priceusd and coin.hashrate == hashrate:
+                    print('Update')
+                    coin.delete()
+                    getthem = True
+        else:
+            getthem = True
+
+        if getthem:
+            test = True
+            count = 1
+            data = ''
+            with open("settings.json") as file:
+                data = json.load(file)
+                file.close()
+            request = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"]
+            while test: 
+                print('page ' + str(count))
+                count += 1
+                response = requests.get(request)
+                data = json.loads(response.text)
+                data_aux = data['data']
+                deltasupply = 0
+                supply = 0
+                first = True
+                for item in data_aux:
+                    day, hour = str(item['time']).split('T')
+                    day = datetime.datetime.strptime(day, '%Y-%m-%d')
+                    day = datetime.datetime.strftime(day, '%Y-%m-%d')
+                    coin = Coin.objects.filter(name=symbol).filter(date=day)
+                    if not(coin):
+                        if item['SplyCur'] != None:
+                            if float(item['SplyCur']) >= 1:
+                                coin = Coin()
+                                coin.name = symbol
+                                coin.date = day
+                                try:
+                                    coin.priceusd = float(item['PriceUSD'])
+                                except:
+                                    coin.priceusd = priceusd
+                                try:
+                                    coin.hashrate = float(item['HashRate'])
+                                except:
+                                    coin.hashrate = hashrate
+                                try:
+                                    coin.fee = float(item['FeeTotNtv'])
+                                except:
+                                    coin.fee = fee
+                                try:
+                                    coin.revenue = float(item['RevNtv'])
+                                except:
+                                    coin.revenue = revenue
+                                try:
+                                    coin.pricebtc = float(item['PriceBTC'])
+                                except:
+                                    coin.pricebtc = pricebtc
+                                try:
+                                    coin.inflation = float(item['IssContPctAnn'])
+                                except:
+                                    coin.inflation = inflation
+                                try:
+                                    coin.transactions = float(item['TxCnt'])
+                                except:
+                                    coin.transactions = transactions
+                                try:
+                                    if first:
+                                        coin.supply = float(item['SplyCur'])
+                                        supply = coin.supply
+                                        deltasupply = 0
+                                        first = False
+                                    else:
+                                        coin.supply = float(item['SplyCur'])
+                                        deltasupply = abs(supply - coin.supply)
+                                        supply = coin.supply
+                                    if supply <= (deltasupply*20):
+                                        test = False
+                                except:
+                                    coin.supply = 0
+                                try:
+                                    coin.stocktoflow = (100/coin.inflation)**1.65
+                                except:
+                                    coin.stocktoflow = 0
+                                coin.save()
+                            else:
+                                test = False
+                        else:
+                            day1 = datetime.datetime.strptime(day, '%Y-%m-%d') + timedelta(1)
+                            day2 = date.today()
+                            day2 = datetime.datetime.strftime(day2, '%Y-%m-%d')
+                            day2 = datetime.datetime.strptime(day2, '%Y-%m-%d')
+                            if str(day) == str(day2) or str(day1) == str(day2):
+                                print('today')
+                            else:
+                                test = False
+                    else:
+                        test = False
+                    print('supply = ' + str(supply) + ' ---- deltasupply = ' + str(deltasupply*20) + ' -------- test = ' + str(test))
+                if test:
+                    request = data['next_page_url']
+                    print(request)
+    return(True)
+
 
 def data_prep_posts(subreddit, start_time, end_time, filters, limit):
     if(len(filters) == 0):
@@ -71,7 +199,7 @@ def load_dominance(coin):
     wks = sh.worksheet_by_title('Sheet7')
     
     values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
-    print(len(values_mat))
+    #print(len(values_mat))
     Dominance.objects.all().delete()
 
     for k in range(0,len(values_mat)):
@@ -90,48 +218,36 @@ def load_dominance(coin):
     return True
 
 def update_dominance(coin, data):
-    dominances = Dominance.objects.order_by('-date')
-    for dominance in dominances:
-        break
-    
-    if dominance.date < date.today():
-        print('updating')
-        if not(data):
-            print('error updating dominance')
-            return False
-        if data:
-            dominance = Dominance()
-            dominance.name = 'xmr'
-            dominance.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-            dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
-            dominance.save()
-
-            gc = pygsheets.authorize(service_file='service_account_credentials.json')
-            sh = gc.open('zcash_bitcoin')
-            wks = sh.worksheet_by_title('Sheet7')
-            
-            values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
-
-            k = len(values_mat)
-            date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-            date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-            date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-            if date_aux < date_aux2:
-                cell = 'B' + str(k + 3)
-                wks.update_value(cell, dominance.dominance)
-                cell = 'A' + str(k + 3)
-                wks.update_value(cell, dominance.date)
-            else:
-                print('spreadsheet with the latest data already')
-                return False
-        else:
-            print('no data')
-            return False
-    else:
-        print('up to date')
+    if not(data):
+        #print('error updating dominance')
         return False
-    
-    print('updated')
+    else:
+        dominance = Dominance()
+        dominance.name = 'xmr'
+        dominance.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
+        dominance.save()
+
+        gc = pygsheets.authorize(service_file='service_account_credentials.json')
+        sh = gc.open('zcash_bitcoin')
+        wks = sh.worksheet_by_title('Sheet7')
+        
+        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+
+        k = len(values_mat)
+        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        if date_aux < date_aux2:
+            cell = 'B' + str(k + 3)
+            wks.update_value(cell, dominance.dominance)
+            cell = 'A' + str(k + 3)
+            wks.update_value(cell, dominance.date)
+        else:
+            #print('spreadsheet with the latest data already')
+            return False
+
+    #print('updated')
     return data
 
 def load_rank(coin):
@@ -159,74 +275,64 @@ def load_rank(coin):
     return True
 
 def update_rank(coin):
-    ranks = Rank.objects.order_by('-date')
-    for rank in ranks:
-        break
-
-    if rank.date < date.today():
-        print('updating')
-        data = get_latest()
-        if not(data):
-            print('error updating rank')
-            return False
-        if data:
-            rank = Rank()
-            rank.name = 'xmr'
-            rank.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-            rank.rank = int(data['data']['XMR']['cmc_rank'])
-            rank.save()
-
-            gc = pygsheets.authorize(service_file='service_account_credentials.json')
-            sh = gc.open('zcash_bitcoin')
-            wks = sh.worksheet_by_title('Sheet8')
-            
-            values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
-
-            k = len(values_mat)
-            date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-            date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-            date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-            if date_aux < date_aux2:
-                cell = 'B' + str(k + 3)
-                wks.update_value(cell, rank.rank)
-                cell = 'A' + str(k + 3)
-                wks.update_value(cell, rank.date)
-            else:
-                print('spreadsheet with the latest data already')
-                return False
-        else:
-            print('no data')
-            return False
-    else:
-        print('up to date')
+    data = get_latest()
+    if not(data):
         return False
-    
-    print('updated')
+    else:
+        rank = Rank()
+        rank.name = 'xmr'
+        rank.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        rank.rank = int(data['data']['XMR']['cmc_rank'])
+        rank.save()
+
+        gc = pygsheets.authorize(service_file='service_account_credentials.json')
+        sh = gc.open('zcash_bitcoin')
+        wks = sh.worksheet_by_title('Sheet8')
+        
+        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+
+        k = len(values_mat)
+        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        if date_aux < date_aux2:
+            cell = 'B' + str(k + 3)
+            wks.update_value(cell, rank.rank)
+            cell = 'A' + str(k + 3)
+            wks.update_value(cell, rank.date)
+            #print('spreadsheet updated')
+        else:
+            #print('spreadsheet with the latest data already')
+            return data
+
+    #print('updated')
     return data
 
-# Create your views here.
+###########################################
+# Views
+###########################################
+
 def index(request):
     symbol = 'xmr'
     now_inflation = 0.001
     now_units = 0
     supply = 0
-    get_latest()
-
+    #get_latest()
     #load_dominance('xmr')
     #load_rank('xmr')
-    data = update_rank('xmr')
-    data = update_dominance('xmr', data)
 
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    if coins:
-        for coin in coins:
-            if coin.priceusd > 0:
-                now_price = coin.priceusd
-            if coin.inflation > 0:
-                now_inflation = coin.inflation
-            if coin.supply > 0:
-                supply = int(coin.supply)*10**12
-                now_units = supply/(10**12)
+    rank = list(Rank.objects.order_by('-date'))[1]
+    if rank.date < date.today():
+        data = update_rank('xmr')    
+        dominance = list(Dominance.objects.order_by('-date'))[1]
+        if dominance.date < date.today():
+            data = update_dominance('xmr', data)
+
+    coin = list(Coin.objects.filter(name=symbol).order_by('-date'))[1]
+    if coin:
+        now_inflation = coin.inflation
+        supply = int(coin.supply)*10**12
+        now_units = supply/(10**12)
     else:
         message = "Website under maintenance. Check back in a few minutes."
         context = {'message': message}
@@ -2164,15 +2270,15 @@ def sfmodel(request):
     check_new_social('Monero')
     check_new_social('CryptoCurrency')
     symbol = 'btc'
-    get_prices(symbol)
+    get_metrics(symbol)
     symbol = 'dash'
-    get_prices(symbol)
+    get_metrics(symbol)
     symbol = 'grin'
-    get_prices(symbol)
+    get_metrics(symbol)
     symbol = 'zec'
-    get_prices(symbol)
+    get_metrics(symbol)
     symbol = 'xmr'
-    get_prices(symbol)
+    get_metrics(symbol)
 
     timevar = 1283
     symbol = 'xmr'
@@ -3431,138 +3537,3 @@ def rank(request):
 
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/rank.html', context)
-
-
-#########################################
-######## Functions
-#########################################
-
-# Get prices
-def get_prices(symbol):
-    inflation = 0
-    priceusd = 0
-    hashrate = 0
-    pricebtc = 0
-    transactions = 0
-    fee = 0
-    revenue = 0
-    now = datetime.datetime.now()
-    current_time = int(now.strftime("%H"))
-    if current_time >= 5:
-        print('Hour > 5')
-        day1 = date.today() - timedelta(2)
-        coins = Coin.objects.filter(name=symbol).filter(date=day1)
-        if coins:
-            for coin in coins:
-                inflation = coin.inflation
-                priceusd = coin.priceusd
-                hashrate = coin.hashrate
-                pricebtc = coin.pricebtc
-                transactions = coin.transactions
-                fee = coin.fee
-                revenue = coin.revenue
-        getthem = False
-        day1 = date.today() - timedelta(1)
-        coins = Coin.objects.filter(name=symbol).filter(date=day1)
-        if coins:
-            for coin in coins:
-                if coin.inflation == inflation and coin.priceusd == priceusd and coin.hashrate == hashrate:
-                    print('Update')
-                    coin.delete()
-                    getthem = True
-        else:
-            getthem = True
-
-        if getthem:
-            test = True
-            count = 1
-            data = ''
-            with open("settings.json") as file:
-                data = json.load(file)
-                file.close()
-            request = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"]
-            while test: 
-                print('page ' + str(count))
-                count += 1
-                response = requests.get(request)
-                data = json.loads(response.text)
-                data_aux = data['data']
-                deltasupply = 0
-                supply = 0
-                first = True
-                for item in data_aux:
-                    day, hour = str(item['time']).split('T')
-                    day = datetime.datetime.strptime(day, '%Y-%m-%d')
-                    day = datetime.datetime.strftime(day, '%Y-%m-%d')
-                    coin = Coin.objects.filter(name=symbol).filter(date=day)
-                    if not(coin):
-                        if item['SplyCur'] != None:
-                            if float(item['SplyCur']) >= 1:
-                                coin = Coin()
-                                coin.name = symbol
-                                coin.date = day
-                                try:
-                                    coin.priceusd = float(item['PriceUSD'])
-                                except:
-                                    coin.priceusd = priceusd
-                                try:
-                                    coin.hashrate = float(item['HashRate'])
-                                except:
-                                    coin.hashrate = hashrate
-                                try:
-                                    coin.fee = float(item['FeeTotNtv'])
-                                except:
-                                    coin.fee = fee
-                                try:
-                                    coin.revenue = float(item['RevNtv'])
-                                except:
-                                    coin.revenue = revenue
-                                try:
-                                    coin.pricebtc = float(item['PriceBTC'])
-                                except:
-                                    coin.pricebtc = pricebtc
-                                try:
-                                    coin.inflation = float(item['IssContPctAnn'])
-                                except:
-                                    coin.inflation = inflation
-                                try:
-                                    coin.transactions = float(item['TxCnt'])
-                                except:
-                                    coin.transactions = transactions
-                                try:
-                                    if first:
-                                        coin.supply = float(item['SplyCur'])
-                                        supply = coin.supply
-                                        deltasupply = 0
-                                        first = False
-                                    else:
-                                        coin.supply = float(item['SplyCur'])
-                                        deltasupply = abs(supply - coin.supply)
-                                        supply = coin.supply
-                                    if supply <= (deltasupply*20):
-                                        test = False
-                                except:
-                                    coin.supply = 0
-                                try:
-                                    coin.stocktoflow = (100/coin.inflation)**1.65
-                                except:
-                                    coin.stocktoflow = 0
-                                coin.save()
-                            else:
-                                test = False
-                        else:
-                            day1 = datetime.datetime.strptime(day, '%Y-%m-%d') + timedelta(1)
-                            day2 = date.today()
-                            day2 = datetime.datetime.strftime(day2, '%Y-%m-%d')
-                            day2 = datetime.datetime.strptime(day2, '%Y-%m-%d')
-                            if str(day) == str(day2) or str(day1) == str(day2):
-                                print('today')
-                            else:
-                                test = False
-                    else:
-                        test = False
-                    print('supply = ' + str(supply) + ' ---- deltasupply = ' + str(deltasupply*20) + ' -------- test = ' + str(test))
-                if test:
-                    request = data['next_page_url']
-                    print(request)
-    return(True)
