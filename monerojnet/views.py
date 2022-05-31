@@ -14,17 +14,15 @@ import locale
 import pandas as pd
 from operator import truediv
 import pygsheets
-import feedparser
 from requests import Session
 from psaw import PushshiftAPI    #library Pushshift
 from django.contrib.staticfiles.storage import staticfiles_storage  
 
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-
 api = PushshiftAPI()    
 
 ###########################################
-# Próximos gráficos
+# Useful Functions
 ###########################################
 
 def data_prep_posts(subreddit, start_time, end_time, filters, limit):
@@ -43,25 +41,28 @@ def data_prep_comments(term, start_time, end_time, filters, limit):
     return pd.DataFrame(comments) 
 
 def get_latest():
-    url = ''
-    parameters = {
-        'convert':'USD',
-    }
-    headers = {
-        'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': '',
-    }
+    with open("settings.json") as file:
+        data = json.load(file)
 
-    session = Session()
-    session.headers.update(headers)
+        url = data["metrics_provider"][0]["price_url"]
+        parameters = {
+            'convert':'USD',
+        }
+        headers = {
+            'Accepts': 'application/json',
+            data["metrics_provider"][0]["api_key_name"]: data["metrics_provider"][0]["api_key_value"],
+        }
 
-    try:
-        response = session.get(url, params=parameters)
-        data = json.loads(response.text)
-        print(data)
-    except (ConnectionError, Timeout, TooManyRedirects) as e:
-        data = False
+        session = Session()
+        session.headers.update(headers)
 
+        try:
+            response = session.get(url, params=parameters)
+            data = json.loads(response.text)
+        except (ConnectionError, Timeout, TooManyRedirects) as e:
+            data = False
+
+        file.close()
     return data
 
 def load_dominance(coin):
@@ -209,6 +210,7 @@ def index(request):
     now_inflation = 0.001
     now_units = 0
     supply = 0
+    get_latest()
 
     #load_dominance('xmr')
     #load_rank('xmr')
@@ -3474,7 +3476,11 @@ def get_prices(symbol):
         if getthem:
             test = True
             count = 1
-            request = ''
+            data = ''
+            with open("settings.json") as file:
+                data = json.load(file)
+                file.close()
+            request = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"]
             while test: 
                 print('page ' + str(count))
                 count += 1

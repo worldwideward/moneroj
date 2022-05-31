@@ -29,12 +29,12 @@ STATICFILES_DIRS = [
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = 'asdfasdfhasdfjasdf7ads7f7sd8fasdf7tasdfgasjhfgsjakgh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True 
-DEBUG = False
-STATIC_ROOT = "/var/www/moneropro/static/"
+DEBUG = True 
+#DEBUG = False
+#STATIC_ROOT = "/var/www/moneropro/static/"
 
 ALLOWED_HOSTS = ['www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net']
 

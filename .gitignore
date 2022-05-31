@@ -3,3 +3,4 @@ venv/
 *.sqlite3
 migrations/
 service_account_credentials.json
+settings.json
