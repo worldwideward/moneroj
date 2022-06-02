@@ -14,6 +14,7 @@ import locale
 import pandas as pd
 from operator import truediv
 import pygsheets
+from django.contrib.auth.decorators import login_required
 from requests import Session
 from psaw import PushshiftAPI    #library Pushshift
 from django.contrib.staticfiles.storage import staticfiles_storage  
@@ -28,233 +29,86 @@ locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 api = PushshiftAPI() 
 
 ###########################################
-# Useful Functions
+# Useful functions for admins
 ###########################################
 
-# Get most recent metrics from a data provider of your choice
-def get_metrics(symbol):
+# Get all history for metrics of a certain coin named as 'symbol'
+# Only authorized users can download all price data via URL request
+@login_required 
+def get_history(request, symbol, start_time=None, end_time=None):
     update = True
-    days = 1
-    now = datetime.datetime.now()
-    current_time = int(now.strftime("%H"))
-    if current_time >= 2:
-        print('Hour > 2')
-        day1 = date.today() - timedelta(1)
-        try:
-            coin = Coin.objects.filter(name=symbol).filter(date=day1)
-            if (coin.inflation > 0) and (coin.priceusd > 0) and (coin.hashrate > 0)
-                update = False
-        except:
-
-        getthem = False
-        day1 = date.today() - timedelta(1)
-        coins = Coin.objects.filter(name=symbol).filter(date=day1)
-        if coins:
-            for coin in coins:
-                if coin.inflation == inflation and coin.priceusd == priceusd and coin.hashrate == hashrate:
-                    print('Update')
-                    coin.delete()
-                    getthem = True
-        else:
-            getthem = True
-
-        if getthem:
-            test = True
-            count = 1
-            data = ''
-            with open("settings.json") as file:
-                data = json.load(file)
-                file.close()
-            request = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"]
-            while test: 
-                print('page ' + str(count))
-                count += 1
-                response = requests.get(request)
-                data = json.loads(response.text)
-                data_aux = data['data']
-                deltasupply = 0
-                supply = 0
-                first = True
-                for item in data_aux:
-                    day, hour = str(item['time']).split('T')
-                    day = datetime.datetime.strptime(day, '%Y-%m-%d')
-                    day = datetime.datetime.strftime(day, '%Y-%m-%d')
-                    coin = Coin.objects.filter(name=symbol).filter(date=day)
-                    if not(coin):
-                        if item['SplyCur'] != None:
-                            if float(item['SplyCur']) >= 1:
-                                coin = Coin()
-                                coin.name = symbol
-                                coin.date = day
-                                try:
-                                    coin.priceusd = float(item['PriceUSD'])
-                                except:
-                                    coin.priceusd = priceusd
-                                try:
-                                    coin.hashrate = float(item['HashRate'])
-                                except:
-                                    coin.hashrate = hashrate
-                                try:
-                                    coin.fee = float(item['FeeTotNtv'])
-                                except:
-                                    coin.fee = fee
-                                try:
-                                    coin.revenue = float(item['RevNtv'])
-                                except:
-                                    coin.revenue = revenue
-                                try:
-                                    coin.pricebtc = float(item['PriceBTC'])
-                                except:
-                                    coin.pricebtc = pricebtc
-                                try:
-                                    coin.inflation = float(item['IssContPctAnn'])
-                                except:
-                                    coin.inflation = inflation
-                                try:
-                                    coin.transactions = float(item['TxCnt'])
-                                except:
-                                    coin.transactions = transactions
-                                try:
-                                    if first:
-                                        coin.supply = float(item['SplyCur'])
-                                        supply = coin.supply
-                                        deltasupply = 0
-                                        first = False
-                                    else:
-                                        coin.supply = float(item['SplyCur'])
-                                        deltasupply = abs(supply - coin.supply)
-                                        supply = coin.supply
-                                    if supply <= (deltasupply*20):
-                                        test = False
-                                except:
-                                    coin.supply = 0
-                                try:
-                                    coin.stocktoflow = (100/coin.inflation)**1.65
-                                except:
-                                    coin.stocktoflow = 0
-                                coin.save()
-                            else:
-                                test = False
-                        else:
-                            day1 = datetime.datetime.strptime(day, '%Y-%m-%d') + timedelta(1)
-                            day2 = date.today()
-                            day2 = datetime.datetime.strftime(day2, '%Y-%m-%d')
-                            day2 = datetime.datetime.strptime(day2, '%Y-%m-%d')
-                            if str(day) == str(day2) or str(day1) == str(day2):
-                                print('today')
-                            else:
-                                test = False
-                    else:
-                        test = False
-                    print('supply = ' + str(supply) + ' ---- deltasupply = ' + str(deltasupply*20) + ' -------- test = ' + str(test))
-                if test:
-                    request = data['next_page_url']
-                    print(request)
-    return(True)
-
-
-def data_prep_posts(subreddit, start_time, end_time, filters, limit):
-    if(len(filters) == 0):
-        filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments'] 
-
-    posts = list(api.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
-
-    return pd.DataFrame(posts)
-
-def data_prep_comments(term, start_time, end_time, filters, limit):
-    if (len(filters) == 0):
-        filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit'] 
-
-    comments = list(api.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
-    return pd.DataFrame(comments) 
-
-def get_latest():
+    count = 0
     with open("settings.json") as file:
         data = json.load(file)
-
-        url = data["metrics_provider"][0]["price_url"]
-        parameters = {
-            'convert':'USD',
-        }
-        headers = {
-            'Accepts': 'application/json',
-            data["metrics_provider"][0]["api_key_name"]: data["metrics_provider"][0]["api_key_value"],
-        }
-
-        session = Session()
-        session.headers.update(headers)
-
-        try:
-            response = session.get(url, params=parameters)
-            data = json.loads(response.text)
-        except (ConnectionError, Timeout, TooManyRedirects) as e:
-            data = False
-
         file.close()
-    return data
 
-def load_dominance(coin):
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet7')
-    
-    values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
-    #print(len(values_mat))
-    Dominance.objects.all().delete()
-
-    for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][1]:
-            dominance = Dominance()
-            dominance.name = coin
-            dominance.date = values_mat[k][0]
-            dominance.dominance = float(values_mat[k][1].replace(',', '.'))
-            if not(dominance.dominance) and not(dominance.date):
-                break
-            else:
-                dominance.save()
-        else:
-            break
-    
-    return True
-
-def update_dominance(coin, data):
-    if not(data):
-        #print('error updating dominance')
-        return False
+    if start_time and end_time:
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time + '&end_time=' + end_time
     else:
-        dominance = Dominance()
-        dominance.name = 'xmr'
-        dominance.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
-        dominance.save()
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"]
 
-        gc = pygsheets.authorize(service_file='service_account_credentials.json')
-        sh = gc.open('zcash_bitcoin')
-        wks = sh.worksheet_by_title('Sheet7')
-        
-        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+    while update: 
+        response = requests.get(url)
+        data = json.loads(response.text)
+        data_aux = data['data']
+        for item in data_aux:
+            day, hour = str(item['time']).split('T')
+            day = datetime.datetime.strptime(day, '%Y-%m-%d')
+            day = datetime.datetime.strftime(day, '%Y-%m-%d')
+            coin = Coin.objects.filter(name=symbol).filter(date=day)
+            if coin:
+                coin.delete()
+            try:
+                coin = Coin()
+                coin.name = symbol
+                coin.date = day
+                coin.priceusd = float(item['PriceUSD'])
+                coin.pricebtc = float(item['PriceBTC'])
+                coin.inflation = float(item['IssContPctAnn'])
+                coin.stocktoflow = (100/coin.inflation)**1.65
+                coin.supply = float(item['SplyCur'])
+                try:
+                    coin.fee = float(item['FeeTotNtv'])
+                except:
+                    coin.fee = 0
+                try:
+                    coin.revenue = float(item['RevNtv'])
+                except:
+                    coin.revenue = 0
+                try:
+                    coin.hashrate = float(item['HashRate'])
+                except:
+                    coin.hashrate = 0
+                try:
+                    coin.transactions = float(item['TxCnt'])
+                except:
+                    coin.transactions = 0
+                coin.save()
+                count += 1
+                print(coin.date)
 
-        k = len(values_mat)
-        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-        if date_aux < date_aux2:
-            cell = 'B' + str(k + 3)
-            wks.update_value(cell, dominance.dominance)
-            cell = 'A' + str(k + 3)
-            wks.update_value(cell, dominance.date)
-        else:
-            #print('spreadsheet with the latest data already')
-            return False
+            except:
+                pass
+        try:
+            url = data['next_page_url']
+            update = True
+        except:
+            update = False
+            break
 
-    #print('updated')
-    return data
+    message = 'Total of ' + str(count) + ' data imported'
+    context = {'message': message}
+    return render(request, 'monerojnet/maintenance.html', context)
 
-def load_rank(coin):
+# Populate database with rank history
+# Only authorized users can do this
+@login_required 
+def load_rank(request, symbol):
     gc = pygsheets.authorize(service_file='service_account_credentials.json')
     sh = gc.open('zcash_bitcoin')
     wks = sh.worksheet_by_title('Sheet8')
     
+    count = 0
     values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
     print(len(values_mat))
     Rank.objects.all().delete()
@@ -262,170 +116,57 @@ def load_rank(coin):
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][1]:
             rank = Rank()
-            rank.name = coin
+            rank.name = symbol
             rank.date = values_mat[k][0]
             rank.rank = int(values_mat[k][1].replace(',', '.'))
             if not(rank.rank) and not(rank.date):
                 break
             else:
                 rank.save()
+                count += 1
         else:
             break
+
+    message = 'Total of ' + str(count) + ' data imported'
+    context = {'message': message}
+    return render(request, 'monerojnet/maintenance.html', context)
+
+# Populate database with dominance history
+# Only authorized users can do this
+@login_required 
+def load_dominance(request, symbol):
+    gc = pygsheets.authorize(service_file='service_account_credentials.json')
+    sh = gc.open('zcash_bitcoin')
+    wks = sh.worksheet_by_title('Sheet7')
     
-    return True
+    count = 0
+    values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+    #print(len(values_mat))
+    Dominance.objects.all().delete()
 
-def update_rank(coin):
-    data = get_latest()
-    if not(data):
-        return False
-    else:
-        rank = Rank()
-        rank.name = 'xmr'
-        rank.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        rank.rank = int(data['data']['XMR']['cmc_rank'])
-        rank.save()
-
-        gc = pygsheets.authorize(service_file='service_account_credentials.json')
-        sh = gc.open('zcash_bitcoin')
-        wks = sh.worksheet_by_title('Sheet8')
-        
-        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
-
-        k = len(values_mat)
-        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-        if date_aux < date_aux2:
-            cell = 'B' + str(k + 3)
-            wks.update_value(cell, rank.rank)
-            cell = 'A' + str(k + 3)
-            wks.update_value(cell, rank.date)
-            #print('spreadsheet updated')
+    for k in range(0,len(values_mat)):
+        if values_mat[k][0] and values_mat[k][1]:
+            dominance = Dominance()
+            dominance.name = symbol
+            dominance.date = values_mat[k][0]
+            dominance.dominance = float(values_mat[k][1].replace(',', '.'))
+            if not(dominance.dominance) and not(dominance.date):
+                break
+            else:
+                dominance.save()
+                count += 1
         else:
-            #print('spreadsheet with the latest data already')
-            return data
+            break
 
-    #print('updated')
-    return data
+    message = 'Total of ' + str(count) + ' data imported'
+    context = {'message': message}
+    return render(request, 'monerojnet/maintenance.html', context)
 
-###########################################
-# Views
-###########################################
-
-def index(request):
-    symbol = 'xmr'
-    now_inflation = 0.001
-    now_units = 0
-    supply = 0
-    #get_latest()
-    #load_dominance('xmr')
-    #load_rank('xmr')
-
-    rank = list(Rank.objects.order_by('-date'))[1]
-    if rank.date < date.today():
-        data = update_rank('xmr')    
-        dominance = list(Dominance.objects.order_by('-date'))[1]
-        if dominance.date < date.today():
-            data = update_dominance('xmr', data)
-
-    coin = list(Coin.objects.filter(name=symbol).order_by('-date'))[1]
-    if coin:
-        now_inflation = coin.inflation
-        supply = int(coin.supply)*10**12
-        now_units = supply/(10**12)
-    else:
-        message = "Website under maintenance. Check back in a few minutes."
-        context = {'message': message}
-        return render(request, 'monerojnet/maintenance.html', context)
-
-    now_units = locale.format('%.0f', now_units, grouping=True)
-    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
-    context = {'now_inflation': now_inflation, 'now_units': now_units}
-    return render(request, 'monerojnet/index.html', context)
-
-def pt(request):
-    symbol = 'xmr'
-    now_inflation = 0.001
-    now_units = 0
-    supply = 0
-
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    if coins:
-        for coin in coins:
-            if coin.priceusd > 0:
-                now_price = coin.priceusd
-            if coin.inflation > 0:
-                now_inflation = coin.inflation
-            if coin.supply > 0:
-                supply = int(coin.supply)*10**12
-                now_units = supply/(10**12)
-    else:
-        message = "Website under maintenance. Check back in a few minutes."
-        context = {'message': message}
-        return render(request, 'monerojnet/maintenance.html', context)
-
-    now_units = locale.format('%.0f', now_units, grouping=True)
-    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
-    context = {'now_inflation': now_inflation, 'now_units': now_units}
-    return render(request, 'monerojnet/pt.html', context)
-
-def fr(request):
-    symbol = 'xmr'
-    now_inflation = 0.001
-    now_units = 0
-    supply = 0
-
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    if coins:
-        for coin in coins:
-            if coin.priceusd > 0:
-                now_price = coin.priceusd
-            if coin.inflation > 0:
-                now_inflation = coin.inflation
-            if coin.supply > 0:
-                supply = int(coin.supply)*10**12
-                now_units = supply/(10**12)
-    else:
-        message = "Website under maintenance. Check back in a few minutes."
-        context = {'message': message}
-        return render(request, 'monerojnet/maintenance.html', context)
-
-    now_units = locale.format('%.0f', now_units, grouping=True)
-    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
-    context = {'now_inflation': now_inflation, 'now_units': now_units}
-    return render(request, 'monerojnet/fr.html', context)
-
-def artigos(request):
-    context = {}
-    return render(request, 'monerojnet/artigos.html', context)
-
-def articles(request):
-    context = {}
-    return render(request, 'monerojnet/articles.html', context)
-
-def reset(request, symbol):
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    deleted = 0
-    added = 0
-    if coins:
-        for coin in coins:
-            coin.delete()
-            deleted += 1
-    print("deleted")
-    
-    get_prices(symbol)
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    if coins:
-        for coin in coins:
-            added += 1
-
-    context = {'added': added, 'deleted': deleted}
-    return render(request, 'monerojnet/reset.html', context)
-
+# Import Reddit history from file on static folder
+# Only authorized users can do this
+@login_required 
 def importer(request):
+    count = 0
     Social.objects.all().delete()
     filename = staticfiles_storage.path('import.txt')
     with open(filename) as f:
@@ -470,18 +211,224 @@ def importer(request):
                 else: 
                     social.postsPerHour = 0 
                 social.save()
+                count += 1
 
-    message = "Dados importados"
+    message = 'Total of ' + str(count) + ' data imported'
     context = {'message': message}
-    return render(request, 'monerojnet/importer.html', context)
+    return render(request, 'monerojnet/maintenance.html', context)
 
+# Erase all data for a certain coin
+# Only authorized users can do this
+@login_required 
+def reset(request, symbol):
+    coins = Coin.objects.filter(name=symbol).all().delete()
+    
+    message = 'All data for ' + str(symbol) + ' erased'
+    context = {'message': message}
+    return render(request, 'monerojnet/maintenance.html', context)
+
+###########################################
+# Other useful functions                  
+###########################################
+
+# Get most recent metrics from a data provider of your choice for 'symbol'
+def get_latest_metrics(symbol):
+    now = datetime.datetime.now()
+    current_time = int(now.strftime("%H"))
+    if current_time >= 3:
+        yesterday = date.today() - timedelta(1)
+        start_time = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
+        try:
+            coin = Coin.objects.filter(name=symbol).filter(date=day)
+            if coin:
+                if (coin.inflation > 0) or (coin.priceusd > 0):
+                    return False
+                else:
+                    coin.delete()
+                    update = True
+            else:
+                update = True
+        except:
+            update = True
+    else:
+        return False
+
+    count = 0
+    with open("settings.json") as file:
+        data = json.load(file)
+        file.close()
+        
+    url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+    while update: 
+        response = requests.get(url)
+        data = json.loads(response.text)
+        data_aux = data['data']
+        for item in data_aux:
+            day, hour = str(item['time']).split('T')
+            day = datetime.datetime.strptime(day, '%Y-%m-%d')
+            day = datetime.datetime.strftime(day, '%Y-%m-%d')
+            coin = Coin.objects.filter(name=symbol).filter(date=day)
+            if coin:
+                coin.delete()
+            try:
+                coin = Coin()
+                coin.name = symbol
+                coin.date = day
+                coin.priceusd = float(item['PriceUSD'])
+                coin.pricebtc = float(item['PriceBTC'])
+                coin.inflation = float(item['IssContPctAnn'])
+                coin.stocktoflow = (100/coin.inflation)**1.65
+                coin.supply = float(item['SplyCur'])
+                try:
+                    coin.fee = float(item['FeeTotNtv'])
+                except:
+                    coin.fee = 0
+                try:
+                    coin.revenue = float(item['RevNtv'])
+                except:
+                    coin.revenue = 0
+                try:
+                    coin.hashrate = float(item['HashRate'])
+                except:
+                    coin.hashrate = 0
+                try:
+                    coin.transactions = float(item['TxCnt'])
+                except:
+                    coin.transactions = 0
+                coin.save()
+                count += 1
+                print(coin.date)
+
+            except:
+                pass
+        try:
+            url = data['next_page_url']
+            update = True
+        except:
+            update = False
+            break
+            
+    return count
+
+# Get daily post on Reddit
+def data_prep_posts(subreddit, start_time, end_time, filters, limit):
+    if(len(filters) == 0):
+        filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments'] 
+
+    posts = list(api.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
+
+    return pd.DataFrame(posts)
+
+# Get daily comments on Reddit
+def data_prep_comments(term, start_time, end_time, filters, limit):
+    if (len(filters) == 0):
+        filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit'] 
+
+    comments = list(api.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
+    return pd.DataFrame(comments) 
+
+# Get latest price data for Monero
+def get_latest_price():
+    with open("settings.json") as file:
+        data = json.load(file)
+
+        url = data["metrics_provider"][0]["price_url"]
+        parameters = {
+            'convert':'USD',
+        }
+        headers = {
+            'Accepts': 'application/json',
+            data["metrics_provider"][0]["api_key_name"]: data["metrics_provider"][0]["api_key_value"],
+        }
+
+        session = Session()
+        session.headers.update(headers)
+
+        try:
+            response = session.get(url, params=parameters)
+            data = json.loads(response.text)
+        except (ConnectionError, Timeout, TooManyRedirects) as e:
+            data = False
+
+        file.close()
+    return data
+
+# Get latest dominance value and update
+def update_dominance(data):
+    if not(data):
+        #print('error updating dominance')
+        return False
+    else:
+        dominance = Dominance()
+        dominance.name = 'xmr'
+        dominance.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
+        dominance.save()
+
+        gc = pygsheets.authorize(service_file='service_account_credentials.json')
+        sh = gc.open('zcash_bitcoin')
+        wks = sh.worksheet_by_title('Sheet7')
+        
+        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+
+        k = len(values_mat)
+        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        if date_aux < date_aux2:
+            cell = 'B' + str(k + 3)
+            wks.update_value(cell, dominance.dominance)
+            cell = 'A' + str(k + 3)
+            wks.update_value(cell, dominance.date)
+        else:
+            #print('spreadsheet with the latest data already')
+            return False
+
+    #print('updated')
+    return data
+
+# Get latest rank value and update
+def update_rank():
+    data = get_latest_price()
+    if not(data):
+        return False
+    else:
+        rank = Rank()
+        rank.name = 'xmr'
+        rank.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        rank.rank = int(data['data']['XMR']['cmc_rank'])
+        rank.save()
+
+        gc = pygsheets.authorize(service_file='service_account_credentials.json')
+        sh = gc.open('zcash_bitcoin')
+        wks = sh.worksheet_by_title('Sheet8')
+        
+        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+
+        k = len(values_mat)
+        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        if date_aux < date_aux2:
+            cell = 'B' + str(k + 3)
+            wks.update_value(cell, rank.rank)
+            cell = 'A' + str(k + 3)
+            wks.update_value(cell, rank.date)
+            #print('spreadsheet updated')
+        else:
+            #print('spreadsheet with the latest data already')
+            return data
+
+    #print('updated')
+    return data
+
+# Load Reddit api to check if there are new followers
 def check_new_social(symbol):
     date_now = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
     socials = Social.objects.filter(name=symbol).filter(date=date_now)
 
-    print('here 1')
     if not(socials):
-        print('here 2')
+        print('getting new data')
         request = 'https://www.reddit.com/r/'+ symbol +'/about.json'
         response = requests.get(request, headers = {'User-agent': 'Checking new social data'})
         data = json.loads(response.content)    
@@ -511,6 +458,96 @@ def check_new_social(symbol):
         social.commentsPerHour = len(data)/2
         social.save()
     return True
+
+###########################################
+# Views
+###########################################
+
+def index(request):
+    symbol = 'xmr'
+
+    rank = list(Rank.objects.order_by('-date'))[1]
+    if rank.date < date.today():
+        data = update_rank()    
+        dominance = list(Dominance.objects.order_by('-date'))[1]
+        if dominance.date < date.today():
+            data = update_dominance(data)
+
+    coin = list(Coin.objects.filter(name=symbol).order_by('-date'))[1]
+    if coin:
+        now_inflation = coin.inflation
+        supply = int(coin.supply)*10**12
+        now_units = supply/(10**12)
+    else:
+        message = 'Website under maintenance. Check back in a few minutes'
+        context = {'message': message}
+        return render(request, 'monerojnet/maintenance.html', context)
+
+    now_units = locale.format('%.0f', now_units, grouping=True)
+    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+
+    context = {'now_inflation': now_inflation, 'now_units': now_units}
+    return render(request, 'monerojnet/index.html', context)
+
+def pt(request):
+    symbol = 'xmr'
+
+    rank = list(Rank.objects.order_by('-date'))[1]
+    if rank.date < date.today():
+        data = update_rank()    
+        dominance = list(Dominance.objects.order_by('-date'))[1]
+        if dominance.date < date.today():
+            data = update_dominance(data)
+
+    coin = list(Coin.objects.filter(name=symbol).order_by('-date'))[1]
+    if coin:
+        now_inflation = coin.inflation
+        supply = int(coin.supply)*10**12
+        now_units = supply/(10**12)
+    else:
+        message = 'Website under maintenance. Check back in a few minutes'
+        context = {'message': message}
+        return render(request, 'monerojnet/maintenance.html', context)
+
+    now_units = locale.format('%.0f', now_units, grouping=True)
+    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+
+    context = {'now_inflation': now_inflation, 'now_units': now_units}
+    return render(request, 'monerojnet/pt.html', context)
+
+def fr(request):
+    symbol = 'xmr'
+
+    rank = list(Rank.objects.order_by('-date'))[1]
+    if rank.date < date.today():
+        data = update_rank()    
+        dominance = list(Dominance.objects.order_by('-date'))[1]
+        if dominance.date < date.today():
+            data = update_dominance(data)
+
+    coin = list(Coin.objects.filter(name=symbol).order_by('-date'))[1]
+    if coin:
+        now_inflation = coin.inflation
+        supply = int(coin.supply)*10**12
+        now_units = supply/(10**12)
+    else:
+        message = 'Website under maintenance. Check back in a few minutes'
+        context = {'message': message}
+        return render(request, 'monerojnet/maintenance.html', context)
+
+    now_units = locale.format('%.0f', now_units, grouping=True)
+    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+
+    context = {'now_inflation': now_inflation, 'now_units': now_units}
+    return render(request, 'monerojnet/fr.html', context)
+
+def artigos(request):
+    context = {}
+    return render(request, 'monerojnet/artigos.html', context)
+
+def articles(request):
+    context = {}
+    return render(request, 'monerojnet/articles.html', context)
 
 def social(request):
     socials = Social.objects.order_by('date').filter(name='Bitcoin')
@@ -1480,7 +1517,6 @@ def marketcap(request):
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'monerojnet/marketcap.html', context)
 
-
 def inflationreturn(request):
     count = 0
     xmr = []
@@ -2270,18 +2306,17 @@ def sfmodel(request):
     check_new_social('Monero')
     check_new_social('CryptoCurrency')
     symbol = 'btc'
-    get_metrics(symbol)
+    get_latest_metrics(symbol)
     symbol = 'dash'
-    get_metrics(symbol)
+    get_latest_metrics(symbol)
     symbol = 'grin'
-    get_metrics(symbol)
+    get_latest_metrics(symbol)
     symbol = 'zec'
-    get_metrics(symbol)
+    get_latest_metrics(symbol)
     symbol = 'xmr'
-    get_metrics(symbol)
+    get_latest_metrics(symbol)
 
     timevar = 1283
-    symbol = 'xmr'
     now_price = 0
     now_sf = 0
     now_inflation = 0.001
@@ -2291,7 +2326,6 @@ def sfmodel(request):
     maximum = 0
     supply = 0
     stock = 0.000001
-    model = 0
     dates = []
     inflations = []
     circulations = []
@@ -2403,7 +2437,6 @@ def sfmodellin(request):
     maximum = 0
     supply = 0
     stock = 0.000001
-    model = 0
     dates = []
     inflations = []
     circulations = []
@@ -2461,22 +2494,20 @@ def sfmodellin(request):
 
 def sfmultiple(request):
     symbol = 'btc'
-    get_prices(symbol)
+    get_latest_metrics(symbol)
     symbol = 'dash'
-    get_prices(symbol)
+    get_latest_metrics(symbol)
     symbol = 'grin'
-    get_prices(symbol)
+    get_latest_metrics(symbol)
     symbol = 'zec'
-    get_prices(symbol)
+    get_latest_metrics(symbol)
     symbol = 'xmr'
-    get_prices(symbol)
+    get_latest_metrics(symbol)
 
-    symbol = 'xmr'
     now_sf = 0
     maximum = 0
     dates = []
     stock_to_flow = []
-    values = []
     buy = []
     sell = []
     color = []

@@ -30,11 +30,9 @@ urlpatterns = [
     path('sfmultiple/', views.sfmultiple, name='sfmultiple'),
     path('about/', views.about, name='about'),
     path('bitcoin/', views.bitcoin, name='bitcoin'),
-    path('reset/<str:symbol>/', views.reset, name='reset'),
     path('pt/', views.pt, name='pt'),
     path('fr/', views.fr, name='fr'),
     path('index_pt/', views.pt, name='index_pt'),
-    path('importer/', views.importer, name='importer'),
     path('thermocap/', views.thermocap, name='thermocap'),
     path('sharpe/', views.sharpe, name='sharpe'),
     path('social/', views.social, name='social'),
@@ -68,8 +66,16 @@ urlpatterns = [
     path('dominance/', views.dominance, name='dominance'),
     path('rank/', views.rank, name='rank'),
     path('marketcap/', views.marketcap, name='marketcap'),
-
     path('artigos/', views.artigos, name='artigos'),
     path('articles/', views.articles, name='articles'),
+
+    # URLs to useful functions on monerojnet/views.py
+    # Only admins can use these 
+    path('get_history/<str:symbol>/<str:start_time>/<str:end_time>/', views.get_history, name='get_history'),
+    path('get_complete_history/<str:symbol>/', views.get_history, name='get_complete_history'),
+    path('load_dominance/<str:symbol>/', views.load_dominance, name='load_dominance'),
+    path('load_rank/<str:symbol>/', views.load_rank, name='load_rank'),
+    path('importer/', views.importer, name='importer'),
+    path('reset/<str:symbol>/', views.reset, name='reset'),
 
 ]
