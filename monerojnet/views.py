@@ -63,11 +63,24 @@ def get_history(request, symbol, start_time=None, end_time=None):
                 coin = Coin()
                 coin.name = symbol
                 coin.date = day
-                coin.priceusd = float(item['PriceUSD'])
-                coin.pricebtc = float(item['PriceBTC'])
-                coin.inflation = float(item['IssContPctAnn'])
-                coin.stocktoflow = (100/coin.inflation)**1.65
-                coin.supply = float(item['SplyCur'])
+                try:
+                    coin.priceusd = float(item['PriceUSD'])
+                except:
+                    coin.priceusd = 0
+                try:
+                    coin.pricebtc = float(item['PriceBTC'])
+                except:
+                    coin.pricebtc = 0
+                try:
+                    coin.inflation = float(item['IssContPctAnn'])  
+                    coin.stocktoflow = (100/coin.inflation)**1.65 
+                except:
+                    coin.inflation = 0
+                    coin.stocktoflow = 0
+                try:
+                    coin.supply = float(item['SplyCur'])
+                except:
+                    coin.supply = 0
                 try:
                     coin.fee = float(item['FeeTotNtv'])
                 except:
@@ -275,11 +288,24 @@ def get_latest_metrics(symbol):
                 coin = Coin()
                 coin.name = symbol
                 coin.date = day
-                coin.priceusd = float(item['PriceUSD'])
-                coin.pricebtc = float(item['PriceBTC'])
-                coin.inflation = float(item['IssContPctAnn'])
-                coin.stocktoflow = (100/coin.inflation)**1.65
-                coin.supply = float(item['SplyCur'])
+                try:
+                    coin.priceusd = float(item['PriceUSD'])
+                except:
+                    coin.priceusd = 0
+                try:
+                    coin.pricebtc = float(item['PriceBTC'])
+                except:
+                    coin.pricebtc = 0
+                try:
+                    coin.inflation = float(item['IssContPctAnn'])  
+                    coin.stocktoflow = (100/coin.inflation)**1.65 
+                except:
+                    coin.inflation = 0
+                    coin.stocktoflow = 0
+                try:
+                    coin.supply = float(item['SplyCur'])
+                except:
+                    coin.supply = 0
                 try:
                     coin.fee = float(item['FeeTotNtv'])
                 except:
@@ -556,6 +582,7 @@ def articles(request):
     return render(request, 'monerojnet/articles.html', context)
 
 def social(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     socials = Social.objects.order_by('date').filter(name='Bitcoin')
     dates = []
     social_xmr = []
@@ -596,11 +623,14 @@ def social(request):
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
     last_crypto = locale.format('%.0f', last_crypto, grouping=True)
-
+    
+    dt = 'social.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'monerojnet/social.html', context)
 
 def social2(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     social_btc = []
     last_btc = 0
@@ -632,11 +662,14 @@ def social2(request):
     
     last_xmr = '$' + locale.format('%.0f', last_xmr, grouping=True)
     last_btc = '$' + locale.format('%.0f', last_btc, grouping=True)
-       
+    
+    dt = 'social2.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'dates2': dates2, 'social_btc': social_btc, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'last_btc': last_btc}
     return render(request, 'monerojnet/social2.html', context)
 
 def social3(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     social_xmr = []
     last_xmr = 0.001
@@ -676,11 +709,14 @@ def social3(request):
 
     last_xmr = locale.format('%.1f', last_xmr, grouping=True)+ '%'
     last_crypto = locale.format('%.1f', last_crypto, grouping=True)+ '%'
-
+    
+    dt = 'social3.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'last_xmr': last_xmr, 'last_crypto': last_crypto}
     return render(request, 'monerojnet/social3.html', context)
 
 def social4(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     socials = Social.objects.order_by('date').filter(name='Bitcoin')
     dates = []
     social_xmr = []
@@ -804,11 +840,14 @@ def social4(request):
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
     last_crypto = locale.format('%.0f', last_crypto, grouping=True)
-
+    
+    dt = 'social4.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'speed_xmr': speed_xmr, 'speed_crypto': speed_crypto, 'speed_btc': speed_btc, 'newcomers_xmr': newcomers_xmr, 'newcomers_btc': newcomers_btc, 'newcomers_crypto': newcomers_crypto, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'monerojnet/social4.html', context)
 
 def social5(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -846,11 +885,14 @@ def social5(request):
     
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     now_transactions = locale.format('%.0f', now_transactions, grouping=True)
-
+    
+    dt = 'social5.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'now_transactions': now_transactions, 'transactions': transactions, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/social5.html', context)
 
 def social6(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     socials = Social.objects.order_by('date').filter(name='Bitcoin')
     dates = []
     social_xmr = []
@@ -892,11 +934,14 @@ def social6(request):
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
     last_crypto = locale.format('%.0f', last_crypto, grouping=True)
-
+    
+    dt = 'social6.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'monerojnet/social6.html', context)
 
 def social7(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     socials = Social.objects.order_by('date').filter(name='Bitcoin')
     dates = []
     social_xmr = []
@@ -929,11 +974,14 @@ def social7(request):
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
     last_crypto = locale.format('%.0f', last_crypto, grouping=True)
-
+    
+    dt = 'social7.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'monerojnet/social7.html', context)
 
 def pricelog(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -978,11 +1026,14 @@ def pricelog(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
+    
+    dt = 'pricelog.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'monerojnet/pricelog.html', context)
 
 def movingaverage(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
@@ -1028,11 +1079,14 @@ def movingaverage(request):
     for item in median:
         average1.append(item)
         average2.append(item*5)
-
+    
+    dt = 'movingaverage.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'color': color, 'average1': average1, 'average2': average2}
     return render(request, 'monerojnet/movingaverage.html', context)
 
 def powerlaw(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -1108,12 +1162,15 @@ def powerlaw(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
+    
+    dt = 'powerlaw.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 
     'now_sf': now_sf, 'color': color, 'years': years, 'counter': counter, 'line1': line1, 'line2': line2, 'line3': line3}
     return render(request, 'monerojnet/powerlaw.html', context)
 
 def pricelin(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -1159,11 +1216,14 @@ def pricelin(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
+    
+    dt = 'pricelin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'monerojnet/pricelin.html', context)
 
 def pricesats(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     projection = []
     color = []
@@ -1227,11 +1287,14 @@ def pricesats(request):
     now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
     maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
     bottom = locale.format('%.4f', bottom, grouping=True) + ' BTC'
-
+    
+    dt = 'pricesats.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'color': color, 'projection': projection, 'bottom': bottom}
     return render(request, 'monerojnet/pricesats.html', context)
 
 def fractal(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates1 = []
     dates2 = []
@@ -1262,11 +1325,14 @@ def fractal(request):
 
     now_multiple = locale.format('%.2f', now_multiple, grouping=True) + 'x'
     maximum = locale.format('%.2f', maximum, grouping=True) + 'x'
-
+    
+    dt = 'fractal.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'cycle1': cycle1, 'cycle2': cycle2, 'dates1': dates1, 'dates2': dates2, 'now_multiple': now_multiple, 'maximum': maximum}
     return render(request, 'monerojnet/fractal.html', context)
 
 def inflationfractal(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates1 = []
     dates2 = []
@@ -1305,11 +1371,14 @@ def inflationfractal(request):
 
     now_multiple = locale.format('%.2f', now_multiple, grouping=True) + 'x'
     maximum = locale.format('%.2f', maximum, grouping=True) + 'x'
-
+    
+    dt = 'inflationfractal.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'cycle1': cycle1, 'cycle2': cycle2, 'dates1': dates1, 'dates2': dates2, 'now_multiple': now_multiple, 'maximum': maximum}
     return render(request, 'monerojnet/inflationfractal.html', context)
 
 def golden(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates = []
     prices = []
@@ -1385,12 +1454,15 @@ def golden(request):
         else:
             price_cross.append('')
         i += 1
-
+    
+    dt = 'golden.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'prices': prices, 'm_350': m_350, 'm_350_0042': m_350_0042, 'm_350_0060': m_350_0060, 'm_350_0200': m_350_0200, 'm_350_0300': m_350_0300, 
     'm_350_0500': m_350_0500, 'm_350_0800': m_350_0800, 'm_350_1300': m_350_1300, 'median': median, 'm_111': m_111, 'price_cross': price_cross}
     return render(request, 'monerojnet/golden.html', context)
 
 def competitors(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
     dash = []
@@ -1459,12 +1531,15 @@ def competitors(request):
     now_grin = locale.format('%.2f', now_grin, grouping=True)
     now_zcash = locale.format('%.2f', now_zcash, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-
+    
+    dt = 'competitors.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'monerojnet/competitors.html', context)
 
 def marketcap(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
     dash = []
@@ -1518,12 +1593,15 @@ def marketcap(request):
     now_grin = '$'+locale.format('%.0f', now_grin, grouping=True)
     now_zcash = '$'+locale.format('%.0f', now_zcash, grouping=True)
     now_xmr = '$'+locale.format('%.0f', now_xmr, grouping=True)
-
+    
+    dt = 'marketcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'monerojnet/marketcap.html', context)
 
 def inflationreturn(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     count = 0
     xmr = []
     dash = []
@@ -1601,12 +1679,15 @@ def inflationreturn(request):
     now_zcash = locale.format('%.2f', now_zcash, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
     now_btc = locale.format('%.2f', now_btc, grouping=True)
-
+    
+    dt = 'inflationreturn.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'inflation_btc': inflation_btc,'inflation_xmr': inflation_xmr, 'inflation_dash': inflation_dash, 'inflation_grin': inflation_grin, 'inflation_zcash': inflation_zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'btc': btc, 'xmr': xmr, 'dash': dash, 'zcash': zcash, 'grin': grin}
     return render(request, 'monerojnet/inflationreturn.html', context)
 
 def bitcoin(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     dates3 = []
     dates4 = []
@@ -1668,11 +1749,14 @@ def bitcoin(request):
 
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-
+    
+    dt = 'bitcoin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'btc': btc, 'xmr2': xmr2, 'btc2': btc2, 'xmr3': xmr3, 'dates': dates, 'dates2': dates2, 'dates3': dates3, 'dates4': dates4}
     return render(request, 'monerojnet/bitcoin.html', context)
 
 def translin(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -1700,11 +1784,14 @@ def translin(request):
     
     now_transactions = int(now_transactions)
     maximum = int(maximum)
-
+    
+    dt = 'translin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/translin.html', context)
 
 def percentage(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
     dates = []
@@ -1730,11 +1817,14 @@ def percentage(request):
     
     now_transactions = locale.format('%.1f', now_transactions, grouping=True) + '%'
     maximum = locale.format('%.1f', maximum, grouping=True) + '%'
-
+    
+    dt = 'percentage.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'transactions': transactions, 'dates': dates, 'now_transactions': now_transactions, 'maximum': maximum}
     return render(request, 'monerojnet/percentage.html', context)
 
 def translog(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -1762,11 +1852,14 @@ def translog(request):
     
     now_transactions = int(now_transactions)
     maximum = int(maximum)
-
+    
+    dt = 'translog.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/translog.html', context)
 
 def hashrate(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     hashrate = []
     dates = []
@@ -1781,11 +1874,14 @@ def hashrate(request):
         hashrate.append(coin.hashrate)
     
     now_hashrate = locale.format('%.0f', now_hashrate, grouping=True)
-
+    
+    dt = 'hashrate.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate}
     return render(request, 'monerojnet/hashrate.html', context)
 
 def hashprice(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     hashrate = []
     dates = []
@@ -1814,11 +1910,14 @@ def hashprice(request):
         count += 1
     
     now_hashrate = locale.format('%.8f', now_hashrate, grouping=True)
-
+    
+    dt = 'hashprice.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'buy': buy, 'sell': sell}
     return render(request, 'monerojnet/hashprice.html', context)
 
 def hashvsprice(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     hashrate = []
     prices = []
@@ -1852,11 +1951,14 @@ def hashvsprice(request):
     now_hashrate = locale.format('%.0f', now_hashrate, grouping=True)
     now_priceusd = '$' + locale.format('%.2f', now_priceusd, grouping=True)
     now_pricebtc = locale.format('%.5f', now_pricebtc, grouping=True) + ' BTC'
-
+    
+    dt = 'hashvsprice.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'prices': prices, 'now_pricebtc': now_pricebtc, 'now_priceusd': now_priceusd}
     return render(request, 'monerojnet/hashvsprice.html', context)
 
 def metcalfesats(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     color = []
     metcalfe = []
@@ -1895,11 +1997,14 @@ def metcalfesats(request):
     now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
     now_metcalfe = locale.format('%.4f', now_metcalfe, grouping=True) + ' BTC'
     maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
-
+    
+    dt = 'metcalfesats.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
     return render(request, 'monerojnet/metcalfesats.html', context)
 
 def metcalfeusd(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     color = []
     metcalfe = []
@@ -1938,11 +2043,14 @@ def metcalfeusd(request):
     now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
     now_metcalfe = "$"+ locale.format('%.2f', now_metcalfe, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
-
+    
+    dt = 'metcalfeusd.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
     return render(request, 'monerojnet/metcalfeusd.html', context)
 
 def coins(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     supplyxmr = []
@@ -2028,11 +2136,14 @@ def coins(request):
         
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-
+    
+    dt = 'coins.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'supplyxmr': supplyxmr, 'supplybtc': supplybtc, 'fsupplyxmr': fsupplyxmr, 'fsupplybtc': fsupplybtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/coins.html', context)
 
 def dailyemission(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     emissionbtc = []
@@ -2083,11 +2194,14 @@ def dailyemission(request):
     now_xmr = "$" + locale.format('%.0f', now_xmr, grouping=True)
     high_btc = "$" + locale.format('%.0f', high_btc, grouping=True)
     high_xmr = "$" + locale.format('%.0f', high_xmr, grouping=True)
-
+    
+    dt = 'dailyemission.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'high_xmr': high_xmr, 'high_btc': high_btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/dailyemission.html', context)
 
 def extracoins(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     nsupply = []
@@ -2162,11 +2276,14 @@ def extracoins(request):
         nsupply.append('')
         
     now_diff = locale.format('%.0f', now_diff, grouping=True)
-
+    
+    dt = 'extracoins.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'nsupply': nsupply, 'fsupply': fsupply, 'dates': dates, 'now_diff': now_diff}
     return render(request, 'monerojnet/extracoins.html', context)
 
 def inflation(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     inflationxmr = []
@@ -2214,11 +2331,14 @@ def inflation(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + '%'
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
-
+    
+    dt = 'inflation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'inflationxmr': inflationxmr, 'inflationbtc': inflationbtc, 'finflationxmr': finflationxmr, 'finflationbtc': finflationbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/inflation.html', context)
 
 def compinflation(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     dates = []
@@ -2302,17 +2422,20 @@ def compinflation(request):
     now_zcash = locale.format('%.2f', now_zcash, grouping=True) + '%'
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
     now_btc = locale.format('%.2f', now_btc, grouping=True) + '%'
-
+    
+    dt = 'compinflation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'inflationxmr': inflationxmr, 'inflationdash': inflationdash, 'inflationgrin': inflationgrin, 'inflationzcash': inflationzcash, 'inflationbtc': inflationbtc,
     'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/compinflation.html', context)
 
 def sfmodel(request):
-    print('social')
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    #print('social')
     check_new_social('Bitcoin')
     check_new_social('Monero')
     check_new_social('CryptoCurrency')
-    print('metrics')
+    #print('metrics')
     symbol = 'btc'
     get_latest_metrics(symbol)
     symbol = 'dash'
@@ -2323,7 +2446,7 @@ def sfmodel(request):
     get_latest_metrics(symbol)
     symbol = 'xmr'
     get_latest_metrics(symbol)
-    print('done')
+    #print('done')
 
     timevar = 1283
     now_price = 0
@@ -2430,12 +2553,15 @@ def sfmodel(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
+    
+    dt = 'sfmodel.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'inflations': inflations, 'circulations': circulations, 'stock_to_flow': stock_to_flow, 'projection': projection,
     'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'monerojnet/sfmodel.html', context)
 
 def sfmodellin(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -2496,12 +2622,15 @@ def sfmodellin(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
+    
+    dt = 'sfmodellin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'inflations': inflations, 'circulations': circulations, 'stock_to_flow': stock_to_flow,
     'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'monerojnet/sfmodellin.html', context)
 
 def sfmultiple(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'btc'
     get_latest_metrics(symbol)
     symbol = 'dash'
@@ -2548,11 +2677,14 @@ def sfmultiple(request):
 
     now_sf = locale.format('%.2f', now_sf, grouping=True)
     maximum = locale.format('%.2f', maximum, grouping=True)
-
+    
+    dt = 'sfmultiple.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'maximum': maximum, 'stock_to_flow': stock_to_flow, 'now_sf': now_sf, 'buy': buy, 'sell': sell, 'color': color}
     return render(request, 'monerojnet/sfmultiple.html', context)
 
 def thermocap(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates = []
     values = []
@@ -2599,12 +2731,15 @@ def thermocap(request):
         count += 1  
 
     temperature = locale.format('%.2f', temperature, grouping=True)
-
+    
+    dt = 'thermocap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'temperature': temperature, 'values': values, 'thermocap': thermocap, 'color': color, 'calories': calories,
     'calories2': calories2, 'calories3': calories3}
     return render(request, 'monerojnet/thermocap.html', context)
 
 def sharpe(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates = []
     values = []
@@ -2643,7 +2778,9 @@ def sharpe(request):
         sharpe.append('')
     for item in aux:
         sharpe.append(item*math.sqrt(52))
-
+    
+    dt = 'sharpe.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'values': values, 'color': color, 'sharpe': sharpe}
     return render(request, 'monerojnet/sharpe.html', context)
 
@@ -2652,6 +2789,7 @@ def about(request):
     return render(request, 'monerojnet/about.html', context)
 
 def transcost(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -2700,11 +2838,14 @@ def transcost(request):
         
     now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
     now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
-
+    
+    dt = 'transcost.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costxmr2': costxmr2, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/transcost.html', context)
 
 def transcostntv(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -2747,11 +2888,14 @@ def transcostntv(request):
         
     now_btc = locale.format('%.6f', now_btc, grouping=True)
     now_xmr = locale.format('%.6f', now_xmr, grouping=True)
-
+    
+    dt = 'transcostntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/transcostntv.html', context)
 
 def minerrevcap(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -2762,7 +2906,10 @@ def minerrevcap(request):
 
     for coin_btc in coins_btc:
         dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        valuebtc = 365*100*coin_btc.revenue/coin_btc.supply
+        if coin_btc.supply == 0:
+            valuebtc = 0
+        else:
+            valuebtc = 365*100*coin_btc.revenue/coin_btc.supply
         if valuebtc < 0.0000001:
             costbtc.append('')
         else:
@@ -2771,7 +2918,10 @@ def minerrevcap(request):
         coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
         if coins_xmr:
             for coin_xmr in coins_xmr:
-                valuexmr = 365*100*coin_xmr.revenue/coin_xmr.supply
+                if coin_xmr.supply == 0:
+                    valuexmr = 0
+                else:
+                    valuexmr = 365*100*coin_xmr.revenue/coin_xmr.supply
                 if valuexmr < 0.0000001:
                     costxmr.append('')
                 else:
@@ -2788,11 +2938,14 @@ def minerrevcap(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + "%"
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + "%"
-
+    
+    dt = 'minerrevcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/minerrevcap.html', context)
 
 def minerrev(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -2829,11 +2982,14 @@ def minerrev(request):
         
     now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
     now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
-
+    
+    dt = 'minerrev.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/minerrev.html', context)
 
 def minerrevntv(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -2870,11 +3026,14 @@ def minerrevntv(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-
+    
+    dt = 'minerrevntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/minerrevntv.html', context)
 
 def minerfeesntv(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -2915,11 +3074,14 @@ def minerfeesntv(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-
+    
+    dt = 'minerfeesntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/minerfeesntv.html', context)
 
 def minerfees(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -2960,11 +3122,14 @@ def minerfees(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-
+    
+    dt = 'minerfees.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/minerfees.html', context)
 
 def dailyemissionntv(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -3005,11 +3170,14 @@ def dailyemissionntv(request):
         
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-
+    
+    dt = 'dailyemissionntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/dailyemissionntv.html', context)
 
 def commit(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -3046,11 +3214,14 @@ def commit(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + " hashs / dollar"
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + " hashs / dollar"
-
+    
+    dt = 'commit.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/commit.html', context)
 
 def commitntv(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
     costbtc = []
@@ -3093,11 +3264,14 @@ def commitntv(request):
         
     now_btc = locale.format('%.0f', now_btc, grouping=True) + " hashs / btc"
     now_xmr = locale.format('%.0f', now_xmr, grouping=True) + " hashs / xmr"
-
+    
+    dt = 'commitntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/commitntv.html', context)
 
 def competitorssats(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
     dash = []
@@ -3166,12 +3340,15 @@ def competitorssats(request):
     now_grin = locale.format('%.3f', now_grin, grouping=True)
     now_zcash = locale.format('%.3f', now_zcash, grouping=True)
     now_xmr = locale.format('%.3f', now_xmr, grouping=True)
-
+    
+    dt = 'competitorssats.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'monerojnet/competitorssats.html', context)
 
 def competitorssatslin(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
     dash = []
@@ -3240,12 +3417,15 @@ def competitorssatslin(request):
     now_grin = locale.format('%.3f', now_grin, grouping=True)
     now_zcash = locale.format('%.3f', now_zcash, grouping=True)
     now_xmr = locale.format('%.3f', now_xmr, grouping=True)
-
+    
+    dt = 'competitorssatslin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'monerojnet/competitorssatslin.html', context)
 
 def dread_subscribers(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
     data2 = []
@@ -3257,7 +3437,6 @@ def dread_subscribers(request):
     wks = sh.worksheet_by_title('Sheet6')
     
     values_mat = wks.get_values(start=(3,1), end=(99,3), returnas='matrix')
-    print(len(values_mat))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -3280,11 +3459,14 @@ def dread_subscribers(request):
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
     dominance = locale.format('%.2f', dominance, grouping=True)
-
+    
+    dt = 'dread_subscribers.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr, 'data1': data1, "data2": data2, "dominance": dominance}
     return render(request, 'monerojnet/dread_subscribers.html', context)
 
 def coincards(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
     data2 = []
@@ -3298,7 +3480,6 @@ def coincards(request):
     wks = sh.worksheet_by_title('Sheet2')
     
     values_mat = wks.get_values(start=(3,1), end=(99,5), returnas='matrix')
-    print(len(values_mat))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -3326,11 +3507,14 @@ def coincards(request):
     now_xmr = locale.format('%.1f', now_xmr, grouping=True)
     now_eth = locale.format('%.1f', now_eth, grouping=True)
     now_others = locale.format('%.1f', now_others, grouping=True)
-
+    
+    dt = 'coincards.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'now_others': now_others, 'data1': data1, "data2": data2, "data3": data3, "data4": data4}
     return render(request, 'monerojnet/coincards.html', context)
 
 def merchants(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
     data2 = []
@@ -3348,7 +3532,6 @@ def merchants(request):
     wks = sh.worksheet_by_title('Sheet3')
     
     values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
-    print(len(values_mat))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -3380,11 +3563,14 @@ def merchants(request):
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
     now_eth = locale.format('%.0f', now_eth, grouping=True)
-
+    
+    dt = 'merchants.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'monerojnet/merchants.html', context)
 
 def merchants_increase(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
     data2 = []
@@ -3402,7 +3588,6 @@ def merchants_increase(request):
     wks = sh.worksheet_by_title('Sheet4')
     
     values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
-    print(len(values_mat))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -3434,11 +3619,14 @@ def merchants_increase(request):
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
     now_eth = locale.format('%.0f', now_eth, grouping=True)
-
+    
+    dt = 'merchants_increase.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'monerojnet/merchants_increase.html', context)
 
 def merchants_percentage(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
     data2 = []
@@ -3456,7 +3644,6 @@ def merchants_percentage(request):
     wks = sh.worksheet_by_title('Sheet5')
     
     values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
-    print(len(values_mat))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -3488,11 +3675,14 @@ def merchants_percentage(request):
     now_btc = locale.format('%.1f', now_btc, grouping=True)
     now_xmr = locale.format('%.1f', now_xmr, grouping=True)
     now_eth = locale.format('%.1f', now_eth, grouping=True)
-
+    
+    dt = 'merchants_percentage.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'monerojnet/merchants_percentage.html', context)
 
 def dominance(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     values = []
     pricexmr = []
@@ -3540,11 +3730,14 @@ def dominance(request):
 
     now_value = locale.format('%.2f', now_value, grouping=True)
     maximum = locale.format('%.2f', maximum, grouping=True)
-
+    
+    dt = 'dominance.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/dominance.html', context)
 
 def rank(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     values = []
     pricexmr = []
@@ -3606,6 +3799,8 @@ def rank(request):
         maximum = locale.format('%.0f', maximum, grouping=True) + 'rd'
     if maximum > 3:
         maximum = locale.format('%.0f', maximum, grouping=True) + 'th'
-
+    
+    dt = 'rank.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/rank.html', context)
