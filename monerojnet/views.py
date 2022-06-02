@@ -13,6 +13,7 @@ import math
 import locale
 import pandas as pd
 from operator import truediv
+from datetime import timezone
 import pygsheets
 from django.contrib.auth.decorators import login_required
 from requests import Session
@@ -85,7 +86,7 @@ def get_history(request, symbol, start_time=None, end_time=None):
                     coin.transactions = 0
                 coin.save()
                 count += 1
-                print(coin.date)
+                print(str(symbol) + ' ' + str(coin.date))
 
             except:
                 pass
@@ -239,9 +240,9 @@ def get_latest_metrics(symbol):
         yesterday = date.today() - timedelta(1)
         start_time = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
         try:
-            coin = Coin.objects.filter(name=symbol).filter(date=day)
+            coin = Coin.objects.filter(name=symbol).get(date=yesterday)
             if coin:
-                if (coin.inflation > 0) or (coin.priceusd > 0):
+                if (coin.inflation > 0) and (coin.priceusd > 0):
                     return False
                 else:
                     coin.delete()
@@ -297,7 +298,7 @@ def get_latest_metrics(symbol):
                     coin.transactions = 0
                 coin.save()
                 count += 1
-                print(coin.date)
+                print(str(symbol) + ' ' + str(coin.date))
 
             except:
                 pass
@@ -464,10 +465,12 @@ def check_new_social(symbol):
 ###########################################
 
 def index(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
 
     rank = list(Rank.objects.order_by('-date'))[1]
     if rank.date < date.today():
+        print('here 1')
         data = update_rank()    
         dominance = list(Dominance.objects.order_by('-date'))[1]
         if dominance.date < date.today():
@@ -486,6 +489,9 @@ def index(request):
     now_units = locale.format('%.0f', now_units, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
 
+    
+    dt = 'index.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
     context = {'now_inflation': now_inflation, 'now_units': now_units}
     return render(request, 'monerojnet/index.html', context)
 
@@ -2302,9 +2308,11 @@ def compinflation(request):
     return render(request, 'monerojnet/compinflation.html', context)
 
 def sfmodel(request):
+    print('social')
     check_new_social('Bitcoin')
     check_new_social('Monero')
     check_new_social('CryptoCurrency')
+    print('metrics')
     symbol = 'btc'
     get_latest_metrics(symbol)
     symbol = 'dash'
@@ -2315,6 +2323,7 @@ def sfmodel(request):
     get_latest_metrics(symbol)
     symbol = 'xmr'
     get_latest_metrics(symbol)
+    print('done')
 
     timevar = 1283
     now_price = 0
@@ -3513,6 +3522,22 @@ def dominance(request):
         coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
 
+    yesterday = date.today() - timedelta(1)
+    yesterday = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
+    if coin.date == yesterday:
+        today = date.today()
+        today = datetime.datetime.strftime(today, '%Y-%m-%d')
+        try:
+            dominance = list(Dominance.objects.order_by('-date'))[1]
+            if str(dominance.date) == str(today):
+                now_value = dominance.dominance 
+                dates.append(today)
+                values.append(now_value)
+                if now_value > maximum:
+                    maximum = now_value  
+        except:
+            pass
+
     now_value = locale.format('%.2f', now_value, grouping=True)
     maximum = locale.format('%.2f', maximum, grouping=True)
 
@@ -3548,6 +3573,22 @@ def rank(request):
 
         coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
+
+    yesterday = date.today() - timedelta(1)
+    yesterday = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
+    if coin.date == yesterday:
+        today = date.today()
+        today = datetime.datetime.strftime(today, '%Y-%m-%d')
+        try:
+            rank = list(Rank.objects.order_by('-date'))[1]
+            if str(rank.date) == str(today):
+                now_value = rank.rank 
+                dates.append(today)
+                values.append(now_value)
+                if now_value < maximum:
+                    maximum = now_value  
+        except:
+            pass
 
     if now_value == 1:
         now_value = locale.format('%.0f', now_value, grouping=True) + 'st'
