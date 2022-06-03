@@ -241,38 +241,113 @@ def reset(request, symbol):
     context = {'message': message}
     return render(request, 'monerojnet/maintenance.html', context)
 
+# Populate database with especific chart variables
+# Only authorized users can do this
+@login_required 
+def populate_database(request):
+    count = 0
+
+    ##################
+    # SF model chart
+    ##################
+    timevar = 1283
+    v0 = 0.002
+    delta = (0.015 - 0.002)/(6*365)
+    supply = 0
+    sf_aux = 0
+    skipped = 0
+    count_aux = 0
+
+    coins = Coin.objects.order_by('date').filter(name='xmr')
+    for coin in coins:
+        data = Sfmodel()
+        data.date = coin.date
+        data.priceusd = coin.priceusd
+        data.stocktoflow = coin.stocktoflow
+        date_aux1 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        if date_aux2 < date_aux1:
+            lastprice = coin.priceusd
+            current_inflation = coin.inflation
+            data.greyline = 0
+            count_aux = 0
+        else:
+            day = date_aux2 - timedelta(timevar)
+            coin_aux1 = Coin.objects.filter(name='xmr').get(date=day)
+            day = date_aux2 - timedelta(timevar+1)
+            coin_aux2 = Coin.objects.filter(name='xmr').get(date=day)
+            date_aux3 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
+            
+            if date_aux3 + timedelta(int(count_aux*2)) < datetime.datetime.strptime('2021-07-03', '%Y-%m-%d'):
+                day = date_aux3 + timedelta(int(count_aux*2))
+                coin_aux3 = Coin.objects.filter(name='xmr').get(date=day)
+                if coin_aux3:
+                    if (coin_aux3.inflation/current_inflation) > 1.2 or (coin_aux3.inflation/current_inflation) < 0.8:
+                        coin_aux3.inflation = current_inflation
+                    else:
+                        current_inflation = coin_aux3.inflation
+                supply2 = supply
+            else:
+                reward2 = (2**64 -1 - supply2) >> 19
+                if reward2 < 0.6*(10**12):
+                    reward2 = 0.6*(10**12)
+                supply2 += int(720*reward2)
+                current_inflation = 100*reward2*720*365/supply2
+                
+            if coin_aux1 and coin_aux2:
+                lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice
+                actualprice = lastprice*(math.sqrt(coin.inflation/current_inflation))
+                data.greyline = actualprice
+                if skipped < 12:
+                    data.greyline = actualprice
+                else:
+                    skipped = 0
+            else:
+                data.greyline = 0
+            skipped += 1
+
+        if coin.priceusd < 0.01:
+            coin.priceusd = 0.01
+        if coin.stocktoflow > sf_aux*2+250:
+            coin.stocktoflow = sf_aux
+        if coin.stocktoflow < 0.1:
+            coin.stocktoflow = 0.1
+        sf_aux = coin.stocktoflow
+        color = 30*coin.pricebtc/(count*delta + v0)
+        data.color = color
+        supply = int(coin.supply)*10**12
+        count += 1
+        count_aux += 1
+        data.save()
+
+    count_aux = 0
+    for count_aux in range(650):
+        data = Sfmodel()
+        date_now = date.today() + timedelta(count_aux)
+        data.date = datetime.datetime.strftime(date_now, '%Y-%m-%d')
+        data.priceusd = 0
+        data.greyline = 0
+        reward = (2**64 -1 - supply) >> 19
+        if reward < 0.6*(10**12):
+            reward = 0.6*(10**12)
+        supply += int(720*reward)
+        data.stocktoflow = (100/(100*reward*720*365/supply))**1.65   
+        count += 1
+
+    message = 'Total of ' + str(count) + ' data imported'
+    context = {'message': message}
+    return render(request, 'monerojnet/maintenance.html', context)
+
 ###########################################
 # Other useful functions                  
 ###########################################
 
 # Get most recent metrics from a data provider of your choice for 'symbol'
-def get_latest_metrics(symbol):
-    now = datetime.datetime.now()
-    current_time = int(now.strftime("%H"))
-    if current_time >= 3:
-        yesterday = date.today() - timedelta(1)
-        start_time = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
-        try:
-            coin = Coin.objects.filter(name=symbol).get(date=yesterday)
-            if coin:
-                if (coin.inflation > 0) and (coin.priceusd > 0):
-                    return False
-                else:
-                    coin.delete()
-                    update = True
-            else:
-                update = True
-        except:
-            update = True
-    else:
-        return False
-
+def get_latest_metrics(symbol, url):
+    update = True
     count = 0
-    with open("settings.json") as file:
-        data = json.load(file)
-        file.close()
-        
-    url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+
     while update: 
         response = requests.get(url)
         data = json.loads(response.text)
@@ -2431,22 +2506,55 @@ def compinflation(request):
 
 def sfmodel(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    #print('social')
-    check_new_social('Bitcoin')
-    check_new_social('Monero')
-    check_new_social('CryptoCurrency')
-    #print('metrics')
-    symbol = 'btc'
-    get_latest_metrics(symbol)
-    symbol = 'dash'
-    get_latest_metrics(symbol)
-    symbol = 'grin'
-    get_latest_metrics(symbol)
-    symbol = 'zec'
-    get_latest_metrics(symbol)
+
+    update = True
     symbol = 'xmr'
-    get_latest_metrics(symbol)
-    #print('done')
+
+    yesterday = date.today() - timedelta(1)
+    start_time = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
+    try:
+        coin = Coin.objects.filter(name=symbol).get(date=yesterday)
+        if coin:
+            if (coin.inflation > 0) and (coin.priceusd > 0):
+                update = False
+            else:
+                now = datetime.datetime.now()
+                current_time = int(now.strftime("%H"))
+                if current_time >= 3:
+                    coin.delete()
+                    update = True
+        else:
+            update = True
+    except:
+        update = True
+
+    if update:
+        #print('social')
+        check_new_social('Bitcoin')
+        check_new_social('Monero')
+        check_new_social('CryptoCurrency')
+
+        #print('metrics')
+        with open("settings.json") as file:
+            data = json.load(file)
+            file.close()
+            
+        symbol = 'btc'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        symbol = 'dash'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        symbol = 'grin'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        symbol = 'zec'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        symbol = 'xmr'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        #print('done')
 
     timevar = 1283
     now_price = 0
@@ -2455,12 +2563,9 @@ def sfmodel(request):
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
     count = 0
-    maximum = 0
     supply = 0
     stock = 0.000001
     dates = []
-    inflations = []
-    circulations = []
     stock_to_flow = []
     projection = []
     color = []
@@ -2544,19 +2649,16 @@ def sfmodel(request):
             reward = 0.6*(10**12)
         supply += int(720*reward)
         inflation = 100*reward*720*365/supply
-        inflations.append(inflation)
-        circulations.append(supply)
         stock = (100/(inflation))**1.65
         stock_to_flow.append(stock)            
 
     now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
-    maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
     
     dt = 'sfmodel.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'values': values, 'dates': dates, 'maximum': maximum, 'inflations': inflations, 'circulations': circulations, 'stock_to_flow': stock_to_flow, 'projection': projection,
+    context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow, 'projection': projection,
     'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'monerojnet/sfmodel.html', context)
 

@@ -1,0 +1,60 @@
+Charts that have to be changed
+
+transcost.html 17.95 seconds
+marketcap.html 26.06 seconds
+bitcoin.html 15.61 seconds
+minerrevcap.html 15.37 seconds
+minerrev.html 18.77 seconds
+minerrevntv.html 18.68 seconds
+minerfees.html 17.46 seconds
+minerfeesntv.html 16.88 seconds
+commit.html 15.27 seconds
+commitntv.html 19.87 seconds
+social.html 15.10 seconds
+social6.html 15.24 seconds
+social7.html 15.23 seconds
+social4.html 17.45 seconds
+social2.html 27.54 seconds
+social3.html 15.11 seconds
+social5.html 6.82 seconds
+pricesats.html 5.61 seconds
+transcostntv.html 15.63 seconds
+percentage.html 12.20 seconds
+metcalfesats.html 14.21 seconds
+metcalfeusd.html 14.13 seconds
+coins.html 15.35 seconds
+extracoins.html 20.84 seconds
+inflation.html 17.76 seconds
+compinflation.html 28.91 seconds
+dailyemission.html 19.64 seconds
+dailyemissionntv.html 16.54 seconds
+sfmodel.html 15.81 seconds
+
+Charts that won’t be changed
+
+translin.html 0.08 seconds
+translog.html 0.08 seconds
+pricelog.html 0.08 seconds
+pricelin.html 0.09 seconds
+fractal.html 0.05 seconds
+inflationfractal.html 0.08 seconds
+golden.html 0.14 seconds
+competitors.html 0.23 seconds
+competitorssats.html 0.17 seconds
+competitorssatslin.html 0.23 seconds
+inflationreturn.html 0.27 seconds
+powerlaw.html 0.09 seconds
+thermocap.html 0.08 seconds
+sharpe.html 0.10 seconds
+dominance.html 3.10 seconds
+rank.html 2.13 seconds
+sfmodellin.html 0.14 seconds
+sfmultiple.html 0.12 seconds
+hashrate.html 0.12 seconds
+hashprice.html 0.16 seconds
+hashvsprice.html 0.08 seconds
+dread_subscribers.html 3.49 seconds
+coincards.html 1.81 seconds
+merchants.html 1.72 seconds
+merchants_increase.html 1.68 seconds
+merchants_percentage.html 1.76 seconds

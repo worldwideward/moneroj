@@ -44,3 +44,13 @@ class Rank(models.Model):
 
 	def __str__(self):
 		return self.rank
+
+class Sfmodel(models.Model):
+	date = models.DateField()
+	priceusd = models.FloatField()
+	color = models.FloatField()
+	stocktoflow = models.FloatField()
+	greyline = models.FloatField()
+
+	def __str__(self):
+		return self.date
