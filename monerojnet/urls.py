@@ -3,8 +3,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Página inicial
-    url(r'^$', views.index, name='index'),
+
+    # Pages URLs
+    # Everyone can use these
+    path('', views.index, name='index'),
     path('pricelog/', views.pricelog, name='pricelog'),
     path('movingaverage/', views.movingaverage, name='movingaverage'),
     path('pricelin/', views.pricelin, name='pricelin'),
@@ -68,6 +70,7 @@ urlpatterns = [
     path('marketcap/', views.marketcap, name='marketcap'),
     path('artigos/', views.artigos, name='artigos'),
     path('articles/', views.articles, name='articles'),
+    path('tail_emission/', views.tail_emission, name='tail_emission'),
 
     # URLs to useful functions on monerojnet/views.py
     # Only admins can use these 
@@ -75,6 +78,7 @@ urlpatterns = [
     path('get_complete_history/<str:symbol>/', views.get_history, name='get_complete_history'),
     path('load_dominance/<str:symbol>/', views.load_dominance, name='load_dominance'),
     path('load_rank/<str:symbol>/', views.load_rank, name='load_rank'),
+    path('populate_database/', views.populate_database, name='populate_database'),
     path('importer/', views.importer, name='importer'),
     path('reset/<str:symbol>/', views.reset, name='reset'),
 

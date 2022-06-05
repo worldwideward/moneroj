@@ -54,3 +54,43 @@ class Sfmodel(models.Model):
 
 	def __str__(self):
 		return self.date
+
+class DailyData(models.Model):
+	date = models.DateField()
+	btc_usd = models.FloatField()
+	btc_ntv = models.FloatField()
+	xmr_usd = models.FloatField()
+	xmr_ntv = models.FloatField()
+	xmr_transacpercentage = models.FloatField()
+	xmr_priceusd = models.FloatField()
+	xmr_pricebtc = models.FloatField()
+	btc_inflation = models.FloatField()
+	xmr_inflation = models.FloatField()
+	dash_inflation = models.FloatField()
+	grin_inflation = models.FloatField()
+	zcash_inflation = models.FloatField()
+	btc_supply = models.IntegerField()
+	xmr_supply = models.IntegerField()
+	btc_return = models.FloatField()
+	xmr_return = models.FloatField()
+	btc_minerrevntv = models.FloatField()
+	xmr_minerrevntv = models.FloatField()
+	btc_minerrevusd = models.FloatField()
+	xmr_minerrevusd = models.FloatField()
+	btc_minerfeesntv = models.FloatField()
+	xmr_minerfeesntv = models.FloatField()
+	btc_minerfeesusd = models.FloatField()
+	xmr_minerfeesusd = models.FloatField()
+	btc_transcostntv = models.FloatField()
+	xmr_transcostntv = models.FloatField()
+	btc_transcostusd = models.FloatField()
+	xmr_transcostusd = models.FloatField()
+	btc_commitntv = models.FloatField()
+	xmr_commitntv = models.FloatField()
+	btc_commitusd = models.FloatField()
+	xmr_commitusd = models.FloatField()
+	xmr_metcalfebtc = models.FloatField()
+	xmr_metcalfeusd = models.FloatField()
+
+	def __str__(self):
+		return self.date

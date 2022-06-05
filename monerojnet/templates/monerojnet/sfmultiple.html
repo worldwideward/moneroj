@@ -127,7 +127,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Buy',
+        name: 'Oversold',
         x: {{ dates|safe }},
         y: {{ buy|safe }},
         line: {
@@ -139,7 +139,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Buy',
+        name: 'Oversold',
         x: {{ dates|safe }},
         y: {{ buy|safe }},
         line: {
@@ -151,7 +151,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Sell',
+        name: 'Overbought',
         x: {{ dates|safe }},
         y: {{ sell|safe }},
         line: {
@@ -163,7 +163,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Sell',
+        name: 'Overbought',
         x: {{ dates|safe }},
         y: {{ sell|safe }},
         line: {

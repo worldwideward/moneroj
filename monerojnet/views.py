@@ -20,7 +20,6 @@ from requests import Session
 from psaw import PushshiftAPI    #library Pushshift
 from django.contrib.staticfiles.storage import staticfiles_storage  
 
-
 ###########################################
 # Set some parameters 
 ###########################################
@@ -247,23 +246,35 @@ def reset(request, symbol):
 def populate_database(request):
     count = 0
 
-    ##################
-    # SF model chart
-    ##################
+    ###################################################################
+    # SF model charts
+    ###################################################################
+    print('Populating database for sfmodel.html and sfmodelin.html, wait a moment...')
+    Sfmodel.objects.all().delete()
     timevar = 1283
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
     supply = 0
     sf_aux = 0
-    skipped = 0
     count_aux = 0
 
     coins = Coin.objects.order_by('date').filter(name='xmr')
     for coin in coins:
+        if coin.priceusd < 0.1:
+            coin.priceusd = 0.1
+        if coin.stocktoflow > sf_aux*1.3+100:
+            coin.stocktoflow = sf_aux
+        
+        sf_aux = coin.stocktoflow
+        supply = int(coin.supply)*10**12
+        count += 1
+        count_aux += 1
+
         data = Sfmodel()
         data.date = coin.date
         data.priceusd = coin.priceusd
         data.stocktoflow = coin.stocktoflow
+        data.color = 30*coin.pricebtc/(count*delta + v0)
         date_aux1 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
         date_aux2 = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
         date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
@@ -299,40 +310,252 @@ def populate_database(request):
                 lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice
                 actualprice = lastprice*(math.sqrt(coin.inflation/current_inflation))
                 data.greyline = actualprice
-                if skipped < 12:
-                    data.greyline = actualprice
-                else:
-                    skipped = 0
             else:
                 data.greyline = 0
-            skipped += 1
-
-        if coin.priceusd < 0.01:
-            coin.priceusd = 0.01
-        if coin.stocktoflow > sf_aux*2+250:
-            coin.stocktoflow = sf_aux
-        if coin.stocktoflow < 0.1:
-            coin.stocktoflow = 0.1
-        sf_aux = coin.stocktoflow
-        color = 30*coin.pricebtc/(count*delta + v0)
-        data.color = color
-        supply = int(coin.supply)*10**12
-        count += 1
-        count_aux += 1
         data.save()
 
     count_aux = 0
-    for count_aux in range(650):
-        data = Sfmodel()
+    for count_aux in range(700):
         date_now = date.today() + timedelta(count_aux)
-        data.date = datetime.datetime.strftime(date_now, '%Y-%m-%d')
-        data.priceusd = 0
-        data.greyline = 0
         reward = (2**64 -1 - supply) >> 19
         if reward < 0.6*(10**12):
             reward = 0.6*(10**12)
         supply += int(720*reward)
+
+        data = Sfmodel()
+        data.date = datetime.datetime.strftime(date_now, '%Y-%m-%d')
         data.stocktoflow = (100/(100*reward*720*365/supply))**1.65   
+        data.priceusd = 0
+        data.greyline = 0    
+        data.color = 0
+        data.priceusd = 0
+        data.greyline = 0
+        data.save()
+        count += 1
+
+    ###################################################################
+    # Daily Emissions, inflation charts and coins against bitcoin
+    ###################################################################
+    print('Populating database for dailyemission.html and dailyemissionntv.html, wait a moment...')
+    DailyData.objects.all().delete()
+    supply_btc = 0
+    supply_xmr = 0
+    count_aux = 0
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    for coin_btc in coins_btc:
+        count_aux += 1
+        data = DailyData()
+        data.date = datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d')
+        
+        if coin_btc.transactions == 0:
+            data.btc_transcostusd = 0
+            data.btc_transcostntv = 0
+        else:
+            if coin_btc.fee*coin_btc.priceusd/coin_btc.transactions < 0.0001:
+                data.btc_transcostusd = 0
+                data.btc_transcostntv = 0
+            else:
+                data.btc_transcostusd = coin_btc.fee*coin_btc.priceusd/coin_btc.transactions
+                data.btc_transcostntv = coin_btc.fee/coin_btc.transactions
+
+        if coin_btc.revenue < 0.000001 or coin_btc.priceusd < 0.001:
+            data.btc_minerrevntv = 0
+            data.btc_minerrevusd = 0
+            data.btc_commitntv = 0
+            data.btc_commitusd = 0
+        else:
+            data.btc_minerrevntv = coin_btc.revenue
+            data.btc_minerrevusd = coin_btc.revenue*coin_btc.priceusd
+            data.btc_commitntv = coin_btc.hashrate/(coin_btc.revenue)
+            data.btc_commitusd = coin_btc.hashrate/(coin_btc.revenue*coin_btc.priceusd)
+
+        if coin_btc.priceusd:
+            if coin_btc.priceusd/30 > 0.02:
+                data.btc_return = coin_btc.priceusd/30
+            else:
+                data.btc_return = 0
+        else:
+            data.btc_return = 0
+
+        if coin_btc.inflation > 0:
+            data.btc_inflation = coin_btc.inflation
+        else:
+            data.btc_inflation = 0
+        if coin_btc.supply > 0:
+            data.btc_supply = coin_btc.supply
+        else:
+            data.btc_supply = 0
+
+        if coin_btc.supply -  supply_btc < 0.000001:
+            data.btc_minerfeesntv = 0
+            data.btc_minerfeesusd = 0
+            data.btc_ntv = 0
+        else:
+            data.btc_minerfeesntv = coin_btc.revenue - coin_btc.supply + supply_btc
+            data.btc_minerfeesusd = (coin_btc.revenue - coin_btc.supply + supply_btc)*coin_btc.priceusd
+            data.btc_ntv = coin_btc.supply -  supply_btc
+        
+        if (coin_btc.supply - supply_btc)*coin_btc.priceusd < 1000:
+            data.btc_usd = 0
+        else:
+            data.btc_usd = (coin_btc.supply - supply_btc)*coin_btc.priceusd
+        supply_btc = coin_btc.supply
+
+        if count_aux > 1750:
+            coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+            if coins_xmr:
+                for coin_xmr in coins_xmr:
+                    if coin_xmr.priceusd < 0.001:
+                        data.xmr_pricebtc = 0
+                        data.xmr_priceusd = 0
+                    else:
+                        data.xmr_pricebtc = coin_xmr.pricebtc
+                        data.xmr_priceusd = coin_xmr.priceusd
+
+                    if coin_btc.supply > 0 and coin_btc.transactions > 0:
+                        data.xmr_metcalfeusd = coin_btc.priceusd*coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
+                        data.xmr_metcalfebtc = coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
+                    else:
+                        data.xmr_metcalfeusd = 0
+                        data.xmr_metcalfebtc = 0
+                    if data.xmr_metcalfeusd < 0.23:
+                        data.xmr_metcalfeusd = 0
+                        data.xmr_metcalfebtc = 0
+
+                    if coin_xmr.transactions == 0:
+                        data.xmr_transacpercentage = 0
+                        data.xmr_transcostusd = 0
+                        data.xmr_transcostntv = 0
+                    else:
+                        if coin_xmr.fee*coin_xmr.priceusd/coin_xmr.transactions < 0.0001:
+                            data.xmr_transcostusd = 0
+                            data.xmr_transcostntv = 0
+                        else:
+                            data.xmr_transcostusd = coin_xmr.fee*coin_xmr.priceusd/coin_xmr.transactions
+                            data.xmr_transcostntv = coin_xmr.fee/coin_xmr.transactions
+                        if coin_btc.transactions == 0:
+                            data.xmr_transacpercentage = 0
+                        else:
+                            data.xmr_transacpercentage = coin_xmr.transactions/coin_btc.transactions
+
+                    if coin_xmr.revenue < 0.000001 or coin_xmr.priceusd < 0.001:
+                        data.xmr_minerrevntv = 0
+                        data.xmr_minerrevusd = 0
+                        data.xmr_commitntv = 0
+                        data.xmr_commitusd = 0
+                    else:
+                        data.xmr_minerrevntv = coin_xmr.revenue
+                        data.xmr_minerrevusd = coin_xmr.revenue*coin_xmr.priceusd
+                        data.xmr_commitntv = coin_xmr.hashrate/(coin_xmr.revenue)
+                        data.xmr_commitusd = coin_xmr.hashrate/(coin_xmr.revenue*coin_xmr.priceusd)
+
+                    if coin_xmr.priceusd/5.01 > 0.02:
+                        data.xmr_return = coin_xmr.priceusd/5.01
+                    else:
+                        data.xmr_return = 0
+
+                    if coin_xmr.inflation > 0:
+                        data.xmr_inflation = coin_xmr.inflation
+                    else:
+                        data.xmr_inflation = 0
+
+                    if coin_xmr.supply > 0:
+                        data.xmr_supply = coin_xmr.supply
+                    else:
+                        data.xmr_supply = 0
+
+                    if coin_xmr.supply - supply_xmr < 0.000001:
+                        data.xmr_minerfeesntv = 0
+                        data.xmr_minerfeesusd = 0
+                        data.xmr_ntv = 0
+                    else:
+                        data.xmr_minerfeesntv = coin_xmr.revenue - coin_xmr.supply + supply_xmr
+                        data.xmr_minerfeesusd = (coin_xmr.revenue - coin_xmr.supply + supply_xmr)*coin_xmr.priceusd
+                        data.xmr_ntv = coin_xmr.supply - supply_xmr
+
+                    if (coin_xmr.supply - supply_xmr)*coin_xmr.priceusd < 1000:
+                        data.xmr_usd = 0
+                    else:
+                        data.xmr_usd = (coin_xmr.supply - supply_xmr)*coin_xmr.priceusd
+                    supply_xmr = coin_xmr.supply
+            else:
+                data.xmr_ntv = 0
+                data.xmr_usd = 0
+                data.xmr_inflation = 0
+                data.xmr_supply = 0
+                data.xmr_return = 0
+                data.xmr_minerrevntv = 0
+                data.xmr_minerrevusd = 0
+                data.xmr_minerfeesntv = 0
+                data.xmr_minerfeesusd = 0
+                data.xmr_transcostntv = 0
+                data.xmr_transcostusd = 0
+                data.xmr_commitntv = 0
+                data.xmr_commitusd = 0
+                data.xmr_metcalfeusd = 0
+                data.xmr_metcalfebtc = 0
+                data.xmr_pricebtc = 0
+                data.xmr_priceusd = 0
+                data.xmr_transacpercentage = 0
+
+            coins_dash = Coin.objects.filter(name='dash').filter(date=coin_btc.date)
+            if coins_dash:
+                for coin_dash in coins_dash:
+                    if coin_dash.inflation > 0:
+                        data.dash_inflation = coin_dash.inflation
+                    else:
+                        data.dash_inflation = 0
+            else:
+                data.dash_inflation = 0
+        else:
+            data.xmr_ntv = 0
+            data.xmr_usd = 0
+            data.xmr_inflation = 0
+            data.xmr_supply = 0
+            data.xmr_return = 0
+            data.dash_inflation = 0
+            data.xmr_minerrevntv = 0
+            data.xmr_minerrevusd = 0
+            data.xmr_minerfeesntv = 0
+            data.xmr_minerfeesusd = 0
+            data.xmr_transcostntv = 0
+            data.xmr_transcostusd = 0
+            data.xmr_commitntv = 0
+            data.xmr_commitusd = 0
+            data.xmr_metcalfeusd = 0
+            data.xmr_metcalfebtc = 0
+            data.xmr_pricebtc = 0
+            data.xmr_priceusd = 0
+            data.xmr_transacpercentage = 0
+
+        if count_aux > 2800:
+            coins_zcash = Coin.objects.filter(name='zec').filter(date=coin_btc.date)
+            if coins_zcash:
+                for coin_zcash in coins_zcash:
+                    if coin_zcash.inflation > 0:
+                        data.zcash_inflation = coin_zcash.inflation
+                    else:
+                        data.zcash_inflation = 0
+            else:
+                data.zcash_inflation = 0
+        else:
+            data.zcash_inflation = 0
+
+        if count_aux > 3600:
+            coins_grin = Coin.objects.filter(name='grin').filter(date=coin_btc.date)
+            if coins_grin:
+                for coin_grin in coins_grin:
+                    if coin_grin.inflation > 0:
+                        data.grin_inflation = coin_grin.inflation
+                    else:
+                        data.grin_inflation = 0
+            else:
+                data.grin_inflation = 0
+        else:
+            data.grin_inflation = 0
+    
+        data.save()
         count += 1
 
     message = 'Total of ' + str(count) + ' data imported'
@@ -449,6 +672,14 @@ def get_latest_price():
         try:
             response = session.get(url, params=parameters)
             data = json.loads(response.text)
+            print('here 1')
+            try:
+                if data['data']['XMR']['cmc_rank']:
+                    pass
+                else:
+                    data = False
+            except:
+                data = False
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             data = False
 
@@ -571,7 +802,6 @@ def index(request):
 
     rank = list(Rank.objects.order_by('-date'))[1]
     if rank.date < date.today():
-        print('here 1')
         data = update_rank()    
         dominance = list(Dominance.objects.order_by('-date'))[1]
         if dominance.date < date.today():
@@ -1180,8 +1410,8 @@ def powerlaw(request):
     a2 = 0.0000000000000000000000008
     a1 = 0.00000000000000000000000002
     b3 = ((math.log(477,10)-math.log(5.01,10))/(math.log(2511,10)-math.log(1231,10)))
-    b2 = ((math.log(95,10)-math.log(0.23,10))/(math.log(3297,10)-math.log(1468,10)))
-    b1 = ((math.log(84,10)-math.log(0.39,10))/(math.log(3507,10)-math.log(1755,10)))
+    b2 = ((math.log(92,10)-math.log(0.23,10))/(math.log(3297,10)-math.log(1468,10)))
+    b1 = ((math.log(93,10)-math.log(0.39,10))/(math.log(3570,10)-math.log(1755,10)))
     color = []
     values = []
 
@@ -1799,26 +2029,22 @@ def bitcoin(request):
         else:
             xmr3.append('')
 
+    data = DailyData.objects.order_by('date')
+
     dates2 = []
     xmr2 = []
     btc2 = []
+    
+    for item in data:
+        dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-    for coin_btc in coins_btc:
-        if coin_btc.priceusd:
-            if coin_btc.priceusd/30 > 0.02:
-                btc2.append(coin_btc.priceusd/30)
-            else:
-                btc2.append('')
+        if item.btc_return > 0.0001:
+            btc2.append(item.btc_return)
         else:
             btc2.append('')
-        dates2.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                if coin_xmr.priceusd/5.01 > 0.02:
-                    xmr2.append(coin_xmr.priceusd/5.01)
-                else:
-                    xmr2.append('')
+
+        if item.xmr_return > 0.0001:
+            xmr2.append(item.xmr_return)
         else:
             xmr2.append('')
 
@@ -1867,28 +2093,22 @@ def translin(request):
 
 def percentage(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    symbol = 'xmr'
+    data = DailyData.objects.order_by('date')
+
     transactions = []
     dates = []
     now_transactions = 0
     maximum = 0
-
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    for coin in coins:
-        coins_aux = Coin.objects.order_by('date').filter(name='btc').filter(date=coin.date)
-        if coin.transactions < 500:
-            coin.transactions = 500
-        if coins_aux:
-            for coin_aux in coins_aux:
-                if coin_aux.supply > 0 and coin_aux.transactions > 0:
-                    now_transactions = 100*coin.transactions/coin_aux.transactions
-                    if now_transactions > maximum:
-                        maximum = now_transactions
-                if now_transactions < 0.001:
-                    now_transactions = 0.001
-        transactions.append(now_transactions)
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
-        dates.append(coin.date)
+    
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_transacpercentage > 0.00001:
+            transactions.append(100*item.xmr_transacpercentage)
+            now_transactions = 100*item.xmr_transacpercentage
+            if now_transactions > maximum:
+                maximum = now_transactions
+        else:
+            transactions.append('')
     
     now_transactions = locale.format('%.1f', now_transactions, grouping=True) + '%'
     maximum = locale.format('%.1f', maximum, grouping=True) + '%'
@@ -2034,7 +2254,8 @@ def hashvsprice(request):
 
 def metcalfesats(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    symbol = 'xmr'
+    data = DailyData.objects.order_by('date')
+    
     color = []
     metcalfe = []
     prices = []
@@ -2046,28 +2267,21 @@ def metcalfesats(request):
     delta = (0.015 - 0.002)/(6*365)
     count = 0
 
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    for coin in coins:
-        coins_aux = Coin.objects.order_by('date').filter(name='btc').filter(date=coin.date)
-        if coin.transactions < 500:
-            coin.transactions = 500
-        if coins_aux:
-            for coin_aux in coins_aux:
-                if coin_aux.supply > 0 and coin_aux.transactions > 0:
-                    now_metcalfe = coin.transactions*coin.supply/(coin_aux.supply*coin_aux.transactions)
-                if now_metcalfe < 0.001:
-                    now_metcalfe = 0.001
-        metcalfe.append(now_metcalfe)
-        if now_metcalfe > maximum:
-            maximum = now_metcalfe
-        if coin.pricebtc > 0:
-            now_price = coin.pricebtc
-        prices.append(coin.pricebtc)
-        new_color = 30*coin.pricebtc/(count*delta + v0)
-        color.append(new_color)
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
-        dates.append(coin.date)
-        count += 1
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_metcalfebtc < 0.0007:
+            metcalfe.append('')
+            color.append('')
+            prices.append('')
+        else:
+            metcalfe.append(item.xmr_metcalfebtc)
+            now_price = item.xmr_pricebtc
+            now_metcalfe = item.xmr_metcalfebtc
+            if now_metcalfe > maximum:
+                maximum = now_metcalfe
+            color.append(30*item.xmr_pricebtc/(count*delta + v0))
+            prices.append(now_price)
+            count += 1
     
     now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
     now_metcalfe = locale.format('%.4f', now_metcalfe, grouping=True) + ' BTC'
@@ -2080,7 +2294,8 @@ def metcalfesats(request):
 
 def metcalfeusd(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    symbol = 'xmr'
+    data = DailyData.objects.order_by('date')
+    
     color = []
     metcalfe = []
     prices = []
@@ -2092,28 +2307,21 @@ def metcalfeusd(request):
     delta = (0.015 - 0.002)/(6*365)
     count = 0
 
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    for coin in coins:
-        coins_aux = Coin.objects.order_by('date').filter(name='btc').filter(date=coin.date)
-        if coin.transactions < 500:
-            coin.transactions = 500
-        if coins_aux:
-            for coin_aux in coins_aux:
-                if coin_aux.supply > 0 and coin_aux.transactions > 0:
-                    now_metcalfe = coin_aux.priceusd*coin.transactions*coin.supply/(coin_aux.supply*coin_aux.transactions)
-                if now_metcalfe < 0.23:
-                    now_metcalfe = 0.23
-        metcalfe.append(now_metcalfe)
-        if now_metcalfe > maximum:
-            maximum = now_metcalfe
-        if coin.priceusd > 0:
-            now_price = coin.priceusd
-        prices.append(now_price)
-        new_color = 30*coin.pricebtc/(count*delta + v0)
-        color.append(new_color)
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
-        dates.append(coin.date)
-        count += 1
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_metcalfeusd < 0.001:
+            metcalfe.append('')
+            color.append('')
+            prices.append('')
+        else:
+            metcalfe.append(item.xmr_metcalfeusd)
+            now_price = item.xmr_priceusd
+            now_metcalfe = item.xmr_metcalfeusd
+            if now_metcalfe > maximum:
+                maximum = now_metcalfe
+            color.append(30*item.xmr_pricebtc/(count*delta + v0))
+            prices.append(now_price)
+            count += 1
 
     now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
     now_metcalfe = "$"+ locale.format('%.2f', now_metcalfe, grouping=True)
@@ -2126,7 +2334,7 @@ def metcalfeusd(request):
 
 def coins(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     supplyxmr = []
     supplybtc = []
@@ -2136,25 +2344,27 @@ def coins(request):
     now_xmr = 0
     now_btc = 0
     
-    for coin_btc in coins_btc:
-        supplybtc.append(int(coin_btc.supply))
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                supplyxmr.append(int(coin_xmr.supply))
-                if coin_xmr.supply > now_xmr:
-                    now_xmr = int(coin_xmr.supply)
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_supply > 0.1:
+            supplybtc.append(item.btc_supply)
+            now_btc = item.btc_supply
+        else:
+            supplybtc.append('')
+
+        if item.xmr_inflation > 0.1:
+            supplyxmr.append(item.xmr_supply)
+            now_xmr = item.xmr_supply
         else:
             supplyxmr.append('')
-        if coin_btc.supply > now_btc:
-            now_btc = int(coin_btc.supply)
+
         fsupplyxmr.append('')
         fsupplybtc.append('')
 
     rewardbtc = 900
-    supplybitcoin = coin_btc.supply
-    supply = int(coin_xmr.supply)*10**12
+    supplybitcoin = item.btc_supply
+    supply = int(item.xmr_supply)*10**12
     for i in range(365*(2060-2020)):
         supply = int(supply)
         reward = (2**64 -1 - supply) >> 19
@@ -2162,7 +2372,7 @@ def coins(request):
             reward = 0.6*(10**12)
         supply += int(720*reward)
         fsupplyxmr.append(supply/(10**12))
-        date_aux = coin_btc.date + timedelta(i)
+        date_aux = item.date + timedelta(i)
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
         supplybitcoin += rewardbtc
         if supplybitcoin > 21000000:
@@ -2219,7 +2429,7 @@ def coins(request):
 
 def dailyemission(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     emissionbtc = []
     emissionxmr = []
@@ -2228,39 +2438,27 @@ def dailyemission(request):
     now_xmr = 0
     high_btc = 0
     high_xmr = 0
-    supplybtc = 0
-    supplyxmr = 0
-    valuebtc = 0
-    valuexmr = 0
 
-    for coin_btc in coins_btc:
-        valuebtc = (coin_btc.supply - supplybtc)*coin_btc.priceusd
-        if valuebtc < 1000:
+    for item in data:
+        if item.btc_usd == 0:
             emissionbtc.append('')
         else:
-            emissionbtc.append(valuebtc)
-        supplybtc = coin_btc.supply
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                valuexmr = (coin_xmr.supply - supplyxmr)*coin_xmr.priceusd
-                supplyxmr = coin_xmr.supply
-                if valuexmr < 1000:
-                    emissionxmr.append('')
-                else:
-                    emissionxmr.append(valuexmr)
-                now_xmr = valuexmr
-                if valuexmr > high_xmr:
-                    high_xmr = valuexmr
-        else:
+            emissionbtc.append(item.btc_usd)
+            now_btc = item.btc_usd
+            if item.btc_usd > high_btc:
+                high_btc = item.btc_usd
+        
+        if item.xmr_usd == 0:
             emissionxmr.append('')
-        now_btc = valuebtc
-        if valuebtc > high_btc:
-            high_btc = int(valuebtc)
+        else:
+            emissionxmr.append(item.xmr_usd)
+            now_xmr = item.xmr_usd
+            if item.xmr_usd > high_xmr:
+                high_xmr = item.xmr_usd
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
     for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
+        date_aux = item.date + timedelta(i)
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
         emissionxmr.append('')
         emissionbtc.append('')
@@ -2277,34 +2475,33 @@ def dailyemission(request):
 
 def extracoins(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     nsupply = []
     fsupply = []
     dates = []
     now_diff = 0
     
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        coins_xmr = Coin.objects.order_by('date').filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                nsupply.append(int(- coin_xmr.supply + coin_btc.supply))
-                now_diff = int(- coin_xmr.supply + coin_btc.supply)
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_supply - item.xmr_supply > 0:
+            nsupply.append(item.btc_supply - item.xmr_supply)
         else:
-            nsupply.append(int(coin_btc.supply))
+            nsupply.append('')
+
         fsupply.append('')
 
     rewardbtc = 900
-    supplybitcoin = coin_btc.supply
-    supply = int(coin_xmr.supply)*10**12
+    supplybitcoin = item.btc_supply
+    supply = int(item.xmr_supply)*10**12
     for i in range(365*(2060-2020)):
         supply = int(supply)
         reward = (2**64 -1 - supply) >> 19
         if reward < 0.6*(10**12):
             reward = 0.6*(10**12)
         supply += int(720*reward)
-        date_aux = coin_btc.date + timedelta(i)
+        date_aux = item.date + timedelta(i)
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
         supplybitcoin += rewardbtc
         if supplybitcoin > 21000000:
@@ -2359,7 +2556,7 @@ def extracoins(request):
 
 def inflation(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     inflationxmr = []
     inflationbtc = []
@@ -2369,25 +2566,26 @@ def inflation(request):
     now_xmr = 999999
     now_btc = 999999
     
-    for coin_btc in coins_btc:
-        if float(coin_btc.inflation) > 0.1:
-            inflationbtc.append(float(coin_btc.inflation))
-            now_btc = float(coin_btc.inflation)
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_inflation > 0.1:
+            inflationbtc.append(item.btc_inflation)
+            now_btc = item.btc_inflation
         else:
             inflationbtc.append('')
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        coins_xmr = Coin.objects.order_by('date').filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                inflationxmr.append(float(coin_xmr.inflation))
-                now_xmr = float(coin_xmr.inflation)
+
+        if item.xmr_inflation > 0.1:
+            inflationxmr.append(item.xmr_inflation)
+            now_xmr = item.xmr_inflation
         else:
             inflationxmr.append('')
+        
         finflationxmr.append('')
         finflationbtc.append('')
 
     inflationbitcoin = 1.75
-    supply = int(coin_xmr.supply)*10**12
+    supply = int(item.xmr_supply)*10**12
     for i in range(2000):
         supply = int(supply)
         reward = (2**64 -1 - supply) >> 19
@@ -2395,7 +2593,7 @@ def inflation(request):
             reward = 0.6*(10**12)
         supply += int(720*reward)
         finflationxmr.append(100*reward*720*365/supply)
-        date_aux = coin_btc.date + timedelta(i)
+        date_aux = item.date + timedelta(i)
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
         finflationbtc.append(inflationbitcoin)
         date_aux2 = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
@@ -2414,7 +2612,7 @@ def inflation(request):
 
 def compinflation(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     dates = []
     inflationxmr = []
@@ -2427,71 +2625,40 @@ def compinflation(request):
     now_grin = 999999
     now_zcash = 999999
     now_btc = 999999
-    count = 0
     
-    for coin_btc in coins_btc:
-        count += 1
-        if coin_btc.inflation > 0.1:
-            inflationbtc.append(coin_btc.inflation)
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_inflation > 0.1:
+            inflationbtc.append(item.btc_inflation)
+            now_btc = item.btc_inflation
         else:
             inflationbtc.append('')
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        if count < 1750:
-            inflationdash.append('')
-            inflationxmr.append('')
-        else:
-            coins_dash = Coin.objects.filter(name='dash').filter(date=coin_btc.date)
-            if coins_dash:
-                for coin_dash in coins_dash:
-                    if coin_dash.inflation > 0.1:
-                        inflationdash.append(coin_dash.inflation)
-                    else:
-                        inflationdash.append('')
-            else:
-                inflationdash.append('')
-            coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-            if coins_xmr:
-                for coin_xmr in coins_xmr:
-                    if coin_xmr.inflation > 0.1:
-                        inflationxmr.append(coin_xmr.inflation)
-                    else:
-                        inflationxmr.append('')
-            else:
-                inflationxmr.append('')
 
-        if count < 2800:
+        if item.zcash_inflation > 0.1:
+            inflationzcash.append(item.zcash_inflation)
+            now_zcash = item.zcash_inflation
+        else:
             inflationzcash.append('')
-        else:
-            coins_zcash = Coin.objects.filter(name='zec').filter(date=coin_btc.date)
-            if coins_zcash:
-                for coin_zcash in coins_zcash:
-                    if coin_zcash.inflation > 0.1:
-                        inflationzcash.append(coin_zcash.inflation)
-                    else:
-                        inflationzcash.append('')
-            else:
-                inflationzcash.append('')
 
-        if count < 3600:
+        if item.dash_inflation > 0.1:
+            inflationdash.append(item.dash_inflation)
+            now_dash = item.dash_inflation
+        else:
+            inflationdash.append('')
+
+        if item.xmr_inflation > 0.1:
+            inflationxmr.append(item.xmr_inflation)
+            now_xmr = item.xmr_inflation
+        else:
+            inflationxmr.append('')
+
+        if item.grin_inflation > 0.1:
+            inflationgrin.append(item.grin_inflation)
+            now_grin = item.grin_inflation
+        else:
             inflationgrin.append('')
-        else:
-            coins_grin = Coin.objects.filter(name='grin').filter(date=coin_btc.date)
-            if coins_grin:
-                for coin_grin in coins_grin:
-                    if coin_grin.inflation > 0.1:
-                        inflationgrin.append(coin_grin.inflation)
-                    else:
-                        inflationgrin.append('')
-            else:
-                inflationgrin.append('')
-
-    if count > 4300:
-        now_grin = coin_grin.inflation
-        now_zcash = coin_zcash.inflation
-        now_btc = coin_btc.inflation
-        now_xmr = coin_xmr.inflation
-        now_dash = coin_dash.inflation
-        
+            
     now_dash = locale.format('%.2f', now_dash, grouping=True) + '%'
     now_grin = locale.format('%.2f', now_grin, grouping=True) + '%'
     now_zcash = locale.format('%.2f', now_zcash, grouping=True) + '%'
@@ -2556,193 +2723,121 @@ def sfmodel(request):
         get_latest_metrics(symbol, url)
         #print('done')
 
-    timevar = 1283
-    now_price = 0
-    now_sf = 0
-    now_inflation = 0.001
-    v0 = 0.002
-    delta = (0.015 - 0.002)/(6*365)
-    count = 0
-    supply = 0
-    stock = 0.000001
     dates = []
     stock_to_flow = []
     projection = []
     color = []
     values = []
+    now_price = 0
+    now_sf = 0
+    now_inflation = 0
 
-    sf_aux = 0
-    skipped = 0
-    start_inflation = 0
-    count2 = 0
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    for coin in coins:
-        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
-        values.append(coin.priceusd)
-        date_aux1 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-        if date_aux2 < date_aux1:
-            lastprice = coin.priceusd
-            start_inflation = coin.inflation
-            current_inflation = start_inflation
-            projection.append('')
-            count2 = 0
+    data = Sfmodel.objects.order_by('date')
+    count_aux = 0
+    for item in data:
+        if item.color != 0:
+            color.append(item.color)
         else:
-            day = date_aux2 - timedelta(timevar)
-            coin_aux1 = Coin.objects.filter(name=symbol).get(date=day)
-            day = date_aux2 - timedelta(timevar+1)
-            coin_aux2 = Coin.objects.filter(name=symbol).get(date=day)
-            date_aux3 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
-            
-            if date_aux3 + timedelta(int(count2*2)) < datetime.datetime.strptime('2021-07-03', '%Y-%m-%d'):
-                day = date_aux3 + timedelta(int(count2*2))
-                coin_aux3 = Coin.objects.filter(name=symbol).get(date=day)
-                if coin_aux3:
-                    if (coin_aux3.inflation/current_inflation) > 1.2 or (coin_aux3.inflation/current_inflation) < 0.8:
-                        coin_aux3.inflation = current_inflation
-                    else:
-                        current_inflation = coin_aux3.inflation
-                supply2 = supply
-            else:
-                reward2 = (2**64 -1 - supply2) >> 19
-                if reward2 < 0.6*(10**12):
-                    reward2 = 0.6*(10**12)
-                supply2 += int(720*reward2)
-                current_inflation = 100*reward2*720*365/supply2
-                
-            if coin_aux1 and coin_aux2:
-                lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice
-                actualprice = lastprice*(math.sqrt(start_inflation/current_inflation))
-                projection.append(actualprice)
-                if skipped < 12:
-                    projection.append(actualprice)
-                else:
-                    skipped = 0
-            else:
-                projection.append('')
-            skipped += 1
+            color.append('')
 
-        if coin.priceusd < 0.01:
-            coin.priceusd = 0.01
-        if coin.stocktoflow > sf_aux*2+250:
-            coin.stocktoflow = sf_aux
-        sf_aux = coin.stocktoflow
-        if coin.stocktoflow < 0.1:
-            coin.stocktoflow = 0.1
-        now_inflation = coin.inflation
-        now_price = coin.priceusd
-        now_sf = coin.stocktoflow
-        new_color = 30*coin.pricebtc/(count*delta + v0)
-        color.append(new_color)
-        supply = int(coin.supply)*10**12
-        stock_to_flow.append(coin.stocktoflow)
-        count += 1
-        count2 += 1
+        if item.greyline != 0:
+            projection.append(item.greyline)
+            if count_aux > 25:
+                count_aux = 0
+            else:
+                projection.append(item.greyline)
+        else:
+            projection.append('')
 
-    count = 0
-    for count in range(650):
-        date_now = date.today() + timedelta(count)
-        dates.append(datetime.datetime.strftime(date_now, '%Y-%m-%d'))
-        reward = (2**64 -1 - supply) >> 19
-        if reward < 0.6*(10**12):
-            reward = 0.6*(10**12)
-        supply += int(720*reward)
-        inflation = 100*reward*720*365/supply
-        stock = (100/(inflation))**1.65
-        stock_to_flow.append(stock)            
+        if item.stocktoflow > 0.2:
+            stock_to_flow.append(item.stocktoflow)
+        else:
+            stock_to_flow.append('')
+
+        if item.priceusd > 0.1:
+            values.append(item.priceusd)
+            now_price = item.priceusd
+            now_sf = item.stocktoflow
+            if item.date > date.today() - timedelta(4):
+                coins = Coin.objects.filter(name='xmr').filter(date=item.date)
+                if coins:
+                    for coin in coins:
+                        now_inflation = coin.inflation
+        else:
+            values.append('')
+        count_aux += 1
+    
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
     now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-    
+
     dt = 'sfmodel.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow, 'projection': projection,
-    'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
+    context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow, 'projection': projection, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'monerojnet/sfmodel.html', context)
 
 def sfmodellin(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    symbol = 'xmr'
-    now_price = 0
-    now_sf = 0
-    now_inflation = 0.001
-    v0 = 0.002
-    delta = (0.015 - 0.002)/(6*365)
-    count = 0
-    maximum = 0
-    supply = 0
-    stock = 0.000001
     dates = []
-    inflations = []
-    circulations = []
     stock_to_flow = []
+    projection = []
     color = []
     values = []
+    now_price = 0
+    now_sf = 0
+    now_inflation = 0
 
-    sf_aux = 0 
-    coins = Coin.objects.order_by('date').filter(name=symbol)
-    for coin in coins:
-        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
-        values.append(coin.priceusd)
-        now_inflation = coin.inflation
-        now_price = coin.priceusd
-        now_sf = coin.stocktoflow
-        lastprice = coin.priceusd
-        if now_price > maximum:
-            maximum = now_price
-        new_color = 30*coin.pricebtc/(count*delta + v0)
-        color.append(new_color)
-        supply = int(coin.supply)*10**12
-        if coin.stocktoflow > sf_aux*2+250:
-            coin.stocktoflow = sf_aux
-        sf_aux = coin.stocktoflow
-        stock_to_flow.append(coin.stocktoflow)
-        count += 1
+    data = Sfmodel.objects.order_by('date')
+    count_aux = 0
+    for item in data:
+        if item.color != 0:
+            color.append(item.color)
+        else:
+            color.append('')
 
-    count = 0
-    for count in range(1):
-        date_now = date.today() + timedelta(count)
-        dates.append(datetime.datetime.strftime(date_now, '%Y-%m-%d'))
-        day = date_now - timedelta(1700)
-        coin_aux1 = Coin.objects.filter(name=symbol).get(date=day)
-        day = date_now - timedelta(1701)
-        coin_aux2 = Coin.objects.filter(name=symbol).get(date=day)
-        if coin_aux1 and coin_aux2:
-            lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice*0.75
-        reward = (2**64 -1 - supply) >> 19
-        if reward < 0.6*(10**12):
-            reward = 0.6*(  10**12)
-        supply += int(720*reward)
-        inflations.append(100*reward*720*365/supply)
-        circulations.append(supply)
-        stock = (100/(100*reward*720*365/supply))**1.65
-        stock_to_flow.append(stock)            
+        if item.greyline != 0:
+            projection.append(item.greyline)
+            if count_aux > 25:
+                count_aux = 0
+            else:
+                projection.append(item.greyline)
+        else:
+            projection.append('')
+
+        if item.stocktoflow > 0.2:
+            stock_to_flow.append(item.stocktoflow)
+        else:
+            stock_to_flow.append('')
+
+        if item.priceusd > 0.1:
+            values.append(item.priceusd)
+            now_price = item.priceusd
+            now_sf = item.stocktoflow
+            if item.date > date.today() - timedelta(4):
+                coins = Coin.objects.filter(name='xmr').filter(date=item.date)
+                if coins:
+                    for coin in coins:
+                        now_inflation = coin.inflation
+        else:
+            values.append('')
+        count_aux += 1
+    
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
     now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
-    maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
     
     dt = 'sfmodellin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'values': values, 'dates': dates, 'maximum': maximum, 'inflations': inflations, 'circulations': circulations, 'stock_to_flow': stock_to_flow,
-    'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
+    context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow,'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'monerojnet/sfmodellin.html', context)
 
 def sfmultiple(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    symbol = 'btc'
-    get_latest_metrics(symbol)
-    symbol = 'dash'
-    get_latest_metrics(symbol)
-    symbol = 'grin'
-    get_latest_metrics(symbol)
-    symbol = 'zec'
-    get_latest_metrics(symbol)
     symbol = 'xmr'
-    get_latest_metrics(symbol)
 
     now_sf = 0
     maximum = 0
@@ -2892,63 +2987,38 @@ def about(request):
 
 def transcost(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     costbtc = []
     costxmr = []
-    costxmr2 = []
     dates = []
     now_btc = 0
     now_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        if coin_btc.transactions == 0:
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_transcostusd == 0:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_transcostusd)
+            now_xmr = item.xmr_transcostusd
+        if item.btc_transcostusd == 0:
             costbtc.append('')
         else:
-            valuebtc = coin_btc.fee*coin_btc.priceusd/coin_btc.transactions
-            if valuebtc < 0.0001:
-                costbtc.append('')
-            else:
-                costbtc.append(valuebtc)
-                now_btc = valuebtc
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                if coin_xmr.transactions == 0:
-                    costxmr.append('')
-                    costxmr2.append('')
-                else:
-                    valuexmr = coin_xmr.fee*coin_xmr.priceusd/coin_xmr.transactions
-                    valuexmr2 = coin_xmr.fee*coin_btc.priceusd/coin_xmr.transactions
-                    if valuexmr < 0.0001:
-                        costxmr.append('')
-                        costxmr2.append('')
-                    else:
-                        costxmr.append(valuexmr)
-                        costxmr2.append(valuexmr2)
-                        now_xmr = valuexmr
-        else:
-            costxmr.append('')
-            costxmr2.append('')
+            costbtc.append(item.btc_transcostusd)
+            now_btc = item.btc_transcostusd
 
-    for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
-        
     now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
     now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
     
     dt = 'transcost.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'costxmr': costxmr, 'costxmr2': costxmr2, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/transcost.html', context)
 
 def transcostntv(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     costbtc = []
     costxmr = []
@@ -2956,37 +3026,18 @@ def transcostntv(request):
     now_btc = 0
     now_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        if coin_btc.transactions == 0:
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_transcostntv == 0:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_transcostntv)
+            now_xmr = item.xmr_transcostntv
+        if item.btc_transcostntv == 0:
             costbtc.append('')
         else:
-            valuebtc = coin_btc.fee/coin_btc.transactions
-            if valuebtc < 0.000001:
-                costbtc.append('')
-            else:
-                costbtc.append(valuebtc)
-                now_btc = valuebtc
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                if coin_xmr.transactions == 0:
-                    costxmr.append('')
-                else:
-                    valuexmr = coin_xmr.fee/coin_xmr.transactions
-                    if valuexmr < 0.000001:
-                        costxmr.append('')
-                    else:
-                        costxmr.append(valuexmr)
-                        now_xmr = valuexmr
-        else:
-            costxmr.append('')
-
-    for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
+            costbtc.append(item.btc_transcostntv)
+            now_btc = item.btc_transcostntv
         
     now_btc = locale.format('%.6f', now_btc, grouping=True)
     now_xmr = locale.format('%.6f', now_xmr, grouping=True)
@@ -3048,7 +3099,7 @@ def minerrevcap(request):
 
 def minerrev(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     costbtc = []
     costxmr = []
@@ -3056,32 +3107,19 @@ def minerrev(request):
     now_btc = 0
     now_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        valuebtc = coin_btc.revenue*coin_btc.priceusd
-        if valuebtc < 0.0001:
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_minerrevusd < 0.0001:
             costbtc.append('')
         else:
-            costbtc.append(valuebtc)
-            now_btc = valuebtc
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                valuexmr = coin_xmr.revenue*coin_xmr.priceusd
-                if valuexmr < 0.0001:
-                    costxmr.append('')
-                else:
-                    costxmr.append(valuexmr)
-                    now_xmr = valuexmr
-        else:
+            costbtc.append(item.btc_minerrevusd)
+            now_btc = item.btc_minerrevusd
+        if item.xmr_minerrevusd < 0.0001:
             costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerrevusd)
+            now_xmr = item.xmr_minerrevusd
 
-    for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
-        
     now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
     now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
     
@@ -3092,7 +3130,7 @@ def minerrev(request):
 
 def minerrevntv(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     costbtc = []
     costxmr = []
@@ -3100,31 +3138,18 @@ def minerrevntv(request):
     now_btc = 0
     now_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        valuebtc = coin_btc.revenue
-        if valuebtc < 0.000001:
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_minerrevntv < 0.0001:
             costbtc.append('')
         else:
-            costbtc.append(valuebtc)
-            now_btc = valuebtc
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                valuexmr = coin_xmr.revenue
-                if valuexmr < 0.000001:
-                    costxmr.append('')
-                else:
-                    costxmr.append(valuexmr)
-                    now_xmr = valuexmr
-        else:
+            costbtc.append(item.btc_minerrevntv)
+            now_btc = item.btc_minerrevntv
+        if item.xmr_minerrevntv < 0.0001:
             costxmr.append('')
-
-    for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerrevntv)
+            now_xmr = item.xmr_minerrevntv
         
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
@@ -3136,43 +3161,26 @@ def minerrevntv(request):
 
 def minerfeesntv(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     costbtc = []
     costxmr = []
     dates = []
     now_btc = 0
     now_xmr = 0
-    supply_btc = 0
-    supply_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        valuebtc = coin_btc.revenue - coin_btc.supply + supply_btc
-        supply_btc = coin_btc.supply
-        if valuebtc < 0.1:
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_minerfeesntv < 0.1:
             costbtc.append('')
         else:
-            costbtc.append(valuebtc)
-            now_btc = valuebtc
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                valuexmr = coin_xmr.revenue - coin_xmr.supply + supply_xmr
-                supply_xmr = coin_xmr.supply
-                if valuexmr < 0.1:
-                    costxmr.append('')
-                else:
-                    costxmr.append(valuexmr)
-                    now_xmr = valuexmr
-        else:
+            costbtc.append(item.btc_minerfeesntv)
+            now_btc = item.btc_minerfeesntv
+        if item.xmr_minerfeesntv < 0.1:
             costxmr.append('')
-
-    for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerfeesntv)
+            now_xmr = item.xmr_minerfeesntv
         
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
@@ -3184,43 +3192,26 @@ def minerfeesntv(request):
 
 def minerfees(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     costbtc = []
     costxmr = []
     dates = []
     now_btc = 0
     now_xmr = 0
-    supply_btc = 0
-    supply_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        valuebtc = (coin_btc.revenue - coin_btc.supply + supply_btc)*coin_btc.priceusd
-        supply_btc = coin_btc.supply
-        if valuebtc < 1:
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_minerfeesusd < 1:
             costbtc.append('')
         else:
-            costbtc.append(valuebtc)
-            now_btc = valuebtc
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                valuexmr = (coin_xmr.revenue - coin_xmr.supply + supply_xmr)*coin_xmr.priceusd
-                supply_xmr = coin_xmr.supply
-                if valuexmr < 1:
-                    costxmr.append('')
-                else:
-                    costxmr.append(valuexmr)
-                    now_xmr = valuexmr
-        else:
+            costbtc.append(item.btc_minerfeesusd)
+            now_btc = item.btc_minerfeesusd
+        if item.xmr_minerfeesusd < 1:
             costxmr.append('')
-
-    for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerfeesusd)
+            now_xmr = item.xmr_minerfeesusd
         
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
@@ -3232,55 +3223,45 @@ def minerfees(request):
 
 def dailyemissionntv(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
-    costbtc = []
-    costxmr = []
+    emissionbtc = []
+    emissionxmr = []
     dates = []
     now_btc = 0
     now_xmr = 0
-    supply_btc = 0
-    supply_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        valuebtc = coin_btc.supply -  supply_btc
-        if valuebtc < 0.000001:
-            costbtc.append('')
+    for item in data:
+        if item.btc_ntv == 0:
+            emissionbtc.append('')
         else:
-            costbtc.append(valuebtc)
-            now_btc = valuebtc
-            supply_btc = coin_btc.supply
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                valuexmr = coin_xmr.supply - supply_xmr
-                if valuexmr < 0.000001:
-                    costxmr.append('')
-                else:
-                    costxmr.append(valuexmr)
-                    now_xmr = valuexmr
-                    supply_xmr = coin_xmr.supply
+            emissionbtc.append(item.btc_ntv)
+            now_btc = item.btc_ntv
+        
+        if item.xmr_ntv == 0:
+            emissionxmr.append('')
         else:
-            costxmr.append('')
+            emissionxmr.append(item.xmr_ntv)
+            now_xmr = item.xmr_ntv
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
     for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
+        date_aux = item.date + timedelta(i)
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
+        emissionxmr.append('')
+        emissionbtc.append('')
         
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
     
     dt = 'dailyemissionntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/dailyemissionntv.html', context)
 
 def commit(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     costbtc = []
     costxmr = []
@@ -3288,31 +3269,18 @@ def commit(request):
     now_btc = 0
     now_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        if coin_btc.revenue*coin_btc.priceusd < 0.01:
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_commitusd < 0.000001:
             costbtc.append('')
         else:
-            valuebtc = coin_btc.hashrate/(coin_btc.revenue*coin_btc.priceusd)
-            costbtc.append(valuebtc)
-            now_btc = valuebtc
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                if coin_xmr.revenue*coin_xmr.priceusd < 0.01:
-                    costxmr.append('')
-                else:
-                    valuexmr = coin_xmr.hashrate/(coin_xmr.revenue*coin_xmr.priceusd)
-                    costxmr.append(valuexmr)
-                    now_xmr = valuexmr
-        else:
+            costbtc.append(item.btc_commitusd)
+            now_btc = item.btc_commitusd
+        if item.xmr_commitusd < 0.000001:
             costxmr.append('')
-
-    for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
+        else:
+            costxmr.append(item.xmr_commitusd)
+            now_xmr = item.xmr_commitusd
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + " hashs / dollar"
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + " hashs / dollar"
@@ -3324,7 +3292,7 @@ def commit(request):
 
 def commitntv(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    data = DailyData.objects.order_by('date')
 
     costbtc = []
     costxmr = []
@@ -3332,37 +3300,18 @@ def commitntv(request):
     now_btc = 0
     now_xmr = 0
 
-    for coin_btc in coins_btc:
-        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
-        if coin_btc.revenue  < 0.01:
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_commitntv < 0.00001:
             costbtc.append('')
         else:
-            valuebtc = coin_btc.hashrate/coin_btc.revenue
-            if valuebtc < 0.001:
-                costbtc.append('')
-            else:
-                costbtc.append(valuebtc)
-            now_btc = valuebtc
-        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
-        if coins_xmr:
-            for coin_xmr in coins_xmr:
-                if coin_xmr.revenue < 0.01:
-                    costxmr.append('')
-                else:
-                    valuexmr = coin_xmr.hashrate/coin_xmr.revenue
-                    if valuexmr < 0.001:
-                        costxmr.append('')
-                    else:
-                        costxmr.append(valuexmr)
-                    now_xmr = valuexmr
-        else:
+            costbtc.append(item.btc_commitntv)
+            now_btc = item.btc_commitntv
+        if item.xmr_commitntv < 0.00001:
             costxmr.append('')
-
-    for i in range(500):
-        date_aux = coin_btc.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        costbtc.append('')
-        costxmr.append('')
+        else:
+            costxmr.append(item.xmr_commitntv)
+            now_xmr = item.xmr_commitntv
         
     now_btc = locale.format('%.0f', now_btc, grouping=True) + " hashs / btc"
     now_xmr = locale.format('%.0f', now_xmr, grouping=True) + " hashs / xmr"
@@ -3906,3 +3855,947 @@ def rank(request):
     print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/rank.html', context)
+
+def tail_emission(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    inflationxmr = []
+    finflationxmr = []
+    dates = []
+    now_xmr = 999999
+    
+    coins = Coin.objects.order_by('date').filter(name='xmr')
+    for coin in coins:
+        now_xmr = float(coin.inflation)
+
+    supply = int(coin.supply)*10**12
+    for i in range(210000):
+        supply = int(supply)
+        reward = (2**64 -1 - supply) >> 19
+        if reward < 0.6*(10**12):
+            reward = 0.6*(10**12)
+        supply += int(720*reward)
+        finflationxmr.append(100*reward*720*365/supply)
+        date_aux = coin.date + timedelta(i)
+        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        
+    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
+    
+    dt = 'tail_emission.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'inflationxmr': inflationxmr, 'finflationxmr': finflationxmr, 'now_xmr': now_xmr, 'dates': dates}
+    return render(request, 'monerojnet/tail_emission.html', context)
+
+###########################################
+# Previous functions / Older versions                
+###########################################
+
+def sfmodel_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+
+    update = True
+    symbol = 'xmr'
+
+    yesterday = date.today() - timedelta(1)
+    start_time = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
+    try:
+        coin = Coin.objects.filter(name=symbol).get(date=yesterday)
+        if coin:
+            if (coin.inflation > 0) and (coin.priceusd > 0):
+                update = False
+            else:
+                now = datetime.datetime.now()
+                current_time = int(now.strftime("%H"))
+                if current_time >= 3:
+                    coin.delete()
+                    update = True
+        else:
+            update = True
+    except:
+        update = True
+
+    if update:
+        #print('social')
+        check_new_social('Bitcoin')
+        check_new_social('Monero')
+        check_new_social('CryptoCurrency')
+
+        #print('metrics')
+        with open("settings.json") as file:
+            data = json.load(file)
+            file.close()
+            
+        symbol = 'btc'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        symbol = 'dash'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        symbol = 'grin'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        symbol = 'zec'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        symbol = 'xmr'
+        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        get_latest_metrics(symbol, url)
+        #print('done')
+
+    timevar = 1283
+    now_price = 0
+    now_sf = 0
+    now_inflation = 0.001
+    v0 = 0.002
+    delta = (0.015 - 0.002)/(6*365)
+    count = 0
+    supply = 0
+    stock = 0.000001
+    dates = []
+    stock_to_flow = []
+    projection = []
+    color = []
+    values = []
+
+    sf_aux = 0
+    skipped = 0
+    start_inflation = 0
+    count2 = 0
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+        values.append(coin.priceusd)
+        date_aux1 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        if date_aux2 < date_aux1:
+            lastprice = coin.priceusd
+            start_inflation = coin.inflation
+            current_inflation = start_inflation
+            projection.append('')
+            count2 = 0
+        else:
+            day = date_aux2 - timedelta(timevar)
+            coin_aux1 = Coin.objects.filter(name=symbol).get(date=day)
+            day = date_aux2 - timedelta(timevar+1)
+            coin_aux2 = Coin.objects.filter(name=symbol).get(date=day)
+            date_aux3 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
+            
+            if date_aux3 + timedelta(int(count2*2)) < datetime.datetime.strptime('2021-07-03', '%Y-%m-%d'):
+                day = date_aux3 + timedelta(int(count2*2))
+                coin_aux3 = Coin.objects.filter(name=symbol).get(date=day)
+                if coin_aux3:
+                    if (coin_aux3.inflation/current_inflation) > 1.2 or (coin_aux3.inflation/current_inflation) < 0.8:
+                        coin_aux3.inflation = current_inflation
+                    else:
+                        current_inflation = coin_aux3.inflation
+                supply2 = supply
+            else:
+                reward2 = (2**64 -1 - supply2) >> 19
+                if reward2 < 0.6*(10**12):
+                    reward2 = 0.6*(10**12)
+                supply2 += int(720*reward2)
+                current_inflation = 100*reward2*720*365/supply2
+                
+            if coin_aux1 and coin_aux2:
+                lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice
+                actualprice = lastprice*(math.sqrt(start_inflation/current_inflation))
+                projection.append(actualprice)
+                if skipped < 12:
+                    projection.append(actualprice)
+                else:
+                    skipped = 0
+            else:
+                projection.append('')
+            skipped += 1
+
+        if coin.priceusd < 0.01:
+            coin.priceusd = 0.01
+        if coin.stocktoflow > sf_aux*2+250:
+            coin.stocktoflow = sf_aux
+        sf_aux = coin.stocktoflow
+        if coin.stocktoflow < 0.1:
+            coin.stocktoflow = 0.1
+        now_inflation = coin.inflation
+        now_price = coin.priceusd
+        now_sf = coin.stocktoflow
+        new_color = 30*coin.pricebtc/(count*delta + v0)
+        color.append(new_color)
+        supply = int(coin.supply)*10**12
+        stock_to_flow.append(coin.stocktoflow)
+        count += 1
+        count2 += 1
+
+    count = 0
+    for count in range(650):
+        date_now = date.today() + timedelta(count)
+        dates.append(datetime.datetime.strftime(date_now, '%Y-%m-%d'))
+        reward = (2**64 -1 - supply) >> 19
+        if reward < 0.6*(10**12):
+            reward = 0.6*(10**12)
+        supply += int(720*reward)
+        inflation = 100*reward*720*365/supply
+        stock = (100/(inflation))**1.65
+        stock_to_flow.append(stock)            
+
+    now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
+    now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
+    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+    
+    dt = 'sfmodel.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow, 'projection': projection,
+    'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
+    return render(request, 'monerojnet/sfmodel.html', context)
+
+def sfmodellin_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    now_price = 0
+    now_sf = 0
+    now_inflation = 0.001
+    v0 = 0.002
+    delta = (0.015 - 0.002)/(6*365)
+    count = 0
+    maximum = 0
+    supply = 0
+    stock = 0.000001
+    dates = []
+    stock_to_flow = []
+    color = []
+    values = []
+
+    sf_aux = 0 
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+        values.append(coin.priceusd)
+        now_inflation = coin.inflation
+        now_price = coin.priceusd
+        now_sf = coin.stocktoflow
+        lastprice = coin.priceusd
+        if now_price > maximum:
+            maximum = now_price
+        new_color = 30*coin.pricebtc/(count*delta + v0)
+        color.append(new_color)
+        supply = int(coin.supply)*10**12
+        if coin.stocktoflow > sf_aux*2+250:
+            coin.stocktoflow = sf_aux
+        sf_aux = coin.stocktoflow
+        stock_to_flow.append(coin.stocktoflow)
+        count += 1
+
+    count = 0
+    for count in range(1):
+        date_now = date.today() + timedelta(count)
+        dates.append(datetime.datetime.strftime(date_now, '%Y-%m-%d'))
+        day = date_now - timedelta(1700)
+        coin_aux1 = Coin.objects.filter(name=symbol).get(date=day)
+        day = date_now - timedelta(1701)
+        coin_aux2 = Coin.objects.filter(name=symbol).get(date=day)
+        if coin_aux1 and coin_aux2:
+            lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice*0.75
+        reward = (2**64 -1 - supply) >> 19
+        if reward < 0.6*(10**12):
+            reward = 0.6*(  10**12)
+        supply += int(720*reward)
+        stock = (100/(100*reward*720*365/supply))**1.65
+        stock_to_flow.append(stock)            
+
+    now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
+    now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
+    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+    
+    dt = 'sfmodellin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
+    return render(request, 'monerojnet/sfmodellin.html', context)
+
+def dailyemission_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    emissionbtc = []
+    emissionxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+    high_btc = 0
+    high_xmr = 0
+    supplybtc = 0
+    supplyxmr = 0
+    valuebtc = 0
+    valuexmr = 0
+
+    for coin_btc in coins_btc:
+        valuebtc = (coin_btc.supply - supplybtc)*coin_btc.priceusd
+        if valuebtc < 1000:
+            emissionbtc.append('')
+        else:
+            emissionbtc.append(valuebtc)
+        supplybtc = coin_btc.supply
+        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+        if coins_xmr:
+            for coin_xmr in coins_xmr:
+                valuexmr = (coin_xmr.supply - supplyxmr)*coin_xmr.priceusd
+                supplyxmr = coin_xmr.supply
+                if valuexmr < 1000:
+                    emissionxmr.append('')
+                else:
+                    emissionxmr.append(valuexmr)
+                now_xmr = valuexmr
+                if valuexmr > high_xmr:
+                    high_xmr = valuexmr
+        else:
+            emissionxmr.append('')
+        now_btc = valuebtc
+        if valuebtc > high_btc:
+            high_btc = int(valuebtc)
+
+    for i in range(500):
+        date_aux = coin_btc.date + timedelta(i)
+        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        emissionxmr.append('')
+        emissionbtc.append('')
+        
+    now_btc = "$" + locale.format('%.0f', now_btc, grouping=True)
+    now_xmr = "$" + locale.format('%.0f', now_xmr, grouping=True)
+    high_btc = "$" + locale.format('%.0f', high_btc, grouping=True)
+    high_xmr = "$" + locale.format('%.0f', high_xmr, grouping=True)
+    
+    dt = 'dailyemission.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'high_xmr': high_xmr, 'high_btc': high_btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/dailyemission.html', context)
+
+def dailyemissionntv_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    emissionbtc = []
+    emissionxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+    supply_btc = 0
+    supply_xmr = 0
+
+    for coin_btc in coins_btc:
+        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        valuebtc = coin_btc.supply -  supply_btc
+        if valuebtc < 0.000001:
+            emissionbtc.append('')
+        else:
+            emissionbtc.append(valuebtc)
+            now_btc = valuebtc
+            supply_btc = coin_btc.supply
+        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+        if coins_xmr:
+            for coin_xmr in coins_xmr:
+                valuexmr = coin_xmr.supply - supply_xmr
+                if valuexmr < 0.000001:
+                    emissionxmr.append('')
+                else:
+                    emissionxmr.append(valuexmr)
+                    now_xmr = valuexmr
+                    supply_xmr = coin_xmr.supply
+        else:
+            emissionxmr.append('')
+
+    for i in range(500):
+        date_aux = coin_btc.date + timedelta(i)
+        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        emissionbtc.append('')
+        emissionxmr.append('')
+        
+    now_btc = locale.format('%.0f', now_btc, grouping=True)
+    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    
+    dt = 'dailyemissionntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/dailyemissionntv.html', context)
+
+def compinflation_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    dates = []
+    inflationxmr = []
+    inflationdash = []
+    inflationgrin = []
+    inflationzcash = []
+    inflationbtc = []
+    now_xmr = 999999
+    now_dash = 999999
+    now_grin = 999999
+    now_zcash = 999999
+    now_btc = 999999
+    count = 0
+    
+    for coin_btc in coins_btc:
+        count += 1
+        if coin_btc.inflation > 0.1:
+            inflationbtc.append(coin_btc.inflation)
+        else:
+            inflationbtc.append('')
+        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        if count < 1750:
+            inflationdash.append('')
+            inflationxmr.append('')
+        else:
+            coins_dash = Coin.objects.filter(name='dash').filter(date=coin_btc.date)
+            if coins_dash:
+                for coin_dash in coins_dash:
+                    if coin_dash.inflation > 0.1:
+                        inflationdash.append(coin_dash.inflation)
+                    else:
+                        inflationdash.append('')
+            else:
+                inflationdash.append('')
+            coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+            if coins_xmr:
+                for coin_xmr in coins_xmr:
+                    if coin_xmr.inflation > 0.1:
+                        inflationxmr.append(coin_xmr.inflation)
+                    else:
+                        inflationxmr.append('')
+            else:
+                inflationxmr.append('')
+
+        if count < 2800:
+            inflationzcash.append('')
+        else:
+            coins_zcash = Coin.objects.filter(name='zec').filter(date=coin_btc.date)
+            if coins_zcash:
+                for coin_zcash in coins_zcash:
+                    if coin_zcash.inflation > 0.1:
+                        inflationzcash.append(coin_zcash.inflation)
+                    else:
+                        inflationzcash.append('')
+            else:
+                inflationzcash.append('')
+
+        if count < 3600:
+            inflationgrin.append('')
+        else:
+            coins_grin = Coin.objects.filter(name='grin').filter(date=coin_btc.date)
+            if coins_grin:
+                for coin_grin in coins_grin:
+                    if coin_grin.inflation > 0.1:
+                        inflationgrin.append(coin_grin.inflation)
+                    else:
+                        inflationgrin.append('')
+            else:
+                inflationgrin.append('')
+
+    if count > 4300:
+        now_grin = coin_grin.inflation
+        now_zcash = coin_zcash.inflation
+        now_btc = coin_btc.inflation
+        now_xmr = coin_xmr.inflation
+        now_dash = coin_dash.inflation
+        
+    now_dash = locale.format('%.2f', now_dash, grouping=True) + '%'
+    now_grin = locale.format('%.2f', now_grin, grouping=True) + '%'
+    now_zcash = locale.format('%.2f', now_zcash, grouping=True) + '%'
+    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
+    now_btc = locale.format('%.2f', now_btc, grouping=True) + '%'
+    
+    dt = 'compinflation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'inflationxmr': inflationxmr, 'inflationdash': inflationdash, 'inflationgrin': inflationgrin, 'inflationzcash': inflationzcash, 'inflationbtc': inflationbtc,
+    'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/compinflation.html', context)
+
+def bitcoin_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    dates3 = []
+    dates4 = []
+    btc = []
+    xmr3 = []
+    count1 = 0
+    count3 = 0
+    now_xmr = 0
+    now_btc = 0
+
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+    for coin_btc in coins_btc:
+        if coin_btc.priceusd:
+            if count1 > 325: #450
+                btc.append(coin_btc.priceusd/30)
+                now_btc = coin_btc.priceusd/30
+            dates.append(count1)
+            count1 += 1 #1.4
+        elif count1 <= 325: #450
+            continue
+        else:
+            btc.append('')
+
+    coins_xmr = Coin.objects.order_by('date').filter(name='xmr')
+
+    for coin_xmr in coins_xmr:
+        if coin_xmr.priceusd:
+            if count3 > 30:
+                xmr3.append(coin_xmr.priceusd/5.01)
+            dates4.append(count3)
+            count3 += 0.82
+        elif count3 <= 30:
+            continue
+        else:
+            xmr3.append('')
+
+    dates2 = []
+    xmr2 = []
+    btc2 = []
+
+    for coin_btc in coins_btc:
+        if coin_btc.priceusd:
+            if coin_btc.priceusd/30 > 0.02:
+                btc2.append(coin_btc.priceusd/30)
+            else:
+                btc2.append('')
+        else:
+            btc2.append('')
+        dates2.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+        if coins_xmr:
+            for coin_xmr in coins_xmr:
+                if coin_xmr.priceusd/5.01 > 0.02:
+                    xmr2.append(coin_xmr.priceusd/5.01)
+                else:
+                    xmr2.append('')
+        else:
+            xmr2.append('')
+
+    now_btc = locale.format('%.2f', now_btc, grouping=True)
+    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
+    
+    dt = 'bitcoin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'btc': btc, 'xmr2': xmr2, 'btc2': btc2, 'xmr3': xmr3, 'dates': dates, 'dates2': dates2, 'dates3': dates3, 'dates4': dates4}
+    return render(request, 'monerojnet/bitcoin.html', context)
+
+def coins_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    supplyxmr = []
+    supplybtc = []
+    fsupplyxmr = []
+    fsupplybtc = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+    
+    for coin_btc in coins_btc:
+        supplybtc.append(int(coin_btc.supply))
+        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+        if coins_xmr:
+            for coin_xmr in coins_xmr:
+                supplyxmr.append(int(coin_xmr.supply))
+                if coin_xmr.supply > now_xmr:
+                    now_xmr = int(coin_xmr.supply)
+        else:
+            supplyxmr.append('')
+        if coin_btc.supply > now_btc:
+            now_btc = int(coin_btc.supply)
+        fsupplyxmr.append('')
+        fsupplybtc.append('')
+
+    rewardbtc = 900
+    supplybitcoin = coin_btc.supply
+    supply = int(coin_xmr.supply)*10**12
+    for i in range(365*(2060-2020)):
+        supply = int(supply)
+        reward = (2**64 -1 - supply) >> 19
+        if reward < 0.6*(10**12):
+            reward = 0.6*(10**12)
+        supply += int(720*reward)
+        fsupplyxmr.append(supply/(10**12))
+        date_aux = coin_btc.date + timedelta(i)
+        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        supplybitcoin += rewardbtc
+        if supplybitcoin > 21000000:
+            supplybitcoin = 21000000
+        fsupplybtc.append(supplybitcoin)
+        date_aux2 = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
+        if date_aux2 == '2024-04-23':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2028-05-05':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2032-05-03':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2036-04-30':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2040-04-27':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2044-04-25':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2048-04-22':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2052-04-19':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2056-04-30':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2060-04-27':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2064-04-25':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2068-04-22':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2072-04-19':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2076-04-30':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2080-04-27':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2084-04-25':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2088-04-22':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2140-01-01':
+            rewardbtc = 0
+            supplybitcoin = 21000000
+        supplyxmr.append('')
+        supplybtc.append('')
+        
+    now_btc = locale.format('%.0f', now_btc, grouping=True)
+    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    
+    dt = 'coins.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'supplyxmr': supplyxmr, 'supplybtc': supplybtc, 'fsupplyxmr': fsupplyxmr, 'fsupplybtc': fsupplybtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/coins.html', context)
+
+def inflation_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    inflationxmr = []
+    inflationbtc = []
+    finflationxmr = []
+    finflationbtc = []
+    dates = []
+    now_xmr = 999999
+    now_btc = 999999
+    
+    for coin_btc in coins_btc:
+        if float(coin_btc.inflation) > 0.1:
+            inflationbtc.append(float(coin_btc.inflation))
+            now_btc = float(coin_btc.inflation)
+        else:
+            inflationbtc.append('')
+        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        coins_xmr = Coin.objects.order_by('date').filter(name='xmr').filter(date=coin_btc.date)
+        if coins_xmr:
+            for coin_xmr in coins_xmr:
+                inflationxmr.append(float(coin_xmr.inflation))
+                now_xmr = float(coin_xmr.inflation)
+        else:
+            inflationxmr.append('')
+        finflationxmr.append('')
+        finflationbtc.append('')
+
+    inflationbitcoin = 1.75
+    supply = int(coin_xmr.supply)*10**12
+    for i in range(2000):
+        supply = int(supply)
+        reward = (2**64 -1 - supply) >> 19
+        if reward < 0.6*(10**12):
+            reward = 0.6*(10**12)
+        supply += int(720*reward)
+        finflationxmr.append(100*reward*720*365/supply)
+        date_aux = coin_btc.date + timedelta(i)
+        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        finflationbtc.append(inflationbitcoin)
+        date_aux2 = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
+        if date_aux2 == '2024-04-23':
+            inflationbitcoin = 0.65
+        inflationxmr.append('')
+        inflationbtc.append('')
+        
+    now_btc = locale.format('%.2f', now_btc, grouping=True) + '%'
+    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
+    
+    dt = 'inflation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'inflationxmr': inflationxmr, 'inflationbtc': inflationbtc, 'finflationxmr': finflationxmr, 'finflationbtc': finflationbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/inflation.html', context)
+
+def extracoins_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    nsupply = []
+    fsupply = []
+    dates = []
+    now_diff = 0
+    
+    for coin_btc in coins_btc:
+        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        coins_xmr = Coin.objects.order_by('date').filter(name='xmr').filter(date=coin_btc.date)
+        if coins_xmr:
+            for coin_xmr in coins_xmr:
+                nsupply.append(int(- coin_xmr.supply + coin_btc.supply))
+                now_diff = int(- coin_xmr.supply + coin_btc.supply)
+        else:
+            nsupply.append(int(coin_btc.supply))
+        fsupply.append('')
+
+    rewardbtc = 900
+    supplybitcoin = coin_btc.supply
+    supply = int(coin_xmr.supply)*10**12
+    for i in range(365*(2060-2020)):
+        supply = int(supply)
+        reward = (2**64 -1 - supply) >> 19
+        if reward < 0.6*(10**12):
+            reward = 0.6*(10**12)
+        supply += int(720*reward)
+        date_aux = coin_btc.date + timedelta(i)
+        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        supplybitcoin += rewardbtc
+        if supplybitcoin > 21000000:
+            supplybitcoin = 21000000
+        fsupply.append(-supply/(10**12) + supplybitcoin)
+        date_aux2 = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
+        if date_aux2 == '2024-04-23':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2028-05-05':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2032-05-03':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2036-04-30':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2040-04-27':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2044-04-25':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2048-04-22':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2052-04-19':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2056-04-30':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2060-04-27':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2064-04-25':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2068-04-22':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2072-04-19':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2076-04-30':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2080-04-27':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2084-04-25':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2088-04-22':
+            rewardbtc = rewardbtc/2
+        if date_aux2 == '2140-01-01':
+            rewardbtc = 0
+            supplybitcoin = 21000000
+        nsupply.append('')
+        
+    now_diff = locale.format('%.0f', now_diff, grouping=True)
+    
+    dt = 'extracoins.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'nsupply': nsupply, 'fsupply': fsupply, 'dates': dates, 'now_diff': now_diff}
+    return render(request, 'monerojnet/extracoins.html', context)
+
+def transcost_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+
+    for coin_btc in coins_btc:
+        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        if coin_btc.transactions == 0:
+            costbtc.append('')
+        else:
+            valuebtc = coin_btc.fee*coin_btc.priceusd/coin_btc.transactions
+            if valuebtc < 0.0001:
+                costbtc.append('')
+            else:
+                costbtc.append(valuebtc)
+                now_btc = valuebtc
+        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+        if coins_xmr:
+            for coin_xmr in coins_xmr:
+                if coin_xmr.transactions == 0:
+                    costxmr.append('')
+                else:
+                    valuexmr = coin_xmr.fee*coin_xmr.priceusd/coin_xmr.transactions
+                    if valuexmr < 0.0001:
+                        costxmr.append('')
+                    else:
+                        costxmr.append(valuexmr)
+                        now_xmr = valuexmr
+        else:
+            costxmr.append('')
+            costxmr2.append('')
+
+    for i in range(500):
+        date_aux = coin_btc.date + timedelta(i)
+        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        costbtc.append('')
+        costxmr.append('')
+        
+    now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
+    now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
+    
+    dt = 'transcost.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/transcost.html', context)
+
+def transcostntv_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+
+    for coin_btc in coins_btc:
+        dates.append(datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d'))
+        if coin_btc.transactions == 0:
+            costbtc.append('')
+        else:
+            valuebtc = coin_btc.fee/coin_btc.transactions
+            if valuebtc < 0.000001:
+                costbtc.append('')
+            else:
+                costbtc.append(valuebtc)
+                now_btc = valuebtc
+        coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+        if coins_xmr:
+            for coin_xmr in coins_xmr:
+                if coin_xmr.transactions == 0:
+                    costxmr.append('')
+                else:
+                    valuexmr = coin_xmr.fee/coin_xmr.transactions
+                    if valuexmr < 0.000001:
+                        costxmr.append('')
+                    else:
+                        costxmr.append(valuexmr)
+                        now_xmr = valuexmr
+        else:
+            costxmr.append('')
+
+    for i in range(500):
+        date_aux = coin_btc.date + timedelta(i)
+        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        costbtc.append('')
+        costxmr.append('')
+        
+    now_btc = locale.format('%.6f', now_btc, grouping=True)
+    now_xmr = locale.format('%.6f', now_xmr, grouping=True)
+    
+    dt = 'transcostntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/transcostntv.html', context)
+
+def metcalfesats_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    color = []
+    metcalfe = []
+    prices = []
+    dates = []
+    now_metcalfe = 0
+    now_price = 0
+    maximum = 0
+    v0 = 0.002
+    delta = (0.015 - 0.002)/(6*365)
+    count = 0
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        coins_aux = Coin.objects.order_by('date').filter(name='btc').filter(date=coin.date)
+        if coin.transactions < 500:
+            coin.transactions = 500
+        if coins_aux:
+            for coin_aux in coins_aux:
+                if coin_aux.supply > 0 and coin_aux.transactions > 0:
+                    now_metcalfe = coin.transactions*coin.supply/(coin_aux.supply*coin_aux.transactions)
+                if now_metcalfe < 0.001:
+                    now_metcalfe = 0.001
+        metcalfe.append(now_metcalfe)
+        if now_metcalfe > maximum:
+            maximum = now_metcalfe
+        if coin.pricebtc > 0:
+            now_price = coin.pricebtc
+        prices.append(coin.pricebtc)
+        new_color = 30*coin.pricebtc/(count*delta + v0)
+        color.append(new_color)
+        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        dates.append(coin.date)
+        count += 1
+    
+    now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
+    now_metcalfe = locale.format('%.4f', now_metcalfe, grouping=True) + ' BTC'
+    maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
+    
+    dt = 'metcalfesats.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
+    return render(request, 'monerojnet/metcalfesats.html', context)
+
+def metcalfeusd_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    color = []
+    metcalfe = []
+    prices = []
+    dates = []
+    now_metcalfe = 0
+    now_price = 0
+    maximum = 0
+    v0 = 0.002
+    delta = (0.015 - 0.002)/(6*365)
+    count = 0
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        coins_aux = Coin.objects.order_by('date').filter(name='btc').filter(date=coin.date)
+        if coin.transactions < 500:
+            coin.transactions = 500
+        if coins_aux:
+            for coin_aux in coins_aux:
+                if coin_aux.supply > 0 and coin_aux.transactions > 0:
+                    now_metcalfe = coin_aux.priceusd*coin.transactions*coin.supply/(coin_aux.supply*coin_aux.transactions)
+                if now_metcalfe < 0.23:
+                    now_metcalfe = 0.23
+        metcalfe.append(now_metcalfe)
+        if now_metcalfe > maximum:
+            maximum = now_metcalfe
+        if coin.priceusd > 0:
+            now_price = coin.priceusd
+        prices.append(now_price)
+        new_color = 30*coin.pricebtc/(count*delta + v0)
+        color.append(new_color)
+        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        dates.append(coin.date)
+        count += 1
+
+    now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
+    now_metcalfe = "$"+ locale.format('%.2f', now_metcalfe, grouping=True)
+    maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
+    
+    dt = 'metcalfeusd.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
+    return render(request, 'monerojnet/metcalfeusd.html', context)

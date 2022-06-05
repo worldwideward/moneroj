@@ -185,7 +185,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Buy Zone',
+        name: 'Neutral Line',
         x: {{ counter|safe }},
         y: {{ line2|safe }},
         line: {
@@ -198,7 +198,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Buy Zone',
+        name: 'Neutral Line',
         x: {{ counter|safe }},
         y: {{ line2|safe }},
         line: {
@@ -414,18 +414,25 @@ var layout_mobile = {
         ,gridcolor: "#444444"
     },
     xaxis: {
-        hoverformat: "%Y",
-        showgrid: true,
-        type: 'date',
-        nticks: 10
-        ,tickfont: {
-            color: "#dddddd"
-            ,size: 7
+    type: "log",
+    title: {
+        text: 'Year',
+        font: {
+            family: 'Nunito, monospace',
+            size: 14,
+            color: '#7f7f7f'
         }
-        ,gridcolor: "#444444"
-        ,range: ['2009-12-20', '2026-01-10']
-        ,zeroline: true
     },
+    nticks: 20,
+    tickvals: {{ dates|safe }},
+    ticktext: {{ years|safe }},
+    showgrid: true,
+    gridcolor: "#444444",
+    tickfont: {
+        color: "#dddddd"
+        ,size: 13
+    },
+},
     margin: {
         l: 40,
         r: 0,

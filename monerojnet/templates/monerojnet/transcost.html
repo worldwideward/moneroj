@@ -121,29 +121,6 @@
 
 <!-- Page level plugins -->
 <script> 
-    var data1 = {
-        type: "scatter",
-        mode: "lines",
-        name: 'Simulation: Monero Tx Cost at BTC prices',
-        x: {{ dates|safe }},
-        y: {{ costxmr2|safe }},
-        line: {
-            color: '#444444'
-            ,width: 1
-        }
-    };
-    
-    var data1_mobile = {
-        type: "scatter",
-        mode: "lines",
-        name: 'Simulation: Monero Tx Cost at BTC prices',
-        x: {{ dates|safe }},
-        y: {{ costxmr2|safe }},
-        line: {
-            color: '#444444'
-            ,width: 1
-        }
-    }; 
     var data2 = {
         type: "scatter",
         mode: "lines",
@@ -192,8 +169,8 @@
         }
     };
 
-    var data = [data1, data3, data2];
-    var data_mobile = [data1_mobile, data3_mobile, data2_mobile];
+    var data = [data3, data2];
+    var data_mobile = [data3_mobile, data2_mobile];
 
     var layout = {
         plot_bgcolor:"#252221",

@@ -1,15 +1,7 @@
 Charts that have to be changed
 
-transcost.html 17.95 seconds
-marketcap.html 26.06 seconds
-bitcoin.html 15.61 seconds
+marketcap.html 11.83 seconds
 minerrevcap.html 15.37 seconds
-minerrev.html 18.77 seconds
-minerrevntv.html 18.68 seconds
-minerfees.html 17.46 seconds
-minerfeesntv.html 16.88 seconds
-commit.html 15.27 seconds
-commitntv.html 19.87 seconds
 social.html 15.10 seconds
 social6.html 15.24 seconds
 social7.html 15.23 seconds
@@ -18,17 +10,26 @@ social2.html 27.54 seconds
 social3.html 15.11 seconds
 social5.html 6.82 seconds
 pricesats.html 5.61 seconds
-transcostntv.html 15.63 seconds
-percentage.html 12.20 seconds
-metcalfesats.html 14.21 seconds
-metcalfeusd.html 14.13 seconds
-coins.html 15.35 seconds
-extracoins.html 20.84 seconds
-inflation.html 17.76 seconds
-compinflation.html 28.91 seconds
-dailyemission.html 19.64 seconds
-dailyemissionntv.html 16.54 seconds
-sfmodel.html 15.81 seconds
+percentage.html 12.20 seconds           >>>>>>> done
+commit.html 15.27 seconds               >>>>>>> done
+commitntv.html 19.87 seconds            >>>>>>> done
+minerfees.html 17.46 seconds            >>>>>>> done
+minerfeesntv.html 16.88 seconds         >>>>>>> done
+minerrev.html 18.77 seconds             >>>>>>> done
+minerrevntv.html 18.68 seconds          >>>>>>> done
+metcalfesats.html 14.21 seconds         >>>>>>> done
+metcalfeusd.html 14.13 seconds          >>>>>>> done
+transcostntv.html 15.63 seconds         >>>>>>> done
+transcost.html 17.95 seconds            >>>>>>> done
+coins.html 15.35 seconds                >>>>>>> done
+extracoins.html 20.84 seconds           >>>>>>> done
+inflation.html 17.76 seconds            >>>>>>> done
+compinflation.html 28.91 seconds        >>>>>>> done
+dailyemission.html 19.64 seconds        >>>>>>> done
+dailyemissionntv.html 16.54 seconds     >>>>>>> done
+sfmodel.html 15.81 seconds              >>>>>>> done
+sfmodellin.html 0.14 seconds            >>>>>>> done
+bitcoin.html 15.61 seconds              >>>>>>> done
 
 Charts that won’t be changed
 
@@ -48,7 +49,6 @@ thermocap.html 0.08 seconds
 sharpe.html 0.10 seconds
 dominance.html 3.10 seconds
 rank.html 2.13 seconds
-sfmodellin.html 0.14 seconds
 sfmultiple.html 0.12 seconds
 hashrate.html 0.12 seconds
 hashprice.html 0.16 seconds
@@ -58,3 +58,27 @@ coincards.html 1.81 seconds
 merchants.html 1.72 seconds
 merchants_increase.html 1.68 seconds
 merchants_percentage.html 1.76 seconds
+tail_emission.html 0.55 seconds
+
+How it became
+
+sfmodel.html 0.05 seconds
+sfmodellin.html 0.04 seconds
+dailyemission.html 0.04 seconds
+dailyemissionntv.html 0.04 seconds
+compinflation.html 0.06 seconds
+bitcoin.html 0.17 seconds
+inflation.html 0.06 seconds
+coins.html 0.13 seconds
+extracoins.html 0.12 seconds
+transcost.html 0.09 seconds
+transcostntv.html 0.10 seconds
+metcalfesats.html 0.09 seconds
+metcalfeusd.html 0.17 seconds
+minerrev.html 0.10 seconds
+minerrevntv.html 0.10 seconds
+minerfeesntv.html 0.10 seconds
+minerfees.html 0.13 seconds
+commitntv.html 0.12 seconds
+commit.html 0.09 seconds
+percentage.html 0.09 seconds
