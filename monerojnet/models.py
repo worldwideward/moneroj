@@ -48,6 +48,7 @@ class Rank(models.Model):
 class Sfmodel(models.Model):
 	date = models.DateField()
 	priceusd = models.FloatField()
+	pricebtc = models.FloatField()
 	color = models.FloatField()
 	stocktoflow = models.FloatField()
 	greyline = models.FloatField()
@@ -91,6 +92,12 @@ class DailyData(models.Model):
 	xmr_commitusd = models.FloatField()
 	xmr_metcalfebtc = models.FloatField()
 	xmr_metcalfeusd = models.FloatField()
+	xmr_minerrevcap = models.FloatField()
+	btc_minerrevcap = models.FloatField()
+	xmr_marketcap = models.FloatField()
+	dash_marketcap = models.FloatField()
+	grin_marketcap = models.FloatField()
+	zcash_marketcap = models.FloatField()
 
 	def __str__(self):
 		return self.date

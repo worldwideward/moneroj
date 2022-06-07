@@ -1,7 +1,5 @@
 Charts that have to be changed
 
-marketcap.html 11.83 seconds
-minerrevcap.html 15.37 seconds
 social.html 15.10 seconds
 social6.html 15.24 seconds
 social7.html 15.23 seconds
@@ -9,7 +7,9 @@ social4.html 17.45 seconds
 social2.html 27.54 seconds
 social3.html 15.11 seconds
 social5.html 6.82 seconds
-pricesats.html 5.61 seconds
+pricesats.html 5.61 seconds             >>>>>>> done
+minerrevcap.html 15.37 seconds          >>>>>>> done
+marketcap.html 11.83 seconds            >>>>>>> done
 percentage.html 12.20 seconds           >>>>>>> done
 commit.html 15.27 seconds               >>>>>>> done
 commitntv.html 19.87 seconds            >>>>>>> done
@@ -82,3 +82,6 @@ minerfees.html 0.13 seconds
 commitntv.html 0.12 seconds
 commit.html 0.09 seconds
 percentage.html 0.09 seconds
+marketcap.html 0.37 seconds
+marketcap.html 0.20 seconds
+pricesats.html 0.09 seconds
