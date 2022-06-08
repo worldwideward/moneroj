@@ -1,12 +1,12 @@
 Charts that have to be changed
 
-social.html 15.10 seconds
-social6.html 15.24 seconds
-social7.html 15.23 seconds
-social4.html 17.45 seconds
-social2.html 27.54 seconds
-social3.html 15.11 seconds
-social5.html 6.82 seconds
+social.html 15.10 seconds               >>>>>>> done
+social6.html 15.24 seconds              >>>>>>> done
+social7.html 15.23 seconds              >>>>>>> done
+social4.html 17.45 seconds              >>>>>>> done
+social2.html 27.54 seconds              >>>>>>> done
+social3.html 15.11 seconds              >>>>>>> done
+social5.html 6.82 seconds               >>>>>>> done
 pricesats.html 5.61 seconds             >>>>>>> done
 minerrevcap.html 15.37 seconds          >>>>>>> done
 marketcap.html 11.83 seconds            >>>>>>> done
@@ -85,3 +85,11 @@ percentage.html 0.09 seconds
 marketcap.html 0.37 seconds
 marketcap.html 0.20 seconds
 pricesats.html 0.09 seconds
+social.html 0.26 seconds
+social6.html 0.31 seconds
+social7.html 0.22 seconds
+social4.html 0.26 seconds
+social2.html 0.33 seconds
+social3.html 0.23 seconds
+social5.html 7.21 seconds
+

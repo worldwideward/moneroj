@@ -94,10 +94,21 @@ class DailyData(models.Model):
 	xmr_metcalfeusd = models.FloatField()
 	xmr_minerrevcap = models.FloatField()
 	btc_minerrevcap = models.FloatField()
+	btc_marketcap = models.FloatField()
+	btc_priceusd = models.FloatField()
 	xmr_marketcap = models.FloatField()
 	dash_marketcap = models.FloatField()
 	grin_marketcap = models.FloatField()
 	zcash_marketcap = models.FloatField()
+	btc_subscriberCount = models.IntegerField()
+	btc_commentsPerHour = models.FloatField()
+	btc_postsPerHour = models.FloatField()
+	xmr_subscriberCount = models.IntegerField()
+	xmr_commentsPerHour = models.FloatField()
+	xmr_postsPerHour = models.FloatField()
+	crypto_subscriberCount = models.IntegerField()
+	crypto_commentsPerHour = models.FloatField()
+	crypto_postsPerHour = models.FloatField()
 
 	def __str__(self):
 		return self.date

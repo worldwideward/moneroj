@@ -367,11 +367,15 @@ def populate_database(request):
             data.btc_minerrevusd = 0
             data.btc_commitntv = 0
             data.btc_commitusd = 0
+            data.btc_priceusd = 0
+            data.btc_marketcap = 0
         else:
             data.btc_minerrevntv = coin_btc.revenue
             data.btc_minerrevusd = coin_btc.revenue*coin_btc.priceusd
             data.btc_commitntv = coin_btc.hashrate/(coin_btc.revenue)
             data.btc_commitusd = coin_btc.hashrate/(coin_btc.revenue*coin_btc.priceusd)
+            data.btc_priceusd = coin_btc.priceusd
+            data.btc_marketcap = coin_btc.priceusd*coin_btc.supply
 
         if coin_btc.supply == 0:
             data.btc_minerrevcap = 0
@@ -395,7 +399,7 @@ def populate_database(request):
         else:
             data.btc_supply = 0
 
-        if coin_btc.supply -  supply_btc < 0.000001:
+        if coin_btc.supply - supply_btc < 0.000001:
             data.btc_minerfeesntv = 0
             data.btc_minerfeesusd = 0
             data.btc_ntv = 0
@@ -595,6 +599,39 @@ def populate_database(request):
             data.grin_inflation = 0
             data.grin_marketcap = 0
     
+        socials = Social.objects.filter(name='Bitcoin').filter(date=coin_btc.date)
+        if socials:
+            for social in socials:
+                data.btc_subscriberCount = social.subscriberCount
+                data.btc_commentsPerHour = social.commentsPerHour
+                data.btc_postsPerHour = social.postsPerHour
+        else:
+            data.btc_subscriberCount = 0
+            data.btc_commentsPerHour = 0
+            data.btc_postsPerHour = 0
+        
+        socials = Social.objects.filter(name='Monero').filter(date=coin_btc.date)
+        if socials:
+            for social in socials:
+                data.xmr_subscriberCount = social.subscriberCount
+                data.xmr_commentsPerHour = social.commentsPerHour
+                data.xmr_postsPerHour = social.postsPerHour
+        else:
+            data.xmr_subscriberCount = 0
+            data.xmr_commentsPerHour = 0
+            data.xmr_postsPerHour = 0
+
+        socials = Social.objects.filter(name='CryptoCurrency').filter(date=coin_btc.date)
+        if socials:
+            for social in socials:
+                data.crypto_subscriberCount = social.subscriberCount
+                data.crypto_commentsPerHour = social.commentsPerHour
+                data.crypto_postsPerHour = social.postsPerHour
+        else:
+            data.crypto_subscriberCount = 0
+            data.crypto_commentsPerHour = 0
+            data.crypto_postsPerHour = 0
+
         data.save()
         count += 1
 
@@ -936,42 +973,37 @@ def articles(request):
 
 def social(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    data = DailyData.objects.order_by('date')
     dates = []
+    dates2 = []
     social_xmr = []
     social_crypto = []
     social_btc = []
     last_xmr = 0
     last_btc = 0
     last_crypto = 0
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
-    for social in socials:
-        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
-        if social.subscriberCount > last_btc:
-            last_btc = social.subscriberCount
-            social_btc.append(social.subscriberCount)       
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_subscriberCount > last_btc:
+            social_btc.append(item.btc_subscriberCount)
+            last_btc = item.btc_subscriberCount
         else:
-            social_btc.append(last_btc)   
-        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
-        if socialscrypto:
-            for socialcrypto in socialscrypto:
-                if socialcrypto.subscriberCount > last_crypto:
-                    social_crypto.append(socialcrypto.subscriberCount)
-                    last_crypto = socialcrypto.subscriberCount
-                else:
-                    social_crypto.append(last_crypto)
-        else:
-            social_crypto.append(last_crypto)
-        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
-        if socialsxmr:
-            for socialxmr in socialsxmr:
-                if socialxmr.subscriberCount > last_xmr:
-                    social_xmr.append(socialxmr.subscriberCount)
-                    last_xmr = socialxmr.subscriberCount
-                else:
-                    social_xmr.append(last_xmr)
+            social_btc.append(last_btc)
+
+        if item.xmr_subscriberCount > last_xmr:
+            social_xmr.append(item.xmr_subscriberCount)
+            last_xmr = item.xmr_subscriberCount
         else:
             social_xmr.append(last_xmr)
+
+        if item.crypto_subscriberCount > last_crypto:
+            social_crypto.append(item.crypto_subscriberCount)
+            last_crypto = item.crypto_subscriberCount
+        else:
+            social_crypto.append(last_crypto)
 
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
@@ -979,40 +1011,43 @@ def social(request):
     
     dt = 'social.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
+    context = {'dates': dates, 'dates2': dates2, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'monerojnet/social.html', context)
 
 def social2(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
     dates = []
     social_btc = []
     last_btc = 0
-    N = 1
-
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
-    for social in socials:
-        coins = Coin.objects.filter(date=social.date).filter(name='btc')
-        if coins:
-            for coin in coins:
-                if social.subscriberCount > 0 and coin.priceusd > 0 and coin.supply > 0:
-                    last_btc = ((coin.priceusd*coin.supply)**N)/social.subscriberCount
-                    social_btc.append(last_btc)       
-                    dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
     dates2 = []
     social_xmr = []
     last_xmr = 0
     N = 1
 
-    socials = Social.objects.order_by('date').filter(name='Monero')
-    for social in socials:
-        coins = Coin.objects.filter(date=social.date).filter(name='xmr')
-        if coins:
-            for coin in coins:
-                if social.subscriberCount > 0 and coin.priceusd > 0 and coin.supply > 0:
-                    last_xmr = ((coin.priceusd*coin.supply)**N)/social.subscriberCount
-                    social_xmr.append(last_xmr)       
-                    dates2.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
-    
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_subscriberCount > 0:
+            if item.btc_marketcap > 10000:
+                last_btc = ((item.btc_marketcap)**N)/item.btc_subscriberCount
+                social_btc.append(last_btc)
+            else:
+                social_btc.append('')
+        else:
+            social_btc.append(last_btc)
+
+        if item.xmr_subscriberCount > 0:
+            if item.xmr_marketcap > 10000:
+                last_xmr = ((item.xmr_marketcap)**N)/item.xmr_subscriberCount
+                social_xmr.append(last_xmr)
+            else:
+                social_xmr.append('')
+
+        else:
+            social_xmr.append(last_xmr)
+
     last_xmr = '$' + locale.format('%.0f', last_xmr, grouping=True)
     last_btc = '$' + locale.format('%.0f', last_btc, grouping=True)
     
@@ -1023,40 +1058,26 @@ def social2(request):
 
 def social3(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
     dates = []
     social_xmr = []
-    last_xmr = 0.001
     social_crypto = []
-    last_crypto = 0.001
+    last_xmr = 0
+    last_crypto = 0
 
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
-    for social in socials:
-        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
-        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
-        if socialsxmr:
-            for socialxmr in socialsxmr:
-                if socialxmr.subscriberCount > 0.001 and social.subscriberCount > 0.001:
-                    if socialxmr.subscriberCount/social.subscriberCount > 0.001:
-                        last_xmr = 100*(socialxmr.subscriberCount/social.subscriberCount)
-                        social_xmr.append(last_xmr)
-                    else:
-                        social_xmr.append(last_xmr)
-                else:
-                    social_xmr.append(last_xmr)
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_subscriberCount > 0 and item.xmr_subscriberCount > 0:
+            last_xmr = 100*(item.xmr_subscriberCount/item.btc_subscriberCount)
+            social_xmr.append(last_xmr)
         else:
             social_xmr.append(last_xmr)
-        
-        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
-        if socialscrypto:
-            for socialcrypto in socialscrypto:
-                if socialcrypto.subscriberCount > 0.001 and social.subscriberCount > 0.001:
-                    if socialcrypto.subscriberCount/social.subscriberCount > 0.001:
-                        last_crypto = 100*(socialcrypto.subscriberCount/social.subscriberCount)
-                        social_crypto.append(last_crypto)
-                    else:
-                        social_crypto.append(last_crypto)
-                else:
-                    social_crypto.append(last_crypto)
+
+        if item.btc_subscriberCount > 0 and item.crypto_subscriberCount > 0:
+            last_crypto = 100*(item.crypto_subscriberCount/item.btc_subscriberCount)
+            social_crypto.append(last_crypto)
         else:
             social_crypto.append(last_crypto)
 
@@ -1070,42 +1091,37 @@ def social3(request):
 
 def social4(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    data = DailyData.objects.order_by('date')
     dates = []
+    dates2 = []
     social_xmr = []
     social_crypto = []
     social_btc = []
     last_xmr = 0
     last_btc = 0
     last_crypto = 0
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
-    for social in socials:
-        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
-        if social.subscriberCount > last_btc:
-            last_btc = social.subscriberCount
-            social_btc.append(social.subscriberCount)       
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_subscriberCount > last_btc:
+            social_btc.append(item.btc_subscriberCount)
+            last_btc = item.btc_subscriberCount
         else:
-            social_btc.append(last_btc)   
-        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
-        if socialscrypto:
-            for socialcrypto in socialscrypto:
-                if socialcrypto.subscriberCount > last_crypto:
-                    social_crypto.append(socialcrypto.subscriberCount)
-                    last_crypto = socialcrypto.subscriberCount
-                else:
-                    social_crypto.append(last_crypto)
-        else:
-            social_crypto.append(last_crypto)
-        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
-        if socialsxmr:
-            for socialxmr in socialsxmr:
-                if socialxmr.subscriberCount > last_xmr:
-                    social_xmr.append(socialxmr.subscriberCount)
-                    last_xmr = socialxmr.subscriberCount
-                else:
-                    social_xmr.append(last_xmr)
+            social_btc.append(last_btc)
+
+        if item.xmr_subscriberCount > last_xmr:
+            social_xmr.append(item.xmr_subscriberCount)
+            last_xmr = item.xmr_subscriberCount
         else:
             social_xmr.append(last_xmr)
+
+        if item.crypto_subscriberCount > last_crypto:
+            social_crypto.append(item.crypto_subscriberCount)
+            last_crypto = item.crypto_subscriberCount
+        else:
+            social_crypto.append(last_crypto)
 
     N = 30
     last_btc = ''
@@ -1203,13 +1219,12 @@ def social5(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
-    pricexmr = []
-    dates = []
-    now_transactions = 0
     dates = []
     social_xmr = []
+    now_transactions = 0
     last_xmr = 0
     coins = Coin.objects.order_by('date').filter(name=symbol)
+
     if coins:
         for coin in coins:
             dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
@@ -1228,12 +1243,7 @@ def social5(request):
                 now_transactions = coin.transactions       
             else:
                 transactions.append('')
-            if coin.priceusd > 0.001:
-                pricexmr.append(coin.priceusd)
-            else:
-                pricexmr.append('')
     else:
-        pricexmr.append('')
         transactions.append('')
     
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
@@ -1241,12 +1251,12 @@ def social5(request):
     
     dt = 'social5.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'dates': dates, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'now_transactions': now_transactions, 'transactions': transactions, 'pricexmr': pricexmr}
+    context = {'dates': dates, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'now_transactions': now_transactions, 'transactions': transactions}
     return render(request, 'monerojnet/social5.html', context)
 
 def social6(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    data = DailyData.objects.order_by('date')
     dates = []
     social_xmr = []
     social_crypto = []
@@ -1254,35 +1264,27 @@ def social6(request):
     last_xmr = 0
     last_btc = 0
     last_crypto = 0
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
-    for social in socials:
-        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
-        if social.commentsPerHour*24 < last_btc/4:
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_commentsPerHour*24 < last_btc/4:
             social_btc.append(last_btc)
         else:
-            social_btc.append(social.commentsPerHour*24)
-            last_btc = social.commentsPerHour*24
-        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
-        if socialscrypto:
-            for socialcrypto in socialscrypto:
-                if socialcrypto.commentsPerHour*24 < last_crypto/4:
-                    social_crypto.append(last_crypto)
-                else:
-                    social_crypto.append(socialcrypto.commentsPerHour*24)
-                    last_crypto = socialcrypto.commentsPerHour*24
-        else:
-            social_crypto.append(last_crypto)
-        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
-        if socialsxmr:
-            for socialxmr in socialsxmr:
-                if socialxmr.commentsPerHour*24 < last_xmr/4:
-                    social_xmr.append(last_xmr)
-                else:
-                    social_xmr.append(socialxmr.commentsPerHour*24)
-                    last_xmr = socialxmr.commentsPerHour*24
+            last_btc = item.btc_commentsPerHour*24
+            social_btc.append(last_btc)
 
-        else:
+        if item.xmr_commentsPerHour*24 < last_xmr/4:
             social_xmr.append(last_xmr)
+        else:
+            last_xmr = item.xmr_commentsPerHour*24
+            social_xmr.append(last_xmr)
+
+        if item.crypto_commentsPerHour*24 < last_crypto/4:
+            social_crypto.append(last_crypto)
+        else:
+            last_crypto = item.crypto_commentsPerHour*24
+            social_crypto.append(last_crypto)
 
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
@@ -1295,7 +1297,7 @@ def social6(request):
 
 def social7(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    data = DailyData.objects.order_by('date')
     dates = []
     social_xmr = []
     social_crypto = []
@@ -1303,26 +1305,26 @@ def social7(request):
     last_xmr = 0
     last_btc = 0
     last_crypto = 0
-    socials = Social.objects.order_by('date').filter(name='Bitcoin')
-    for social in socials:
-        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
-        social_btc.append(social.postsPerHour*24)
-        last_btc = social.postsPerHour*24
-        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
-        if socialscrypto:
-            for socialcrypto in socialscrypto:
-                social_crypto.append(socialcrypto.postsPerHour*24)
-                last_crypto = socialcrypto.postsPerHour*24
-        else:
-            social_crypto.append(last_crypto)
-        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
-        if socialsxmr:
-            for socialxmr in socialsxmr:
-                social_xmr.append(socialxmr.postsPerHour*24)
-                last_xmr = socialxmr.postsPerHour*24
 
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_postsPerHour > 0:
+            last_btc = item.btc_postsPerHour*24
+            social_btc.append(last_btc)
+        else:
+            social_btc.append(last_btc)
+
+        if item.xmr_postsPerHour > 0:
+            last_xmr = item.xmr_postsPerHour*24
+            social_xmr.append(last_xmr)
         else:
             social_xmr.append(last_xmr)
+
+        if item.crypto_postsPerHour > 0:
+            last_crypto = item.crypto_postsPerHour*24
+            social_crypto.append(last_crypto)
+        else:
+            social_crypto.append(last_crypto)
 
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
@@ -4895,3 +4897,402 @@ def marketcap_old(request):
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'monerojnet/marketcap.html', context)
+
+
+def social_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    dates2 = []
+    social_xmr = []
+    social_crypto = []
+    social_btc = []
+    last_xmr = 0
+    last_btc = 0
+    last_crypto = 0
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    for social in socials:
+        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
+        if social.subscriberCount > last_btc:
+            last_btc = social.subscriberCount
+            social_btc.append(social.subscriberCount)       
+        else:
+            social_btc.append(last_btc)   
+        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
+        if socialscrypto:
+            for socialcrypto in socialscrypto:
+                if socialcrypto.subscriberCount > last_crypto:
+                    social_crypto.append(socialcrypto.subscriberCount)
+                    last_crypto = socialcrypto.subscriberCount
+                else:
+                    social_crypto.append(last_crypto)
+        else:
+            social_crypto.append(last_crypto)
+
+    socialsxmr = Social.objects.order_by('date').filter(name='Monero')
+    for socialxmr in socialsxmr:
+        dates2.append(datetime.datetime.strftime(socialxmr.date, '%Y-%m-%d'))
+        if socialxmr.subscriberCount > last_xmr:
+            social_xmr.append(socialxmr.subscriberCount)
+            last_xmr = socialxmr.subscriberCount
+        else:
+            social_xmr.append(last_xmr)
+
+    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
+    last_btc = locale.format('%.0f', last_btc, grouping=True)
+    last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    
+    dt = 'social.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'dates2': dates2, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
+    return render(request, 'monerojnet/social.html', context)
+
+def social2_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    social_btc = []
+    last_btc = 0
+    N = 1
+
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    for social in socials:
+        coins = Coin.objects.filter(date=social.date).filter(name='btc')
+        if coins:
+            for coin in coins:
+                if social.subscriberCount > 0 and coin.priceusd > 0 and coin.supply > 0:
+                    last_btc = ((coin.priceusd*coin.supply)**N)/social.subscriberCount
+                    social_btc.append(last_btc)       
+                    dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
+    dates2 = []
+    social_xmr = []
+    last_xmr = 0
+    N = 1
+
+    socials = Social.objects.order_by('date').filter(name='Monero')
+    for social in socials:
+        coins = Coin.objects.filter(date=social.date).filter(name='xmr')
+        if coins:
+            for coin in coins:
+                if social.subscriberCount > 0 and coin.priceusd > 0 and coin.supply > 0:
+                    last_xmr = ((coin.priceusd*coin.supply)**N)/social.subscriberCount
+                    social_xmr.append(last_xmr)       
+                    dates2.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
+    
+    last_xmr = '$' + locale.format('%.0f', last_xmr, grouping=True)
+    last_btc = '$' + locale.format('%.0f', last_btc, grouping=True)
+    
+    dt = 'social2.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'dates2': dates2, 'social_btc': social_btc, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'last_btc': last_btc}
+    return render(request, 'monerojnet/social2.html', context)
+
+def social3_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    social_xmr = []
+    last_xmr = 0.001
+    social_crypto = []
+    last_crypto = 0.001
+
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    for social in socials:
+        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
+        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
+        if socialsxmr:
+            for socialxmr in socialsxmr:
+                if socialxmr.subscriberCount > 0.001 and social.subscriberCount > 0.001:
+                    if socialxmr.subscriberCount/social.subscriberCount > 0.001:
+                        last_xmr = 100*(socialxmr.subscriberCount/social.subscriberCount)
+                        social_xmr.append(last_xmr)
+                    else:
+                        social_xmr.append(last_xmr)
+                else:
+                    social_xmr.append(last_xmr)
+        else:
+            social_xmr.append(last_xmr)
+        
+        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
+        if socialscrypto:
+            for socialcrypto in socialscrypto:
+                if socialcrypto.subscriberCount > 0.001 and social.subscriberCount > 0.001:
+                    if socialcrypto.subscriberCount/social.subscriberCount > 0.001:
+                        last_crypto = 100*(socialcrypto.subscriberCount/social.subscriberCount)
+                        social_crypto.append(last_crypto)
+                    else:
+                        social_crypto.append(last_crypto)
+                else:
+                    social_crypto.append(last_crypto)
+        else:
+            social_crypto.append(last_crypto)
+
+    last_xmr = locale.format('%.1f', last_xmr, grouping=True)+ '%'
+    last_crypto = locale.format('%.1f', last_crypto, grouping=True)+ '%'
+    
+    dt = 'social3.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'last_xmr': last_xmr, 'last_crypto': last_crypto}
+    return render(request, 'monerojnet/social3.html', context)
+
+def social4_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    dates = []
+    social_xmr = []
+    social_crypto = []
+    social_btc = []
+    last_xmr = 0
+    last_btc = 0
+    last_crypto = 0
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    for social in socials:
+        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
+        if social.subscriberCount > last_btc:
+            last_btc = social.subscriberCount
+            social_btc.append(social.subscriberCount)       
+        else:
+            social_btc.append(last_btc)   
+        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
+        if socialscrypto:
+            for socialcrypto in socialscrypto:
+                if socialcrypto.subscriberCount > last_crypto:
+                    social_crypto.append(socialcrypto.subscriberCount)
+                    last_crypto = socialcrypto.subscriberCount
+                else:
+                    social_crypto.append(last_crypto)
+        else:
+            social_crypto.append(last_crypto)
+        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
+        if socialsxmr:
+            for socialxmr in socialsxmr:
+                if socialxmr.subscriberCount > last_xmr:
+                    social_xmr.append(socialxmr.subscriberCount)
+                    last_xmr = socialxmr.subscriberCount
+                else:
+                    social_xmr.append(last_xmr)
+        else:
+            social_xmr.append(last_xmr)
+
+    N = 30
+    last_btc = ''
+    speed_btc = []
+    for i in range(len(social_btc)):
+        if i < N:
+            speed_btc.append(last_btc)
+        else:
+            if social_btc[i-N] != 0 and social_btc[i] - social_btc[i-N] != 0:
+                last_btc = 100*(social_btc[i] - social_btc[i-N])/social_btc[i-N]
+                if last_btc < 0.2:
+                    last_btc = 0.2
+                if last_btc > 1000:
+                    last_btc = ''
+            else:
+                last_btc = ''
+            speed_btc.append(last_btc)
+
+    last_btc = ''
+    newcomers_btc = []
+    for i in range(len(social_btc)):
+        if i < N:
+            newcomers_btc.append(last_btc)
+        else:
+            last_btc = (social_btc[i] - social_btc[i-N])
+            if last_btc < 10:
+                last_btc = ''
+            newcomers_btc.append(last_btc)
+
+    last_crypto = ''
+    speed_crypto = []
+    for i in range(len(social_crypto)):
+        if i < N:
+            speed_crypto.append(last_crypto)
+        else:
+            if social_crypto[i-N] != 0 and social_crypto[i] - social_crypto[i-N] != 0:
+                last_crypto = 100*(social_crypto[i] - social_crypto[i-N])/social_crypto[i-N]
+                if last_crypto < 0.2:
+                    last_crypto = 0.2
+                if last_crypto > 1000:
+                    last_crypto = ''
+            else:
+                last_crypto = ''
+            speed_crypto.append(last_crypto)
+
+    last_crypto = ''
+    newcomers_crypto = []
+    for i in range(len(social_crypto)):
+        if i < N:
+            newcomers_crypto.append(last_crypto)
+        else:
+            last_crypto = (social_crypto[i] - social_crypto[i-N])
+            if last_crypto < 2:
+                last_crypto = ''
+            newcomers_crypto.append(last_crypto)
+
+
+    last_xmr = ''
+    speed_xmr = []
+    for i in range(len(social_xmr)):
+        if i < N:
+            speed_xmr.append(last_xmr)
+        else:
+            if social_xmr[i-N] != 0 and social_xmr[i] - social_xmr[i-N] != 0:
+                last_xmr = 100*(social_xmr[i] - social_xmr[i-N])/social_xmr[i-N]
+                if last_xmr < 0.2:
+                    last_xmr = 0.2
+                if last_xmr > 1000:
+                    last_xmr = ''
+            else:
+                last_xmr = ''
+            speed_xmr.append(last_xmr)
+
+    last_xmr = ''
+    newcomers_xmr = []
+    for i in range(len(social_xmr)):
+        if i < N:
+            newcomers_xmr.append(last_xmr)
+        else:
+            last_xmr = (social_xmr[i] - social_xmr[i-N])
+            if last_xmr < 0:
+                last_xmr = ''
+            newcomers_xmr.append(last_xmr)
+
+    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
+    last_btc = locale.format('%.0f', last_btc, grouping=True)
+    last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    
+    dt = 'social4.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'speed_xmr': speed_xmr, 'speed_crypto': speed_crypto, 'speed_btc': speed_btc, 'newcomers_xmr': newcomers_xmr, 'newcomers_btc': newcomers_btc, 'newcomers_crypto': newcomers_crypto, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
+    return render(request, 'monerojnet/social4.html', context)
+
+def social5_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    transactions = []
+    pricexmr = []
+    dates = []
+    now_transactions = 0
+    dates = []
+    social_xmr = []
+    last_xmr = 0
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    if coins:
+        for coin in coins:
+            dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+            socials = Social.objects.filter(date=coin.date).filter(name='Monero')
+            if socials:
+                for social in socials:
+                    if social.subscriberCount > last_xmr:
+                        last_xmr = social.subscriberCount
+                        social_xmr.append(social.subscriberCount)       
+                    else:
+                        social_xmr.append(last_xmr)   
+            else:
+                social_xmr.append(last_xmr)
+            if coin.transactions > 200:
+                transactions.append(coin.transactions)
+                now_transactions = coin.transactions       
+            else:
+                transactions.append('')
+            if coin.priceusd > 0.001:
+                pricexmr.append(coin.priceusd)
+            else:
+                pricexmr.append('')
+    else:
+        pricexmr.append('')
+        transactions.append('')
+    
+    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
+    now_transactions = locale.format('%.0f', now_transactions, grouping=True)
+    
+    dt = 'social5.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'now_transactions': now_transactions, 'transactions': transactions, 'pricexmr': pricexmr}
+    return render(request, 'monerojnet/social5.html', context)
+
+def social6_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    dates = []
+    social_xmr = []
+    social_crypto = []
+    social_btc = []
+    last_xmr = 0
+    last_btc = 0
+    last_crypto = 0
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    for social in socials:
+        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
+        if social.commentsPerHour*24 < last_btc/4:
+            social_btc.append(last_btc)
+        else:
+            social_btc.append(social.commentsPerHour*24)
+            last_btc = social.commentsPerHour*24
+        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
+        if socialscrypto:
+            for socialcrypto in socialscrypto:
+                if socialcrypto.commentsPerHour*24 < last_crypto/4:
+                    social_crypto.append(last_crypto)
+                else:
+                    social_crypto.append(socialcrypto.commentsPerHour*24)
+                    last_crypto = socialcrypto.commentsPerHour*24
+        else:
+            social_crypto.append(last_crypto)
+        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
+        if socialsxmr:
+            for socialxmr in socialsxmr:
+                if socialxmr.commentsPerHour*24 < last_xmr/4:
+                    social_xmr.append(last_xmr)
+                else:
+                    social_xmr.append(socialxmr.commentsPerHour*24)
+                    last_xmr = socialxmr.commentsPerHour*24
+
+        else:
+            social_xmr.append(last_xmr)
+
+    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
+    last_btc = locale.format('%.0f', last_btc, grouping=True)
+    last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    
+    dt = 'social6.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
+    return render(request, 'monerojnet/social6.html', context)
+
+def social7_old(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    dates = []
+    social_xmr = []
+    social_crypto = []
+    social_btc = []
+    last_xmr = 0
+    last_btc = 0
+    last_crypto = 0
+    socials = Social.objects.order_by('date').filter(name='Bitcoin')
+    for social in socials:
+        dates.append(datetime.datetime.strftime(social.date, '%Y-%m-%d'))
+        social_btc.append(social.postsPerHour*24)
+        last_btc = social.postsPerHour*24
+        socialscrypto = Social.objects.filter(date=social.date).filter(name='CryptoCurrency')
+        if socialscrypto:
+            for socialcrypto in socialscrypto:
+                social_crypto.append(socialcrypto.postsPerHour*24)
+                last_crypto = socialcrypto.postsPerHour*24
+        else:
+            social_crypto.append(last_crypto)
+        socialsxmr = Social.objects.filter(date=social.date).filter(name='Monero')
+        if socialsxmr:
+            for socialxmr in socialsxmr:
+                social_xmr.append(socialxmr.postsPerHour*24)
+                last_xmr = socialxmr.postsPerHour*24
+
+        else:
+            social_xmr.append(last_xmr)
+
+    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
+    last_btc = locale.format('%.0f', last_btc, grouping=True)
+    last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    
+    dt = 'social7.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
+    return render(request, 'monerojnet/social7.html', context)
