@@ -83,7 +83,6 @@ commitntv.html 0.12 seconds
 commit.html 0.09 seconds
 percentage.html 0.09 seconds
 marketcap.html 0.37 seconds
-marketcap.html 0.20 seconds
 pricesats.html 0.09 seconds
 social.html 0.26 seconds
 social6.html 0.31 seconds
@@ -91,5 +90,8 @@ social7.html 0.22 seconds
 social4.html 0.26 seconds
 social2.html 0.33 seconds
 social3.html 0.23 seconds
-social5.html 7.21 seconds
+social5.html 0.25 seconds
 
+Total that would take = 494,44 seconds
+Total that it's taking = 22,70 seconds
+Loading time reduction = 95,36%

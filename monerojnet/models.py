@@ -63,6 +63,7 @@ class DailyData(models.Model):
 	xmr_usd = models.FloatField()
 	xmr_ntv = models.FloatField()
 	xmr_transacpercentage = models.FloatField()
+	xmr_transactions = models.FloatField()
 	xmr_priceusd = models.FloatField()
 	xmr_pricebtc = models.FloatField()
 	btc_inflation = models.FloatField()
