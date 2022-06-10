@@ -57,24 +57,43 @@ class Sfmodel(models.Model):
 		return self.date
 
 class DailyData(models.Model):
+	# Date field
 	date = models.DateField()
-	btc_usd = models.FloatField()
-	btc_ntv = models.FloatField()
-	xmr_usd = models.FloatField()
-	xmr_ntv = models.FloatField()
-	xmr_transacpercentage = models.FloatField()
-	xmr_transactions = models.FloatField()
+
+	# Basic information
+	btc_priceusd = models.FloatField()
 	xmr_priceusd = models.FloatField()
 	xmr_pricebtc = models.FloatField()
+
+	# Marketcap charts
+	btc_marketcap = models.FloatField()
+	xmr_marketcap = models.FloatField()
+	dash_marketcap = models.FloatField()
+	grin_marketcap = models.FloatField()
+	zcash_marketcap = models.FloatField()
+
+	# Transactions charts
+	xmr_transacpercentage = models.FloatField()
+	xmr_transactions = models.FloatField()
+	btc_supply = models.IntegerField()
+	xmr_supply = models.IntegerField()
+
+	# Issuance charts
 	btc_inflation = models.FloatField()
 	xmr_inflation = models.FloatField()
 	dash_inflation = models.FloatField()
 	grin_inflation = models.FloatField()
 	zcash_inflation = models.FloatField()
-	btc_supply = models.IntegerField()
-	xmr_supply = models.IntegerField()
+	xmr_metcalfebtc = models.FloatField()
+	xmr_metcalfeusd = models.FloatField()
 	btc_return = models.FloatField()
 	xmr_return = models.FloatField()
+	btc_emissionusd = models.FloatField()
+	btc_emissionntv = models.FloatField()
+	xmr_emissionusd = models.FloatField()
+	xmr_emissionntv = models.FloatField()
+
+	# Mining charts
 	btc_minerrevntv = models.FloatField()
 	xmr_minerrevntv = models.FloatField()
 	btc_minerrevusd = models.FloatField()
@@ -87,20 +106,14 @@ class DailyData(models.Model):
 	xmr_transcostntv = models.FloatField()
 	btc_transcostusd = models.FloatField()
 	xmr_transcostusd = models.FloatField()
+	xmr_minerrevcap = models.FloatField()
+	btc_minerrevcap = models.FloatField()
 	btc_commitntv = models.FloatField()
 	xmr_commitntv = models.FloatField()
 	btc_commitusd = models.FloatField()
 	xmr_commitusd = models.FloatField()
-	xmr_metcalfebtc = models.FloatField()
-	xmr_metcalfeusd = models.FloatField()
-	xmr_minerrevcap = models.FloatField()
-	btc_minerrevcap = models.FloatField()
-	btc_marketcap = models.FloatField()
-	btc_priceusd = models.FloatField()
-	xmr_marketcap = models.FloatField()
-	dash_marketcap = models.FloatField()
-	grin_marketcap = models.FloatField()
-	zcash_marketcap = models.FloatField()
+
+	# Reddit charts
 	btc_subscriberCount = models.IntegerField()
 	btc_commentsPerHour = models.FloatField()
 	btc_postsPerHour = models.FloatField()

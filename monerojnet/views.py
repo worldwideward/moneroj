@@ -17,7 +17,7 @@ from datetime import timezone
 import pygsheets
 from django.contrib.auth.decorators import login_required
 from requests import Session
-from psaw import PushshiftAPI    #library Pushshift
+from psaw import PushshiftAPI
 from django.contrib.staticfiles.storage import staticfiles_storage  
 
 ###########################################
@@ -875,186 +875,220 @@ def check_new_social(symbol):
         social.save()
     return True
 
-def update_database():
-    then = date.today() - timedelta(5)
-    now = date.today() + timedelta(1)
+# Update database DailyData with most recent coin data
+def update_database(date_request=None):
+    if not(date_request):
+        date_request = date.today()
+    else:
+        date_request = datetime.datetime.strptime(date_request, '%Y-%m-%d')
 
-    date_aux = then
-    date_aux2 = then - timedelta(1)
-    print('updating database...')
-    try:
-        coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
-        coin_btc = Coin.objects.filter(name='btc').get(date=date_aux)
-        coin_dash = Coin.objects.filter(name='dash').get(date=date_aux)
-        coin_zcash = Coin.objects.filter(name='zec').get(date=date_aux)
-        coin_grin = Coin.objects.filter(name='grin').get(date=date_aux)
+    for count in range(5, 0, -1):
+        date_aux = date_request - timedelta(count)
+        date_aux2 = date_aux - timedelta(1)
+        print('updating data for ' + str(date_aux))
+        try:
+            coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
+            coin_btc = Coin.objects.filter(name='btc').get(date=date_aux)
+            coin_dash = Coin.objects.filter(name='dash').get(date=date_aux)
+            coin_zcash = Coin.objects.filter(name='zec').get(date=date_aux)
+            coin_grin = Coin.objects.filter(name='grin').get(date=date_aux)
 
-        coin_xmr2 = Coin.objects.filter(name='xmr').get(date=date_aux2)
-        coin_btc2 = Coin.objects.filter(name='btc').get(date=date_aux2)
-    except:
-        return False
+            coin_xmr2 = Coin.objects.filter(name='xmr').get(date=date_aux2)
+            coin_btc2 = Coin.objects.filter(name='btc').get(date=date_aux2)
 
-    try:
-        data = Sfmodel.objects.get(date=coin_xmr.date)
-    except:
-        data = Sfmodel()
-        data.priceusd = 0
-        data.pricebtc = 0
-        data.stocktoflow = 0
-        data.greyline = 0
-        data.color = 0
-        data.date = coin_xmr.date
+            count_aux = 0
+            found = False
+            while count_aux < 100 and not(found):
+                try:
+                    date_aux2 = date_aux - timedelta(count_aux)
+                    social_btc = Social.objects.filter(name='Bitcoin').get(date=date_aux2)
+                    social_xmr = Social.objects.filter(name='Monero').get(date=date_aux2)
+                    social_crypto = Social.objects.filter(name='CryptoCurrency').get(date=date_aux2)
+                    found = True
+                except:
+                    count_aux += 1
+                    found = False
+        except:
+            return count
+
+        try:
+            data = Sfmodel.objects.get(date=coin_xmr.date)
+        except:
+            data = Sfmodel()
+            data.priceusd = 0
+            data.pricebtc = 0
+            data.stocktoflow = 0
+            data.greyline = 0
+            data.color = 0
+            data.date = coin_xmr.date
+            
+        if data.pricebtc == 0:
+            data.pricebtc = coin_xmr.pricebtc
         
-    if data.pricebtc == 0:
-        data.pricebtc = coin_xmr.pricebtc
-    
-    if data.priceusd == 0:
-        data.priceusd = coin_xmr.priceusd
+        if data.priceusd == 0:
+            data.priceusd = coin_xmr.priceusd
 
-    if data.stocktoflow == 0:
-        supply = int(coin_xmr.supply)*10**12
-        reward = (2**64 -1 - supply) >> 19
-        if reward < 0.6*(10**12):
-            reward = 0.6*(10**12)
-        inflation = 100*reward*720*365/supply
-        data.stocktoflow = (100/(inflation))**1.65
+        if data.stocktoflow == 0:
+            supply = int(coin_xmr.supply)*10**12
+            reward = (2**64 -1 - supply) >> 19
+            if reward < 0.6*(10**12):
+                reward = 0.6*(10**12)
+            inflation = 100*reward*720*365/supply
+            data.stocktoflow = (100/(inflation))**1.65
 
-    if data.color == 0:
-        v0 = 0.002
-        delta = (0.015 - 0.002)/(6*365)
-        data.color = 30*coin_xmr.pricebtc/(int(coin_xmr.id)*delta + v0)
+        if data.color == 0:
+            v0 = 0.002
+            delta = (0.015 - 0.002)/(6*365)
+            data.color = 30*coin_xmr.pricebtc/(int(coin_xmr.id)*delta + v0)
 
-    data.save()
+        data.save()
 
-    try:
-        data = DailyData.objects.get(date=coin_xmr.date)
-    except:
-        data = DailyData()
-        # Date field
-        data.date = coin_xmr.date
-        # Basic information
-        data.btc_priceusd = 0
-        data.xmr_priceusd = 0
-        data.xmr_pricebtc = 0
-        # Marketcap charts
-        data.btc_marketcap = 0
-        data.xmr_marketcap = 0
-        data.dash_marketcap = 0
-        data.grin_marketcap = 0
-        data.zcash_marketcap = 0
-        # Transactions charts
-        data.xmr_transacpercentage = 0
-        data.xmr_transactions = 0
-        data.btc_supply = 0
-        data.xmr_supply = 0
-        # Issuance charts
-        data.btc_inflation = 0
-        data.xmr_inflation = 0
-        data.dash_inflation = 0
-        data.grin_inflation = 0
-        data.zcash_inflation = 0
-        data.xmr_metcalfebtc = 0
-        data.xmr_metcalfeusd = 0
-        data.btc_return = 0
-        data.xmr_return = 0
-        data.btc_emissionusd = 0
-        data.btc_emissionntv = 0
-        data.xmr_emissionusd = 0
-        data.xmr_emissionntv = 0
-        # Mining charts
-        data.btc_minerrevntv = 0
-        data.xmr_minerrevntv = 0
-        data.btc_minerrevusd = 0
-        data.xmr_minerrevusd = 0
-        data.btc_minerfeesntv = 0
-        data.xmr_minerfeesntv = 0
-        data.btc_minerfeesusd = 0
-        data.xmr_minerfeesusd = 0
-        data.btc_transcostntv = 0
-        data.xmr_transcostntv = 0
-        data.btc_transcostusd = 0
-        data.xmr_transcostusd = 0
-        data.xmr_minerrevcap = 0
-        data.btc_minerrevcap = 0
-        data.btc_commitntv = 0
-        data.xmr_commitntv = 0
-        data.btc_commitusd = 0
-        data.xmr_commitusd = 0
-        # Reddit charts
-        data.btc_subscriberCount = 0
-        data.btc_commentsPerHour = 0
-        data.btc_postsPerHour = 0
-        data.xmr_subscriberCount = 0
-        data.xmr_commentsPerHour = 0
-        data.xmr_postsPerHour = 0
-        data.crypto_subscriberCount = 0
-        data.crypto_commentsPerHour = 0
-        data.crypto_postsPerHour = 0
+        try:
+            data = DailyData.objects.get(date=coin_xmr.date)
+        except: 
+            data = DailyData()
+            # Date field
+            data.date = coin_xmr.date
+            # Basic information
+            data.btc_priceusd = 0
+            data.xmr_priceusd = 0
+            data.xmr_pricebtc = 0
+            # Marketcap charts
+            data.btc_marketcap = 0
+            data.xmr_marketcap = 0
+            data.dash_marketcap = 0
+            data.grin_marketcap = 0
+            data.zcash_marketcap = 0
+            # Transactions charts
+            data.xmr_transacpercentage = 0
+            data.xmr_transactions = 0
+            data.btc_supply = 0
+            data.xmr_supply = 0
+            # Issuance charts
+            data.btc_inflation = 0
+            data.xmr_inflation = 0
+            data.dash_inflation = 0
+            data.grin_inflation = 0
+            data.zcash_inflation = 0
+            data.xmr_metcalfebtc = 0
+            data.xmr_metcalfeusd = 0
+            data.btc_return = 0
+            data.xmr_return = 0
+            data.btc_emissionusd = 0
+            data.btc_emissionntv = 0
+            data.xmr_emissionusd = 0
+            data.xmr_emissionntv = 0
+            # Mining charts
+            data.btc_minerrevntv = 0
+            data.xmr_minerrevntv = 0
+            data.btc_minerrevusd = 0
+            data.xmr_minerrevusd = 0
+            data.btc_minerfeesntv = 0
+            data.xmr_minerfeesntv = 0
+            data.btc_minerfeesusd = 0
+            data.xmr_minerfeesusd = 0
+            data.btc_transcostntv = 0
+            data.xmr_transcostntv = 0
+            data.btc_transcostusd = 0
+            data.xmr_transcostusd = 0
+            data.xmr_minerrevcap = 0
+            data.btc_minerrevcap = 0
+            data.btc_commitntv = 0
+            data.xmr_commitntv = 0
+            data.btc_commitusd = 0
+            data.xmr_commitusd = 0
+            # Reddit charts
+            data.btc_subscriberCount = 0
+            data.btc_commentsPerHour = 0
+            data.btc_postsPerHour = 0
+            data.xmr_subscriberCount = 0
+            data.xmr_commentsPerHour = 0
+            data.xmr_postsPerHour = 0
+            data.crypto_subscriberCount = 0
+            data.crypto_commentsPerHour = 0
+            data.crypto_postsPerHour = 0
 
-    # Date field
-    date = coin_xmr.date
-    # Basic information
-    data.btc_priceusd = coin_btc.priceusd
-    data.xmr_priceusd = coin_xmr.priceusd
-    data.xmr_pricebtc = coin_xmr.pricebtc
-    # Marketcap charts
-    data.btc_marketcap = coin_btc.priceusd*coin_btc.supply
-    data.xmr_marketcap = coin_xmr.priceusd*coin_xmr.supply
-    data.dash_marketcap = coin_dash.priceusd*coin_dash.supply
-    data.grin_marketcap = coin_grin.priceusd*coin_grin.supply
-    data.zcash_marketcap = coin_zcash.priceusd*coin_zcash.supply
-    # Transactions charts
-    data.xmr_transacpercentage = coin_xmr.transactions/coin_btc.transactions
-    data.xmr_transactions = coin_xmr.transactions
-    data.btc_supply = coin_btc.supply
-    data.xmr_supply = coin_xmr.supply
-    # Issuance charts
-    data.btc_inflation = coin_btc.inflation
-    data.xmr_inflation = coin_xmr.inflation
-    data.dash_inflation = coin_dash.inflation
-    data.grin_inflation = coin_grin.inflation
-    data.zcash_inflation = coin_zcash.inflation
-    data.xmr_metcalfebtc = coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
-    data.xmr_metcalfeusd = coin_btc.priceusd*coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
-    data.btc_return = coin_btc.priceusd/30
-    data.xmr_return = coin_xmr.priceusd/5.01
-    data.btc_emissionusd = (coin_btc.supply - coin_btc2.supply)*coin_btc.priceusd
-    data.btc_emissionntv = coin_btc.supply - coin_btc2.supply
-    data.xmr_emissionusd = (coin_xmr.supply - coin_xmr2.supply)*coin_xmr.priceusd
-    data.xmr_emissionntv = coin_xmr.supply - coin_xmr2.supply
-    # Mining charts
-    data.btc_minerrevntv = coin_btc.revenue
-    data.xmr_minerrevntv = coin_xmr.revenue
-    data.btc_minerrevusd = coin_btc.revenue*coin_btc.priceusd
-    data.xmr_minerrevusd = coin_xmr.revenue*coin_xmr.priceusd
-    data.btc_minerfeesntv = coin_btc.revenue - coin_btc.supply + coin_btc2.supply
-    data.xmr_minerfeesntv = coin_xmr.revenue - coin_xmr.supply + coin_xmr2.supply
-    data.btc_minerfeesusd = (coin_btc.revenue - coin_btc.supply + coin_btc2.supply)*coin_btc.priceusd
-    data.xmr_minerfeesusd = (coin_xmr.revenue - coin_xmr.supply + coin_xmr2.supply)*coin_xmr.priceusd
-    data.btc_transcostntv = 0
-    data.xmr_transcostntv = 0
-    data.btc_transcostusd = 0
-    data.xmr_transcostusd = 0
-    data.xmr_minerrevcap = 0
-    data.btc_minerrevcap = 0
-    data.btc_commitntv = 0
-    data.xmr_commitntv = 0
-    data.btc_commitusd = 0
-    data.xmr_commitusd = 0
-    # Reddit charts
-    data.btc_subscriberCount = 0
-    data.btc_commentsPerHour = 0
-    data.btc_postsPerHour = 0
-    data.xmr_subscriberCount = 0
-    data.xmr_commentsPerHour = 0
-    data.xmr_postsPerHour = 0
-    data.crypto_subscriberCount = 0
-    data.crypto_commentsPerHour = 0
-    data.crypto_postsPerHour = 0
+        try:
+            # Date field
+            data.date = coin_xmr.date
+            # Basic information
+            data.btc_priceusd = coin_btc.priceusd
+            data.xmr_priceusd = coin_xmr.priceusd
+            data.xmr_pricebtc = coin_xmr.pricebtc
+            # Marketcap charts
+            data.btc_marketcap = coin_btc.priceusd*coin_btc.supply
+            data.xmr_marketcap = coin_xmr.priceusd*coin_xmr.supply
+            data.dash_marketcap = coin_dash.priceusd*coin_dash.supply
+            data.grin_marketcap = coin_grin.priceusd*coin_grin.supply
+            data.zcash_marketcap = coin_zcash.priceusd*coin_zcash.supply
+            # Transactions charts
+            try:
+                data.xmr_transacpercentage = coin_xmr.transactions/coin_btc.transactions
+            except:
+                pass
+            data.xmr_transactions = coin_xmr.transactions
+            data.btc_supply = coin_btc.supply
+            data.xmr_supply = coin_xmr.supply
+            # Issuance charts
+            data.btc_inflation = coin_btc.inflation
+            data.xmr_inflation = coin_xmr.inflation
+            data.dash_inflation = coin_dash.inflation
+            data.grin_inflation = coin_grin.inflation
+            data.zcash_inflation = coin_zcash.inflation
+            try:
+                data.xmr_metcalfebtc = coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
+                data.xmr_metcalfeusd = coin_btc.priceusd*coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
+            except:
+                pass
+            data.btc_return = coin_btc.priceusd/30
+            data.xmr_return = coin_xmr.priceusd/5.01
+            data.btc_emissionusd = (coin_btc.supply - coin_btc2.supply)*coin_btc.priceusd
+            data.btc_emissionntv = coin_btc.supply - coin_btc2.supply
+            data.xmr_emissionusd = (coin_xmr.supply - coin_xmr2.supply)*coin_xmr.priceusd
+            data.xmr_emissionntv = coin_xmr.supply - coin_xmr2.supply
+            # Mining charts
+            data.btc_minerrevntv = coin_btc.revenue
+            data.xmr_minerrevntv = coin_xmr.revenue
+            data.btc_minerrevusd = coin_btc.revenue*coin_btc.priceusd
+            data.xmr_minerrevusd = coin_xmr.revenue*coin_xmr.priceusd
+            data.btc_minerfeesntv = coin_btc.revenue - coin_btc.supply + coin_btc2.supply
+            data.xmr_minerfeesntv = coin_xmr.revenue - coin_xmr.supply + coin_xmr2.supply
+            data.btc_minerfeesusd = (coin_btc.revenue - coin_btc.supply + coin_btc2.supply)*coin_btc.priceusd
+            data.xmr_minerfeesusd = (coin_xmr.revenue - coin_xmr.supply + coin_xmr2.supply)*coin_xmr.priceusd
+            try:
+                data.btc_transcostntv = coin_btc.fee/coin_btc.transactions
+                data.xmr_transcostntv = coin_xmr.fee/coin_xmr.transactions
+                data.btc_transcostusd = coin_btc.priceusd*coin_btc.fee/coin_btc.transactions
+                data.xmr_transcostusd = coin_xmr.priceusd*coin_xmr.fee/coin_xmr.transactions
+            except:
+                pass
+            try:
+                data.xmr_minerrevcap = 365*100*coin_xmr.revenue/coin_xmr.supply
+                data.btc_minerrevcap = 365*100*coin_btc.revenue/coin_btc.supply
+            except:
+                pass
+            try:
+                data.btc_commitntv = coin_btc.hashrate/(coin_btc.revenue)
+                data.xmr_commitntv = coin_xmr.hashrate/(coin_xmr.revenue)
+                data.btc_commitusd = coin_btc.priceusd*coin_btc.hashrate/(coin_btc.revenue)
+                data.xmr_commitusd = coin_xmr.priceusd*coin_xmr.hashrate/(coin_xmr.revenue)
+            except:
+                pass
+            # Reddit charts
+            data.btc_subscriberCount = social_btc.subscriberCount
+            data.btc_commentsPerHour = social_btc.commentsPerHour
+            data.btc_postsPerHour = social_btc.postsPerHour
+            data.xmr_subscriberCount = social_xmr.subscriberCount
+            data.xmr_commentsPerHour = social_xmr.commentsPerHour
+            data.xmr_postsPerHour = social_xmr.postsPerHour
+            data.crypto_subscriberCount = social_crypto.subscriberCount
+            data.crypto_commentsPerHour = social_crypto.commentsPerHour
+            data.crypto_postsPerHour = social_crypto.postsPerHour
+            data.save()
+        except:
+            return count
 
-    data.save()
-
-    return
+    return count
 
 ###########################################
 # Views
@@ -2904,6 +2938,9 @@ def sfmodel(request):
         symbol = 'xmr'
         url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
+
+        #print('updating database')
+        update_database()
         #print('done')
 
     dates = []
