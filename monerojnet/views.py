@@ -643,6 +643,17 @@ def populate_database(request):
     context = {'message': message}
     return render(request, 'monerojnet/maintenance.html', context)
 
+# Update database with between certain dates
+# Only authorized users can do this
+@login_required 
+def update_database_admin(request, date_from, date_to):
+
+    update_database(date_from, date_to)
+
+    message = 'Database updated from ' + str(date_from) + ' to ' + str(date_to)
+    context = {'message': message}
+    return render(request, 'monerojnet/maintenance.html', context)
+
 ###########################################
 # Other useful functions                  
 ###########################################
@@ -738,7 +749,7 @@ def get_latest_price():
     with open("settings.json") as file:
         data = json.load(file)
 
-        url = data["metrics_provider"][0]["price_url"]
+        url = data["metrics_provider"][0]["price_url_old"]
         parameters = {
             'convert':'USD',
         }
@@ -754,6 +765,7 @@ def get_latest_price():
             response = session.get(url, params=parameters)
             data = json.loads(response.text)
             print('getting latest data')
+            print(data)
             try:
                 if data['data']['XMR']['cmc_rank']:
                     print('new data received')
@@ -772,7 +784,7 @@ def get_latest_price():
 # Get latest dominance value and update
 def update_dominance(data):
     if not(data):
-        #print('error updating dominance')
+        print('error updating dominance')
         return False
     else:
         dominance = Dominance()
@@ -796,8 +808,9 @@ def update_dominance(data):
             wks.update_value(cell, dominance.dominance)
             cell = 'A' + str(k + 3)
             wks.update_value(cell, dominance.date)
+            print('spreadsheet updated')
         else:
-            #print('spreadsheet with the latest data already')
+            print('spreadsheet already with the latest data')
             return False
 
     #print('updated')
@@ -807,6 +820,7 @@ def update_dominance(data):
 def update_rank():
     data = get_latest_price()
     if not(data):
+        print('error updating rank')
         return False
     else:
         rank = Rank()
@@ -830,9 +844,9 @@ def update_rank():
             wks.update_value(cell, rank.rank)
             cell = 'A' + str(k + 3)
             wks.update_value(cell, rank.date)
-            #print('spreadsheet updated')
+            print('spreadsheet updated')
         else:
-            #print('spreadsheet with the latest data already')
+            print('spreadsheet already with the latest data')
             return data
 
     #print('updated')
@@ -876,14 +890,18 @@ def check_new_social(symbol):
     return True
 
 # Update database DailyData with most recent coin data
-def update_database(date_request=None):
-    if not(date_request):
-        date_request = date.today()
+def update_database(date_from=None, date_to=None):
+    if not(date_from) or not(date_to):
+        date_to = date.today()
+        date_from = date_to - timedelta(5)
     else:
-        date_request = datetime.datetime.strptime(date_request, '%Y-%m-%d')
-
-    for count in range(5, 0, -1):
-        date_aux = date_request - timedelta(count)
+        date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+        date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+    
+    count = 0
+    date_aux = date_from
+    while date_aux < date_to:
+        date_aux = date_from + timedelta(count)
         date_aux2 = date_aux - timedelta(1)
         print('updating data for ' + str(date_aux))
         try:
@@ -921,13 +939,10 @@ def update_database(date_request=None):
             data.greyline = 0
             data.color = 0
             data.date = coin_xmr.date
-            
         if data.pricebtc == 0:
             data.pricebtc = coin_xmr.pricebtc
-        
         if data.priceusd == 0:
             data.priceusd = coin_xmr.priceusd
-
         if data.stocktoflow == 0:
             supply = int(coin_xmr.supply)*10**12
             reward = (2**64 -1 - supply) >> 19
@@ -935,12 +950,10 @@ def update_database(date_request=None):
                 reward = 0.6*(10**12)
             inflation = 100*reward*720*365/supply
             data.stocktoflow = (100/(inflation))**1.65
-
         if data.color == 0:
             v0 = 0.002
             delta = (0.015 - 0.002)/(6*365)
             data.color = 30*coin_xmr.pricebtc/(int(coin_xmr.id)*delta + v0)
-
         data.save()
 
         try:
@@ -1087,6 +1100,7 @@ def update_database(date_request=None):
             data.save()
         except:
             return count
+        count += 1
 
     return count
 
@@ -4085,6 +4099,186 @@ def tail_emission(request):
     print(dt)
     context = {'inflationxmr': inflationxmr, 'finflationxmr': finflationxmr, 'now_xmr': now_xmr, 'dates': dates}
     return render(request, 'monerojnet/tail_emission.html', context)
+
+def privacymarketcap(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    dates = []
+    marketcaps = []
+    xmr_marketcaps = []
+    now_marketcap = 0
+    now_dominance = 0
+    top_marketcap = 0
+    top_dominance = 0
+    
+    for item in data:
+        marketcap = 0
+        dominance = 0
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.zcash_marketcap > 1000000:
+            marketcap += item.zcash_marketcap
+
+        if item.dash_marketcap > 1000000:
+            marketcap += item.dash_marketcap
+
+        if item.grin_marketcap > 1000000:
+            marketcap += item.grin_marketcap
+
+        if item.xmr_marketcap > 1000000:
+            marketcap += item.xmr_marketcap
+            try:
+                xmr_dominance = Dominance.objects.get(date=item.date)
+                dominance = marketcap*xmr_dominance.dominance/item.xmr_marketcap
+            except:
+                dominance = 0
+
+            xmr_marketcaps.append(item.xmr_marketcap)
+        else:
+            xmr_marketcaps.append('')
+
+        now_marketcap = marketcap
+        now_dominance = dominance
+
+        if now_marketcap > top_marketcap:
+            top_marketcap = now_marketcap
+        if now_dominance > top_dominance:
+            top_dominance = now_dominance
+
+        if marketcap > 3000000:
+            marketcaps.append(marketcap)
+        else:
+            marketcaps.append('')
+
+    now_marketcap = '$'+locale.format('%.0f', now_marketcap, grouping=True) 
+    now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
+    top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
+    top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
+    
+    dt = 'privacymarketcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'marketcaps': marketcaps, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates, 'xmr_marketcaps': xmr_marketcaps}
+    return render(request, 'monerojnet/privacymarketcap.html', context)
+
+def privacydominance(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    dates = []
+    marketcaps = []
+    dominances = []
+    now_marketcap = 0
+    now_dominance = 0
+    top_marketcap = 0
+    top_dominance = 0
+    
+    for item in data:
+        marketcap = 0
+        dominance = 0
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.zcash_marketcap > 1000000:
+            marketcap += item.zcash_marketcap
+
+        if item.dash_marketcap > 1000000:
+            marketcap += item.dash_marketcap
+
+        if item.grin_marketcap > 1000000:
+            marketcap += item.grin_marketcap
+
+        if item.xmr_marketcap > 1000000:
+            marketcap += item.xmr_marketcap
+            print(item.date)
+            try:
+                xmr_dominance = Dominance.objects.get(date=item.date)
+                dominance = marketcap*xmr_dominance.dominance/item.xmr_marketcap
+            except:
+                dominance = 0
+
+        now_marketcap = marketcap
+        now_dominance = dominance
+
+        if now_marketcap > top_marketcap:
+            top_marketcap = now_marketcap
+        if now_dominance > top_dominance:
+            top_dominance = now_dominance
+
+        if marketcap > 3000000:
+            marketcaps.append(marketcap)
+        else:
+            marketcaps.append('')
+
+        if dominance > 0:
+            dominances.append(dominance)
+        else:
+            dominances.append('')
+
+    now_marketcap = '$'+locale.format('%.0f', now_marketcap, grouping=True) 
+    now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
+    top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
+    top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
+    
+    dt = 'privacymarketcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'marketcaps': marketcaps, 'dominances':dominances, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
+    return render(request, 'monerojnet/privacydominance.html', context)
+
+def monerodominance(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    dates = []
+    marketcaps = []
+    xmr_dominance = []
+    now_marketcap = 0
+    now_dominance = 0
+    top_marketcap = 0
+    top_dominance = 0
+    
+    for item in data:
+        marketcap = 0
+        dominance = 0
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.zcash_marketcap > 1000000:
+            marketcap += item.zcash_marketcap
+
+        if item.dash_marketcap > 1000000:
+            marketcap += item.dash_marketcap
+
+        if item.grin_marketcap > 1000000:
+            marketcap += item.grin_marketcap
+
+        if item.xmr_marketcap > 1000000:
+            marketcap += item.xmr_marketcap
+            print(item.date)
+            dominance = 100*item.xmr_marketcap/marketcap
+
+        now_marketcap = marketcap
+        now_dominance = dominance
+
+        if now_marketcap > top_marketcap:
+            top_marketcap = now_marketcap
+        if now_dominance > top_dominance:
+            top_dominance = now_dominance
+
+        if marketcap > 3000000:
+            marketcaps.append(marketcap)
+        else:
+            marketcaps.append('')
+
+        if dominance > 0:
+            xmr_dominance.append(dominance)
+        else:
+            xmr_dominance.append('')
+
+    now_marketcap = '$'+locale.format('%.0f', now_marketcap, grouping=True) 
+    now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
+    top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
+    top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
+    
+    dt = 'privacymarketcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'marketcaps': marketcaps, 'xmr_dominance': xmr_dominance, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
+    return render(request, 'monerojnet/monerodominance.html', context)
 
 ###########################################
 # Previous functions / Older versions                

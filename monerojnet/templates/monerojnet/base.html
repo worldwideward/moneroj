@@ -138,16 +138,19 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMarketcap"
                     aria-expanded="true" aria-controls="collapseMarketcap">
-                    <i class="fas fa-dollar-sign"></i>
-                    <span>Marketcap (3)</span>
+                    <i class="fas fa-award"></i>
+                    <span>Marketcap (6)</span>
                 </a>
                 <div id="collapseMarketcap" class="collapse" aria-labelledby="headingMarketcap"
                     data-parent="#accordionSidebar">
                     <div class="py-2 collapse-inner rounded">
                         <h6 class="collapse-header text-dark">Charts:</h6>
-                        <a class="collapse-item" href="{% url 'monerojnet:dominance' %}">Dominance</a>
-                        <a class="collapse-item" href="{% url 'monerojnet:rank' %}">Coinmarketcap Rank</a>
-                        <a class="collapse-item" href="{% url 'monerojnet:marketcap' %}">Marketcap</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:dominance' %}">Monero's Dominance</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:monerodominance' %}">Monero Privacy Dominance</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:privacydominance' %}">Total Privacy Dominance</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:rank' %}">Monero's CMC Rank</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:marketcap' %}">Privacy Coins' Marketcap</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:privacymarketcap' %}">Total Privacy Marketcap</a>
                     </div>
                 </div>
             </li>

@@ -71,6 +71,9 @@ urlpatterns = [
     path('artigos/', views.artigos, name='artigos'),
     path('articles/', views.articles, name='articles'),
     path('tail_emission/', views.tail_emission, name='tail_emission'),
+    path('privacymarketcap/', views.privacymarketcap, name='privacymarketcap'),
+    path('privacydominance/', views.privacydominance, name='privacydominance'),
+    path('monerodominance/', views.monerodominance, name='monerodominance'),
 
     # URLs to useful functions on monerojnet/views.py
     # Only admins can use these 
@@ -81,6 +84,7 @@ urlpatterns = [
     path('populate_database/', views.populate_database, name='populate_database'),
     path('importer/', views.importer, name='importer'),
     path('reset/<str:symbol>/', views.reset, name='reset'),
+    path('update/<str:date_from>/<str:date_to>/', views.update_database_admin, name='update'),
 
     # URLs to old functions in case they need to be restablished
     # Everyone can use these, but they are hidden
