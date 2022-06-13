@@ -14,6 +14,7 @@ urlpatterns = [
     path('fractal/', views.fractal, name='fractal'),
     path('golden/', views.golden, name='golden'),
     path('competitors/', views.competitors, name='competitors'),
+    path('competitorslin/', views.competitorslin, name='competitorslin'),
     path('competitorssats/', views.competitorssats, name='competitorssats'),
     path('competitorssatslin/', views.competitorssatslin, name='competitorssatslin'),
     path('translin/', views.translin, name='translin'),
@@ -74,6 +75,10 @@ urlpatterns = [
     path('privacymarketcap/', views.privacymarketcap, name='privacymarketcap'),
     path('privacydominance/', views.privacydominance, name='privacydominance'),
     path('monerodominance/', views.monerodominance, name='monerodominance'),
+    path('blocksize/', views.blocksize, name='blocksize'),
+    path('transactionsize/', views.transactionsize, name='transactionsize'),
+    path('blockchainsize/', views.blockchainsize, name='blockchainsize'),
+    path('difficulty/', views.difficulty, name='difficulty'),
 
     # URLs to useful functions on monerojnet/views.py
     # Only admins can use these 

@@ -38,6 +38,18 @@ api = PushshiftAPI()
 def get_history(request, symbol, start_time=None, end_time=None):
     update = True
     count = 0
+    priceusd = 0
+    inflation = 0
+    pricebtc = 0
+    stocktoflow = 0
+    supply = 0
+    fee = 0
+    revenue = 0
+    hashrate = 0
+    transactions = 0
+    blocksize = 0
+    difficulty = 0
+
     with open("settings.json") as file:
         data = json.load(file)
         file.close()
@@ -64,38 +76,58 @@ def get_history(request, symbol, start_time=None, end_time=None):
                 coin.date = day
                 try:
                     coin.priceusd = float(item['PriceUSD'])
+                    priceusd = coin.priceusd
                 except:
-                    coin.priceusd = 0
+                    coin.priceusd = priceusd
                 try:
                     coin.pricebtc = float(item['PriceBTC'])
+                    pricebtc = coin.pricebtc
                 except:
-                    coin.pricebtc = 0
+                    coin.pricebtc = pricebtc
                 try:
                     coin.inflation = float(item['IssContPctAnn'])  
                     coin.stocktoflow = (100/coin.inflation)**1.65 
+                    inflation = coin.inflation
+                    stocktoflow = coin.stocktoflow
                 except:
-                    coin.inflation = 0
-                    coin.stocktoflow = 0
+                    coin.inflation = inflation
+                    coin.stocktoflow = stocktoflow
                 try:
                     coin.supply = float(item['SplyCur'])
+                    supply = coin.supply
                 except:
-                    coin.supply = 0
+                    coin.supply = supply
                 try:
                     coin.fee = float(item['FeeTotNtv'])
+                    fee = coin.fee
                 except:
-                    coin.fee = 0
+                    coin.fee = fee
                 try:
                     coin.revenue = float(item['RevNtv'])
+                    revenue = coin.revenue
                 except:
-                    coin.revenue = 0
+                    coin.revenue = revenue
                 try:
                     coin.hashrate = float(item['HashRate'])
+                    hashrate = coin.hashrate
                 except:
-                    coin.hashrate = 0
+                    coin.hashrate = hashrate
                 try:
                     coin.transactions = float(item['TxCnt'])
+                    transactions = coin.transactions
                 except:
-                    coin.transactions = 0
+                    coin.transactions = transactions
+                try:
+                    coin.blocksize = float(item['BlkSizeMeanByte'])
+                    blocksize = coin.blocksize
+                except:
+                    coin.blocksize = blocksize
+                try:
+                    coin.difficulty = float(item['DiffLast'])
+                    difficulty = coin.difficulty
+                except:
+                    coin.difficulty = difficulty
+
                 coin.save()
                 count += 1
                 print(str(symbol) + ' ' + str(coin.date))
@@ -351,6 +383,18 @@ def populate_database(request):
         data = DailyData()
         data.date = datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d')
         
+        if coin_btc.blocksize > 0:
+            data.btc_blocksize = coin_btc.blocksize
+            data.btc_transactions = coin_btc.transactions
+        else:
+            data.btc_blocksize = 0
+            data.btc_transactions = 0
+        
+        if coin_btc.difficulty > 0:
+            data.btc_difficulty = coin_btc.difficulty
+        else:
+            data.btc_difficulty = 0
+        
         if coin_btc.transactions == 0:
             data.btc_transcostusd = 0
             data.btc_transcostntv = 0
@@ -418,6 +462,17 @@ def populate_database(request):
             coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
             if coins_xmr:
                 for coin_xmr in coins_xmr:
+
+                    if coin_xmr.blocksize > 0:
+                        data.xmr_blocksize = coin_xmr.blocksize
+                    else:
+                        data.xmr_blocksize = 0
+
+                    if coin_xmr.difficulty > 0:
+                        data.xmr_difficulty = coin_xmr.difficulty
+                    else:
+                        data.xmr_difficulty = 0
+
                     if coin_xmr.priceusd < 0.001:
                         data.xmr_pricebtc = 0
                         data.xmr_priceusd = 0
@@ -522,6 +577,8 @@ def populate_database(request):
                 data.xmr_marketcap = 0
                 data.xmr_minerrevcap = 0
                 data.xmr_transactions = 0
+                data.xmr_blocksize = 0
+                data.xmr_difficulty = 0
 
             coins_dash = Coin.objects.filter(name='dash').filter(date=coin_btc.date)
             if coins_dash:
@@ -562,6 +619,8 @@ def populate_database(request):
             data.xmr_transacpercentage = 0
             data.xmr_minerrevcap = 0
             data.xmr_transactions = 0
+            data.xmr_blocksize = 0
+            data.xmr_difficulty = 0
 
         if count_aux > 2800:
             coins_zcash = Coin.objects.filter(name='zec').filter(date=coin_btc.date)
@@ -943,7 +1002,7 @@ def update_database(date_from=None, date_to=None):
             data.pricebtc = coin_xmr.pricebtc
         if data.priceusd == 0:
             data.priceusd = coin_xmr.priceusd
-        if data.stocktoflow == 0:
+        if data.stocktoflow == 0 and coin_xmr.supply > 0:
             supply = int(coin_xmr.supply)*10**12
             reward = (2**64 -1 - supply) >> 19
             if reward < 0.6*(10**12):
@@ -1083,8 +1142,8 @@ def update_database(date_from=None, date_to=None):
             try:
                 data.btc_commitntv = coin_btc.hashrate/(coin_btc.revenue)
                 data.xmr_commitntv = coin_xmr.hashrate/(coin_xmr.revenue)
-                data.btc_commitusd = coin_btc.priceusd*coin_btc.hashrate/(coin_btc.revenue)
-                data.xmr_commitusd = coin_xmr.priceusd*coin_xmr.hashrate/(coin_xmr.revenue)
+                data.btc_commitusd = coin_btc.hashrate/(coin_btc.revenue*coin_btc.priceusd)
+                data.xmr_commitusd = coin_xmr.hashrate/(coin_xmr.revenue*coin_xmr.priceusd)
             except:
                 pass
             # Reddit charts
@@ -2084,6 +2143,83 @@ def competitors(request):
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'monerojnet/competitors.html', context)
 
+def competitorslin(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    xmr = []
+    dash = []
+    grin = []
+    zcash = []
+    count = 0
+    now_xmr = 0
+    now_dash = 0
+    now_grin = 0
+    now_zcash = 0
+
+    count = 0
+    coins_xmr = Coin.objects.order_by('date').filter(name='xmr')
+    for coin_xmr in coins_xmr:
+        if coin_xmr.priceusd:
+            if count > 30:
+                xmr.append(coin_xmr.priceusd/5.01)
+                now_xmr = coin_xmr.priceusd/5.01
+            dates.append(count)
+            count += 1
+        elif count <= 63:
+            continue
+        else:
+            xmr.append('')
+
+    count = 0
+    coins_dash = Coin.objects.order_by('date').filter(name='dash')
+    for coin_dash in coins_dash:
+        count += 1
+        if coin_dash.priceusd and count > 130:
+            dash.append(coin_dash.priceusd/14.7)
+            now_dash = coin_dash.priceusd/14.7
+        elif count <= 130:
+            continue
+        else:
+            dash.append('')
+        dates.append(count)
+
+    count = 0
+    coins_grin = Coin.objects.order_by('date').filter(name='grin')
+    for coin_grin in coins_grin:
+        count += 1
+        if coin_grin.priceusd and count > 155:
+            grin.append(coin_grin.priceusd/6.37)
+            now_grin = coin_grin.priceusd/6.37
+        elif count <= 155:
+            continue
+        else:
+            grin.append('')
+        dates.append(count)
+
+    count = 0
+    coins_zcash = Coin.objects.order_by('date').filter(name='zec')
+    for coin_zcash in coins_zcash:
+        count += 1
+        if coin_zcash.priceusd and count > 434:
+            zcash.append(coin_zcash.priceusd/750)
+            now_zcash = coin_zcash.priceusd/750
+        elif count <= 434:
+            continue
+        else:
+            zcash.append('')
+        dates.append(count)
+
+    now_dash = locale.format('%.2f', now_dash, grouping=True) 
+    now_grin = locale.format('%.2f', now_grin, grouping=True)
+    now_zcash = locale.format('%.2f', now_zcash, grouping=True)
+    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
+    
+    dt = 'competitorslin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
+    'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
+    return render(request, 'monerojnet/competitorslin.html', context)
+
 def marketcap(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
@@ -2840,6 +2976,144 @@ def inflation(request):
     print(dt)
     context = {'inflationxmr': inflationxmr, 'inflationbtc': inflationbtc, 'finflationxmr': finflationxmr, 'finflationbtc': finflationbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/inflation.html', context)
+
+def blocksize(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    xmr_blocksize = []
+    btc_blocksize = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+    
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_blocksize > 0.001:
+            btc_blocksize.append(item.btc_blocksize/1024)
+            now_btc = item.btc_blocksize
+        else:
+            btc_blocksize.append('')
+
+        if item.xmr_blocksize > 0.001:
+            xmr_blocksize.append(item.xmr_blocksize/1024)
+            now_xmr = item.xmr_blocksize
+        else:
+            xmr_blocksize.append('')
+        
+    now_btc = locale.format('%.2f', now_btc, grouping=True) + ' bytes'
+    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + ' bytes'
+    
+    dt = 'blocksize.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/blocksize.html', context)
+
+def transactionsize(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    xmr_blocksize = []
+    btc_blocksize = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+    
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_blocksize > 0.001 and item.btc_transactions > 0:
+            now_btc = 144*item.btc_blocksize/(1024*item.btc_transactions)
+            btc_blocksize.append(144*item.btc_blocksize/(1024*item.btc_transactions))
+        else:
+            btc_blocksize.append('')
+
+        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:
+            now_xmr = 720*item.xmr_blocksize/(1024*item.xmr_transactions)
+            xmr_blocksize.append(720*item.xmr_blocksize/(1024*item.xmr_transactions))
+        else:
+            xmr_blocksize.append('')
+        
+    now_btc = locale.format('%.2f', now_btc, grouping=True) + ' bytes'
+    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + ' bytes'
+    
+    dt = 'transactionsize.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/transactionsize.html', context)
+
+def difficulty(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    xmr_difficulty = []
+    btc_difficulty = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+    
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_difficulty > 0.001:
+            now_btc = item.btc_difficulty
+            btc_difficulty.append(now_btc)
+        else:
+            btc_difficulty.append('')
+
+        if item.xmr_difficulty > 0.001:
+            now_xmr = item.xmr_difficulty
+            xmr_difficulty.append(now_xmr)
+        else:
+            xmr_difficulty.append('')
+        
+    now_btc = locale.format('%.0f', now_btc, grouping=True)
+    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    
+    dt = 'difficulty.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr_difficulty': xmr_difficulty, 'btc_difficulty': btc_difficulty, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/difficulty.html', context)
+
+def blockchainsize(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    xmr_blocksize = []
+    btc_blocksize = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+    
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_blocksize > 0.001 and item.btc_transactions > 0:
+            now_btc += 144*item.btc_blocksize/1024
+            if now_btc < 200:
+                btc_blocksize.append('')
+            else:
+                btc_blocksize.append(now_btc)
+        else:
+            btc_blocksize.append('')
+
+        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:
+            now_xmr += 720*item.xmr_blocksize/1024
+            if now_btc < 200:
+                xmr_blocksize.append('')
+            else:
+                xmr_blocksize.append(now_xmr)
+        else:
+            xmr_blocksize.append('')
+        
+    now_btc = locale.format('%.2f', now_btc/(1024*1024), grouping=True) + ' Gb'
+    now_xmr = locale.format('%.2f', now_xmr/(1024*1024), grouping=True) + ' Gb'
+    
+    dt = 'blockchainsize.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'monerojnet/blockchainsize.html', context)
 
 def compinflation(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()

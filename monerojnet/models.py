@@ -11,11 +11,13 @@ class Coin(models.Model):
 	pricebtc = models.FloatField()
 	inflation = models.FloatField()
 	transactions = models.FloatField()
-	hashrate = models.FloatField()
-	stocktoflow = models.FloatField()
-	supply = models.FloatField()
+	hashrate = models.FloatField(default="0")
+	stocktoflow = models.FloatField(default="0")
+	supply = models.FloatField(default="0")
 	fee = models.FloatField(default="0")
 	revenue = models.FloatField(default="0")
+	blocksize = models.FloatField(default="0")
+	difficulty = models.FloatField(default="0")
 	def __str__(self):
 		return self.priceusd
 
@@ -74,6 +76,7 @@ class DailyData(models.Model):
 
 	# Transactions charts
 	xmr_transacpercentage = models.FloatField()
+	btc_transactions = models.FloatField()
 	xmr_transactions = models.FloatField()
 	btc_supply = models.IntegerField()
 	xmr_supply = models.IntegerField()
@@ -112,6 +115,10 @@ class DailyData(models.Model):
 	xmr_commitntv = models.FloatField()
 	btc_commitusd = models.FloatField()
 	xmr_commitusd = models.FloatField()
+	btc_blocksize = models.FloatField()
+	xmr_blocksize = models.FloatField()
+	btc_difficulty = models.FloatField()
+	xmr_difficulty = models.FloatField()
 
 	# Reddit charts
 	btc_subscriberCount = models.IntegerField()

@@ -14,7 +14,7 @@
                     <div class="card" id="graph1">
                         <div
                             class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">Competitor Performance (Log Scale)</h6>
+                            <h6 class="m-0 text-light">Competitor Performance (Linear Scale)</h6>
                             <div class="dropdown no-arrow">
                                 <a class="dropdown-toggle" href="#" role="button"
                                     onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -29,6 +29,7 @@
                     <br>
                 </div>
             </div>
+
 
             <!-- Content Row -->
             <div class="row">
@@ -264,9 +265,9 @@
         {
             xref: 'paper',
             yref: 'paper',
-            x: 0.50,
+            x: 0.02,
             xanchor: 'auto',
-            y: 0.02,
+            y: 0.50,
             yanchor: 'auto',
             text: 'Moneroj<br>https://www.moneroj.net',
             showarrow: false,
@@ -282,8 +283,8 @@
         }],
         separators: ",.",
         legend: {
-            x: 0.98, 
-            y: 0.02, 
+            x: 0.02, 
+            y: 0.98, 
             bgcolor: '#333333', 
             bordercolor: '#5f5f5f', 
             borderwidth: 1, 
@@ -299,7 +300,7 @@
             namelength: -1
         },
         yaxis: {
-            type: "log",
+            type: "linear",
             title: {
                 text: 'Multiple from first top',
                 font: {
@@ -345,8 +346,8 @@
             namelength: -1
         },
         legend: {
-            x: 0.98, 
-            y: 0.05, 
+            x: 0.02, 
+            y: 0.98, 
             bgcolor: '#000000', 
             bordercolor: '#5f5f5f', 
             borderwidth: 1, 
@@ -360,7 +361,7 @@
         },
         showlegend: false,
         yaxis: {
-            type: "log",
+            type: "linear",
             tickformat :",.0f"
             ,nticks: 10
             ,tickfont: {

@@ -110,7 +110,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrice"
                     aria-expanded="true" aria-controls="collapsePrice">
                     <i class="fas fa-dollar-sign"></i>
-                    <span>Price (14)</span>
+                    <span>Price (15)</span>
                 </a>
                 <div id="collapsePrice" class="collapse" aria-labelledby="headingPrice"
                     data-parent="#accordionSidebar">
@@ -123,7 +123,8 @@
                         <a class="collapse-item" href="{% url 'monerojnet:inflationfractal' %}">Inflation-Adjusted
                             Fractal</a>
                         <a class="collapse-item" href="{% url 'monerojnet:golden' %}">Golden Ratio Multiplier</a>
-                        <a class="collapse-item" href="{% url 'monerojnet:competitors' %}">Performance ($)</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:competitors' %}">Performance ($, Log.)</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:competitorslin' %}">Performance ($, Lin.)</a>
                         <a class="collapse-item" href="{% url 'monerojnet:competitorssats' %}">Performance (Sats, Log.)</a>
                         <a class="collapse-item" href="{% url 'monerojnet:competitorssatslin' %}">Performance (Sats, Lin.)</a>
                         <a class="collapse-item" href="{% url 'monerojnet:inflationreturn' %}">Return vs. Inflation</a>
@@ -219,7 +220,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMining"
                     aria-expanded="true" aria-controls="collapseMining">
                     <i class="fas fa-calculator"></i>
-                    <span>Mining (10)</span>
+                    <span>Mining (14)</span>
                 </a>
                 <div id="collapseMining" class="collapse" aria-labelledby="headingMining"
                     data-parent="#accordionSidebar">
@@ -235,6 +236,10 @@
                         <a class="collapse-item" href="{% url 'monerojnet:minerrevcap' %}">Revenue / Marketcap (%)</a>
                         <a class="collapse-item" href="{% url 'monerojnet:commit' %}">Miner Commitment ($)</a>
                         <a class="collapse-item" href="{% url 'monerojnet:commitntv' %}">Miner Commitment (Ntv.)</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:blocksize' %}">Block Size (Bytes)</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:blockchainsize' %}">Blockchain Size (Bytes)</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:transactionsize' %}">Transaction Size (Bytes)</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:difficulty' %}">Mining Difficulty</a>
                     </div>
                 </div>
             </li>
