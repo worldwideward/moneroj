@@ -959,10 +959,9 @@ def update_database(date_from=None, date_to=None):
     
     count = 0
     date_aux = date_from
-    while date_aux < date_to:
+    while date_aux <= date_to:
         date_aux = date_from + timedelta(count)
         date_aux2 = date_aux - timedelta(1)
-        print('updating data for ' + str(date_aux))
         try:
             coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
             coin_btc = Coin.objects.filter(name='btc').get(date=date_aux)
@@ -1069,6 +1068,10 @@ def update_database(date_from=None, date_to=None):
             data.xmr_commitntv = 0
             data.btc_commitusd = 0
             data.xmr_commitusd = 0
+            data.btc_blocksize = 0
+            data.xmr_blocksize = 0
+            data.btc_difficulty = 0
+            data.xmr_difficulty = 0
             # Reddit charts
             data.btc_subscriberCount = 0
             data.btc_commentsPerHour = 0
@@ -1079,7 +1082,7 @@ def update_database(date_from=None, date_to=None):
             data.crypto_subscriberCount = 0
             data.crypto_commentsPerHour = 0
             data.crypto_postsPerHour = 0
-
+            
         try:
             # Date field
             data.date = coin_xmr.date
@@ -1099,6 +1102,7 @@ def update_database(date_from=None, date_to=None):
             except:
                 pass
             data.xmr_transactions = coin_xmr.transactions
+            data.btc_transactions = coin_btc.transactions
             data.btc_supply = coin_btc.supply
             data.xmr_supply = coin_xmr.supply
             # Issuance charts
@@ -1146,6 +1150,13 @@ def update_database(date_from=None, date_to=None):
                 data.xmr_commitusd = coin_xmr.hashrate/(coin_xmr.revenue*coin_xmr.priceusd)
             except:
                 pass
+            try:
+                data.btc_blocksize = coin_btc.blocksize
+                data.xmr_blocksize = coin_xmr.blocksize
+                data.btc_difficulty = coin_btc.difficulty
+                data.xmr_difficulty = coin_xmr.difficulty
+            except:
+                pass
             # Reddit charts
             data.btc_subscriberCount = social_btc.subscriberCount
             data.btc_commentsPerHour = social_btc.commentsPerHour
@@ -1157,8 +1168,11 @@ def update_database(date_from=None, date_to=None):
             data.crypto_commentsPerHour = social_crypto.commentsPerHour
             data.crypto_postsPerHour = social_crypto.postsPerHour
             data.save()
+            print(str(coin_xmr.date) + ' - ' + str(int(coin_xmr.supply)) + ' xmr @ ' + str(coin_xmr.priceusd) + ' = ' + str(int(data.xmr_marketcap)))
+        
         except:
             return count
+
         count += 1
 
     return count
@@ -3187,12 +3201,12 @@ def sfmodel(request):
     try:
         coin = Coin.objects.filter(name=symbol).get(date=yesterday)
         if coin:
-            if (coin.inflation > 0) and (coin.priceusd > 0):
+            if (coin.inflation > 0) and (coin.priceusd > 0) and (coin.supply > 0):
                 update = False
             else:
                 now = datetime.datetime.now()
                 current_time = int(now.strftime("%H"))
-                if current_time >= 3:
+                if current_time >= 5:
                     coin.delete()
                     update = True
         else:
@@ -4405,7 +4419,7 @@ def privacymarketcap(request):
                 xmr_dominance = Dominance.objects.get(date=item.date)
                 dominance = marketcap*xmr_dominance.dominance/item.xmr_marketcap
             except:
-                dominance = 0
+                dominance = now_dominance
 
             xmr_marketcaps.append(item.xmr_marketcap)
         else:
@@ -4450,23 +4464,22 @@ def privacydominance(request):
         marketcap = 0
         dominance = 0
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.zcash_marketcap > 1000000:
+        if item.zcash_marketcap > 100000:
             marketcap += item.zcash_marketcap
 
-        if item.dash_marketcap > 1000000:
+        if item.dash_marketcap > 100000:
             marketcap += item.dash_marketcap
 
-        if item.grin_marketcap > 1000000:
+        if item.grin_marketcap > 100000:
             marketcap += item.grin_marketcap
 
-        if item.xmr_marketcap > 1000000:
+        if item.xmr_marketcap > 100000:
             marketcap += item.xmr_marketcap
-            print(item.date)
             try:
                 xmr_dominance = Dominance.objects.get(date=item.date)
                 dominance = marketcap*xmr_dominance.dominance/item.xmr_marketcap
             except:
-                dominance = 0
+                dominance = now_dominance
 
         now_marketcap = marketcap
         now_dominance = dominance
@@ -4476,7 +4489,7 @@ def privacydominance(request):
         if now_dominance > top_dominance:
             top_dominance = now_dominance
 
-        if marketcap > 3000000:
+        if marketcap > 300000:
             marketcaps.append(marketcap)
         else:
             marketcaps.append('')
@@ -4523,7 +4536,6 @@ def monerodominance(request):
 
         if item.xmr_marketcap > 1000000:
             marketcap += item.xmr_marketcap
-            print(item.date)
             dominance = 100*item.xmr_marketcap/marketcap
 
         now_marketcap = marketcap
