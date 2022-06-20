@@ -79,6 +79,7 @@ urlpatterns = [
     path('transactionsize/', views.transactionsize, name='transactionsize'),
     path('blockchainsize/', views.blockchainsize, name='blockchainsize'),
     path('difficulty/', views.difficulty, name='difficulty'),
+    path('transmonth/', views.transmonth, name='transmonth'),
 
     # URLs to useful functions on monerojnet/views.py
     # Only admins can use these 

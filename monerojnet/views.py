@@ -286,6 +286,7 @@ def populate_database(request):
     timevar = 1283
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
+    previous_supply = 0
     supply = 0
     sf_aux = 0
     count_aux = 0
@@ -299,7 +300,10 @@ def populate_database(request):
             coin.stocktoflow = sf_aux
         
         sf_aux = coin.stocktoflow
-        supply = int(coin.supply)*10**12
+        if coin.supply > 0:
+            supply = int(coin.supply)*10**12
+        else:
+            supply = previous_supply
         count += 1
         count_aux += 1
 
@@ -346,6 +350,7 @@ def populate_database(request):
                 data.greyline = actualprice
             else:
                 data.greyline = 0
+            previous_supply = supply
         data.save()
 
     count_aux = 0
@@ -954,6 +959,7 @@ def update_database(date_from=None, date_to=None):
         date_to = date.today()
         date_from = date_to - timedelta(5)
     else:
+        print(str(date_from) + ' to ' + str(date_to))
         date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
         date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
     
@@ -1194,9 +1200,7 @@ def index(request):
 
     if rank.date < date.today():
         data = update_rank()    
-        dominance = list(Dominance.objects.order_by('-date'))[0]
-        if dominance.date < date.today():
-            data = update_dominance(data)
+        update_dominance(data)
 
     coin = list(Coin.objects.filter(name=symbol).order_by('-date'))[0]
     if coin:
@@ -2312,7 +2316,7 @@ def inflationreturn(request):
     coins = Coin.objects.order_by('date').filter(name='xmr')
     for coin in coins:
         count += 1
-        if coin.priceusd and count > 30:
+        if coin.priceusd and count > 30 and coin.inflation > 0:
             now_xmr = coin.priceusd/5.01
             #correcao de um erro nos dados
             if 100/coin.inflation > 110 and now_xmr < 10:
@@ -2328,7 +2332,7 @@ def inflationreturn(request):
     coins = Coin.objects.order_by('date').filter(name='dash')
     for coin in coins:
         count += 1
-        if coin.priceusd and count > 130:
+        if coin.priceusd and count > 130 and coin.inflation > 0:
             now_dash = coin.priceusd/14.7
             dash.append(now_dash)
             inflation_dash.append(100/coin.inflation)
@@ -2337,7 +2341,7 @@ def inflationreturn(request):
     coins = Coin.objects.order_by('date').filter(name='grin')
     for coin in coins:
         count += 1
-        if coin.priceusd and count > 155:
+        if coin.priceusd and count > 155 and coin.inflation > 0:
             now_grin = coin.priceusd/6.37
             grin.append(now_grin)
             inflation_grin.append(100/coin.inflation)
@@ -2346,7 +2350,7 @@ def inflationreturn(request):
     coins = Coin.objects.order_by('date').filter(name='zec')
     for coin in coins:
         count += 1
-        if coin.priceusd and count > 434:
+        if coin.priceusd and count > 434 and coin.inflation > 0:
             now_zcash = coin.priceusd/750
             zcash.append(now_zcash)
             inflation_zcash.append(100/coin.inflation)
@@ -2355,7 +2359,7 @@ def inflationreturn(request):
     coins = Coin.objects.order_by('date').filter(name='btc')
     for coin in coins:
         count += 1
-        if coin.priceusd and count > 325:
+        if coin.priceusd and count > 325 and coin.inflation > 0:
             now_btc = coin.priceusd/30
             btc.append(now_btc)
             inflation_btc.append(100/coin.inflation)
@@ -2387,12 +2391,12 @@ def bitcoin(request):
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
     for coin_btc in coins_btc:
         if coin_btc.priceusd:
-            if count1 > 325: #450
+            if count1 > 890: #450
                 btc.append(coin_btc.priceusd/30)
                 now_btc = coin_btc.priceusd/30
             dates.append(count1)
             count1 += 1 #1.4
-        elif count1 <= 325: #450
+        elif count1 <= 890: #450
             continue
         else:
             btc.append('')
@@ -2404,7 +2408,7 @@ def bitcoin(request):
             if count3 > 30:
                 xmr3.append(coin_xmr.priceusd/5.01)
             dates4.append(count3)
-            count3 += 0.82
+            count3 += 0.92
         elif count3 <= 30:
             continue
         else:
@@ -2471,6 +2475,44 @@ def translin(request):
     print(dt)
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/translin.html', context)
+
+def transmonth(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    transactions = []
+    pricexmr = []
+    dates = []
+    now_transactions = 0
+    maximum = 0
+
+    month_previous = '2014-01'
+    month = 0
+    total = 0
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        aux = str(coin.date)
+        month = aux.split("-")[0] + '-' + aux.split("-")[1]
+        if month != month_previous:
+            dates.append(month_previous)
+            transactions.append(total)
+            if total > maximum:
+                maximum = total
+            total = 0
+            month_previous = month
+
+        if coin.transactions > 0:
+            total += coin.transactions         
+
+    now_transactions = int(total)
+    maximum = int(maximum)
+
+    now_transactions = locale.format('%.0f', now_transactions, grouping=True)
+    maximum = locale.format('%.0f', maximum, grouping=True)
+    
+    dt = 'transmonth.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
+    return render(request, 'monerojnet/transmonth.html', context)
 
 def percentage(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
@@ -2547,8 +2589,10 @@ def hashrate(request):
         dates.append(coin.date)
         if coin.hashrate > 0:
             now_hashrate = coin.hashrate
-        hashrate.append(coin.hashrate)
-    
+            hashrate.append(coin.hashrate)
+        else:
+            hashrate.append('')
+
     now_hashrate = locale.format('%.0f', now_hashrate, grouping=True)
     
     dt = 'hashrate.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
@@ -2611,7 +2655,7 @@ def hashvsprice(request):
         if count > 55:
             coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
             dates.append(coin.date)
-            if coin.priceusd > 0:
+            if coin.priceusd > 0 and coin.hashrate:
                 now_hashrate = coin.hashrate
                 now_priceusd = coin.priceusd
                 now_pricebtc = coin.pricebtc
@@ -3192,12 +3236,16 @@ def compinflation(request):
 
 def sfmodel(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
-
+    
     update = True
     symbol = 'xmr'
+    coins = Coin.objects.filter(name=symbol).order_by('date')
+    for coin in coins:
+        print(coin.date)
 
+    today = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
     yesterday = date.today() - timedelta(1)
-    start_time = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
+    start_time = datetime.datetime.strftime(date.today() - timedelta(7), '%Y-%m-%d')
     try:
         coin = Coin.objects.filter(name=symbol).get(date=yesterday)
         if coin:
@@ -3215,12 +3263,12 @@ def sfmodel(request):
         update = True
 
     if update:
-        #print('social')
+        print('social')
         check_new_social('Bitcoin')
         check_new_social('Monero')
         check_new_social('CryptoCurrency')
 
-        #print('metrics')
+        print('metrics')
         with open("settings.json") as file:
             data = json.load(file)
             file.close()
@@ -3241,9 +3289,9 @@ def sfmodel(request):
         url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
 
-        #print('updating database')
-        update_database()
-        #print('done')
+        print('updating database')
+        update_database(start_time, today)
+        print('done')
 
     dates = []
     stock_to_flow = []
