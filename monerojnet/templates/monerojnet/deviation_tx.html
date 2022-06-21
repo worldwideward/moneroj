@@ -14,7 +14,7 @@
                     <div class="card" id="graph1">
                         <div
                             class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">Price in Dollars Per Hashrate</h6>
+                            <h6 class="m-0 text-light">Price Deviation from 6 Months Average</h6>
                             <div class="dropdown no-arrow">
                                 <a class="dropdown-toggle" href="#" role="button"
                                     onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -22,37 +22,14 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="card-body pb-0 pt-0 pl-0 pr-0" style="height: 100px;">
-                            <div id="graph" style="height: 100%; width:100%;"></div>
+                        <div class="card-body" style="height: 100px;">
+                            <div id="graph" style="height: 100%;"></div>
                         </div>
                     </div>
                     <br>
                 </div>
             </div>
 
-
-            <!-- Content Row -->
-            <div class="row">
-
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-12 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        Current Price Per Hashrate</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_hashrate }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-check fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
             <!-- Content Row -->
             <div class="row">
                 <div class="col-xl-11 col-md-6 mb-4">
@@ -91,11 +68,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows average daily price divided by total Hashrate/s Monero has. Higher prices on relative
-                low hashrate means Monero is overbought and a top is
-                getting nearer. On the other hand, if Monero has low average price and high hashrate, it signals a
-                possible bottom, since many people are mining expecting future
-                higher prices.<br>
+                This chart shows the average deviation percentage from the 180 days simple average and also the total deviation in dollars.<br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -105,116 +78,87 @@
 </div>
 <!-- Fim do Modal -->
 
+
 <!-- Page level plugins -->
 <script> 
-    var data1 = {
+    var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Buy',
+        name: 'Deviation (Dollars)',
         x: {{ dates|safe }},
-        y: {{ buy|safe }},
+        y: {{ deviation_price|safe }},
         line: {
-            color: '#00ff00'
-            ,width: 1
-        }
+            color: '#33ff66'
+            ,width: 2
+        },
+        yaxis: "y2"
     };
     
-    var data1_mobile = {
+    var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Buy',
+        name: 'Deviation (Dollars)',
         x: {{ dates|safe }},
-        y: {{ buy|safe }},
+        y: {{ deviation_price|safe }},
         line: {
-            color: '#00ff00'
-            ,width: 1
-        }
+            color: '#33ff66'
+            ,width: 2
+        },
+        yaxis: "y2"
     };
 
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Sell',
+        name: 'Deviation (Percentage)',
         x: {{ dates|safe }},
-        y: {{ sell|safe }},
+        y: {{ deviation_percentage|safe }},
         line: {
-            color: '#ff0000'
-            ,width: 1
-        }
+            color: '#3366ff'
+            ,width: 2
+        },
+    yaxis: "y2"
     };
     
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Sell',
+        name: 'Deviation (Percentage)',
         x: {{ dates|safe }},
-        y: {{ sell|safe }},
+        y: {{ deviation_percentage|safe }},
         line: {
-            color: '#ff0000'
+            color: '#3366ff'
+            ,width: 2
+        },
+    yaxis: "y2"
+    };
+        
+    var data1 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Price',
+        x: {{ dates|safe }},
+        y: {{ pricexmr|safe }},
+        line: {
+            color: '#666666'
             ,width: 1
         }
     };
 
-        var data3 = {
+    var data1_mobile = {
         type: "scatter",
-        mode: "markers",
-        name: 'Dollars / Hashs/s',
+        mode: "lines",
+        name: 'Price',
         x: {{ dates|safe }},
-        y: {{ hashrate|safe }},
-        line: {color: '#7f421d'},
-        marker: {
-            color: {{ color|safe }},
-            colorbar: {
-                title: {
-                    text: 'Cycle on the Bitcoin pair (%)',
-                    side: 'right'
-                    ,font: {
-                        color: 'white'
-                        ,size: 14
-                    }
-                }
-                ,thickness: 10
-                ,tickfont: {
-                    color: 'white'
-                    ,size: 14
-                }
-                ,borderwidth: 0
-            }, 
-            colorscale: [['0', '#0000ff'], ['0.33', '#00ff00'], ['0.66', '#ffff00'], ['1', '#ff0000']], 
-            sizemode: 'area',
-            size: 5,
-            cmax: 100,
-            cmin: 0
+        y: {{ pricexmr|safe }},
+        line: {
+            color: '#666666'
+            ,width: 1
         }
-    };
-
-    var data3_mobile = {
-        type: "scatter",
-        mode: "markers",
-        name: 'Dollars / Hashs/s',
-        x: {{ dates|safe }},
-        y: {{ hashrate|safe }},
-        line: {color: '#7f421d'},
-        marker: {
-            color: {{ color|safe }},
-            colorbar: {
-                thickness: 4
-                ,tickfont: {
-                    color: 'white'
-                    ,size: 6
-                }
-                ,borderwidth: 0
-            }, 
-            colorscale: [['0', '#0000ff'], ['0.33', '#00ff00'], ['0.66', '#ffff00'], ['1', '#ff0000']], 
-            sizemode: 'area',
-            size: 3,
-            cmax: 100,
-            cmin: 0
-        }
-    };
-
-    var data = [data1 , data2, data3];
-    var data_mobile = [data1_mobile, data2_mobile, data3_mobile];
+    }; 
+        
+    var data = [data2, data3, data1];
+    var data_mobile = [data2_mobile, data3_mobile, data1_mobile];
 
     var layout = {
         plot_bgcolor:"#252221",
@@ -223,9 +167,9 @@
         {
             xref: 'paper',
             yref: 'paper',
-            x: 1,
+            x: 0.02,
             xanchor: 'auto',
-            y: 0.05,
+            y: 0.80,
             yanchor: 'auto',
             text: 'Moneroj<br>https://www.moneroj.net',
             showarrow: false,
@@ -241,8 +185,8 @@
         }],
         separators: ",.",
         legend: {
-            x: 1, 
-            y: 1, 
+            x: 0.02, 
+            y: 0.98, 
             bgcolor: '#333333', 
             bordercolor: '#5f5f5f', 
             borderwidth: 1, 
@@ -260,19 +204,38 @@
         yaxis: {
             type: "log",
             title: {
-                text: 'Price in Dollars Per H/s',
+                text: 'Price (USD)',
                 font: {
                     size: 20,
                     color: 'white'
                 }
             },
-            tickformat :",.8f"
+            tickformat :",.2f"
             ,nticks: 10
             ,tickfont: {
                 color: "#ffffff"
                 ,size: 12
             }
             ,gridcolor: "#333333"
+        },
+        yaxis2: {
+        type: "linear",
+        title: {
+            text: 'Deviation',
+            font: {
+                size: 20,
+                color: 'white'
+            }
+        },
+        tickformat :",.0f"
+        ,nticks: 10
+            ,tickfont: {
+                color: "#ffffff"
+                ,size: 12
+            }
+        ,gridcolor: "#252221"
+        ,side: "right"
+        ,overlaying: 'y'
         },
         xaxis: {
             hoverformat: "%Y-%m-%d",
@@ -284,18 +247,18 @@
                 ,size: 13
             }
             ,gridcolor: "#333333"
-            ,range: ['2014-04-10', '2023-06-01']
+            ,range: ['2014-05-01', '2023-01-01']
             ,zeroline: true
         },
         margin: {
             l: 120,
-            r: 60,
+            r: 120,
             b: 35,
             t: 10,
-            pad: 4
+            pad: 10
         }
     };
-    
+
     var layout_mobile = {
         plot_bgcolor:"black",
         paper_bgcolor:"black",
@@ -304,8 +267,8 @@
             namelength: -1
         },
         legend: {
-            x: 0.98, 
-            y: 0.05, 
+            x: 0.02, 
+            y: 0.98, 
             bgcolor: '#000000', 
             bordercolor: '#5f5f5f', 
             borderwidth: 1, 
@@ -320,13 +283,24 @@
         showlegend: false,
         yaxis: {
             type: "log",
-            tickformat :",.8f"
+            tickformat :",.0f"
             ,nticks: 10
             ,tickfont: {
                 color: "#ffffff"
                 ,size: 7
             }
             ,gridcolor: "#444444"
+        },
+        yaxis2: {
+        type: "linear",
+        tickformat :",.2f"
+        ,nticks: 10
+        ,tickfont: {
+            color: "white"
+        }
+        ,gridcolor: "#252221"
+        ,side: "right"
+        ,overlaying: 'y'
         },
         xaxis: {
             hoverformat: "%Y",
@@ -338,15 +312,15 @@
                 ,size: 7
             }
             ,gridcolor: "#444444"
-            ,range: ['2014-04-10', '2023-06-01']
+            ,range: ['2014-05-01', '2023-01-01']
             ,zeroline: true
         },
         margin: {
             l: 40,
-            r: 0,
+            r: 100,
             b: 35,
             t: 10,
-            pad: 0
+            pad: 10
         }
     };
 

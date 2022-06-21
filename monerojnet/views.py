@@ -1,3 +1,4 @@
+from ctypes import sizeof
 from os import readlink
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -2514,6 +2515,127 @@ def transmonth(request):
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/transmonth.html', context)
 
+def deviation(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    pricexmr = []
+    dates = []
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:        
+        if coin.priceusd > 0.001:
+            pricexmr.append(coin.priceusd)
+        else:
+            pricexmr.append(0.20)
+
+        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        dates.append(coin.date)
+
+    n = 180
+    median_long_price = pd.Series(pricexmr).rolling(window=n).mean().iloc[n-1:].values
+    m_long_price = []
+    for i in range(n):
+        m_long_price.append(0)
+    for item in median_long_price:
+        m_long_price.append(float(item))
+
+    n = 3
+    median_short_price = pd.Series(pricexmr).rolling(window=n).mean().iloc[n-1:].values
+    m_short_price = []
+    for i in range(n):
+        m_short_price.append(0)
+    for item in median_short_price:
+        m_short_price.append(float(item))
+
+    deviation_percentage = []
+    deviation_price = []
+    for count in range(0, len(m_short_price)):
+        if float(m_long_price[count]) < 0.001:
+            deviation_price.append('')
+            deviation_percentage.append('')
+        else:
+            deviation_price.append((float(m_short_price[count])-float(m_long_price[count]))/(1))
+            deviation_percentage.append(100*(float(m_short_price[count])-float(m_long_price[count]))/(float(m_long_price[count])))
+
+    dt = 'deviation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'deviation_percentage': deviation_percentage, 'deviation_price': deviation_price, 'dates': dates, 'pricexmr': pricexmr}
+    return render(request, 'monerojnet/deviation.html', context)
+
+def deviation_tx(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    transactions = []
+    pricexmr = []
+    dates = []
+    now_transactions = 0
+    maximum = 0
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        transactions.append(coin.transactions)
+        now_transactions = coin.transactions
+        if now_transactions > maximum:
+            maximum = now_transactions    
+        
+        if coin.priceusd > 0.001:
+            pricexmr.append(coin.priceusd)
+        else:
+            pricexmr.append(0.20)
+
+        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        dates.append(coin.date)
+    
+    now_transactions = int(now_transactions)
+    maximum = int(maximum)
+
+    n = 180
+    median_long = pd.Series(transactions).rolling(window=n).mean().iloc[n-1:].values
+    m_long = []
+    for i in range(n):
+        m_long.append(0)
+    for item in median_long:
+        m_long.append(float(item))
+
+    n = 1
+    median_short = pd.Series(transactions).rolling(window=n).mean().iloc[n-1:].values
+    m_short = []
+    for i in range(n):
+        m_short.append(0)
+    for item in median_short:
+        m_short.append(float(item))
+
+    n = 180
+    median_long_price = pd.Series(pricexmr).rolling(window=n).mean().iloc[n-1:].values
+    m_long_price = []
+    for i in range(n):
+        m_long_price.append(0)
+    for item in median_long_price:
+        m_long_price.append(float(item))
+
+    n = 3
+    median_short_price = pd.Series(pricexmr).rolling(window=n).mean().iloc[n-1:].values
+    m_short_price = []
+    for i in range(n):
+        m_short_price.append(0)
+    for item in median_short_price:
+        m_short_price.append(float(item))
+
+    deviation_percentage = []
+    deviation_price = []
+    for count in range(0, len(m_short)):
+        if float(m_long[count]) < 0.001 or float(m_long_price[count]) < 0.001:
+            deviation_price.append('')
+            deviation_percentage.append('')
+        else:
+            deviation_price.append((float(m_short_price[count])-float(m_long_price[count]))/(1))
+            deviation_percentage.append(100*(float(m_short_price[count])-float(m_long_price[count]))/(float(m_long_price[count])))
+
+    dt = 'deviation_tx.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'m_long_price': m_long_price, 'deviation_percentage': deviation_percentage, 'deviation_price': deviation_price, 'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
+    return render(request, 'monerojnet/deviation_tx.html', context)
+
 def percentage(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
@@ -3239,9 +3361,6 @@ def sfmodel(request):
     
     update = True
     symbol = 'xmr'
-    coins = Coin.objects.filter(name=symbol).order_by('date')
-    for coin in coins:
-        print(coin.date)
 
     today = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
     yesterday = date.today() - timedelta(1)
