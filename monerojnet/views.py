@@ -468,7 +468,6 @@ def populate_database(request):
             coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
             if coins_xmr:
                 for coin_xmr in coins_xmr:
-
                     if coin_xmr.blocksize > 0:
                         data.xmr_blocksize = coin_xmr.blocksize
                     else:
@@ -589,6 +588,10 @@ def populate_database(request):
             coins_dash = Coin.objects.filter(name='dash').filter(date=coin_btc.date)
             if coins_dash:
                 for coin_dash in coins_dash:
+                    if coin_dash.transactions > 0:
+                        data.dash_transactions = coin_dash.transactions
+                    else:
+                        data.dash_transactions = 0
                     if coin_dash.inflation > 0:
                         data.dash_inflation = coin_dash.inflation
                     else:
@@ -601,6 +604,7 @@ def populate_database(request):
             else:
                 data.dash_inflation = 0
                 data.dash_marketcap = 0
+                data.dash_transactions = 0
         else:
             data.xmr_emissionntv = 0
             data.xmr_emissionusd = 0
@@ -609,6 +613,7 @@ def populate_database(request):
             data.xmr_return = 0
             data.dash_inflation = 0
             data.dash_marketcap = 0
+            data.dash_transactions = 0
             data.xmr_marketcap = 0
             data.xmr_minerrevntv = 0
             data.xmr_minerrevusd = 0
@@ -632,6 +637,10 @@ def populate_database(request):
             coins_zcash = Coin.objects.filter(name='zec').filter(date=coin_btc.date)
             if coins_zcash:
                 for coin_zcash in coins_zcash:
+                    if coin_zcash.transactions > 0:
+                        data.zcash_transactions = coin_zcash.transactions
+                    else:
+                        data.zcash_transactions = 0
                     if coin_zcash.inflation > 0:
                         data.zcash_inflation = coin_zcash.inflation
                     else:
@@ -644,14 +653,20 @@ def populate_database(request):
             else:
                 data.zcash_inflation = 0
                 data.zcash_marketcap = 0
+                data.zcash_transactions = 0
         else:
             data.zcash_inflation = 0
             data.zcash_marketcap = 0
+            data.zcash_transactions = 0
 
         if count_aux > 3600:
             coins_grin = Coin.objects.filter(name='grin').filter(date=coin_btc.date)
             if coins_grin:
                 for coin_grin in coins_grin:
+                    if coin_grin.transactions > 0:
+                        data.grin_transactions = coin_grin.transactions
+                    else:
+                        data.grin_transactions = 0
                     if coin_grin.inflation > 0:
                         data.grin_inflation = coin_grin.inflation
                     else:
@@ -664,9 +679,11 @@ def populate_database(request):
             else:
                 data.grin_inflation = 0
                 data.grin_marketcap = 0
+                data.grin_transactions = 0
         else:
             data.grin_inflation = 0
             data.grin_marketcap = 0
+            data.grin_transactions = 0
     
         socials = Social.objects.filter(name='Bitcoin').filter(date=coin_btc.date)
         if socials:
@@ -2566,20 +2583,12 @@ def deviation_tx(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
-    supply = []
     pricexmr = []
     dates = []
-    now_transactions = 0
-    maximum = 0
 
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        transactions.append(coin.transactions)
-        supply.append(coin.supply)
-        now_transactions = coin.transactions
-        if now_transactions > maximum:
-            maximum = now_transactions    
-        
+        transactions.append(coin.transactions)        
         if coin.priceusd > 0.001:
             pricexmr.append(coin.priceusd)
         else:
@@ -2587,22 +2596,14 @@ def deviation_tx(request):
 
         coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
-    
-    now_transactions = int(now_transactions)
-    maximum = int(maximum)
 
     n = 180
     median_long = pd.Series(transactions).rolling(window=n).mean().iloc[n-1:].values
     m_long = []
-    median_supply = pd.Series(supply).rolling(window=1).mean().iloc[n-1:].values
-    median_supply_final = []
     for i in range(n):
         m_long.append(0)
-        median_supply_final.append(0)
     for item in median_long:
         m_long.append(float(item))
-    for item in median_supply:
-        median_supply_final.append(float(item))
 
     n = 3
     median_short = pd.Series(transactions).rolling(window=n).mean().iloc[n-1:].values
@@ -2629,18 +2630,20 @@ def deviation_tx(request):
         m_short_price.append(float(item))
 
     deviation_percentage = []
-    deviation_price = []
     for count in range(0, len(m_short)):
-        if float(median_supply_final[count]) < 0.001 or float(m_long_price[count]) < 0.001:
-            deviation_price.append('')
+        if float(m_long[count]) < 0.001 or float(m_long_price[count]) < 0.001:
             deviation_percentage.append('')
         else:
-            deviation_price.append(0)
-            deviation_percentage.append((float(m_short_price[count])-float(m_long_price[count]))*(float(m_short[count])-float(m_long[count]))/(float(m_long[count])))
+            calculation = (float(m_short_price[count])-float(m_long_price[count]))*abs(float(m_short[count])-float(m_long[count]))/(float(m_long[count]))
+            if calculation > 100:
+                calculation = 100
+            if calculation < -100:
+                calculation = -100
+            deviation_percentage.append(calculation)
 
     dt = 'deviation_tx.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'m_long_price': m_long_price, 'deviation_percentage': deviation_percentage, 'deviation_price': deviation_price, 'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
+    context = {'deviation_percentage': deviation_percentage, 'dates': dates, 'pricexmr': pricexmr}
     return render(request, 'monerojnet/deviation_tx.html', context)
 
 def percentage(request):
@@ -3176,7 +3179,6 @@ def blocksize(request):
     
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
-
         if item.btc_blocksize > 0.001:
             btc_blocksize.append(item.btc_blocksize/1024)
             now_btc = item.btc_blocksize
@@ -3229,6 +3231,33 @@ def transactionsize(request):
     print(dt)
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'monerojnet/transactionsize.html', context)
+
+def transactiondominance(request):
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    xmr_dominance = []
+    dates = []
+    now_xmr = 0
+    maximum = 0
+    
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_transactions > 0:
+            now_xmr = 100*item.xmr_transactions/(item.xmr_transactions+item.dash_transactions+item.zcash_transactions+item.grin_transactions)
+        else:
+            now_xmr = 0
+        if now_xmr > maximum:
+            maximum = now_xmr
+        xmr_dominance.append(now_xmr)
+        
+    now_xmr = locale.format('%.1f', now_xmr, grouping=True) + '%'
+    maximum = locale.format('%.1f', maximum, grouping=True) + '%'
+    
+    dt = 'transactiondominance.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr_dominance': xmr_dominance, 'now_xmr': now_xmr, 'maximum': maximum, 'dates': dates}
+    return render(request, 'monerojnet/transactiondominance.html', context)
 
 def difficulty(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()

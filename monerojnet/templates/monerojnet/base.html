@@ -161,7 +161,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTransactions"
                     aria-expanded="true" aria-controls="collapseTransactions">
                     <i class="fas fa-exchange-alt"></i>
-                    <span>Transactions (8)</span>
+                    <span>Transactions (10)</span>
                 </a>
                 <div id="collapseTransactions" class="collapse" aria-labelledby="headingTransactions"
                     data-parent="#accordionSidebar">
@@ -175,7 +175,8 @@
                         <a class="collapse-item" href="{% url 'monerojnet:percentage' %}">Transaction Percentage</a>
                         <a class="collapse-item" href="{% url 'monerojnet:metcalfesats' %}">Metcalfe's Law (Sats)</a>
                         <a class="collapse-item" href="{% url 'monerojnet:metcalfeusd' %}">Metcalfe's Law ($)</a>
-                        <a class="collapse-item" href="{% url 'monerojnet:deviation_tx' %}">Tx. Count Deviation</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:deviation_tx' %}">Transacted Price Deviation</a>
+                        <a class="collapse-item" href="{% url 'monerojnet:transactiondominance' %}">Transaction Dominance</a>
                     </div>
                 </div>
             </li>

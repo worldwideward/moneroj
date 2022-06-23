@@ -78,6 +78,9 @@ class DailyData(models.Model):
 	xmr_transacpercentage = models.FloatField()
 	btc_transactions = models.FloatField()
 	xmr_transactions = models.FloatField()
+	zcash_transactions = models.FloatField()
+	dash_transactions = models.FloatField()
+	grin_transactions = models.FloatField()
 	btc_supply = models.IntegerField()
 	xmr_supply = models.IntegerField()
 
