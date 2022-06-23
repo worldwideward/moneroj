@@ -2566,6 +2566,7 @@ def deviation_tx(request):
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
+    supply = []
     pricexmr = []
     dates = []
     now_transactions = 0
@@ -2574,6 +2575,7 @@ def deviation_tx(request):
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
         transactions.append(coin.transactions)
+        supply.append(coin.supply)
         now_transactions = coin.transactions
         if now_transactions > maximum:
             maximum = now_transactions    
@@ -2592,12 +2594,17 @@ def deviation_tx(request):
     n = 180
     median_long = pd.Series(transactions).rolling(window=n).mean().iloc[n-1:].values
     m_long = []
+    median_supply = pd.Series(supply).rolling(window=1).mean().iloc[n-1:].values
+    median_supply_final = []
     for i in range(n):
         m_long.append(0)
+        median_supply_final.append(0)
     for item in median_long:
         m_long.append(float(item))
+    for item in median_supply:
+        median_supply_final.append(float(item))
 
-    n = 1
+    n = 3
     median_short = pd.Series(transactions).rolling(window=n).mean().iloc[n-1:].values
     m_short = []
     for i in range(n):
@@ -2624,12 +2631,12 @@ def deviation_tx(request):
     deviation_percentage = []
     deviation_price = []
     for count in range(0, len(m_short)):
-        if float(m_long[count]) < 0.001 or float(m_long_price[count]) < 0.001:
+        if float(median_supply_final[count]) < 0.001 or float(m_long_price[count]) < 0.001:
             deviation_price.append('')
             deviation_percentage.append('')
         else:
-            deviation_price.append((float(m_short_price[count])-float(m_long_price[count]))/(1))
-            deviation_percentage.append(100*(float(m_short_price[count])-float(m_long_price[count]))/(float(m_long_price[count])))
+            deviation_price.append(0)
+            deviation_percentage.append((float(m_short_price[count])-float(m_long_price[count]))*(float(m_short[count])-float(m_long[count]))/(float(m_long[count])))
 
     dt = 'deviation_tx.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
