@@ -14,7 +14,6 @@
 
     <link href="{% static 'img/favicon.png' %}" rel="icon">
     <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet"> 
     <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
 
@@ -45,6 +44,12 @@
         }
         div.a {
             word-break: break-all;
+        }
+        .btn {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            padding-left: 12px;
+            padding-right: 12px;
         }
     </style>
 
@@ -95,9 +100,6 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center"
                 href="{% url 'monerojnet:index' %}">
-                <div class="sidebar-brand-icon">
-                    <i class="fab fa-monero"></i>
-                </div>
                 <div class="sidebar-brand-text mx-3">Moneroj</div>
             </a>
             <br>
@@ -109,7 +111,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrice"
                     aria-expanded="true" aria-controls="collapsePrice">
-                    <i class="fas fa-dollar-sign"></i>
+                    <i class="bx bx-dollar"></i>
                     <span>Price (16)</span>
                 </a>
                 <div id="collapsePrice" class="collapse" aria-labelledby="headingPrice"
@@ -140,7 +142,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMarketcap"
                     aria-expanded="true" aria-controls="collapseMarketcap">
-                    <i class="fas fa-award"></i>
+                    <i class="bx bx-award"></i>
                     <span>Marketcap (6)</span>
                 </a>
                 <div id="collapseMarketcap" class="collapse" aria-labelledby="headingMarketcap"
@@ -184,7 +186,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseIssuance"
                     aria-expanded="true" aria-controls="collapseIssuance">
-                    <i class="fas fa-chart-area"></i>
+                    <i class="bx bx-bar-chart"></i>
                     <span>Issuance (7)</span>
                 </a>
                 <div id="collapseIssuance" class="collapse" aria-labelledby="headingIssuance"
@@ -206,7 +208,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSF"
                     aria-expanded="true" aria-controls="collapseSF">
-                    <i class="fas fa-coins"></i>
+                    <i class="bx bx-check-circle"></i>
                     <span>Stock-to-flow (3)</span>
                 </a>
                 <div id="collapseSF" class="collapse" aria-labelledby="headingSF" data-parent="#accordionSidebar">
@@ -223,7 +225,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMining"
                     aria-expanded="true" aria-controls="collapseMining">
-                    <i class="fas fa-calculator"></i>
+                    <i class="bx bx-calculator"></i>
                     <span>Mining (14)</span>
                 </a>
                 <div id="collapseMining" class="collapse" aria-labelledby="headingMining"
@@ -258,7 +260,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSocial"
                     aria-expanded="true" aria-controls="collapseSocial">
-                    <i class="fab fa-reddit-alien"></i>
+                    <i class="bx bxl-reddit"></i>
                     <span>Reddit (7)</span>
                 </a>
                 <div id="collapseSocial" class="collapse" aria-labelledby="headingSocial"
@@ -279,7 +281,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDread"
                     aria-expanded="true" aria-controls="collapseDread">
-                    <i class="far fa-eye-slash"></i>
+                    <i class="bx bx-hide"></i>
                     <span>Dread (1)</span>
                 </a>
                 <div id="collapseDread" class="collapse" aria-labelledby="headingDread"
@@ -294,7 +296,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdoption"
                     aria-expanded="true" aria-controls="collapseAdoption">
-                    <i class="fas fa-store"></i>
+                    <i class="bx bx-store"></i>
                     <span>Adoption (4)</span>
                 </a>
                 <div id="collapseAdoption" class="collapse" aria-labelledby="headingDarknet"
@@ -312,7 +314,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrends"
                     aria-expanded="true" aria-controls="collapseTrends">
-                    <i class="fab fa-google"></i>
+                    <i class="bx bxl-google"></i>
                     <span>Google Trends (1)</span>
                 </a>
                 <div id="collapseTrends" class="collapse" aria-labelledby="headingTrends"
@@ -336,7 +338,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOthers"
                     aria-expanded="true" aria-controls="collapseOthers">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="bx bx-info-circle"></i>
                     <span>About Us</span>
                 </a>
                 <div id="collapseOthers" class="collapse" aria-labelledby="headingOthers"
