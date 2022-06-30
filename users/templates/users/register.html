@@ -1,0 +1,113 @@
+{% extends "users/base.html" %}
+{% block header %}
+
+<style>  
+  .login_page {
+      width: 360px;
+      padding: 10% 0 0;
+      margin: auto
+  }
+  
+  .form {
+      position: relative;
+      z-index: 1;
+      background: #313030;
+      max-width: 360px;
+      margin: 0 auto 100px;
+      padding: 45px;
+      text-align: center;
+      border-radius: 20px
+  }
+  
+  .form input {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      width: 100%;
+      border: 0;
+      margin: 0 0 15px;
+      padding: 15px;
+      font-size: 14px;
+      border-radius: 5px
+  }
+  
+  .form button {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      background: #ff4d21;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      padding: 15px;
+      color: #ffffff;
+      font-size: 14px;
+      cursor: pointer
+  }
+  
+  .form button:hover,
+  .form button:active {
+      background: #db3b13
+  }
+  
+  .form .message {
+      margin: 15px 0 0;
+      color: rgb(255, 255, 255);
+      font-size: 16px
+  }
+  
+  .form .message a {
+      color: #ff4d21;
+      text-decoration: none
+  }
+  
+  .form .register_form {
+      display: none
+  }
+</style>
+
+{% endblock header %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-xl-6 d-flex flex-column justify-content-center">
+      <center>
+        <h1>Don't have an account?</h1>
+        <h3>Register to become a contributor. No personal data needed.</h3>
+      </center>
+    </div>
+
+    <div class="col-xl-6 d-flex flex-column justify-content-center">
+      <form action="{% url 'users:register' %}" method='POST'>
+        {% csrf_token %}
+        <div class="col-md-12">
+          <div class="login_page">
+            {% if form.errors %}
+              {% for field in form %}
+                {% for error in field.errors %} 
+                  <div class="alert alert-danger">
+                    <strong><center>{{ error|escape }}</center></strong>
+                  </div>
+                {% endfor %}
+              {% endfor %}
+            {% endif %}
+            <div class="form">
+              <h1><i class="bx bx-user-plus text-white"></i></h1>
+              <p class="message">Register a new user:</p><br>
+              <input type="text" name="username" placeholder="Username">
+              <input type="hidden" name="type" value="user">
+              <input type="text" name="email" placeholder="Your e-mail">
+              <input type="password" name="password1" placeholder="Password"> 
+              <input type="password" name="password2" placeholder="Repeat the password"> 
+              <button>Register</button>
+              <p class="message">Already registered? <a href="{% url 'users:login' %}">Login</a></p>
+                <input type="hidden" name="next" value="{% url 'monerojnet:index' %}">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+{% endblock content %}

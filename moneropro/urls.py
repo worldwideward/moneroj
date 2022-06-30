@@ -21,4 +21,5 @@ app_name = 'monerojnet'
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'', include(('monerojnet.urls', 'monerojnet'), namespace='monerojnet')),
+    url(r'', include(('users.urls', 'users'), namespace='users')),
 ]
