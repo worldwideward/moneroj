@@ -434,7 +434,7 @@ def get_latest_price():
     with open("settings.json") as file:
         data = json.load(file)
 
-        url = data["metrics_provider"][0]["price_url"]
+        url = data["metrics_provider"][0]["price_url_old"]
         parameters = {
             'convert':'USD',
         }
