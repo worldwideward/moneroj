@@ -6,6 +6,7 @@ from django.urls import reverse
 import requests
 import json
 from .models import *
+from users.models import PageViews
 from users.views import update_visitors
 import datetime
 from datetime import date, timedelta
@@ -2539,6 +2540,24 @@ def translin(request):
     print(dt)
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'charts/translin.html', context)
+
+def pageviews(request):
+    update_visitors(False)
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    pageviews = []
+    unique = []
+    dates = []
+
+    users = PageViews.objects.order_by('date')
+    for user in users:
+        pageviews.append(user.total_pageviews)
+        unique.append(user.unique_visitors)
+        dates.append(user.date)
+        print(user.date)
+    dt = 'pageviews.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'pageviews': pageviews, 'dates': dates, 'unique': unique}
+    return render(request, 'charts/pageviews.html', context)
 
 def transmonth(request):
     update_visitors(False)

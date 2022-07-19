@@ -82,6 +82,7 @@ urlpatterns = [
     path('deviation_tx/', views.deviation_tx, name='deviation_tx'),
     path('transactiondominance/', views.transactiondominance, name='transactiondominance'),
     path('percentmonth/', views.percentmonth, name='percentmonth'),
+    path('pageviews/', views.pageviews, name='pageviews'),
 
     # URLs to useful functions on charts/views.py
     # Only admins can use these 
