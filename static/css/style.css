@@ -251,17 +251,17 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-@media (max-width: 1024px), (max-height: 768px) {
+@media (max-width: 1200px), (max-height: 768px) {
   #hero {
     margin-bottom: -30px;
-    height: 90vh;
+    height: 70vh;
   }
 }
 
 @media (max-width: 768px) {
   #hero {
     margin-bottom: -30px;
-    height: 100vh;
+    height: 80vh;
   }
   #hero h1 {
     font-size: 28px;
@@ -276,16 +276,18 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-height: 500px) {
   #hero {
     margin-bottom: -15px;
-    height: 120vh;
+    height: 100vh;
   }
 }
 
 #hero .icon-boxes .icon-box {
+  margin-top: 15px;
+  margin-bottom: 15px;
   text-align: left;
   border-radius: 15px;
   background: #fff;
   box-shadow: 10px 5px 30px rgba(0, 0, 0, 0.1);
-  padding: 20px 20px;
+  padding: 20px 20px 20px 20px;
   width: 100%;
 }
 
