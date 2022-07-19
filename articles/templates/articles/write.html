@@ -1,0 +1,364 @@
+{% extends "users/base.html" %}
+{% block header %}
+
+<title>Moneroj.net - Profile</title>
+
+<style>  
+  .login_page {
+      margin: 0 auto 25px;
+  }
+  
+  .form {
+      position: relative;
+      z-index: 1;
+      background: #313030;
+      max-width: 100%;
+      padding: 20px;
+      text-align: center;
+      border-radius: 20px
+  }
+  
+  .form input {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      width: 100%;
+      border: 0;
+      margin: 0 0 10px;
+      padding: 5px;
+      font-size: 14px;
+      border-radius: 5px
+  }
+  
+  .form button {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      background: #ff4d21;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      padding: 5px;
+      color: #ffffff;
+      font-size: 14px;
+      cursor: pointer
+  }
+  
+  .form button:hover,
+  .form button:active {
+      background: #db3b13
+  }
+  
+  .form .message {
+      margin: 10px 0 0;
+      color: rgb(255, 255, 255);
+      font-size: 16px
+  }
+  
+  .form .message a {
+      color: #ff4d21;
+      text-decoration: none
+  }
+  
+  .form .register_form {
+      display: none
+  }
+</style>
+
+{% endblock header %}
+{% block content %}
+
+  <!-- ======= Subscribe Section ======= -->
+  <section id="Subscribe" class="section-bg">
+    <div class="container">    
+      <div class="row">
+        <div class="col-xl-6 d-flex flex-column justify-content-center">
+          <h1>Start writing great articles!</h1>
+          <h3>Write and submit your articles for approval.</h3>
+        </div>
+    
+        <div class="col-xl-3 d-flex flex-column justify-content-center">
+          <div class="col-md-12 form">
+            <h1><i class="bx bx-user" style="color: #ffffff"></i></h1>
+            <p class="message">You are currently:
+              <br>
+              <br>
+              {% if request.user.profile.type == 'user' %}
+              User / writer
+              {% elif request.user.profile.type == 'editor' %}
+              Editor and writer
+              {% elif request.user.profile.type == 'admin' %}
+              Administrator
+              {% endif %}
+            </p>
+          </div>
+        </div>
+
+        <div class="col-xl-3 d-flex flex-column justify-content-center">
+          <div class="col-md-12 form">
+            <h1><i class="bx bx-pen" style="color: #ffffff"></i></h1>
+            <p class="message">Write new article:</p><br>
+            <a href="{% url 'articles:new_article' %}"><button type="submit">Write</button></a>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  <!-- End Subscribe Section -->
+
+  <div class="container">
+    
+    <br><br>
+    <div class="section-title">
+      <h2>My Articles</h2>
+    </div>
+    <table class="table table-sm table-hover">
+      <tbody>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Created</th>
+          <th scope="col">Updated</th>
+          <th scope="col">Published</th>
+          <th scope="col">Status</th>
+          <th scope="col" class="table-info"><div style="float:right">View</div></th>
+          <th scope="col" class="table-warning"><div style="float:right">Edit</div></th>
+          <th scope="col" class="table-danger"><div style="float:right">Delete</div></th>
+        </tr>
+        {% for article in articles %}
+          <tr>
+            <td>{{ article.title }}</td>
+            <td>{{ article.date_added }}</td>
+            <td>{{ article.date_updated }}</td>
+            <td>{{ article.date_published }}</td>
+            <td>{{ article.status }}</td>
+            <td class="table-info">
+              <div style="float:right">
+                <a href="../article/{{ article.url }}">X</a>
+              </div>  
+            </td>
+            <td class="table-warning">
+              <div style="float:right">
+                <a href="{% url 'articles:edit_article' article.id %}">X</a>
+                
+              </div>
+            </td>
+
+            <td class="table-danger">
+              <div style="float:right">
+                <a data-toggle="modal" href="#" data-target="#id_Modal_delete{{ article.id }}">X</a>
+                <!-- Modal -->
+                <div class="modal fade" id="id_Modal_delete{{ article.id }}" tabindex="-1" role="dialog" aria-labelledby="Modal_delete{{ article.id }}" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="Modal_delete{{ article.id }}">Delete article</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cencel">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to block and delete this article?<br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" href="{% url 'articles:delete_article' article.id %}" role="button">Delete</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Fim do Modal -->
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if request.user.profile.type == 'editor' %}
+    <br><br>
+    <div class="section-title">
+      <h2>Review Articles</h2>
+    </div>
+    <table class="table table-sm table-hover">
+      <tbody>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Created</th>
+          <th scope="col">Updated</th>
+          <th scope="col">Published</th>
+          <th scope="col">Status</th>
+          <th scope="col" class="table-info"><div style="float:right">View</div></th>
+          <th scope="col" class="table-success"><div style="float:right">Publish</div></th>
+          <th scope="col" class="table-warning"><div style="float:right">Review</div></th>
+        </tr>
+        {% for review in reviews %}
+          <tr>
+            <td>{{ review.title }}</td>
+            <td>{{ review.date_added }}</td>
+            <td>{{ review.date_updated }}</td>
+            <td>{{ review.date_published }}</td>
+            <td>{{ review.status }}</td>
+            <td class="table-info">
+              <div style="float:right">
+                <a href="../article/{{ review.url }}">X</a>
+              </div>  
+            </td>
+            <td class="table-success">
+              <div style="float:right">
+                <a href="{% url 'articles:publish_article' review.id %}">X</a>
+              </div>  
+            </td>
+            <td class="table-warning">
+              <div style="float:right">
+                <a href="{% url 'articles:edit_article' review.id %}">X</a>
+              </div>
+            </td>
+
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% elif request.user.profile.type == 'admin' %}
+    <br><br>
+    <div class="section-title">
+      <h2>Review Articles</h2>
+    </div>
+    <table class="table table-sm table-hover">
+      <tbody>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Writer</th>
+          <th scope="col">Created</th>
+          <th scope="col">Updated</th>
+          <th scope="col">Status</th>
+          <th scope="col" class="table-info"><div style="float:right">View</div></th>
+          <th scope="col" class="table-success"><div style="float:right">Publish</div></th>
+          <th scope="col" class="table-warning"><div style="float:right">Review</div></th>
+          <th scope="col" class="table-danger"><div style="float:right">Delete</div></th>
+        </tr>
+        {% for review in reviews %}
+          <tr>
+            <td>{{ review.title }}</td>
+            <td>{{ review.owner.username }}</td>
+            <td>{{ review.date_added }}</td>
+            <td>{{ review.date_updated }}</td>
+            <td>{{ review.status }}</td>
+            <td class="table-info">
+              <div style="float:right">
+                <a href="../article/{{ review.url }}">X</a>
+              </div>  
+            </td>
+            <td class="table-success">
+              <div style="float:right">
+                <a href="{% url 'articles:publish_article' review.id %}">X</a>
+              </div>  
+            </td>
+            <td class="table-warning">
+              <div style="float:right">
+                <a href="{% url 'articles:edit_article' review.id %}">X</a>
+                
+              </div>
+            </td>
+
+            <td class="table-danger">
+              <div style="float:right">
+                <a data-toggle="modal" href="#" data-target="#id_Modal_delete_review{{ review.id }}">X</a>
+                <!-- Modal -->
+                <div class="modal fade" id="id_Modal_delete_review{{ review.id }}" tabindex="-1" role="dialog" aria-labelledby="Modal_delete_review{{ review.id }}" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="Modal_delete_review{{ review.id }}">Delete article</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cencel">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to block and delete this article?<br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" href="{% url 'articles:delete_article' review.id %}" role="button">Delete</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Fim do Modal -->
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <br><br>
+    <div class="section-title">
+      <h2>Published Articles</h2>
+    </div>
+    <table class="table table-sm table-hover">
+      <tbody>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Writer</th>
+          <th scope="col">Created</th>
+          <th scope="col">Updated</th>
+          <th scope="col">Status</th>
+          <th scope="col" class="table-info"><div style="float:right">View</div></th>
+          <th scope="col" class="table-danger"><div style="float:right">Delete</div></th>
+        </tr>
+        {% for publish in published %}
+          <tr>
+            <td>{{ publish.title }}</td>
+            <td>{{ publish.owner.username }}</td>
+            <td>{{ publish.date_added }}</td>
+            <td>{{ publish.date_updated }}</td>
+            <td>{{ publish.status }}</td>
+            <td class="table-info">
+              <div style="float:right">
+                <a href="../article/{{ publish.url }}">X</a>
+              </div>  
+            </td>
+
+            <td class="table-danger">
+              <div style="float:right">
+                <a data-toggle="modal" href="#" data-target="#id_Modal_delete_published{{ publish.id }}">X</a>
+                <!-- Modal -->
+                <div class="modal fade" id="id_Modal_delete_published{{ publish.id }}" tabindex="-1" role="dialog" aria-labelledby="Modal_delete_published{{ publish.id }}" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="Modal_delete_published{{ publish.id }}">Delete article</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cencel">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to block and delete this article?<br>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-danger" href="{% url 'articles:delete_article' publish.id %}" role="button">Delete</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Fim do Modal -->
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    
+  </div>
+  <br><br><br>
+
+{% endblock content %}
+
+
+
+
+
+
+

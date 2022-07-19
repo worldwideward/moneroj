@@ -1,97 +1,175 @@
-Charts that have to be changed
 
-social.html 15.10 seconds               >>>>>>> done
-social6.html 15.24 seconds              >>>>>>> done
-social7.html 15.23 seconds              >>>>>>> done
-social4.html 17.45 seconds              >>>>>>> done
-social2.html 27.54 seconds              >>>>>>> done
-social3.html 15.11 seconds              >>>>>>> done
-social5.html 6.82 seconds               >>>>>>> done
-pricesats.html 5.61 seconds             >>>>>>> done
-minerrevcap.html 15.37 seconds          >>>>>>> done
-marketcap.html 11.83 seconds            >>>>>>> done
-percentage.html 12.20 seconds           >>>>>>> done
-commit.html 15.27 seconds               >>>>>>> done
-commitntv.html 19.87 seconds            >>>>>>> done
-minerfees.html 17.46 seconds            >>>>>>> done
-minerfeesntv.html 16.88 seconds         >>>>>>> done
-minerrev.html 18.77 seconds             >>>>>>> done
-minerrevntv.html 18.68 seconds          >>>>>>> done
-metcalfesats.html 14.21 seconds         >>>>>>> done
-metcalfeusd.html 14.13 seconds          >>>>>>> done
-transcostntv.html 15.63 seconds         >>>>>>> done
-transcost.html 17.95 seconds            >>>>>>> done
-coins.html 15.35 seconds                >>>>>>> done
-extracoins.html 20.84 seconds           >>>>>>> done
-inflation.html 17.76 seconds            >>>>>>> done
-compinflation.html 28.91 seconds        >>>>>>> done
-dailyemission.html 19.64 seconds        >>>>>>> done
-dailyemissionntv.html 16.54 seconds     >>>>>>> done
-sfmodel.html 15.81 seconds              >>>>>>> done
-sfmodellin.html 0.14 seconds            >>>>>>> done
-bitcoin.html 15.61 seconds              >>>>>>> done
+New charts released, and why we gave up the CCS Proposal
 
-Charts that won’t be changed
+Basically, three main reasons:<br>
 
-translin.html 0.08 seconds
-translog.html 0.08 seconds
-pricelog.html 0.08 seconds
-pricelin.html 0.09 seconds
-fractal.html 0.05 seconds
-inflationfractal.html 0.08 seconds
-golden.html 0.14 seconds
-competitors.html 0.23 seconds
-competitorssats.html 0.17 seconds
-competitorssatslin.html 0.23 seconds
-inflationreturn.html 0.27 seconds
-powerlaw.html 0.09 seconds
-thermocap.html 0.08 seconds
-sharpe.html 0.10 seconds
-dominance.html 3.10 seconds
-rank.html 2.13 seconds
-sfmultiple.html 0.12 seconds
-hashrate.html 0.12 seconds
-hashprice.html 0.16 seconds
-hashvsprice.html 0.08 seconds
-dread_subscribers.html 3.49 seconds
-coincards.html 1.81 seconds
-merchants.html 1.72 seconds
-merchants_increase.html 1.68 seconds
-merchants_percentage.html 1.76 seconds
-tail_emission.html 0.55 seconds
+<ul>
+<li>Development is almost ready, and I want users to enjoy it;</li>
+<li>I had no idea if my proposal was going to go through;</li>
+<li>More freedom to build;</li>
+</ul>
 
-How it became
+<b>1) Development is almost ready, and I want users to enjoy it</b><br><br>
 
-sfmodel.html 0.05 seconds
-sfmodellin.html 0.04 seconds
-dailyemission.html 0.04 seconds
-dailyemissionntv.html 0.04 seconds
-compinflation.html 0.06 seconds
-bitcoin.html 0.17 seconds
-inflation.html 0.06 seconds
-coins.html 0.13 seconds
-extracoins.html 0.12 seconds
-transcost.html 0.09 seconds
-transcostntv.html 0.10 seconds
-metcalfesats.html 0.09 seconds
-metcalfeusd.html 0.17 seconds
-minerrev.html 0.10 seconds
-minerrevntv.html 0.10 seconds
-minerfeesntv.html 0.10 seconds
-minerfees.html 0.13 seconds
-commitntv.html 0.12 seconds
-commit.html 0.09 seconds
-percentage.html 0.09 seconds
-marketcap.html 0.37 seconds
-pricesats.html 0.09 seconds
-social.html 0.26 seconds
-social6.html 0.31 seconds
-social7.html 0.22 seconds
-social4.html 0.26 seconds
-social2.html 0.33 seconds
-social3.html 0.23 seconds
-social5.html 0.25 seconds
+After 10 weeks of my original CCS proposal on May 11th, I had a lot of suggestions and requests on what I should do to provide a better user experience. I had a lot of help from community members putting this one up, for which I'm grateful. I learned a lot in this period. But the process was taking a long time to complete, so I understand that the Core team has more important things to deal with. This is natural.<br><br>
 
-Total that would take = 494,44 seconds
-Total that it's taking = 22,70 seconds
-Loading time reduction = 95,36%
+I like to develop Moneroj.net, so I began development as soon as I created the proposal. After 10 weeks, I have almost completed it, and I started building things ahead of schedule. This delay on the proposal was jamming the development of the website, because I had major improvements which I wanted to realease to the public, but I wasn't sure if I could or should, since the CCS Proposal wasn't showing any signs of progress. Since I wasn't sure the proposal was going to pass or not, I felt I should just deploy the improvements and cancel the CCS Proposal, and then ask for donations directly. I don't rule out using Monero's CCS in the future, but I think it's best not to use it at this moment. <br><br>
+
+<b>2) I had no idea if my proposal was going to go through</b><br><br>
+
+Another obvious reason to give up on CCS and ask for donations directly is because I'm putting too much time into it, so it costs me money to build for the community. I understand that the community wants these charts and I want to develop them, but when I put my time into it, I give up working on other projects. However, I have no idea whether the proposal would go ahead. Maybe I wasn't patient enough, but the development is almost done, so I end up hurting the community if I don't deliver what I already have. Fortunately, the proposal had a lot of feedback from the community, which makes me believe that I met all the parameters I had to fulfill. It's kind of hard to get on with life if you've got a 240-hour job offer stuck in a community crowdfunding system. If you think you're one of the hundreds of people who use the site daily, donate some XMR to the cause. Asking for donations directly is risky, mainly because people might end up not donating nothing, but it's a risk I'm willing to pay. If that path doesn't work, I'll try other funding sources.<br><br>
+
+<b>3) More freedom to build</b><br><br>
+
+One thing I came across while talking to community members is that the Core team cannot risk exposing themselves and the Monero project to questionable or illegal things. For example, the Core team will not risk accepting a proposal that deals with darknet markets (even if it's just a metric on that). This is understandable, of course. But without a CCS Proposal I can build freely.<br><br>
+
+<b>What was developed on this work?</b><br><br>
+
+First, I implemented a hidden service for TOR users, which can be accessed via the link:
+
+<ul>
+<li>http://ilt7jgmfro76wgrtt6752lvfnhcz6wk5sjqhyvntjixygp3cwpvr4nad.onion/</li>
+</ul>
+
+Then the use of Javascript was severely reduced. There are some improvements I can still build around this issue, but the site is already working fine on TOR. The visual identity of the site has been improved and some serious bugs have been fixed. The database has been completely rebuilt and now the pages load much faster. Before the proposal, pages took a long time to load:
+
+<ul>
+<li>social.html 15.10 seconds</li>
+<li>social6.html 15.24 seconds</li>
+<li>social7.html 15.23 seconds</li>
+<li>social4.html 17.45 seconds</li>
+<li>social2.html 27.54 seconds</li>
+<li>social3.html 15.11 seconds</li>
+<li>social5.html 6.82 seconds</li>
+<li>pricesats.html 5.61 seconds</li>
+<li>minerrevcap.html 15.37 seconds</li>
+<li>marketcap.html 11.83 seconds</li>          
+<li>percentage.html 12.20 seconds</li>    
+<li>commit.html 15.27 seconds</li>    
+<li>commitntv.html 19.87 seconds</li>
+<li>minerfees.html 17.46 seconds</li>
+<li>minerfeesntv.html 16.88 seconds</li>
+<li>minerrev.html 18.77 seconds</li>
+<li>minerrevntv.html 18.68 seconds</li>
+<li>metcalfesats.html 14.21 seconds</li>
+<li>metcalfeusd.html 14.13 seconds</li>
+<li>transcostntv.html 15.63 seconds</li>
+<li>transcost.html 17.95 seconds</li>
+<li>coins.html 15.35 seconds</li>
+<li>extracoins.html 20.84 seconds</li>
+<li>inflation.html 17.76 seconds</li>
+<li>compinflation.html 28.91 seconds</li>
+<li>dailyemission.html 19.64 seconds</li>
+<li>dailyemissionntv.html 16.54 seconds</li>
+<li>sfmodel.html 15.81 seconds</li>
+<li>sfmodellin.html 0.14 seconds</li>
+<li>bitcoin.html 15.61 seconds</li>
+</ul>
+
+After the improvements, it is know taking:
+
+<ul>
+<li>sfmodel.html 0.05 seconds</li>
+<li>sfmodellin.html 0.04 seconds</li>
+<li>dailyemission.html 0.04 seconds</li>
+<li>dailyemissionntv.html 0.04 seconds</li>
+<li>compinflation.html 0.06 seconds</li>
+<li>bitcoin.html 0.17 seconds</li>
+<li>inflation.html 0.06 seconds</li>
+<li>coins.html 0.13 seconds</li>
+<li>extracoins.html 0.12 seconds</li>
+<li>transcost.html 0.09 seconds</li>
+<li>transcostntv.html 0.10 seconds</li>
+<li>metcalfesats.html 0.09 seconds</li>
+<li>metcalfeusd.html 0.17 seconds</li>
+<li>minerrev.html 0.10 seconds</li>
+<li>minerrevntv.html 0.10 seconds</li>
+<li>minerfeesntv.html 0.10 seconds</li>
+<li>minerfees.html 0.13 seconds</li>
+<li>commitntv.html 0.12 seconds</li>
+<li>commit.html 0.09 seconds</li>
+<li>percentage.html 0.09 seconds</li>
+<li>marketcap.html 0.37 seconds</li>
+<li>pricesats.html 0.09 seconds</li>
+<li>social.html 0.26 seconds</li>
+<li>social6.html 0.31 seconds</li>
+<li>social7.html 0.22 seconds</li>
+<li>social4.html 0.26 seconds</li>
+<li>social2.html 0.33 seconds</li>
+<li>social3.html 0.23 seconds</li>
+<li>social5.html 0.25 seconds</li>
+</ul>
+
+That is, including all other pages, it took a total of 494 seconds to load the entire website. After these database improvements, the whole website takes just 22.7 seconds, a 95.4% reduction. I couldn't avoid publishing the latest version just because my CCS proposal wasn't moving forward. Imagine taking all that time out of people's lives while the solution was already built! It's now much easier to browse metrics and check out your favorite charts. Also, I've built a total of 25 charts since May 11, when I made the proposal. Those are:<br>
+<ul>
+<li><a href='https://moneroj.net/deviation' target='_blank'>Price deviation;</a></li>
+<li><a href='https://moneroj.net/competitors' target='_blank'>Performance comparison to competitors ($, log);</a></li>
+<li><a href='https://moneroj.net/dominance' target='_blank'>Monero dominance (against all coins);</a></li>
+<li><a href='https://moneroj.net/monerodominance' target='_blank'>Monero dominance (on privacy marketcap);</a></li>
+<li><a href='https://moneroj.net/privacydominance' target='_blank'>Total privacy dominance;</a></li>
+<li><a href='https://moneroj.net/rank' target='_blank'>Coinmarketcap Ranking;</a></li>
+<li><a href='https://moneroj.net/marketcap' target='_blank'>Privacy coins' marketcap;</a></li>
+<li><a href='https://moneroj.net/privacymarketcap' target='_blank'>Total privacy marketcap;</a></li>
+<li><a href='https://moneroj.net/transmonth' target='_blank'>Monthly transactions;</a></li>
+<li><a href='https://moneroj.net/transmonth' target='_blank'>Monthly transactions;</a></li>
+<li><a href='https://moneroj.net/percentmonth' target='_blank'>Monthly percentage;</a></li>
+<li><a href='https://moneroj.net/deviation_tx' target='_blank'>Transacted price deviation;</a></li>
+<li><a href='https://moneroj.net/transactiondominance' target='_blank'>Transaction dominance;</a></li>
+<li><a href='https://moneroj.net/tail_emission' target='_blank'>Tail emission;</a></li>
+<li><a href='https://moneroj.net/blocksize' target='_blank'>Block size;</a></li>
+<li><a href='https://moneroj.net/blockchainsize' target='_blank'>Blockchain size;</a></li>
+<li><a href='https://moneroj.net/transactionsize' target='_blank'>Transaction size;</a></li>
+<li><a href='https://moneroj.net/difficulty' target='_blank'>Mining difficulty;</a></li>
+<li><a href='https://moneroj.net/social6' target='_blank'>Daily Reddit Comments;</a></li>
+<li><a href='https://moneroj.net/social7' target='_blank'>Daily Reddit Posts;</a></li>
+<li><a href='https://moneroj.net/dread_subscribers' target='_blank'>Dread subscribers</a></li>
+<li><a href='https://moneroj.net/coincards' target='_blank'>Coincards usage;</a></li>
+<li><a href='https://moneroj.net/merchants' target='_blank'>Merchants acceptance (total numbers, clearnet);</a></li>
+<li><a href='https://moneroj.net/merchants_increase' target='_blank'>Merchants increase (absolute numbers, clearnet)</a></li>
+<li><a href='https://moneroj.net/merchants_percentage' target='_blank'>Merchants increase (%, clearnet);</a></li>
+</ul>
+
+I had already built 10 new charts in the days following the proposal (Dread Subscribers, Privacy marketcap (all privacy currencies), Monero Marketcap Dominance (against all currencies), Coinmarketcap Ranking, Merchants Acceptance (total numbers, clearnet), Increase of merchants (absolute numbers, clearnet), merchant increase (%, clearnet), usage of Coincards, daily Reddit posts, and daily Reddit comments), so this list adds 15 new charts to our system for a total of 70 charts now. Yet another thing I built was the Articles section, which is where this post was written. I also built a user system with login/logout pages so that other people can write articles and post their ideas about Monero in our new Gazeto Moneroj. The site does not require registration for regular users, this is only necessary when the user wants to contribute articles. At Gazeto Moneroj I plan to write monthly articles discussing the metrics provided, as well as a series of articles on the banking system.<br><br>
+
+<b>Did you like the improvements?</b><br><br>
+
+If you liked the work so far, please donate some XMR, because this is the only way to keep delivering improvements and also the only way to keep Moneroj.net free for everyone. They are important because they make me want to build more and develop myself even more. If this crowdfunding method fails, I will try to keep the project afloat with other ideas. Just remember to keep your transaction receipt as the more this site grows and the more services it provides, the more I intend to give it back to those who helped, so these receipts can prove useful in the future. For example, if crowdfunding fails, <b><i>all donors</i></b> will have free access to all services provided up to 5x the amount donated. <br><br>
+
+Donation address: <i style='word-break: break-all;'>8Agy1JvbsttEV2Jp2ecyRLSoKiCQwr4f2FKjWh2dz8Q1Y4LXCxXDNBf5praUrc1v8vDSqHYUefqxkiLNgnjvDfQNQStwvP6</i><br><br>
+
+<b>What about the future?</b><br><br>
+
+For now, I plan to build and release more metrics because there are still so many of them out there. A hundred charts would be cool, you know, and it's not that far off. I plan to write some insights on these metrics as well. I also have to provide a better explanation about the charts, data source and math used so that the user can understand better. Some other charts that might be doable:<br>
+
+<ul>
+<li>Number of miners;</li>
+<li>Number of transactions by type (MLSAG, CLSAG, etc.);</li>
+<li>Twitter followers;</li>
+<li>Incorporate Google Trends;</li>
+<li>Futures funding rate;</li>
+<li>Open interest;</li>
+<li>Futures volume;</li>
+<li>Futures long liquidations;</li>
+<li>Futures short liquidations;</li>
+<li>Balanced price (price averaged by reported traded volume);</li>
+<li>Puell Multiple;</li>
+<li>Difficulty ribbon (same as from Glassnode for BTC);</li>
+<li>Fee ratio multiple (same as from Glassnode for BTC);</li>
+<li>Number of nodes;</li>
+<li>US-Inflation adjusted price (since 2014);</li>
+<li>US-Inflation adjusted marketcap;</li>
+<li>M2 adjusted marketcap;</li>
+<li>Fiat inflation x XMR inflation;</li>
+<li>Metcalfe's Model Deviation;</li>
+<li>Alexa rank;</li>
+<li>P2Pool stats (these will probably spin-off into a bunch of different charts);</li>
+<li>Other pools stats;</li>
+<li>Market cycle</li>
+<li>Price in Sats (log)</li>
+<li>Shielded transactions</li>
+<li>Total transactions</li>
+</ul>
+
+<b>Conclusion</b><br><br>
+
+To sum it up, I'm delivering most of what I promised in my CCS proposal, and I just want some help from the community to keep me motivated to build more. I totally understand that the Core team has more important things to do, this is amazing otherwise Monero would not be where it is now. Since I've already built a lot of improvements, I feel the community should use them, so I don't intend to withhold them just because my proposal isn't going anywhere. I started Moneroj.net myself, and everything you see here is a product of my profession, so that's how I intend to keep it. No hard feelings guys, I just want to move on and build more. Are you with me?

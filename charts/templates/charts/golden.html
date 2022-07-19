@@ -1,0 +1,566 @@
+{% extends 'charts/base.html' %}
+
+{% block header %}
+<title>Moneroj.net - Golden Ratio Multiplier</title>
+{% endblock %}
+
+{% block content %}
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" style="background-color:rgb(48, 44, 41)">
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid"><br>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12">
+                    <div class="card" id="graph1">
+                        <div
+                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                            <h6 class="m-0 text-light">Golden Ratio Multiplier</h6>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button"
+                                    onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
+                                    <i class="bx bx-expand text-gray-400"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body pb-0 pt-0 pl-0 pr-0" style="height: 100px;">
+                            <div id="graph" style="height: 100%; width:100%;"></div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <!-- Content Row -->
+            <div class="row">
+                <div class="col-xl-11 col-md-6 mb-4">
+                    <div class="alert alert-dark" role="alert">
+                        Not financial advice.
+                        For information about the chart, click the button >
+                    </div>
+                </div>
+                <div class="col-xl-1">
+                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" href="#"
+                        data-target="#id_Modal">
+                        <div class="col-auto">
+                            +
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+<!-- Modal -->
+<div class="modal fade" id="id_Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                As proposed by Philip Swift <a
+                    href="https://positivecrypto.medium.com/the-golden-ratio-multiplier-c2567401e12a">here</a>, this
+                chart uses the same
+                indicator known as GRM (Golden Ratio Multiplier) to find nice spots where the coin is overbought,
+                indicating sell signals. The algo automatically calculates (based on a
+                certain logic) where would be reasonable to sell.<br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fim do Modal -->
+
+<!-- Page level plugins -->
+<script>  
+    var data1 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Price on date',
+        x: {{ dates|safe }},
+        y: {{ prices|safe }},
+        line: {
+            color: '#ffb6a0'
+            ,width: 3
+        }
+    };
+    
+    var data1_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Price on date',
+        x: {{ dates|safe }},
+        y: {{ prices|safe }},
+        line: {
+            color: '#ffb6a0'
+            ,width: 3
+        }
+    };
+
+    var data2 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days',
+        x: {{ dates|safe }},
+        y: {{ m_350|safe }},
+        line: {
+            color: '#ffffff'
+            ,width: 1
+        }
+    };
+    
+    var data2_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days',
+        x: {{ dates|safe }},
+        y: {{ m_350|safe }},
+        line: {
+            color: '#ffffff'
+            ,width: 1
+        }
+    };
+
+
+    var data3 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 0.4',
+        x: {{ dates|safe }},
+        y: {{ m_350_0042|safe }},
+        line: {
+            color: '#333333'
+            ,width: 1
+        }
+    };
+    
+    var data3_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 0.4',
+        x: {{ dates|safe }},
+        y: {{ m_350_0042|safe }},
+        line: {
+            color: '#333333'
+            ,width: 1
+        }
+    };
+
+
+    var data4 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 0.6',
+        x: {{ dates|safe }},
+        y: {{ m_350_0060|safe }},
+        line: {
+            color: '#404040'
+            ,width: 1
+        }
+    };
+    
+    var data4_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 0.6',
+        x: {{ dates|safe }},
+        y: {{ m_350_0060|safe }},
+        line: {
+            color: '#404040'
+            ,width: 1
+        }
+    };
+
+
+    var data5 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 2',
+        x: {{ dates|safe }},
+        y: {{ m_350_0200|safe }},
+        line: {
+            color: '#888888'
+            ,width: 1
+        }
+    };
+    
+    var data5_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 2',
+        x: {{ dates|safe }},
+        y: {{ m_350_0200|safe }},
+        line: {
+            color: '#888888'
+            ,width: 1
+        }
+    };
+
+
+    var data6 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 3',
+        x: {{ dates|safe }},
+        y: {{ m_350_0300|safe }},
+        line: {
+            color: '#777777'
+            ,width: 1
+        }
+    };
+    
+    var data6_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 3',
+        x: {{ dates|safe }},
+        y: {{ m_350_0300|safe }},
+        line: {
+            color: '#777777'
+            ,width: 1
+        }
+    };
+
+
+    var data7 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 5',
+        x: {{ dates|safe }},
+        y: {{ m_350_0500|safe }},
+        line: {
+            color: '#666666'
+            ,width: 1
+        }
+    };
+    
+    var data7_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 5',
+        x: {{ dates|safe }},
+        y: {{ m_350_0500|safe }},
+        line: {
+            color: '#666666'
+            ,width: 1
+        }
+    };
+
+
+    var data8 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 8',
+        x: {{ dates|safe }},
+        y: {{ m_350_0800|safe }},
+        line: {
+            color: '#555555'
+            ,width: 1
+        }
+    };
+    
+    var data8_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 8',
+        x: {{ dates|safe }},
+        y: {{ m_350_0800|safe }},
+        line: {
+            color: '#555555'
+            ,width: 1
+        }
+    };
+
+
+    var data9 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 13',
+        x: {{ dates|safe }},
+        y: {{ m_350_1300|safe }},
+        line: {
+            color: '#444444'
+            ,width: 1
+        }
+    };
+    
+    var data9_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 350 days x 13',
+        x: {{ dates|safe }},
+        y: {{ m_350_1300|safe }},
+        line: {
+            color: '#444444'
+            ,width: 1
+        }
+    };
+
+    var data11 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 111 days',
+        x: {{ dates|safe }},
+        y: {{ m_111|safe }},
+        line: {
+            color: '#1dddcd'
+            ,width: 2
+        }
+    };
+    
+    var data11_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Median 111 days',
+        x: {{ dates|safe }},
+        y: {{ m_111|safe }},
+        line: {
+            color: '#1dddcd'
+            ,width: 2
+        }
+    };
+
+    var data12 = {
+    type: "scatter",
+    mode: "markers",
+    name: 'Sell Signal',
+    x: {{ dates|safe }},
+    y: {{ price_cross|safe }},
+    line: {color: '#7f421d'},
+    marker: {
+        color: '#ff0000',
+        colorbar: {
+            title: {
+                text: 'Sell Signal',
+                side: 'right'
+                ,font: {
+                    color: 'white'
+                    ,size: 14
+                }
+            }
+            ,thickness: 10
+            ,tickfont: {
+                color: 'white'
+                ,size: 14
+            }
+            ,borderwidth: 0
+        }, 
+        colorscale: [['0', '#0000ff'], ['0.33', '#00ff00'], ['0.66', '#ffff00'], ['1', '#ff0000']], 
+        sizemode: 'area',
+        size: 7,
+        cmax: 100,
+        cmin: 0
+    }
+};
+
+var data12_mobile = {
+    type: "scatter",
+    mode: "markers",
+    name: 'Sell signal',
+    x: {{ dates|safe }},
+    y: {{ price_cross|safe }},
+    line: {color: '#7f421d'},
+    marker: {
+        color: '#ff0000',
+        colorbar: {
+            thickness: 4
+            ,tickfont: {
+                color: 'white'
+                ,size: 6
+            }
+            ,borderwidth: 0
+        }, 
+        colorscale: [['0', '#0000ff'], ['0.33', '#00ff00'], ['0.66', '#ffff00'], ['1', '#ff0000']], 
+        sizemode: 'area',
+        size: 5,
+        cmax: 100,
+        cmin: 0
+    }
+};
+
+    var data = [data2, data5, data6, data7, data8, data9, data11, data1, data12];
+    var data_mobile = [data2_mobile, data5_mobile, data6_mobile, data7_mobile, data8_mobile, data9_mobile, data11_mobile, data1_mobile, data12_mobile];
+
+    var layout = {
+        plot_bgcolor:"#252221",
+        paper_bgcolor:"#252221",
+        annotations: [
+        {
+            xref: 'paper',
+            yref: 'paper',
+            x: 0.50,
+            xanchor: 'auto',
+            y: 0.02,
+            yanchor: 'auto',
+            text: 'Moneroj<br>https://www.moneroj.net',
+            showarrow: false,
+            borderwidth: 1,
+            bordercolor: '#5f5f5f',
+            bgcolor: '#333333',
+            borderpad: 5,
+            align: 'center',
+            font: {
+            color: "white",
+            size: 12
+            }
+        }],
+        separators: ",.",
+        legend: {
+            x: 0.98, 
+            y: 0.02, 
+            bgcolor: '#333333', 
+            bordercolor: '#5f5f5f', 
+            borderwidth: 1, 
+            font: {
+                color: 'white', 
+                size: 12
+            }, 
+            traceorder: 'normal', 
+            xanchor: 'auto', 
+            yanchor: 'auto'
+        },
+        hoverlabel: {
+            namelength: -1
+        },
+        yaxis: {
+            type: "log",
+            title: {
+                text: 'Price (USD)',
+                font: {
+                    size: 20,
+                    color: 'white'
+                }
+            },
+            tickformat :",.1f"
+            ,nticks: 10
+            ,tickfont: {
+                color: "#ffffff"
+                ,size: 12
+            }
+            ,gridcolor: "#333333"
+        },
+        xaxis: {
+            hoverformat: "%Y-%m-%d",
+            showgrid: true,
+            type: 'date',
+            nticks: 10
+            ,tickfont: {
+                color: "#dddddd"
+                ,size: 13
+            }
+            ,gridcolor: "#333333"
+            ,range: ['2014-05-16', '2023-04-01']
+            ,zeroline: true
+        },
+        margin: {
+            l: 120,
+            r: 60,
+            b: 35,
+            t: 10,
+            pad: 4
+        }
+    };
+    
+    var layout_mobile = {
+        plot_bgcolor:"black",
+        paper_bgcolor:"black",
+        separators: ",.",
+        hoverlabel: {
+            namelength: -1
+        },
+        legend: {
+            x: 0.98, 
+            y: 0.05, 
+            bgcolor: '#000000', 
+            bordercolor: '#5f5f5f', 
+            borderwidth: 1, 
+            font: {
+                color: 'white', 
+                size: 5
+            }, 
+            traceorder: 'normal', 
+            xanchor: 'auto', 
+            yanchor: 'auto'
+        },
+        showlegend: false,
+        yaxis: {
+            type: "log",
+            tickformat :",.1f"
+            ,nticks: 10
+            ,tickfont: {
+                color: "#ffffff"
+                ,size: 7
+            }
+            ,gridcolor: "#444444"
+        },
+        xaxis: {
+            hoverformat: "%Y",
+            showgrid: true,
+            type: 'date',
+            nticks: 10
+            ,tickfont: {
+                color: "#dddddd"
+                ,size: 7
+            }
+            ,gridcolor: "#444444"
+            ,range: ['2014-05-16', '2023-04-01']
+            ,zeroline: true
+        },
+        margin: {
+            l: 40,
+            r: 0,
+            b: 35,
+            t: 10,
+            pad: 0
+        }
+    };
+
+    function findBootstrapEnvironment() {
+        let envs = ['xs', 'sm', 'md', 'lg', 'xl'];
+
+        let el = document.createElement('div');
+        document.body.appendChild(el);
+
+        let curEnv = envs.shift();
+
+        for (let env of envs.reverse()) {
+            el.classList.add(`d-${env}-none`);
+
+            if (window.getComputedStyle(el).display === 'none') {
+                curEnv = env;
+                break;
+            }
+        }
+
+        document.body.removeChild(el);
+        return curEnv;
+
+    }
+    env_size = findBootstrapEnvironment();
+    if (env_size == "xs") {
+        document.getElementById("graph1").style.height="350px";
+        Plotly.newPlot('graph', data_mobile, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
+    }
+    else {
+        document.getElementById("graph1").style.height="700px";
+        Plotly.newPlot('graph', data, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
+    }
+</script>
+
+{% endblock %}

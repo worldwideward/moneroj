@@ -1,20 +1,20 @@
 {% extends "users/base.html" %}
 {% block header %}
 
-<style>  
+<title>Moneroj.net - Login</title>
+
+<style> 
   .login_page {
-      width: 360px;
-      padding: 10% 0 0;
-      margin: auto
+      margin: 0 auto 25px;
   }
   
   .form {
       position: relative;
       z-index: 1;
       background: #313030;
-      max-width: 360px;
-      margin: 0 auto 100px;
-      padding: 45px;
+      max-width: 100%;
+      margin: 0 auto 25px;
+      padding: 20px;
       text-align: center;
       border-radius: 20px
   }
@@ -24,8 +24,8 @@
       outline: 0;
       width: 100%;
       border: 0;
-      margin: 0 0 15px;
-      padding: 15px;
+      margin: 0 0 10px;
+      padding: 5px;
       font-size: 14px;
       border-radius: 5px
   }
@@ -37,7 +37,7 @@
       width: 100%;
       border: 0;
       border-radius: 5px;
-      padding: 15px;
+      padding: 5px;
       color: #ffffff;
       font-size: 14px;
       cursor: pointer
@@ -49,7 +49,7 @@
   }
   
   .form .message {
-      margin: 15px 0 0;
+      margin: 10px 0 0;
       color: rgb(255, 255, 255);
       font-size: 16px
   }
@@ -67,37 +67,30 @@
 {% endblock header %}
 {% block content %}
 
+  <br><br><br><br>  
   <div class="container">
     <div class="row">
-      <div class="col-xl-6 d-flex flex-column justify-content-center">
-        <center>
-          <h1>Already have an account?</h1>
-          <h3>Login to write articles and contribute.</h3>
-        </center>
+      <div class="col-xl-8 d-flex flex-column justify-content-center">
+        <h1>Already have an account?</h1>
+        <h4>Login to write articles and contribute.</h4>
       </div>
   
-      <div class="col-xl-6 d-flex flex-column justify-content-center">
+      <div class="col-xl-4 d-flex flex-column justify-content-center">
         <form action="{% url 'users:login' %}" method='POST'>
           {% csrf_token %}
-          <div class="col-md-12">
-            <div class="col-md-12">
-              <div class="login_page">
-                {% if form.errors %}
-                <div class="alert alert-danger">
-                  <strong><center>Username or password incorrect.</center></strong>
-                </div>
-                {% endif %}
-                <div class="form">
-                  <h1><i class="bx bx-user text-white"></i></h1>
-                  <p class="message">Login:</p><br>
-                  <input type="text" name="username" placeholder="Username"> 
-                  <input type="password" name="password" placeholder="Password">
-                  <button>Enter</button>
-                  <p class="message">Not registered?<a href="{% url 'users:register' %}"> Register now!</a></p>
-                  <input type="hidden" name="next" value="{% url 'monerojnet:index' %}">
-                </div>
-              </div>
-            </div>
+          {% if form.errors %}
+          <div class="alert alert-danger">
+            <strong><center>Username or password incorrect.</center></strong>
+          </div>
+          {% endif %}
+          <div class="form">
+            <h1><i class="bx bx-user text-white"></i></h1>
+            <p class="message">Login:</p><br>
+            <input type="text" name="username" placeholder="Username"> 
+            <input type="password" name="password" placeholder="Password">
+            <button>Enter</button>
+            <p class="message">Not registered?<a href="{% url 'users:register' %}"> Register Now!</a></p>
+            <input type="hidden" name="next" value="{% url 'charts:index' %}">
           </div>
         </form>
       </div>
@@ -105,6 +98,7 @@
   
   </div>
   
+  <br><br><br><br>
 {% endblock content %}
 
 

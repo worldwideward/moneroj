@@ -1,0 +1,174 @@
+{% extends "users/base.html" %}
+{% block header %}
+
+<title>Moneroj.net - Users</title>
+
+{% endblock %}
+{% block content %}  
+
+  <!-- ======= Subscribe Section ======= -->
+  <section id="Subscribe" class="section-bg">
+    <div class="container">    
+      <div class="row">
+        <div class="col-xl-12 d-flex flex-column justify-content-center">
+          <h1>Control Panel</h1>
+          <h3>Edit user's profiles and access.</h3>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+  <!-- End Subscribe Section -->
+
+<div class="container">
+  
+  <br><br>
+  <div class="section-title">
+    <h2>Registered Users</h2>
+  </div>
+  <table class="table table-sm table-hover">
+    <tbody>
+      <tr>
+        <th scope="col">Username</th>
+        <th scope="col">E-mail</th>
+        <th scope="col">Type</th>
+        <th scope="col" class="table-success"><div style="float:right">Edit</div></th>
+        <th scope="col" class="table-warning"><div style="float:right">Delete</div></th>
+        <th scope="col" class="table-danger"><div style="float:right">Block</div></th>
+      </tr>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.user.username }}</td>
+          <td>{{ user.user.email }}</td>
+          <td><div>{{ user.type }}</div></td>
+          <td class="table-success">
+            <div style="float:right">
+              <a data-toggle="modal" href="#" data-target="#id_Modal_edit{{ user.id }}">X</a>
+              <!-- Modal -->
+              <div class="modal fade" id="id_Modal_edit{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="Modal_edit{{ user.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="Modal_edit{{ user.id }}">Edit User</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Cencel">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      What type of user do you want it to become?<br>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <a class="btn btn-dark" href="{% url 'users:edit_user' user.id 'user' %}" role="button">User/Writer</a>
+                      <a class="btn btn-dark" href="{% url 'users:edit_user' user.id 'editor' %}" role="button">Editor</a>
+                      <a class="btn btn-dark" href="{% url 'users:edit_user' user.id 'admin' %}" role="button">Admin</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Fim do Modal -->
+            </div>  
+          </td>
+          <td class="table-warning">
+            <div style="float:right">
+              <a data-toggle="modal" href="#" data-target="#id_Modal{{ user.id }}">X</a>
+              <!-- Modal -->
+              <div class="modal fade" id="id_Modal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="Modal{{ user.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="Modal{{ user.id }}">Delete User</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Cencel">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Are you sure you want to delete this user?<br>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <a class="btn btn-danger" href="{% url 'users:delete_user' user.id %}" role="button">Delete</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Fim do Modal -->
+            </div>
+          </td>
+
+          <td class="table-danger">
+            <div style="float:right">
+              <a data-toggle="modal" href="#" data-target="#id_Modal_block{{ user.id }}">X</a>
+              <!-- Modal -->
+              <div class="modal fade" id="id_Modal_block{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="Modal_block{{ user.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="Modal_block{{ user.id }}">Block and Delete User</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Cencel">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Are you sure you want to block and delete this user?<br>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <a class="btn btn-danger" href="{% url 'users:block_user' user.id %}" role="button">Block and Delete</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Fim do Modal -->
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br><br>
+  <div class="section-title">
+    <h2>Blocked E-mails</h2>
+  </div>
+  <table class="table table-sm table-hover">
+    <tbody>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">E-mail</th>
+        <th scope="col"><div style="float:right">Unblock</div></th>
+      </tr>
+      {% for block in blocks %}
+        <tr>
+          <td>{{ block.id }}</td>
+          <td>{{ block.email }}</td>
+          <td><div style="float:right"><a href="{% url 'users:unblock_user' block.id %}">X</a></div></td>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br><br>
+  <div class="section-title">
+    <h2>Subscribers</h2>
+  </div>
+  <table class="table table-sm table-hover">
+    <tbody>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">E-mail</th>
+        <th scope="col"><div style="float:right">Delete</div></th>
+      </tr>
+      {% for subscriber in subscribers %}
+        <tr>
+          <td>{{ subscriber.id }}</td>
+          <td>{{ subscriber.email }}</td>
+          <td><div style="float:right"><a href="{% url 'users:delete_subscriber' subscriber.id %}">X</a></div></td>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+<br><br><br><br>
+  
+{% endblock content %}

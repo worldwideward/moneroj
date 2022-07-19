@@ -16,10 +16,13 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.urls import path
+from articles import views
+from users import views
+from charts import views
 
-app_name = 'monerojnet'
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'', include(('monerojnet.urls', 'monerojnet'), namespace='monerojnet')),
+    url(r'', include(('charts.urls', 'charts'), namespace='charts')),
     url(r'', include(('users.urls', 'users'), namespace='users')),
+    url(r'', include(('articles.urls', 'articles'), namespace='articles')),
 ]

@@ -1,0 +1,115 @@
+{% extends "users/base.html" %}
+{% block header %}
+
+<title>{{ article.title }}</title>
+
+<style>
+  /*--------------------------------------------------------------
+  # Hero Section
+  --------------------------------------------------------------*/
+  #hero {
+    width: 100%;
+    height: 30vh;
+    background: url("../../../static/img/articles/{{ article.thumbnail | safe }}") center center;
+    background-size: cover;
+    position: relative;
+    z-index: 1;
+    padding: 0;
+    margin-bottom: -200px;
+  }
+</style>
+
+{% endblock header %}
+{% block content %}
+
+{% load static %}
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
+  </section>
+  <!-- End Hero -->
+
+  <!-- ======= News Section ======= -->
+  <section id="news" class="news">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-1 col-lg-6 icon-boxes">
+        </div>
+        <div class="col-xl-10 col-lg-6 icon-boxes">
+          {% if article.status == 'Pending approval' %}
+            <div class="alert alert-warning">
+              <strong><center>Pending approval</center></strong>
+            </div>
+          {% elif article.status == 'Reviewed' %}
+            <div class="alert alert-warning">
+              <strong><center>Reviewed: {{ article.review }}</center></strong>
+            </div>
+          {% endif %}
+          <div class="icon-box">
+            {% if article.status == 'Published' %}
+            <h4>Published by {{ article.owner }}, {{ article.date_published }}</h4>
+            {% else %}
+            <h4>
+              Created {{ article.date_added }}<br>
+              Updated {{ article.date_updated }}<br>
+              <a href="{% url 'articles:edit_article' article.id %}">Edit</a> - 
+              <a data-toggle="modal" href="#" data-target="#id_Modal_delete{{ article.id }}">Delete</a>
+            </h4>
+            {% endif %}
+            <h3>{{ article.title }}</h3>
+            <h4>{{ article.subtitle }}</h4>
+            <div>
+              <a href="https://www.facebook.com/sharer/sharer.php?u=https://moneroj.net/article/{{ article.url }}" target="_blank">
+                <i class="bx bxl-facebook-circle" style="color: #3b5998; font-size: 30px;"></i>
+              </a>
+              <a href="https://twitter.com/share?title={{ article.title }}&url=https://moneroj.net/article/{{ article.url }}" target="_blank">
+                <i class="bx bxl-twitter" style="color: #00acee; font-size: 30px;"></i>
+              </a>
+              <a href="https://reddit.com/submit?title={{ article.title }}&url=https://moneroj.net/article/{{ article.url }}" target="_blank">
+                <i class="bx bxl-reddit" style="color:#ee4056; font-size: 30px;"></i>
+              </a>
+              <a href="https://web.whatsapp.com/send?text=https://moneroj.net/article/{{ article.url }}" target="_blank">
+                <i class="bx bxl-whatsapp" style="color:#007d17; font-size: 30px;"></i>
+              </a>
+              <a href="mailto:?subject={{ article.title }}&body=https://moneroj.net/article/{{ article.url }}" target="_blank">
+                <i class="bx bx-mail-send" style="color:#303030; font-size: 30px;"></i>
+              </a>
+            </div><br>
+            <p>{{ article.text | safe}}</p>
+            <br>
+            <!-- Basic Share Links -->
+
+          </div>
+        </div>
+        <div class="col-xl-1 col-lg-6 icon-boxes">
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!-- End News Section -->
+</main>
+<br>
+
+<!-- Modal -->
+<div class="modal fade" id="id_Modal_delete{{ article.id }}" tabindex="-1" role="dialog" aria-labelledby="Modal_delete{{ article.id }}" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="Modal_delete{{ article.id }}">Delete article</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cencel">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to block and delete this article?<br>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <a class="btn btn-danger" href="{% url 'articles:delete_article' article.id %}" role="button">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fim do Modal -->
+{% endblock content %}

@@ -1,9 +1,13 @@
 {% extends "users/base.html" %}
+{% extends "users/base.html" %}
+{% block header %}
 
+<title>Moneroj.net - Contract</title>
+
+{% endblock %}
 {% block content %}
+
 <br>
-
-
 <div class="container">
 
   <center><h3>Rules of conduct</h3></center><br>
@@ -20,7 +24,7 @@
   </p>
   <div>
     <center>
-      <a class="button btn btn-success" href="{% url 'monerojnet:index' %}">Accept</a>
+      <a class="button btn btn-success" href="{% url 'charts:index' %}">Accept</a>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <a class="button btn btn-danger" href="{% url 'users:delete_user' user.profile.id %}">Reject</a>
     </center>

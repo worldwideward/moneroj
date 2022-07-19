@@ -16,6 +16,20 @@ class BlockedEmail(models.Model):
 
     def __str__(self):
         return self.id
+        
+class Subscriber(models.Model):
+    email = models.EmailField(max_length=150)
+
+    def __str__(self):
+        return self.email
+
+class PageViews(models.Model):
+	date = models.DateField()
+	unique_visitors = models.IntegerField(null=True, blank=True)
+	total_pageviews = models.IntegerField(null=True, blank=True)
+
+	def __str__(self):
+		return self.id
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
