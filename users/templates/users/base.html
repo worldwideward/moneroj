@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="description" content="Your information source about Monero, with metrics, charts, stats and articles.">
+  <meta name="author" content="CryptoMorpheus_">
+
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'img/favicon.png' %}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  
+  <style>
+    div.a {
+      word-break: break-all;
+    }
+
+    .color-orange {
+      color: #ff4d21;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      {% if page == 'article' %}
+        <a class="navbar-brand" href="{% url 'articles:articles' %}"><text class="color-orange">Gazeto</text> Monero<text class="color-orange">j</text> </a>
+      {% elif page == 'exchange' %}
+        <a class="navbar-brand" href="{% url 'charts:index' %}"><text class="color-orange">Banko</text> Monero<text class="color-orange">j</text> </a>
+      {% elif page == 'market' %}
+        <a class="navbar-brand" href="{% url 'charts:index' %}"><text class="color-orange">Merkato</text> Monero<text class="color-orange">j</text> </a>
+      {% else %}
+        <a class="navbar-brand" href="{% url 'charts:index' %}">Monero<text class="color-orange">j</text></a>
+      {% endif %}
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'charts:index' %}">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'charts:sfmodel' %}">Charts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'articles:articles' %}">Articles</a>
+          </li>
+          <li class="nav-item dropdown" >
+            {% if user.is_authenticated %}
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Hi, {{ user.username }}.
+              </a>
+            {% else %}
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Settings
+              </a>
+            {% endif %}
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% if user.is_authenticated %}
+                <a class="nav-link" href="{% url 'articles:write' %}">Write / Review</a>
+                {% if user.username == 'Administrador' or user.username == 'Morpheus' %}
+                  <a class="nav-link" href="{% url 'users:users' %}">Users</a>
+                {% endif %}
+                <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
+              {% else %}
+                <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+                <a class="nav-link" href="{% url 'users:register' %}">Register</a>
+              {% endif %}
+              <a class="nav-link" href="{% url 'charts:about' %}">About</a>
+              <div class="dropdown-divider"></div>
+              <a class="nav-link" href="{% url 'charts:index' %}">English</a>
+              <a class="nav-link" href="{% url 'charts:fr' %}">French</a>
+              <a class="nav-link" href="{% url 'charts:pt' %}">Portuguese</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% block header %}{% endblock header %}
+  {% block content %}{% endblock content %}
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-6 col-md-6 footer-contact">
+            <h3>Moneroj.net</h3>
+            <p>
+              Developed by <br>
+              Morpheus<br>
+              <strong>Email:</strong> morpheus.anonymous@protonmail.com<br>
+              <strong>Twitter:</strong> CryptoMorpheus_<br>
+              <strong>Github:</strong> cryptomorpheuss<br>
+            </p>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="{% url 'charts:index' %}">Home</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="{% url 'charts:sfmodel' %}">Charts</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="{% url 'charts:about' %}">About</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://www.getmonero.org/">Getmonero.org</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://www.reddit.com/r/Monero/">Reddit/Monero</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container d-lg-flex py-4">
+      <div class="mr-lg-auto text-center text-lg-left">
+        <div class="copyright a">
+          <strong>&copy; Copyright <span>Moneroj.net</span></strong>
+        </div>
+      </div>
+      <div class="social-links text-center text-lg-right pt-3 pt-lg-0">
+        <a href="http://ilt7jgmfro76wgrtt6752lvfnhcz6wk5sjqhyvntjixygp3cwpvr4nad.onion" class="onion" alt="Tor Version"><i class="bx bx-hide"></i></a>
+        <a href="https://twitter.com/CryptoMorpheus_" class="twitter" alt="Twitter Profile"><i class="bx bxl-twitter"></i></a>
+        <a href="mailto:morpheus.anonymous@protonmail.com" class="email" alt="Send E-mail"><i class="bx bx-mail-send"></i></a>
+      </div>
+    </div>
+    
+  </footer>
+  <!-- End Footer -->
+
+  {% load static %}
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/jquery/jquery2.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+

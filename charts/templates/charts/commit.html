@@ -1,0 +1,336 @@
+{% extends 'charts/base.html' %}
+
+{% block header %}
+<title>Moneroj.net - Miner Commitment</title>
+{% endblock %}
+
+{% block content %}
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" style="background-color:rgb(48, 44, 41)">
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid"><br>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12">
+                    <div class="card" id="graph1">
+                        <div
+                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                            <h6 class="m-0 text-light">Miner Commitment (Hashrate divided by revenue, hashs/dollar) -
+                                WARNING: DON'T COMPARE DIRECTLY BOTH COINS</h6>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button"
+                                    onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
+                                    <i class="bx bx-expand text-gray-400"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body pb-0 pt-0 pl-0 pr-0" style="height: 100px;">
+                            <div id="graph" style="height: 100%; width:100%;"></div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+
+
+            <!-- Content Row -->
+            <div class="row">
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-6 col-md-6 mb-4">
+                    <div class="card border-left-new">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Monero Miner Commitment</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_xmr }}</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-6 col-md-6 mb-4">
+                    <div class="card border-left-new">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Bitcoin Miner Commitment</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_btc }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Content Row -->
+            <div class="row">
+                <div class="col-xl-11 col-md-6 mb-4">
+                    <div class="alert alert-dark" role="alert">
+                        Not financial advice.
+                        For information about the chart, click the button >
+                    </div>
+                </div>
+                <div class="col-xl-1">
+                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" href="#"
+                        data-target="#id_Modal">
+                        <div class="col-auto">
+                            +
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+<!-- Modal -->
+<div class="modal fade" id="id_Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                This chart shows how much hashpower miners put into the network considering their revenue in dollars.
+                Higher numbers mean miners expect the value of the coin to keep increasing, since no miner would
+                increase hashpower if they didnt expect better returns.
+                However Bitcoin's and Monero's hashpowers can't be directly compared. The viewer must only look for each
+                coin's particular increase as a percentage of itself.<br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fim do Modal -->
+
+<!-- Page level plugins -->
+<script> 
+    var data2 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Monero Miner Commitment',
+        x: {{ dates|safe }},
+        y: {{ costxmr|safe }},
+        line: {
+            color: '#dd1d1d'
+            ,width: 2
+        }
+    };
+    
+    var data2_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Monero Miner Commitment',
+        x: {{ dates|safe }},
+        y: {{ costxmr|safe }},
+        line: {
+            color: '#dd1d1d'
+            ,width: 2
+        }
+    };
+
+    var data3 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Bitcoin Miner Commitment',
+        x: {{ dates|safe }},
+        y: {{ costbtc|safe }},
+        line: {
+            color: '#ffd311'
+            ,width: 2
+        }
+    };
+    
+    var data3_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Bitcoin Miner Commitment',
+        x: {{ dates|safe }},
+        y: {{ costbtc|safe }},
+        line: {
+            color: '#ffd311'
+            ,width: 2
+        }
+    };
+
+    var data = [data3, data2];
+    var data_mobile = [data3_mobile, data2_mobile];
+
+    var layout = {
+        plot_bgcolor:"#252221",
+        paper_bgcolor:"#252221",
+        annotations: [
+        {
+            xref: 'paper',
+            yref: 'paper',
+            x: 0.98,
+            xanchor: 'auto',
+            y: 0.05,
+            yanchor: 'auto',
+            text: 'Moneroj<br>https://www.moneroj.net',
+            showarrow: false,
+            borderwidth: 1,
+            bordercolor: '#5f5f5f',
+            bgcolor: '#333333',
+            borderpad: 5,
+            align: 'center',
+            font: {
+            color: "white",
+            size: 12
+            }
+        }],
+        separators: ",.",
+        legend: {
+            x: 0.75, 
+            y: 0.05, 
+            bgcolor: '#333333', 
+            bordercolor: '#5f5f5f', 
+            borderwidth: 1, 
+            font: {
+                color: 'white', 
+                size: 12
+            }, 
+            traceorder: 'normal', 
+            xanchor: 'auto', 
+            yanchor: 'auto'
+        },
+        hoverlabel: {
+            namelength: -1
+        },
+        yaxis: {
+            type: "log",
+            title: {
+                text: 'Miner Commitment (hashs/dollar)',
+                font: {
+                    size: 20,
+                    color: 'white'
+                }
+            },
+            tickformat :",.5f"
+            ,nticks: 10
+            ,tickfont: {
+                color: "#ffffff"
+                ,size: 12
+            }
+            ,gridcolor: "#333333"
+        },
+        xaxis: {
+            hoverformat: "%Y-%m-%d",
+            showgrid: true,
+            type: 'date',
+            nticks: 10
+            ,tickfont: {
+                color: "#dddddd"
+                ,size: 13
+            }
+            ,gridcolor: "#333333"
+            ,range: ['2010-06-14', '2024-01-01']
+            ,zeroline: true
+        },
+        margin: {
+            l: 120,
+            r: 60,
+            b: 35,
+            t: 10,
+            pad: 4
+        }
+    };
+    
+    var layout_mobile = {
+        plot_bgcolor:"black",
+        paper_bgcolor:"black",
+        separators: ",.",
+        hoverlabel: {
+            namelength: -1
+        },
+        legend: {
+            x: 0.98, 
+            y: 0.05, 
+            bgcolor: '#000000', 
+            bordercolor: '#5f5f5f', 
+            borderwidth: 1, 
+            font: {
+                color: 'white', 
+                size: 5
+            }, 
+            traceorder: 'normal', 
+            xanchor: 'auto', 
+            yanchor: 'auto'
+        },
+        showlegend: false,
+        yaxis: {
+            type: "log",
+            tickformat :",.5f"
+            ,nticks: 10
+            ,tickfont: {
+                color: "#ffffff"
+                ,size: 7
+            }
+            ,gridcolor: "#444444"
+        },
+        xaxis: {
+            hoverformat: "%Y",
+            showgrid: true,
+            type: 'date',
+            nticks: 10
+            ,tickfont: {
+                color: "#dddddd"
+                ,size: 7
+            }
+            ,gridcolor: "#444444"
+            ,range: ['2010-06-14', '2024-01-01']
+            ,zeroline: true
+        },
+        margin: {
+            l: 40,
+            r: 0,
+            b: 35,
+            t: 10,
+            pad: 0
+        }
+    };
+
+    function findBootstrapEnvironment() {
+        let envs = ['xs', 'sm', 'md', 'lg', 'xl'];
+
+        let el = document.createElement('div');
+        document.body.appendChild(el);
+
+        let curEnv = envs.shift();
+
+        for (let env of envs.reverse()) {
+            el.classList.add(`d-${env}-none`);
+
+            if (window.getComputedStyle(el).display === 'none') {
+                curEnv = env;
+                break;
+            }
+        }
+
+        document.body.removeChild(el);
+        return curEnv;
+
+    }
+    env_size = findBootstrapEnvironment();
+    if (env_size == "xs") {
+        document.getElementById("graph1").style.height="350px";
+        Plotly.newPlot('graph', data_mobile, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
+    }
+    else {
+        document.getElementById("graph1").style.height="700px";
+        Plotly.newPlot('graph', data, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
+    }
+</script>
+
+{% endblock %}

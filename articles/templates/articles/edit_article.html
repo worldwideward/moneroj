@@ -1,0 +1,166 @@
+{% extends "users/base.html" %}
+{% block header %}
+
+<title>Moneroj.net - Edit Article</title>
+
+<style>  
+  .login_page {
+      margin: 0 auto 25px;
+      width: 250px;
+  }
+  
+  .form {
+      position: relative;
+      z-index: 1;
+      background: #313030;
+      max-width: 100%;
+      margin: 0 auto 25px;
+      padding: 20px;
+      text-align: center;
+      border-radius: 20px
+  }
+  
+  .form input {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      width: 100%;
+      border: 0;
+      margin: 0 0 10px;
+      padding: 5px;
+      font-size: 14px;
+      border-radius: 5px
+  }
+  
+  .form button {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      background: #ff4d21;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      padding: 5px;
+      color: #ffffff;
+      font-size: 14px;
+      cursor: pointer
+  }
+  
+  .form button:hover,
+  .form button:active {
+      background: #db3b13
+  }
+  
+  .form .message {
+      margin: 10px 0 0;
+      color: rgb(255, 255, 255);
+      font-size: 16px
+  }
+  
+  .form .message a {
+      color: #ff4d21;
+      text-decoration: none
+  }
+  
+  .form .register_form {
+      display: none
+  }
+</style>
+
+{% endblock header %}
+{% block content %}
+
+  <br><br><br>
+  <div class="container">
+    
+      <h2>Write a new article:</h2><br>
+      <form class="needs-validation" action="{% url 'articles:edit_article' article.id %}" method='POST' novalidate>
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="col-md-12 mb-3">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" name="title" id="id_title" value="{{ article.title }}" required>
+            <div class="valid-tooltip">
+              OK
+            </div>
+            <div class="invalid-tooltip">
+              This field is required
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-row">
+          <div class="col-md-12 mb-3">
+            <label for="subtitle">Subtitle (up to five keywords):</label>
+            <input type="text" class="form-control" name="subtitle" id="id_subtitle" value="{{ article.subtitle }}" required>
+            <div class="valid-tooltip">
+              OK
+            </div>
+            <div class="invalid-tooltip">
+              This field is required
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="col-md-12 mb-3">
+            <label for="thumbnail">Thumbnail image <a href="{% url 'articles:images' %}" target="_blank">(check it out)</a></label>
+            <select class="browser-default custom-select" name="thumbnail" id="id_thumbnail" required>
+              <option value="{{ article.thumbnail }}" selected>{{ article.thumbnail }}</option>
+              <option value="price-action-400x300.png">price-action</option>
+              <option value="stats-400x300.png">stats</option>
+              <option value="monero-cat-untraceable-400x300.png">monero-cat-untraceable</option>
+              <option value="monero-geometric-logo-400x300.png">monero-geometric-logo</option>
+              <option value="monero-is-the-best-regardless-sticker-400x300.png">monero-is-the-best-regardless-sticker</option>
+              <option value="monero-mining-4-privacy-400x300.png">monero-mining-4-privacy</option>
+              <option value="monero-support-your-local-cypherpunk-400x300.png">monero-support-your-local-cypherpunk</option>
+              <option value="monero-the-corrupt-fear-us-400x300.png">monero-the-corrupt-fear-us</option>
+              <option value="monero-trace-400x300.png">monero-trace</option>
+              <option value="monero-will-survive-tyranny-sticker-400x300.png">monero-will-survive-tyranny-sticker</option>
+              <option value="monero-you-need-no-portfolio-400x300.png">monero-you-need-no-portfolio</option>
+              <option value="private-by-default-400x300.png">private-by-default</option>
+              <option value="private-electronic-money-400x300.png">private-electronic-money</option>
+              <option value="ussse-monero-400x300.png">ussse-monero</option>
+              <option value="why-speculate-400x300.png">why-speculate</option>
+            </select>
+            <div class="valid-tooltip">
+              OK
+            </div>
+            <div class="invalid-tooltip">
+              Preencha esse campo
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="col-md-12 mb-3">
+            <label for="text">Article:</label>
+            <textarea type="text" rows="10" cols="50" class="form-control" name="text" id="id_text" required>{{ article.text }}</textarea>
+            <div class="valid-tooltip">
+              OK
+            </div>
+            <div class="invalid-tooltip">
+              This field is required
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-2 mb-3">
+            <label for="text">Save:</label>
+            <button class="btn btn-primary" type="submit">Submit for approval</button>
+          </div>
+        </div>
+      </form>
+
+  </div>
+
+
+  <br><br><br>
+
+{% endblock content %}
+
+
+
+
+
+
+

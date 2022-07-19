@@ -29,12 +29,16 @@ STATICFILES_DIRS = [
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< HEAD
 SECRET_KEY = 'dafsdasdfasfa7sdfs9d7das7f9as7df8ad77saf9df79as79s'
+=======
+SECRET_KEY = 'erwqrerqerqe24242442erwewrew324234423234243sdffsdfsdfds324243234234dsffdssfd'
+>>>>>>> proposal
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True 
-#DEBUG = False
-#STATIC_ROOT = "/var/www/moneropro/static/"
+#DEBUG = True 
+DEBUG = False
+STATIC_ROOT = "/var/www/moneropro/static/"
 
 ALLOWED_HOSTS = ['www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net']
 
@@ -47,7 +51,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'monerojnet',
+    'charts',
+    'users',
+    'articles',
 ]
 
 MIDDLEWARE = [

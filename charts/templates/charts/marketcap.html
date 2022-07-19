@@ -1,0 +1,399 @@
+{% extends 'charts/base.html' %}
+
+{% block header %}
+<title>Moneroj.net - Marketcap</title>
+{% endblock %}
+
+{% block content %}
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" style="background-color:rgb(48, 44, 41)">
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid"><br>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12">
+                    <div class="card" id="graph1">
+                        <div
+                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                            <h6 class="m-0 text-light">Marketcap (USD)</h6>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button"
+                                    onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
+                                    <i class="bx bx-expand text-gray-400"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body pb-0 pt-0 pl-0 pr-0" style="height: 100px;">
+                            <div id="graph" style="height: 100%; width:100%;"></div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+
+
+            <!-- Content Row -->
+            <div class="row">
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-new h-100 py-2">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Monero's Marketcap</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_xmr }}</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-new h-100 py-2">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Dash's Marketcap</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_dash }}</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-new h-100 py-2">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Grin's Marketcap</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_grin }}</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-new h-100 py-2">
+                        <div class="card-body">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Zcash's Marketcap</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_zcash }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Content Row -->
+            <div class="row">
+                <div class="col-xl-11 col-md-6 mb-4">
+                    <div class="alert alert-dark" role="alert">
+                        Not financial advice.
+                        For information about the chart, click the button >
+                    </div>
+                </div>
+                <div class="col-xl-1">
+                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" href="#"
+                        data-target="#id_Modal">
+                        <div class="col-auto">
+                            +
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+<!-- Modal -->
+<div class="modal fade" id="id_Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                This chart shows the comparison between Monero's most important competitors. It shows their total marketcap value over time.<br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fim do Modal -->
+
+<!-- Page level plugins -->
+<script> 
+    var data3 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Dash Marketcap',
+        x: {{ dates|safe }},
+        y: {{ dash|safe }},
+        line: {
+            color: '#2f21f7'
+            ,width: 2
+        }
+    };
+    
+    var data3_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Dash Marketcap',
+        x: {{ dates|safe }},
+        y: {{ dash|safe }},
+        line: {
+            color: '#2f21f7'
+            ,width: 2
+        }
+    };
+
+    var data1 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Grin Marketcap',
+        x: {{ dates|safe }},
+        y: {{ grin|safe }},
+        line: {
+            color: '#dcdf30'
+            ,width: 2
+        }
+    };
+    
+    var data1_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Grin Marketcap',
+        x: {{ dates|safe }},
+        y: {{ grin|safe }},
+        line: {
+            color: '#dcdf30'
+            ,width: 2
+        }
+    };
+    
+    var data4 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Zcash Marketcap',
+        x: {{ dates|safe }},
+        y: {{ zcash|safe }},
+        line: {
+            color: '#ffb6a0'
+            ,width: 2
+        }
+    };
+    
+    var data4_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Zcash Marketcap',
+        x: {{ dates|safe }},
+        y: {{ zcash|safe }},
+        line: {
+            color: '#ffb6a0'
+            ,width: 2
+        }
+    };
+
+    var data2 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Monero Marketcap',
+        x: {{ dates|safe }},
+        y: {{ xmr|safe }},
+        line: {
+            color: '#dd1d1d'
+            ,width: 3
+        }
+    };
+    
+    
+    var data2_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'Monero Marketcap',
+        x: {{ dates|safe }},
+        y: {{ xmr|safe }},
+        line: {
+            color: '#dd1d1d'
+            ,width: 3
+        }
+    };
+
+    var data = [data3, data2, data1, data4];
+    var data_mobile = [data3_mobile, data2_mobile, data1_mobile, data4_mobile];
+
+    var layout = {
+        plot_bgcolor:"#252221",
+        paper_bgcolor:"#252221",
+        annotations: [
+        {
+            xref: 'paper',
+            yref: 'paper',
+            x: 0.50,
+            xanchor: 'auto',
+            y: 0.02,
+            yanchor: 'auto',
+            text: 'Moneroj<br>https://www.moneroj.net',
+            showarrow: false,
+            borderwidth: 1,
+            bordercolor: '#5f5f5f',
+            bgcolor: '#333333',
+            borderpad: 5,
+            align: 'center',
+            font: {
+            color: "white",
+            size: 12
+            }
+        }],
+        separators: ",.",
+        legend: {
+            x: 0.98, 
+            y: 0.02, 
+            bgcolor: '#333333', 
+            bordercolor: '#5f5f5f', 
+            borderwidth: 1, 
+            font: {
+                color: 'white', 
+                size: 12
+            }, 
+            traceorder: 'normal', 
+            xanchor: 'auto', 
+            yanchor: 'auto'
+        },
+        hoverlabel: {
+            namelength: -1
+        },
+        yaxis: {
+            type: "log",
+            title: {
+                text: 'Marketcap (USD)',
+                font: {
+                    size: 20,
+                    color: 'white'
+                }
+            },
+            tickformat :",.0f"
+            ,nticks: 10
+            ,tickfont: {
+                color: "#ffffff"
+                ,size: 12
+            }
+            ,gridcolor: "#333333"
+        },
+        xaxis: {
+            hoverformat: "%Y-%m-%d",
+            showgrid: true,
+            type: 'date',
+            nticks: 10
+            ,tickfont: {
+                color: "#dddddd"
+                ,size: 13
+            }
+            ,gridcolor: "#333333"
+            ,range: ['2014-04-14', '2024-01-01']
+            ,zeroline: true
+        },
+        margin: {
+            l: 120,
+            r: 60,
+            b: 35,
+            t: 10,
+            pad: 4
+        }
+    };
+    
+    var layout_mobile = {
+        plot_bgcolor:"black",
+        paper_bgcolor:"black",
+        separators: ",.",
+        hoverlabel: {
+            namelength: -1
+        },
+        legend: {
+            x: 0.98, 
+            y: 0.05, 
+            bgcolor: '#000000', 
+            bordercolor: '#5f5f5f', 
+            borderwidth: 1, 
+            font: {
+                color: 'white', 
+                size: 5
+            }, 
+            traceorder: 'normal', 
+            xanchor: 'auto', 
+            yanchor: 'auto'
+        },
+        showlegend: false,
+        yaxis: {
+            type: "log",
+            tickformat :",.0f"
+            ,nticks: 10
+            ,tickfont: {
+                color: "#ffffff"
+                ,size: 7
+            }
+            ,gridcolor: "#444444"
+        },
+        xaxis: {
+            hoverformat: "%Y-%m-%d",
+            showgrid: true,
+            type: 'date',
+            nticks: 10
+            ,tickfont: {
+                color: "#dddddd"
+                ,size: 13
+            }
+            ,gridcolor: "#333333"
+            ,range: ['2014-04-14', '2024-01-01']
+            ,zeroline: true
+        },
+        margin: {
+            l: 40,
+            r: 0,
+            b: 35,
+            t: 10,
+            pad: 0
+        }
+    };
+
+    function findBootstrapEnvironment() {
+        let envs = ['xs', 'sm', 'md', 'lg', 'xl'];
+
+        let el = document.createElement('div');
+        document.body.appendChild(el);
+
+        let curEnv = envs.shift();
+
+        for (let env of envs.reverse()) {
+            el.classList.add(`d-${env}-none`);
+
+            if (window.getComputedStyle(el).display === 'none') {
+                curEnv = env;
+                break;
+            }
+        }
+
+        document.body.removeChild(el);
+        return curEnv;
+
+    }
+    env_size = findBootstrapEnvironment();
+    if (env_size == "xs") {
+        document.getElementById("graph1").style.height="350px";
+        Plotly.newPlot('graph', data_mobile, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
+    }
+    else {
+        document.getElementById("graph1").style.height="700px";
+        Plotly.newPlot('graph', data, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
+    }
+  </script>
+
+{% endblock %}
