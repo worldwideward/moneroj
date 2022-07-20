@@ -12,6 +12,8 @@
       position: relative;
       margin-top: 20px;
       margin-bottom: 20px;
+      margin-left: 20px;
+      margin-right: 20px;
       z-index: 1;
       background: #313030;
       max-width: 100%;
@@ -118,8 +120,6 @@
         <tr>
           <th scope="col">Title</th>
           <th scope="col">Created</th>
-          <th scope="col">Updated</th>
-          <th scope="col">Published</th>
           <th scope="col">Status</th>
           <th scope="col" class="table-info"><div style="float:right">View</div></th>
           <th scope="col" class="table-warning"><div style="float:right">Edit</div></th>
@@ -129,8 +129,6 @@
           <tr>
             <td>{{ article.title }}</td>
             <td>{{ article.date_added }}</td>
-            <td>{{ article.date_updated }}</td>
-            <td>{{ article.date_published }}</td>
             <td>{{ article.status }}</td>
             <td class="table-info">
               <div style="float:right">
@@ -185,8 +183,6 @@
         <tr>
           <th scope="col">Title</th>
           <th scope="col">Created</th>
-          <th scope="col">Updated</th>
-          <th scope="col">Published</th>
           <th scope="col">Status</th>
           <th scope="col" class="table-info"><div style="float:right">View</div></th>
           <th scope="col" class="table-success"><div style="float:right">Publish</div></th>
@@ -196,8 +192,6 @@
           <tr>
             <td>{{ review.title }}</td>
             <td>{{ review.date_added }}</td>
-            <td>{{ review.date_updated }}</td>
-            <td>{{ review.date_published }}</td>
             <td>{{ review.status }}</td>
             <td class="table-info">
               <div style="float:right">
@@ -230,8 +224,6 @@
         <tr>
           <th scope="col">Title</th>
           <th scope="col">Writer</th>
-          <th scope="col">Created</th>
-          <th scope="col">Updated</th>
           <th scope="col">Status</th>
           <th scope="col" class="table-info"><div style="float:right">View</div></th>
           <th scope="col" class="table-success"><div style="float:right">Publish</div></th>
@@ -242,8 +234,6 @@
           <tr>
             <td>{{ review.title }}</td>
             <td>{{ review.owner.username }}</td>
-            <td>{{ review.date_added }}</td>
-            <td>{{ review.date_updated }}</td>
             <td>{{ review.status }}</td>
             <td class="table-info">
               <div style="float:right">
@@ -302,8 +292,6 @@
         <tr>
           <th scope="col">Title</th>
           <th scope="col">Writer</th>
-          <th scope="col">Created</th>
-          <th scope="col">Updated</th>
           <th scope="col">Status</th>
           <th scope="col" class="table-info"><div style="float:right">View</div></th>
           <th scope="col" class="table-danger"><div style="float:right">Delete</div></th>
@@ -312,8 +300,6 @@
           <tr>
             <td>{{ publish.title }}</td>
             <td>{{ publish.owner.username }}</td>
-            <td>{{ publish.date_added }}</td>
-            <td>{{ publish.date_updated }}</td>
             <td>{{ publish.status }}</td>
             <td class="table-info">
               <div style="float:right">
