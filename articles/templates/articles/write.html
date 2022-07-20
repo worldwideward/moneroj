@@ -10,6 +10,8 @@
   
   .form {
       position: relative;
+      margin-top: 20px;
+      margin-bottom: 20px;
       z-index: 1;
       background: #313030;
       max-width: 100%;
@@ -75,8 +77,8 @@
           <h3>Write and submit your articles for approval.</h3>
         </div>
     
-        <div class="col-xl-3 d-flex flex-column justify-content-center">
-          <div class="col-md-12 form">
+        <div class="col-xl-3 d-flex form flex-column justify-content-center">
+          <div class="col-md-12">
             <h1><i class="bx bx-user" style="color: #ffffff"></i></h1>
             <p class="message">You are currently:
               <br>
@@ -92,8 +94,8 @@
           </div>
         </div>
 
-        <div class="col-xl-3 d-flex flex-column justify-content-center">
-          <div class="col-md-12 form">
+        <div class="col-xl-3 d-flex form flex-column justify-content-center">
+          <div class="col-md-12">
             <h1><i class="bx bx-pen" style="color: #ffffff"></i></h1>
             <p class="message">Write new article:</p><br>
             <a href="{% url 'articles:new_article' %}"><button type="submit">Write</button></a>

@@ -3540,9 +3540,12 @@ def blockchainsize(request):
     dates = []
     now_xmr = 0
     now_btc = 0
-    
+    hardfork = datetime.datetime.strptime('2016-03-23', '%Y-%m-%d') #block time changed here
+
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        dates.append(date)
+        date = datetime.datetime.strptime(date, '%Y-%m-%d')
 
         if item.btc_blocksize > 0.001 and item.btc_transactions > 0:
             now_btc += 144*item.btc_blocksize/1024
@@ -3553,9 +3556,13 @@ def blockchainsize(request):
         else:
             btc_blocksize.append('')
 
-        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:
-            now_xmr += 720*item.xmr_blocksize/1024
-            if now_btc < 200:
+        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:            
+            if date < hardfork: 
+                now_xmr += 1440*item.xmr_blocksize/1024
+            else:
+                now_xmr += 720*item.xmr_blocksize/1024
+
+            if now_xmr < 200:
                 xmr_blocksize.append('')
             else:
                 xmr_blocksize.append(now_xmr)
@@ -3569,6 +3576,46 @@ def blockchainsize(request):
     print(dt)
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/blockchainsize.html', context)
+
+def securitybudget(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    xmr_security = []
+    btc_security = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+
+    for item in data:
+        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        dates.append(date)
+        if item.btc_minerrevntv > 0.001 and item.btc_priceusd > 0:
+            now_btc = item.btc_minerrevusd/86400
+            btc_security.append(now_btc)
+        else:
+            btc_security.append('')
+
+        if item.xmr_minerrevntv > 0.001 and item.xmr_priceusd > 0:            
+            now_xmr = item.xmr_minerrevusd/86400
+            xmr_security.append(now_xmr)
+        else:
+            xmr_security.append('')
+
+    print(xmr_security)
+    print(btc_security)
+    print(dates)
+        
+    now_btc = '$' + locale.format('%.2f', now_btc, grouping=True) 
+    now_xmr = '$' + locale.format('%.2f', now_xmr, grouping=True)
+    
+    dt = 'securitybudget.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr_security': xmr_security, 'btc_security': btc_security, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/securitybudget.html', context)
 
 def compinflation(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":

@@ -2,6 +2,11 @@
 {% block header %}
 
 <title>Moneroj.net - Users</title>
+<style>
+    .break {
+      word-break: break-all;
+    }
+</style>
 
 {% endblock %}
 {% block content %}  
@@ -29,8 +34,7 @@
   <table class="table table-sm table-hover">
     <tbody>
       <tr>
-        <th scope="col">Username</th>
-        <th scope="col">E-mail</th>
+        <th scope="col">User</th>
         <th scope="col">Type</th>
         <th scope="col" class="table-success"><div style="float:right">Edit</div></th>
         <th scope="col" class="table-warning"><div style="float:right">Delete</div></th>
@@ -38,8 +42,7 @@
       </tr>
       {% for user in users %}
         <tr>
-          <td>{{ user.user.username }}</td>
-          <td>{{ user.user.email }}</td>
+          <td><text class="break">{{ user.user.username }} > {{ user.user.email }}</text></td>
           <td><div>{{ user.type }}</div></td>
           <td class="table-success">
             <div style="float:right">
