@@ -17,7 +17,9 @@ from datetime import date, timedelta
 ###########################################
 
 def articles(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+
     articles = Article.objects.filter(status="Published").order_by('-id')
     first = True
     thumbnail = ''
@@ -57,7 +59,9 @@ def articles(request):
     return render(request, 'articles/articles.html', context)
 
 def article(request, identification):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+
     try:
         article = Article.objects.get(id=identification)
     except:
@@ -85,13 +89,11 @@ def article(request, identification):
 
 @login_required
 def images(request):
-    update_visitors(False)
     context = {'page': 'article'}
     return render(request, 'articles/images.html', context)
 
 @login_required
 def write(request):
-    update_visitors(False)
     articles = Article.objects.filter(author=request.user).order_by('-id')
     for article in articles:
         try:
@@ -156,7 +158,6 @@ def write(request):
 
 @login_required
 def new_article(request):
-    update_visitors(False)
     if request.method != 'POST':
         #create new page with blank form
         form = ArticleForm()
@@ -185,7 +186,6 @@ def new_article(request):
 
 @login_required
 def edit_article(request, identification):
-    update_visitors(False)
     try:
         article = Article.objects.get(id=identification)
     except:
@@ -214,7 +214,6 @@ def edit_article(request, identification):
 
 @login_required
 def delete_article(request, identification):
-    update_visitors(False)
     try:
         article = Article.objects.get(id=identification)
     except:
@@ -227,7 +226,6 @@ def delete_article(request, identification):
 
 @login_required
 def publish_article(request, identification):
-    update_visitors(False)
     try:
         article = Article.objects.get(id=identification)
     except:

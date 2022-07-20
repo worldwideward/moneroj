@@ -1244,7 +1244,9 @@ def update_database(date_from=None, date_to=None):
 ###########################################
 
 def index(request):
-    update_visitors(True)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(True)
+
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
 
@@ -1279,7 +1281,9 @@ def index(request):
     return render(request, 'charts/index.html', context)
 
 def pt(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(True)
+        
     symbol = 'xmr'
 
     rank = list(Rank.objects.order_by('-date'))[0]
@@ -1306,7 +1310,9 @@ def pt(request):
     return render(request, 'charts/pt.html', context)
 
 def fr(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(True)
+        
     symbol = 'xmr'
 
     rank = list(Rank.objects.order_by('-date'))[0]
@@ -1333,7 +1339,9 @@ def fr(request):
     return render(request, 'charts/fr.html', context)
 
 def social(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
     dates = []
@@ -1377,7 +1385,9 @@ def social(request):
     return render(request, 'charts/social.html', context)
 
 def social2(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
     dates = []
@@ -1420,7 +1430,9 @@ def social2(request):
     return render(request, 'charts/social2.html', context)
 
 def social3(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -1454,7 +1466,9 @@ def social3(request):
     return render(request, 'charts/social3.html', context)
 
 def social4(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
     dates = []
@@ -1581,7 +1595,9 @@ def social4(request):
     return render(request, 'charts/social4.html', context)
 
 def social5(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
     transactions = []
@@ -1614,7 +1630,9 @@ def social5(request):
     return render(request, 'charts/social5.html', context)
 
 def social6(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
     dates = []
@@ -1656,7 +1674,9 @@ def social6(request):
     return render(request, 'charts/social6.html', context)
 
 def social7(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
     dates = []
@@ -1697,7 +1717,9 @@ def social7(request):
     return render(request, 'charts/social7.html', context)
 
 def pricelog(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     now_price = 0
@@ -1750,7 +1772,9 @@ def pricelog(request):
     return render(request, 'charts/pricelog.html', context)
 
 def movingaverage(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     v0 = 0.002
@@ -1804,7 +1828,9 @@ def movingaverage(request):
     return render(request, 'charts/movingaverage.html', context)
 
 def powerlaw(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     now_price = 0
@@ -1889,7 +1915,9 @@ def powerlaw(request):
     return render(request, 'charts/powerlaw.html', context)
 
 def pricelin(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     now_price = 0
@@ -1943,7 +1971,9 @@ def pricelin(request):
     return render(request, 'charts/pricelin.html', context)
 
 def pricesats(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     
     dates = []
@@ -1981,7 +2011,9 @@ def pricesats(request):
     return render(request, 'charts/pricesats.html', context)
 
 def fractal(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates1 = []
@@ -2019,7 +2051,9 @@ def fractal(request):
     return render(request, 'charts/fractal.html', context)
 
 def inflationfractal(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates1 = []
@@ -2066,7 +2100,9 @@ def inflationfractal(request):
     return render(request, 'charts/inflationfractal.html', context)
 
 def golden(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates = []
@@ -2151,7 +2187,9 @@ def golden(request):
     return render(request, 'charts/golden.html', context)
 
 def competitors(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
@@ -2229,7 +2267,9 @@ def competitors(request):
     return render(request, 'charts/competitors.html', context)
 
 def competitorslin(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
@@ -2307,7 +2347,9 @@ def competitorslin(request):
     return render(request, 'charts/competitorslin.html', context)
 
 def marketcap(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -2360,7 +2402,9 @@ def marketcap(request):
     return render(request, 'charts/marketcap.html', context)
 
 def inflationreturn(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     count = 0
     xmr = []
@@ -2447,7 +2491,9 @@ def inflationreturn(request):
     return render(request, 'charts/inflationreturn.html', context)
 
 def bitcoin(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     dates3 = []
@@ -2513,7 +2559,9 @@ def bitcoin(request):
     return render(request, 'charts/bitcoin.html', context)
 
 def translin(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
@@ -2549,7 +2597,9 @@ def translin(request):
     return render(request, 'charts/translin.html', context)
 
 def pageviews(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     pageviews = []
     unique = []
@@ -2559,15 +2609,21 @@ def pageviews(request):
     for user in users:
         pageviews.append(user.total_pageviews)
         unique.append(user.unique_visitors)
-        dates.append(user.date)
-        print(user.date)
+        dates.append(datetime.datetime.strftime(user.date, '%Y-%m-%d'))
+
+    print(dates)
+    print(unique)
+    print(pageviews)
+
     dt = 'pageviews.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
     context = {'pageviews': pageviews, 'dates': dates, 'unique': unique}
     return render(request, 'charts/pageviews.html', context)
 
 def transmonth(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
@@ -2606,7 +2662,9 @@ def transmonth(request):
     return render(request, 'charts/transmonth.html', context)
 
 def percentmonth(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
@@ -2660,7 +2718,9 @@ def percentmonth(request):
     return render(request, 'charts/percentmonth.html', context)
 
 def deviation(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     pricexmr = []
@@ -2708,7 +2768,9 @@ def deviation(request):
     return render(request, 'charts/deviation.html', context)
 
 def deviation_tx(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
@@ -2776,7 +2838,9 @@ def deviation_tx(request):
     return render(request, 'charts/deviation_tx.html', context)
 
 def percentage(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -2804,7 +2868,9 @@ def percentage(request):
     return render(request, 'charts/percentage.html', context)
 
 def translog(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
@@ -2840,7 +2906,9 @@ def translog(request):
     return render(request, 'charts/translog.html', context)
 
 def hashrate(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     hashrate = []
@@ -2865,7 +2933,9 @@ def hashrate(request):
     return render(request, 'charts/hashrate.html', context)
 
 def hashprice(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     hashrate = []
@@ -2902,7 +2972,9 @@ def hashprice(request):
     return render(request, 'charts/hashprice.html', context)
 
 def hashvsprice(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     hashrate = []
@@ -2944,7 +3016,9 @@ def hashvsprice(request):
     return render(request, 'charts/hashvsprice.html', context)
 
 def metcalfesats(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
     
@@ -2985,7 +3059,9 @@ def metcalfesats(request):
     return render(request, 'charts/metcalfesats.html', context)
 
 def metcalfeusd(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
     
@@ -3026,7 +3102,9 @@ def metcalfeusd(request):
     return render(request, 'charts/metcalfeusd.html', context)
 
 def coins(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3122,7 +3200,9 @@ def coins(request):
     return render(request, 'charts/coins.html', context)
 
 def dailyemission(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3169,7 +3249,9 @@ def dailyemission(request):
     return render(request, 'charts/dailyemission.html', context)
 
 def extracoins(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3251,7 +3333,9 @@ def extracoins(request):
     return render(request, 'charts/extracoins.html', context)
 
 def inflation(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3308,7 +3392,9 @@ def inflation(request):
     return render(request, 'charts/inflation.html', context)
 
 def blocksize(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3341,7 +3427,9 @@ def blocksize(request):
     return render(request, 'charts/blocksize.html', context)
 
 def transactionsize(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3375,7 +3463,9 @@ def transactionsize(request):
     return render(request, 'charts/transactionsize.html', context)
 
 def transactiondominance(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3403,7 +3493,9 @@ def transactiondominance(request):
     return render(request, 'charts/transactiondominance.html', context)
 
 def difficulty(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3437,7 +3529,9 @@ def difficulty(request):
     return render(request, 'charts/difficulty.html', context)
 
 def blockchainsize(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3477,7 +3571,9 @@ def blockchainsize(request):
     return render(request, 'charts/blockchainsize.html', context)
 
 def compinflation(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3539,7 +3635,9 @@ def compinflation(request):
     return render(request, 'charts/compinflation.html', context)
 
 def sfmodel(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     
     update = False
@@ -3659,7 +3757,9 @@ def sfmodel(request):
     return render(request, 'charts/sfmodel.html', context)
 
 def sfmodellin(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     stock_to_flow = []
@@ -3717,7 +3817,9 @@ def sfmodellin(request):
     return render(request, 'charts/sfmodellin.html', context)
 
 def sfmultiple(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
 
@@ -3763,7 +3865,9 @@ def sfmultiple(request):
     return render(request, 'charts/sfmultiple.html', context)
 
 def thermocap(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates = []
@@ -3822,7 +3926,9 @@ def thermocap(request):
     return render(request, 'charts/thermocap.html', context)
 
 def sharpe(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     dates = []
@@ -3869,12 +3975,16 @@ def sharpe(request):
     return render(request, 'charts/sharpe.html', context)
 
 def about(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     context = {}
     return render(request, 'charts/about.html', context)
 
 def transcost(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3906,7 +4016,9 @@ def transcost(request):
     return render(request, 'charts/transcost.html', context)
 
 def transcostntv(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3938,7 +4050,9 @@ def transcostntv(request):
     return render(request, 'charts/transcostntv.html', context)
 
 def minerrevcap(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -3970,7 +4084,9 @@ def minerrevcap(request):
     return render(request, 'charts/minerrevcap.html', context)
 
 def minerrev(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4002,7 +4118,9 @@ def minerrev(request):
     return render(request, 'charts/minerrev.html', context)
 
 def minerrevntv(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4034,7 +4152,9 @@ def minerrevntv(request):
     return render(request, 'charts/minerrevntv.html', context)
 
 def minerfeesntv(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4066,7 +4186,9 @@ def minerfeesntv(request):
     return render(request, 'charts/minerfeesntv.html', context)
 
 def minerfees(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4098,7 +4220,9 @@ def minerfees(request):
     return render(request, 'charts/minerfees.html', context)
 
 def dailyemissionntv(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4137,7 +4261,9 @@ def dailyemissionntv(request):
     return render(request, 'charts/dailyemissionntv.html', context)
 
 def commit(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4169,7 +4295,9 @@ def commit(request):
     return render(request, 'charts/commit.html', context)
 
 def commitntv(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4201,7 +4329,9 @@ def commitntv(request):
     return render(request, 'charts/commitntv.html', context)
 
 def competitorssats(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
@@ -4279,7 +4409,9 @@ def competitorssats(request):
     return render(request, 'charts/competitorssats.html', context)
 
 def competitorssatslin(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
@@ -4357,7 +4489,9 @@ def competitorssatslin(request):
     return render(request, 'charts/competitorssatslin.html', context)
 
 def dread_subscribers(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
@@ -4399,7 +4533,9 @@ def dread_subscribers(request):
     return render(request, 'charts/dread_subscribers.html', context)
 
 def coincards(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
@@ -4448,7 +4584,9 @@ def coincards(request):
     return render(request, 'charts/coincards.html', context)
 
 def merchants(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
@@ -4505,7 +4643,9 @@ def merchants(request):
     return render(request, 'charts/merchants.html', context)
 
 def merchants_increase(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
@@ -4562,7 +4702,9 @@ def merchants_increase(request):
     return render(request, 'charts/merchants_increase.html', context)
 
 def merchants_percentage(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     data1 = []
@@ -4619,7 +4761,9 @@ def merchants_percentage(request):
     return render(request, 'charts/merchants_percentage.html', context)
 
 def dominance(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     values = []
@@ -4675,7 +4819,9 @@ def dominance(request):
     return render(request, 'charts/dominance.html', context)
 
 def rank(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     values = []
@@ -4745,7 +4891,9 @@ def rank(request):
     return render(request, 'charts/rank.html', context)
 
 def tail_emission(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     inflationxmr = []
     finflationxmr = []
@@ -4775,7 +4923,9 @@ def tail_emission(request):
     return render(request, 'charts/tail_emission.html', context)
 
 def privacymarketcap(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4836,7 +4986,9 @@ def privacymarketcap(request):
     return render(request, 'charts/privacymarketcap.html', context)
 
 def privacydominance(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4898,7 +5050,9 @@ def privacydominance(request):
     return render(request, 'charts/privacydominance.html', context)
 
 def monerodominance(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     data = DailyData.objects.order_by('date')
 
@@ -4960,7 +5114,9 @@ def monerodominance(request):
 ###########################################
 
 def sfmodel_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
 
     update = True
@@ -5123,7 +5279,9 @@ def sfmodel_old(request):
     return render(request, 'charts/sfmodel.html', context)
 
 def sfmodellin_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     now_price = 0
@@ -5187,7 +5345,9 @@ def sfmodellin_old(request):
     return render(request, 'charts/sfmodellin.html', context)
 
 def dailyemission_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5246,7 +5406,9 @@ def dailyemission_old(request):
     return render(request, 'charts/dailyemission.html', context)
 
 def dailyemissionntv_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5295,7 +5457,9 @@ def dailyemissionntv_old(request):
     return render(request, 'charts/dailyemissionntv.html', context)
 
 def compinflation_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5388,7 +5552,9 @@ def compinflation_old(request):
     return render(request, 'charts/compinflation.html', context)
 
 def bitcoin_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     dates3 = []
@@ -5458,7 +5624,9 @@ def bitcoin_old(request):
     return render(request, 'charts/bitcoin.html', context)
 
 def coins_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5552,7 +5720,9 @@ def coins_old(request):
     return render(request, 'charts/coins.html', context)
 
 def inflation_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5608,7 +5778,9 @@ def inflation_old(request):
     return render(request, 'charts/inflation.html', context)
 
 def extracoins_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5691,7 +5863,9 @@ def extracoins_old(request):
     return render(request, 'charts/extracoins.html', context)
 
 def transcost_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5743,7 +5917,9 @@ def transcost_old(request):
     return render(request, 'charts/transcost.html', context)
 
 def transcostntv_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5794,7 +5970,9 @@ def transcostntv_old(request):
     return render(request, 'charts/transcostntv.html', context)
 
 def metcalfesats_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     color = []
@@ -5841,7 +6019,9 @@ def metcalfesats_old(request):
     return render(request, 'charts/metcalfesats.html', context)
 
 def metcalfeusd_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     color = []
@@ -5888,7 +6068,9 @@ def metcalfeusd_old(request):
     return render(request, 'charts/metcalfeusd.html', context)
 
 def minerrevcap_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -5939,7 +6121,9 @@ def minerrevcap_old(request):
     return render(request, 'charts/minerrevcap.html', context)
 
 def marketcap_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     xmr = []
@@ -6002,7 +6186,9 @@ def marketcap_old(request):
     return render(request, 'charts/marketcap.html', context)
 
 def social_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     dates2 = []
@@ -6050,7 +6236,9 @@ def social_old(request):
     return render(request, 'charts/social.html', context)
 
 def social2_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     social_btc = []
@@ -6090,7 +6278,9 @@ def social2_old(request):
     return render(request, 'charts/social2.html', context)
 
 def social3_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     dates = []
     social_xmr = []
@@ -6138,7 +6328,9 @@ def social3_old(request):
     return render(request, 'charts/social3.html', context)
 
 def social4_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     socials = Social.objects.order_by('date').filter(name='Bitcoin')
     dates = []
@@ -6270,7 +6462,9 @@ def social4_old(request):
     return render(request, 'charts/social4.html', context)
 
 def social5_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
@@ -6316,7 +6510,9 @@ def social5_old(request):
     return render(request, 'charts/social5.html', context)
 
 def social6_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     socials = Social.objects.order_by('date').filter(name='Bitcoin')
     dates = []
@@ -6366,7 +6562,9 @@ def social6_old(request):
     return render(request, 'charts/social6.html', context)
 
 def social7_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     socials = Social.objects.order_by('date').filter(name='Bitcoin')
     dates = []
@@ -6407,7 +6605,9 @@ def social7_old(request):
     return render(request, 'charts/social7.html', context)
 
 def minerrev_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -6452,7 +6652,9 @@ def minerrev_old(request):
     return render(request, 'charts/minerrev.html', context)
 
 def minerrevntv_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -6497,7 +6699,9 @@ def minerrevntv_old(request):
     return render(request, 'charts/minerrevntv.html', context)
 
 def minerfees_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -6546,7 +6750,9 @@ def minerfees_old(request):
     return render(request, 'charts/minerfees.html', context)
 
 def minerfeesntv_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -6595,7 +6801,9 @@ def minerfeesntv_old(request):
     return render(request, 'charts/minerfeesntv.html', context)
 
 def commit_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -6640,7 +6848,9 @@ def commit_old(request):
     return render(request, 'charts/commit.html', context)
 
 def commitntv_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     coins_btc = Coin.objects.order_by('date').filter(name='btc')
 
@@ -6691,7 +6901,9 @@ def commitntv_old(request):
     return render(request, 'charts/commitntv.html', context)
 
 def percentage_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     transactions = []
@@ -6725,7 +6937,9 @@ def percentage_old(request):
     return render(request, 'charts/percentage.html', context)
 
 def pricesats_old(request):
-    update_visitors(False)
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
     projection = []

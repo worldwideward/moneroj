@@ -19,7 +19,7 @@
                     <div class="card" id="graph1">
                         <div
                             class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">Pageviews (linear)</h6>
+                            <h6 class="m-0 text-light">Total Pageviews and Unique Visitors (Moneroj.net, linear)</h6>
                             <div class="dropdown no-arrow">
                                 <a class="dropdown-toggle" href="#" role="button"
                                     onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -183,7 +183,7 @@ var layout = {
     yaxis: {
         type: "linear",
         title: {
-            text: 'Number of users',
+            text: 'Unique visitors',
             font: {
                 size: 20,
                 color: 'white'
@@ -200,7 +200,7 @@ var layout = {
     yaxis2: {
         type: "linear",
         title: {
-            text: 'Transactions',
+            text: 'Total pageviews',
             font: {
                 size: 20,
                 color: 'white'
@@ -226,7 +226,6 @@ var layout = {
             ,size: 13
         }
         ,gridcolor: "#333333"
-        ,range: ['2014-05-01', '2023-01-01']
         ,zeroline: true
     },
     margin: {
@@ -291,7 +290,7 @@ var layout_mobile = {
             ,size: 7
         }
         ,gridcolor: "#444444"
-        ,range: ['2014-05-01', '2023-01-01']
+        ,range: ['2022-07-01', '2023-01-01']
         ,zeroline: true
     },
     margin: {
