@@ -3593,21 +3593,17 @@ def securitybudget(request):
     for item in data:
         date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
         dates.append(date)
-        if item.btc_minerrevntv > 0.001 and item.btc_priceusd > 0:
+        if item.btc_minerrevusd > 0.001:
             now_btc = item.btc_minerrevusd/86400
             btc_security.append(now_btc)
         else:
             btc_security.append('')
 
-        if item.xmr_minerrevntv > 0.001 and item.xmr_priceusd > 0:            
+        if item.xmr_minerrevusd > 0.001:            
             now_xmr = item.xmr_minerrevusd/86400
             xmr_security.append(now_xmr)
         else:
             xmr_security.append('')
-
-    print(xmr_security)
-    print(btc_security)
-    print(dates)
         
     now_btc = '$' + locale.format('%.2f', now_btc, grouping=True) 
     now_xmr = '$' + locale.format('%.2f', now_xmr, grouping=True)
@@ -3616,6 +3612,51 @@ def securitybudget(request):
     print(dt)
     context = {'xmr_security': xmr_security, 'btc_security': btc_security, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/securitybudget.html', context)
+
+def efficiency(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    xmr_efficiency = []
+    btc_efficiency = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+
+    for item in data:
+        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        dates.append(date)
+        if item.btc_minerrevusd != 0 and item.btc_inflation > 0:        
+            if (2**32)*item.btc_difficulty*0.10/(item.btc_minerrevusd*24000) > 10:
+                now_btc = (2**32)*item.btc_difficulty*0.10/(item.btc_minerrevusd*24000)
+            if now_btc > 0.01:
+                btc_efficiency.append(now_btc)
+            else:
+                btc_efficiency.append('')
+        else:
+            btc_efficiency.append('')
+
+        if item.xmr_minerrevusd != 0 and item.xmr_inflation > 0:            
+            if item.xmr_difficulty*0.10/(item.xmr_minerrevusd*5000) > 0.01:
+                now_xmr = item.xmr_difficulty*0.10/(item.xmr_minerrevusd*5000)
+            if now_xmr > 0.01:
+                xmr_efficiency.append(now_xmr)
+            else:
+                xmr_efficiency.append('')
+        else:
+            xmr_efficiency.append('')
+        
+    now_btc = locale.format('%.0f', now_btc, grouping=True) 
+    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    
+    dt = 'efficiency.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr_efficiency': xmr_efficiency, 'btc_efficiency': btc_efficiency, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/efficiency.html', context)
+
 
 def compinflation(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":

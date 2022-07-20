@@ -84,6 +84,7 @@ urlpatterns = [
     path('percentmonth/', views.percentmonth, name='percentmonth'),
     path('pageviews/', views.pageviews, name='pageviews'),
     path('securitybudget/', views.securitybudget, name='securitybudget'),
+    path('efficiency/', views.efficiency, name='efficiency'),
 
     # URLs to useful functions on charts/views.py
     # Only admins can use these 
