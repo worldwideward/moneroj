@@ -810,6 +810,10 @@ def get_latest_metrics(symbol, url):
                     coin.transactions = float(item['TxCnt'])
                 except:
                     coin.transactions = 0
+                
+                if (symbol == 'xmr' or symbol == 'btc') and (coin.inflation == 0 or coin.supply == 0 or coin.hashrate == 0 or coin.transactions == 0):
+                    continue
+
                 coin.save()
                 count += 1
                 print(str(symbol) + ' ' + str(coin.date))
@@ -1011,6 +1015,9 @@ def update_database(date_from=None, date_to=None):
 
             coin_xmr2 = Coin.objects.filter(name='xmr').get(date=date_aux2)
             coin_btc2 = Coin.objects.filter(name='btc').get(date=date_aux2)
+
+            if coin_btc.inflation == 0 or coin_xmr.inflation == 0:
+                return count
 
             count_aux = 0
             found = False
@@ -1226,7 +1233,7 @@ def update_database(date_from=None, date_to=None):
             data.crypto_postsPerHour = 0
 
         data.save()
-        print(str(coin_xmr.date) + ' - ' + str(int(coin_xmr.supply)) + ' xmr @ ' + str(coin_xmr.priceusd) + ' = ' + str(int(data.xmr_marketcap)))
+        print(str(coin_xmr.date) + ' - ' + str(int(coin_xmr.supply)) + ' xmr @ ' + str(coin_xmr.priceusd) + ' = ' + str(int(data.xmr_marketcap)) + ' => ' + str(coin_xmr.inflation))
 
         count += 1
 
@@ -3535,26 +3542,34 @@ def sfmodel(request):
     update_visitors(False)
     dt = datetime.datetime.now(timezone.utc).timestamp()
     
-    update = True
-    symbol = 'xmr'
+    update = False
 
     today = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
     yesterday = date.today() - timedelta(1)
-    start_time = datetime.datetime.strftime(date.today() - timedelta(2), '%Y-%m-%d')
+    start_time = datetime.datetime.strftime(date.today() - timedelta(5), '%Y-%m-%d')
     try:
-        coin = Coin.objects.filter(name=symbol).get(date=yesterday)
-        if coin:
-            if (coin.inflation > 0) and (coin.priceusd > 0) and (coin.supply > 0):
+        coin = Coin.objects.filter(name='xmr').get(date=yesterday)
+        #coin_aux = Coin.objects.filter(name='btc').get(date=yesterday)
+        if coin: #and coin_aux:            
+            print('coin found yesterday')
+            if coin.inflation > 0 and coin.priceusd > 0 and coin.supply > 0: #and coin_aux.inflation > 0 and coin_aux.priceusd > 0 and coin_aux.supply > 0:
+                print('no need to update')
                 update = False
             else:
+                print('need to update, coin has missing parameters')
                 now = datetime.datetime.now()
                 current_time = int(now.strftime("%H"))
                 if current_time >= 5:
                     coin.delete()
+                    #coin_aux.delete()
                     update = True
+                else:
+                    update = False
         else:
+            print('no coin found yesterday')
             update = True
     except:
+        print('no coin found yesterday')
         update = True
 
     if update:
@@ -3584,9 +3599,9 @@ def sfmodel(request):
         url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
 
-    print('updating database')
-    update_database(start_time, today)
-    print('done')
+        print('updating database')
+        update_database(start_time, today)
+        print('done')
 
     dates = []
     stock_to_flow = []
@@ -3776,18 +3791,21 @@ def thermocap(request):
         color.append(new_color)
 
         calorie += (coin.supply - supply)*coin.priceusd
-        if calorie/(4200000*math.sqrt(coin.inflation)) < 0.1:
+        if coin.inflation != 0:
+            if calorie/(4200000*math.sqrt(coin.inflation)) < 0.1:
+                calories.append('')
+            else:
+                calories.append(calorie/(4200000*math.sqrt(coin.inflation)))
+            if calorie/(1000000*math.sqrt(coin.inflation)) < 0.1:
+                calories2.append('')
+            else:
+                calories2.append(calorie/(1000000*math.sqrt(coin.inflation)))
+            if 28*calorie/(2500000*math.sqrt(coin.inflation)) < 0.1:
+                calories3.append('')
+            else:
+                calories3.append(28*calorie/(2500000*math.sqrt(coin.inflation)))
+        else:
             calories.append('')
-        else:
-            calories.append(calorie/(4200000*math.sqrt(coin.inflation)))
-        if calorie/(1000000*math.sqrt(coin.inflation)) < 0.1:
-            calories2.append('')
-        else:
-            calories2.append(calorie/(1000000*math.sqrt(coin.inflation)))
-        if 28*calorie/(2500000*math.sqrt(coin.inflation)) < 0.1:
-            calories3.append('')
-        else:
-            calories3.append(28*calorie/(2500000*math.sqrt(coin.inflation)))
         temperature = coin.priceusd/calorie
         if temperature > 0.000004:
             temperature = 0.000004
@@ -4953,12 +4971,16 @@ def sfmodel_old(request):
     try:
         coin = Coin.objects.filter(name=symbol).get(date=yesterday)
         if coin:
+            coin.delete()
+            update = False
+            print('here')
+            return 
             if (coin.inflation > 0) and (coin.priceusd > 0):
                 update = False
             else:
                 now = datetime.datetime.now()
                 current_time = int(now.strftime("%H"))
-                if current_time >= 3:
+                if current_time >= 5:
                     coin.delete()
                     update = True
         else:
