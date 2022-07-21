@@ -1,25 +1,31 @@
 {% extends "users/base.html" %}
 {% block header %}
 
-<title>{{ article.title }}</title>
+  <title>{{ article.title }}</title>
+  <meta name="twitter:card" content="summary_large_image"><!-- required -->
+  <meta name="twitter:site" content="@CryptoMorpheus_"><!-- required -->
+  <meta name="twitter:creator" content="@CryptoMorpheus_"><!-- optional -->
+  <meta name="twitter:title" content="{{ article.title }}"><!-- required -->
+  <meta name="twitter:description" content="{{ article.subtitle }}"><!-- optional -->
+  <meta name="twitter:image" content="../../../static/img/articles/{{ article.thumbnail | safe }}"><!-- optional -->
 
-<style>
-  /*--------------------------------------------------------------
-  # Hero Section
-  --------------------------------------------------------------*/
-  #hero {
-    width: 100%;
-    height: 30vh;
-    background: url("../../../static/img/articles/{{ article.thumbnail | safe }}") center center;
-    background-size: cover;
-    position: relative;
-    z-index: 1;
-    padding: 0;
-    margin-bottom: -200px;
-  }
-</style>
+  <style>
+    /*--------------------------------------------------------------
+    # Hero Section
+    --------------------------------------------------------------*/
+    #hero {
+      width: 100%;
+      height: 30vh;
+      background: url("../../../static/img/articles/{{ article.thumbnail | safe }}") center center;
+      background-size: cover;
+      position: relative;
+      z-index: 1;
+      padding: 0;
+      margin-bottom: -200px;
+    }
+  </style>
 
-{% endblock header %}
+{% endblock %}
 {% block content %}
 
 {% load static %}
@@ -112,4 +118,4 @@
   </div>
 </div>
 <!-- Fim do Modal -->
-{% endblock content %}
+{% endblock %}

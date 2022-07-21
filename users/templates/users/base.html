@@ -23,6 +23,7 @@
       color: #ff4d21;
     }
   </style>
+  {% block header %}{% endblock %}
 </head>
 
 <body>
@@ -85,8 +86,7 @@
     </div>
   </nav>
 
-  {% block header %}{% endblock header %}
-  {% block content %}{% endblock content %}
+  {% block content %}{% endblock %}
 
   <!-- ======= Footer ======= -->
   <footer id="footer">
