@@ -10,9 +10,14 @@
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="@CryptoMorpheus_" />
+  {% if article.title %}
   <meta name="twitter:title" content="{{ article.title }}" />
   <meta name="twitter:description" content="{{ article.subtitle }}" />
-  <meta name="twitter:image" content="../static/img/hero-bg.jpg" />
+  {% else %}
+  <meta name="twitter:title" content="Moneroj.net" />
+  <meta name="twitter:description" content="Your information source about Monero, with metrics, charts, stats and articles." />
+  {% endif %}
+  <meta name="twitter:image" content="{% static 'static/img/logo.jpg' %}" />
 
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
   <link href="{% static 'img/favicon.png' %}" rel="icon">
