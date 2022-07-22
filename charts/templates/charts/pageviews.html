@@ -96,8 +96,7 @@
         line: {
             color: '#dd1d1d'
             ,width: 2
-        },
-        yaxis: "y2"
+        }
     };
     
     var data3_mobile = {
@@ -109,8 +108,7 @@
         line: {
             color: '#dd1d1d'
             ,width: 2
-        },
-        yaxis: "y2"
+        }
     };
     var data1 = {
         type: "scatter",
@@ -119,7 +117,7 @@
         x: {{ dates|safe }},
         y: {{ unique|safe }},
         line: {
-            color: '#444444'
+            color: '#777777'
             ,width: 1
         }
     };
@@ -131,7 +129,7 @@
         x: {{ dates|safe }},
         y: {{ unique|safe }},
         line: {
-            color: '#444444'
+            color: '#777777'
             ,width: 1
         }
     }; 
@@ -165,7 +163,7 @@ var layout = {
     separators: ",.",
     legend: {
         x: 0.02, 
-        y: 0.98, 
+        y: 0.02, 
         bgcolor: '#333333', 
         bordercolor: '#5f5f5f', 
         borderwidth: 1, 
@@ -183,7 +181,7 @@ var layout = {
     yaxis: {
         type: "linear",
         title: {
-            text: 'Unique visitors',
+            text: 'Number of Views',
             font: {
                 size: 20,
                 color: 'white'
@@ -196,25 +194,6 @@ var layout = {
             ,size: 12
         }
         ,gridcolor: "#333333"
-    },
-    yaxis2: {
-        type: "linear",
-        title: {
-            text: 'Total pageviews',
-            font: {
-                size: 20,
-                color: 'white'
-            }
-        },
-        tickformat :",.0f"
-        ,nticks: 10
-        ,tickfont: {
-            color: "#ffffff"
-            ,size: 12
-        }
-        ,gridcolor: "#252221"
-        ,side: "right"
-        ,overlaying: 'y'
     },
     xaxis: {
         hoverformat: "%Y-%m-%d",
@@ -268,17 +247,6 @@ var layout_mobile = {
             ,size: 7
         }
         ,gridcolor: "#444444"
-    },
-    yaxis2: {
-        type: "linear",
-        tickformat :",.0f"
-        ,nticks: 10
-        ,tickfont: {
-            color: "white"
-        }
-        ,gridcolor: "#252221"
-        ,side: "right"
-        ,overlaying: 'y'
     },
     xaxis: {
         hoverformat: "%Y",

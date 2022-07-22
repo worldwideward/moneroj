@@ -58,7 +58,34 @@ def articles(request):
     context = {'page': 'article', 'articles': articles, 'form': form, 'message': message, 'thumbnail': thumbnail}
     return render(request, 'articles/articles.html', context)
 
+# This function is equal to 'view_article', except that it increase unique_visitors
 def article(request, identification):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(True)
+
+    try:
+        article = Article.objects.get(id=identification)
+    except:
+        try:
+            identification = identification.replace('-', ' ')
+            article = Article.objects.get(title=identification)
+        except:
+            return render(request, 'users/error.html')
+    
+    article.thumbnail = article.thumbnail.replace('400x300', '1920x1080')
+
+    if article.status == 'Published':
+        context = {'page': 'article', 'article': article}
+        return render(request, 'articles/article.html', context)
+    else:
+        if request.user.username != "Administrador" and request.user.username != "Morpheus" and request.user != article.owner and request.user.profile.type != 'editor':
+            return render(request, 'users/error.html')
+        else:
+            context = {'page': 'article', 'article': article}
+            return render(request, 'articles/article.html', context)
+
+# This function is equal to 'article', except that it doesn't increase unique_visitors
+def view_article(request, identification):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
 

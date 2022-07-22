@@ -116,9 +116,9 @@
         <div class="row">
           <div class="col-xl-8 col-lg-5">
             <div class="content">
-              <h3 class="link-white"><a href="../article/{{ article.url }}">{{ article.title }}</a></h3>
+              <h3 class="link-white"><a href="../view_article/{{ article.url }}">{{ article.title }}</a></h3>
               <p class="link-white" style="text-align: justify;">
-                <b><a href="../article/{{ article.url }}">Article by {{ article.owner.username }}, {{ article.date_published }}</a></b><br><br>{{ article.text | safe }}
+                <b><a href="../view_article/{{ article.url }}">Article by {{ article.owner.username }}, {{ article.date_published }}</a></b><br><br>{{ article.text | safe }}
               </p>
             </div>
           </div>
@@ -156,9 +156,9 @@
         {% elif article.count < 7 %}
         <div class="icon-boxes col-xl-4">
           <div class="card">
-            <a href="../article/{{ article.url }}"><img class="card-img-top" src="{% static article.thumbnail %}"></a>
+            <a href="../view_article/{{ article.url }}"><img class="card-img-top" src="{% static article.thumbnail %}"></a>
             <div class="card-body">
-              <h5><a href="../article/{{ article.url }}">{{ article.title }}</a></h5>
+              <h5><a href="../view_article/{{ article.url }}">{{ article.title }}</a></h5>
               <p>{{ article.text | safe }}</p>
               <h6><b>Article by {{ article.owner.username }}, {{ article.date_published }}</b></h6>
             </div>
@@ -197,9 +197,9 @@
           </div>
           <div class="col-xl-8 col-lg-5">
             <div class="content">
-              <h3 class="link-white"><a href="../article/{{ article.url }}">{{ article.title }}</a></h3>
+              <h3 class="link-white"><a href="../view_article/{{ article.url }}">{{ article.title }}</a></h3>
               <p class="link-white" style="text-align: justify;">
-                <b><a href="../article/{{ article.url }}">Article by {{ article.owner.username }}, {{ article.date_published }}</a></b><br><br>{{ article.text | safe }}
+                <b><a href="../view_article/{{ article.url }}">Article by {{ article.owner.username }}, {{ article.date_published }}</a></b><br><br>{{ article.text | safe }}
               </p>
             </div>
           </div>
@@ -210,9 +210,9 @@
         {% elif article.count > 7 %}
         <div class="icon-boxes col-xl-4">
           <div class="card">
-            <a href="../article/{{ article.url }}"><img class="card-img-top" src="{% static article.thumbnail %}"></a>
+            <a href="../view_article/{{ article.url }}"><img class="card-img-top" src="{% static article.thumbnail %}"></a>
             <div class="card-body">
-              <h5><a href="../article/{{ article.url }}">{{ article.title }}</a></h5>
+              <h5><a href="../view_article/{{ article.url }}">{{ article.title }}</a></h5>
               <p>{{ article.text | safe }}</p>
               <h6><b>Article by {{ article.owner.username }}, {{ article.date_published }}</b></h6>
             </div>

@@ -8,6 +8,7 @@ urlpatterns = [
     # Everyone can use these
     path('articles/', views.articles, name="articles"),
     path('article/<str:identification>/', views.article, name="article"),
+    path('view_article/<str:identification>/', views.view_article, name="view_article"),
 
     # URLs to articles writing and edit, etc
     # Only registered users can use these 
