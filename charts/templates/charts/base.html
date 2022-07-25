@@ -238,7 +238,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMining"
                     aria-expanded="true" aria-controls="collapseMining">
                     <i class="bx bx-calculator"></i>
-                    <span>Mining (14)</span>
+                    <span>Mining (16)</span>
                 </a>
                 <div id="collapseMining" class="collapse" aria-labelledby="headingMining"
                     data-parent="#accordionSidebar">
@@ -258,6 +258,11 @@
                         <a class="collapse-item" href="{% url 'charts:blockchainsize' %}">Blockchain Size (Bytes)</a>
                         <a class="collapse-item" href="{% url 'charts:transactionsize' %}">Transaction Size (Bytes)</a>
                         <a class="collapse-item" href="{% url 'charts:difficulty' %}">Mining Difficulty</a>
+                        <a class="collapse-item" href="{% url 'charts:securitybudget' %}">Security Budget</a>
+                        <a class="collapse-item" href="{% url 'charts:efficiency' %}">Breakeven Efficiency</a>
+                        <!--
+                        <a class="collapse-item" href="{% url 'charts:difficulty' %}">Reward / Hashrate</a>
+                        -->
                     </div>
                 </div>
             </li>
@@ -351,14 +356,14 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOthers"
                     aria-expanded="true" aria-controls="collapseOthers">
                     <i class="bx bx-info-circle"></i>
-                    <span>About Us</span>
+                    <span>About Us (1)</span>
                 </a>
                 <div id="collapseOthers" class="collapse" aria-labelledby="headingOthers"
                     data-parent="#accordionSidebar">
                     <div class="py-2 collapse-inner rounded">
                         <h6 class="collapse-header text-dark">Info:</h6>
                         <a class="collapse-item" href="{% url 'charts:about' %}">About Us</a>
-                        <!--<a class="collapse-item" href="{% url 'charts:pageviews' %}">Moneroj.net Pageviews</a>-->
+                        <a class="collapse-item" href="{% url 'charts:pageviews' %}">Pageviews</a>
                         <a class="collapse-item" href="https://twitter.com/CryptoMorpheus_" target="_blank">Twitter</a>
                     </div>
                 </div>

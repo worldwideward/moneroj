@@ -117,8 +117,8 @@
         x: {{ dates|safe }},
         y: {{ unique|safe }},
         line: {
-            color: '#777777'
-            ,width: 1
+            color: '#1dddcd'
+            ,width: 2
         }
     };
     
@@ -129,8 +129,8 @@
         x: {{ dates|safe }},
         y: {{ unique|safe }},
         line: {
-            color: '#777777'
-            ,width: 1
+            color: '#1dddcd'
+            ,width: 2
         }
     }; 
     
@@ -144,9 +144,9 @@ var layout = {
     {
         xref: 'paper',
         yref: 'paper',
-        x: 0.02,
+        x: 0.98,
         xanchor: 'auto',
-        y: 0.50,
+        y: 0.98,
         yanchor: 'auto',
         text: 'Moneroj<br>https://www.moneroj.net',
         showarrow: false,
@@ -162,8 +162,8 @@ var layout = {
     }],
     separators: ",.",
     legend: {
-        x: 0.02, 
-        y: 0.02, 
+        x: 0.98, 
+        y: 0.50, 
         bgcolor: '#333333', 
         bordercolor: '#5f5f5f', 
         borderwidth: 1, 
@@ -208,8 +208,8 @@ var layout = {
         ,zeroline: true
     },
     margin: {
-        l: 120,
-        r: 120,
+        l: 80,
+        r: 30,
         b: 35,
         t: 10,
         pad: 10
@@ -224,7 +224,7 @@ var layout_mobile = {
         namelength: -1
     },
     legend: {
-        x: 0.02, 
+        x: 0.98, 
         y: 0.98, 
         bgcolor: '#000000', 
         bordercolor: '#5f5f5f', 

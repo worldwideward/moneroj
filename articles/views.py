@@ -34,9 +34,9 @@ def articles(request):
             article.title = article.title[:100] + '...'
         article.count = count
         if count != 5 and count != 0:
-            article.text = article.text[:400] + '...'
+            article.text = article.text[:200] + '...'
         else:
-            article.text = article.text[:600] + '...'
+            article.text = article.text[:400] + '...'
         count += 1
 
     if request.method != 'POST':
@@ -52,8 +52,6 @@ def articles(request):
             message = 'Subscription successful!'
         else:
             message = 'Something went wrong!'
-
-    print(thumbnail)
 
     context = {'page': 'article', 'articles': articles, 'form': form, 'message': message, 'thumbnail': thumbnail}
     return render(request, 'articles/articles.html', context)
@@ -132,7 +130,8 @@ def write(request):
             article.date_published = datetime.datetime.strftime(article.date_published, '%d/%m/%Y')
         except:
             pass
-        article.title = article.title[:50] + '...'
+        if len(article.title) > 60:
+            article.title = article.title[:60] + '...'
 
     if request.user.profile.type == 'editor':
         reviews = Article.objects.filter(status="Pending approval").exclude(author=request.user)
@@ -146,7 +145,8 @@ def write(request):
                 review.date_published = datetime.datetime.strftime(review.date_published, '%d/%m/%Y')
             except:
                 pass
-            review.title = review.title[:50] + '...'
+            if len(review.title) > 60:
+                review.title = review.title[:60] + '...'
         
         context = {'page': 'article', 'articles': articles, 'reviews': reviews}
 
@@ -162,7 +162,8 @@ def write(request):
                 review.date_published = datetime.datetime.strftime(review.date_published, '%d/%m/%Y')
             except:
                 pass
-            review.title = review.title[:50] + '...'
+            if len(review.title) > 60:
+                review.title = review.title[:60] + '...'
 
         published = Article.objects.filter(status="Published")
         for publish in published:
@@ -175,7 +176,8 @@ def write(request):
                 publish.date_published = datetime.datetime.strftime(publish.date_published, '%d/%m/%Y')
             except:
                 pass
-            publish.title = publish.title[:50] + '...'
+            if len(publish.title) > 60:
+                publish.title = publish.title[:60] + '...'
         
         context = {'page': 'article', 'articles': articles, 'reviews': reviews, 'published': published}
     
