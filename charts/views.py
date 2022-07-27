@@ -59,16 +59,17 @@ def get_history(request, symbol, start_time=None, end_time=None):
         data = json.load(file)
         file.close()
 
-    if start_time and end_time:
-        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time + '&end_time=' + end_time
-    else:
-        url = data["metrics_provider"][0]["metrics_url_new"] + symbol #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"]
+    if not(start_time and end_time):
+        start_time = '2000-01-01'
+        end_time = '2100-01-01'
+
+    url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time 
 
     while update: 
         response = requests.get(url)
-        data = json.loads(response.text)
-        data_aux = data['data']
-        for item in data_aux:
+        data_aux = json.loads(response.text)
+        data_aux2 = data_aux['data']
+        for item in data_aux2:
             day, hour = str(item['time']).split('T')
             day = datetime.datetime.strptime(day, '%Y-%m-%d')
             day = datetime.datetime.strftime(day, '%Y-%m-%d')
@@ -140,8 +141,7 @@ def get_history(request, symbol, start_time=None, end_time=None):
             except:
                 pass
         try:
-            url = data['next_page_url']
-            update = True
+            url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time + '/' + data_aux['next_page_token']
         except:
             update = False
             break
