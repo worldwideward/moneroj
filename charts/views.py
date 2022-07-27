@@ -60,9 +60,9 @@ def get_history(request, symbol, start_time=None, end_time=None):
         file.close()
 
     if start_time and end_time:
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time + '&end_time=' + end_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time + '&end_time=' + end_time
     else:
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"]
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"]
 
     while update: 
         response = requests.get(url)
@@ -3736,7 +3736,7 @@ def sfmodel(request):
     try:
         coin = Coin.objects.filter(name='xmr').get(date=yesterday)
         #coin_aux = Coin.objects.filter(name='btc').get(date=yesterday)
-        if coin: #and coin_aux:            
+        if coin: #and coin_aux: 
             print('coin found yesterday')
             if coin.inflation > 0 and coin.priceusd > 0 and coin.supply > 0: #and coin_aux.inflation > 0 and coin_aux.priceusd > 0 and coin_aux.supply > 0:
                 print('no need to update')
@@ -3770,19 +3770,19 @@ def sfmodel(request):
             file.close()
             
         symbol = 'btc'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         symbol = 'dash'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         symbol = 'grin'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         symbol = 'zec'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         symbol = 'xmr'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
 
         print('updating database')
@@ -5244,19 +5244,19 @@ def sfmodel_old(request):
             file.close()
             
         symbol = 'btc'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         symbol = 'dash'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         symbol = 'grin'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         symbol = 'zec'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         symbol = 'xmr'
-        url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
         #print('done')
 
