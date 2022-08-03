@@ -3727,7 +3727,6 @@ def sfmodel(request):
         update_visitors(False)
         
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    
     update = False
 
     today = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
@@ -3742,23 +3741,19 @@ def sfmodel(request):
                 print('no need to update')
                 update = False
             else:
-                print('need to update, coin has missing parameters')
-                now = datetime.datetime.now()
-                current_time = int(now.strftime("%H"))
-                if current_time >= 5:
-                    coin.delete()
-                    #coin_aux.delete()
-                    update = True
-                else:
-                    update = False
+                coin.delete()
+                update = True
         else:
-            print('no coin found yesterday')
+            print('no coin found yesterday - 1')
             update = True
     except:
-        print('no coin found yesterday')
+        print('no coin found yesterday - 2')
         update = True
 
-    if update:
+    now = datetime.datetime.now()
+    current_time = int(now.strftime("%H"))
+                        
+    if update and (current_time >= 5):
         print('social')
         check_new_social('Bitcoin')
         check_new_social('Monero')
