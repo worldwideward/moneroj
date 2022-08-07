@@ -3752,6 +3752,7 @@ def sfmodel(request):
 
     now = datetime.datetime.now()
     current_time = int(now.strftime("%H"))
+    print(current_time)
                         
     if update and (current_time >= 5):
         print('social')

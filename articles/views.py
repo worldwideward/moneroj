@@ -36,7 +36,7 @@ def articles(request):
         if count != 5 and count != 0:
             article.text = article.text[:200] + '...'
         else:
-            article.text = article.text[:400] + '...'
+            article.text = article.text[:250] + '...'
         count += 1
 
     if request.method != 'POST':
