@@ -1239,6 +1239,48 @@ def update_database(date_from=None, date_to=None):
 
     return count
 
+# Get latest P2Pool data
+def get_latest_p2pool():
+    today = date.today()
+    yesterday = date.today() - timedelta(1)
+    today = datetime.datetime.strftime(today, '%Y-%m-%d')
+    try:
+        print(1)
+        P2Pool.objects.get(date=today)
+        print(2)
+        return False
+    except:
+        print(3)
+        try:
+            print(today)
+            coin = Coin.objects.filter(name='xmr').get(date=yesterday)
+            print(4)
+            if coin.hashrate > 0:
+                print(5)
+                pass
+            else:   
+
+                print(6)
+                return False
+        except:
+            print(7)
+            return False
+
+    p2pool_stat = P2Pool()
+    p2pool_stat.date = today
+    response = requests.get('https://p2pool.io/api/pool/stats')
+    
+    data = json.loads(response.text)
+    p2pool_stat.hashrate = data['pool_statistics']['hashRate']
+    p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
+    p2pool_stat.miners = data['pool_statistics']['miners']
+    p2pool_stat.totalhashes = data['pool_statistics']['3444692929009331,']
+    p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
+    p2pool_stat.save()
+    print('p2pool saved!')
+        
+    return True
+
 ###########################################
 # Views
 ###########################################
@@ -1247,6 +1289,7 @@ def index(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(True)
 
+    get_latest_p2pool()
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
 
