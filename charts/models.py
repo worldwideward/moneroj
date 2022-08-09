@@ -136,3 +136,14 @@ class DailyData(models.Model):
 
 	def __str__(self):
 		return self.date
+
+class P2Pool(models.Model):
+	date = models.DateField()
+	hashrate = models.IntegerField()
+	percentage = models.FloatField()
+	miners = models.IntegerField()
+	totalhashes = models.IntegerField()
+	totalblocksfound = models.IntegerField()
+
+	def __str__(self):
+		return self.date
