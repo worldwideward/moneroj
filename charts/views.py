@@ -183,6 +183,62 @@ def load_rank(request, symbol):
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
+# Populate database with p2pool history
+# Only authorized users can do this
+@login_required 
+def load_p2pool(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        return render(request, 'users/error.html')
+    gc = pygsheets.authorize(service_file='service_account_credentials.json')
+    sh = gc.open('zcash_bitcoin')
+    wks = sh.worksheet_by_title('Sheet9')
+    
+    count = 0
+    values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
+    P2Pool.objects.all().delete()
+
+    previous_date = ''
+    previous_hashrate = 0
+    previous_totalhashes = 0
+    for k in range(0,len(values_mat)):
+        if values_mat[k][0] and values_mat[k][1]:
+            p2pool_stat = P2Pool()
+            p2pool_stat.date = values_mat[k][0]
+            p2pool_stat.miners = values_mat[k][1]
+            p2pool_stat.hashrate = values_mat[k][2]
+            p2pool_stat.percentage = values_mat[k][3]
+            p2pool_stat.totalhashes = values_mat[k][4]
+            p2pool_stat.totalblocksfound = values_mat[k][5]
+            try: 
+                coin = Coin.objects.filter(name='xmr').get(date=datetime.datetime.strptime(values_mat[k][0], '%Y-%m-%d'))
+                p2pool_stat.percentage = 100*float(values_mat[k][2])/coin.hashrate
+            except:
+                p2pool_stat.percentage = 0
+
+            if k == 0:
+                previous_date = p2pool_stat.date
+                previous_hashrate = int(p2pool_stat.hashrate)
+                p2pool_stat.totalhashes = 0
+                p2pool_stat.totalblocksfound = 0
+            else:
+                delta = datetime.datetime.strptime(p2pool_stat.date, '%Y-%m-%d') - datetime.datetime.strptime(previous_date, '%Y-%m-%d')
+                p2pool_stat.totalhashes = int(previous_totalhashes) + int(previous_hashrate)*(int(delta.days))*86400
+                p2pool_stat.totalblocksfound = int(p2pool_stat.totalhashes)/340853127741
+                previous_date = p2pool_stat.date
+                previous_hashrate = int(p2pool_stat.hashrate)
+                previous_totalhashes = p2pool_stat.totalhashes
+
+            p2pool_stat.save()
+            count += 1
+            print('p2pool data saved')
+            #.replace(',', '.')
+        else:
+            break
+
+    message = 'Total of ' + str(count) + ' data imported'
+    context = {'message': message}
+    return render(request, 'charts/maintenance.html', context)
+
 # Populate database with dominance history
 # Only authorized users can do this
 @login_required 
@@ -1240,44 +1296,67 @@ def update_database(date_from=None, date_to=None):
     return count
 
 # Get latest P2Pool data
-def get_latest_p2pool():
+def update_p2pool():
     today = date.today()
-    yesterday = date.today() - timedelta(2)
+    yesterday = date.today() - timedelta(1)
     today = datetime.datetime.strftime(today, '%Y-%m-%d')
     try:
-        print(1)
-        P2Pool.objects.get(date=today)
-        print(2)
-        return False
+        p2pool_stat = P2Pool.objects.get(date=today)
+        if p2pool_stat.percentage > 0:
+            update  = False
+        else:
+            update  = True
     except:
-        print(3)
         try:
-            print(today)
             coin = Coin.objects.filter(name='xmr').get(date=yesterday)
-            print(4)
             if coin.hashrate > 0:
-                print(5)
-                pass
-            else:   
-
-                print(6)
-                return False
+                update = True
+            else:
+                update  = False
         except:
-            return False
+            update  = False
 
-    p2pool_stat = P2Pool()
-    p2pool_stat.date = today
-    response = requests.get('https://p2pool.io/api/pool/stats')
-    
-    data = json.loads(response.text)
-    print(data)
-    p2pool_stat.hashrate = data['pool_statistics']['hashRate']
-    p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
-    p2pool_stat.miners = data['pool_statistics']['miners']
-    p2pool_stat.totalhashes = data['pool_statistics']['totalHashes']
-    p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
-    p2pool_stat.save()
-    print('p2pool saved!')
+    if update:
+        p2pool_stat = P2Pool()
+        p2pool_stat.date = today
+        response = requests.get('https://p2pool.io/api/pool/stats')
+        
+        data = json.loads(response.text)
+        p2pool_stat.hashrate = data['pool_statistics']['hashRate']
+        p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
+        p2pool_stat.miners = data['pool_statistics']['miners']
+        p2pool_stat.totalhashes = data['pool_statistics']['totalHashes']
+        p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
+        p2pool_stat.save()
+        print('p2pool saved!')
+
+        gc = pygsheets.authorize(service_file='service_account_credentials.json')
+        sh = gc.open('zcash_bitcoin')
+        wks = sh.worksheet_by_title('Sheet9')
+        
+        values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
+
+        k = len(values_mat)
+        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        if date_aux < date_aux2:
+            cell = 'F' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.totalblocksfound)
+            cell = 'E' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.totalhashes)
+            cell = 'D' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.percentage)
+            cell = 'C' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.hashrate)
+            cell = 'B' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.miners)
+            cell = 'A' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.date)
+            print('spreadsheet updated')
+        else:
+            print('spreadsheet already with the latest data')
+            return data
         
     return True
 
@@ -1289,7 +1368,7 @@ def index(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(True)
 
-    get_latest_p2pool()
+    update_p2pool()
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
 
@@ -3799,9 +3878,9 @@ def sfmodel(request):
                         
     if update and (current_time >= 5):
         print('social')
-        check_new_social('Bitcoin')
-        check_new_social('Monero')
-        check_new_social('CryptoCurrency')
+        #check_new_social('Bitcoin')
+        #check_new_social('Monero')
+        #check_new_social('CryptoCurrency')
 
         print('metrics')
         with open("settings.json") as file:
@@ -5016,6 +5095,111 @@ def rank(request):
     print(dt)
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'charts/rank.html', context)
+
+def p2pool_hashrate(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    hashrate = []
+    percentage = []
+    dates = []
+    now_hashrate = 0
+    now_percentage = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date')
+    for p2pool_stat in p2pool_stats:
+        if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
+            now_hashrate = p2pool_stat.hashrate/1000000     
+            now_percentage = p2pool_stat.percentage       
+            hashrate.append(now_hashrate) 
+            percentage.append(now_percentage) 
+        else:
+            hashrate.append(now_hashrate)
+            percentage.append(now_percentage)
+
+        p2pool_stat.date = datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d')
+        dates.append(p2pool_stat.date)
+    
+    now_percentage = locale.format('%.2f', now_percentage, grouping=True)
+    now_hashrate = locale.format('%.2f', now_hashrate, grouping=True)
+
+    dt = 'p2pool_hashrate.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'hashrate': hashrate, 'dates': dates, 'percentage': percentage, 'now_percentage': now_percentage, 'now_hashrate': now_hashrate}
+    return render(request, 'charts/p2pool_hashrate.html', context)
+
+def p2pool_totalblocks(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    totalblocks = []
+    totalhashes = []
+    dates = []
+    now_totalblocks = 0
+    now_totalhashes = 0
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        try:
+            p2pool_stat = P2Pool.objects.get(date=coin.date)
+            if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
+                now_totalhashes = p2pool_stat.totalhashes/1000000000
+                now_totalblocks = p2pool_stat.totalblocksfound       
+                totalhashes.append(now_totalhashes) 
+                totalblocks.append(now_totalblocks) 
+            else:
+                totalhashes.append(now_totalhashes)
+                totalblocks.append(now_totalblocks)
+        except:
+            totalhashes.append(now_totalhashes)
+            totalblocks.append(now_totalblocks) 
+
+        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        dates.append(coin.date)
+    
+    now_totalblocks = locale.format('%.0f', now_totalblocks, grouping=True)
+    now_totalhashes = locale.format('%.0f', now_totalhashes, grouping=True)
+
+    dt = 'p2pool_totalblocks.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'totalhashes': totalhashes, 'dates': dates, 'totalblocks': totalblocks, 'now_totalblocks': now_totalblocks, 'now_totalhashes': now_totalhashes}
+    return render(request, 'charts/p2pool_totalblocks.html', context)
+
+def p2pool_miners(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+    miners = []
+    dates = []
+    now_miners = 0
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        try:
+            p2pool_stat = P2Pool.objects.get(date=coin.date)
+            if p2pool_stat.miners:
+                now_miners = p2pool_stat.miners     
+                miners.append(now_miners) 
+            else:
+                miners.append(now_miners)
+        except:
+            miners.append(now_miners)
+
+        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        dates.append(coin.date)
+    
+    now_miners = locale.format('%.0f', now_miners, grouping=True)
+
+    dt = 'p2pool_miners.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'miners': miners, 'dates': dates, 'now_miners': now_miners}
+    return render(request, 'charts/p2pool_miners.html', context)
 
 def tail_emission(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
