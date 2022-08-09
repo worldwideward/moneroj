@@ -194,44 +194,21 @@ def load_p2pool(request):
     wks = sh.worksheet_by_title('Sheet9')
     
     count = 0
-    values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
+    values_mat = wks.get_values(start=(3,1), end=(9999,6), returnas='matrix')
     P2Pool.objects.all().delete()
 
-    previous_date = ''
-    previous_hashrate = 0
-    previous_totalhashes = 0
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][1]:
             p2pool_stat = P2Pool()
             p2pool_stat.date = values_mat[k][0]
-            p2pool_stat.miners = values_mat[k][1]
-            p2pool_stat.hashrate = values_mat[k][2]
-            p2pool_stat.percentage = values_mat[k][3]
-            p2pool_stat.totalhashes = values_mat[k][4]
-            p2pool_stat.totalblocksfound = values_mat[k][5]
-            try: 
-                coin = Coin.objects.filter(name='xmr').get(date=datetime.datetime.strptime(values_mat[k][0], '%Y-%m-%d'))
-                p2pool_stat.percentage = 100*float(values_mat[k][2])/coin.hashrate
-            except:
-                p2pool_stat.percentage = 0
-
-            if k == 0:
-                previous_date = p2pool_stat.date
-                previous_hashrate = int(p2pool_stat.hashrate)
-                p2pool_stat.totalhashes = 0
-                p2pool_stat.totalblocksfound = 0
-            else:
-                delta = datetime.datetime.strptime(p2pool_stat.date, '%Y-%m-%d') - datetime.datetime.strptime(previous_date, '%Y-%m-%d')
-                p2pool_stat.totalhashes = int(previous_totalhashes) + int(previous_hashrate)*(int(delta.days))*86400
-                p2pool_stat.totalblocksfound = int(p2pool_stat.totalhashes)/340853127741
-                previous_date = p2pool_stat.date
-                previous_hashrate = int(p2pool_stat.hashrate)
-                previous_totalhashes = p2pool_stat.totalhashes
-
+            p2pool_stat.miners = float(values_mat[k][1].replace(',', '.'))
+            p2pool_stat.hashrate = float(values_mat[k][2].replace(',', '.'))
+            p2pool_stat.percentage = float(values_mat[k][3].replace(',', '.'))
+            p2pool_stat.totalhashes = float(values_mat[k][4].replace(',', '.'))
+            p2pool_stat.totalblocksfound = float(values_mat[k][5].replace(',', '.'))
             p2pool_stat.save()
             count += 1
-            print('p2pool data saved')
-            #.replace(',', '.')
+            print('p2pool data saved - ' + str(p2pool_stat.date) + ' - ' + str(p2pool_stat.percentage))
         else:
             break
 
@@ -1299,13 +1276,20 @@ def update_database(date_from=None, date_to=None):
 def update_p2pool():
     today = date.today()
     yesterday = date.today() - timedelta(1)
-    today = datetime.datetime.strftime(today, '%Y-%m-%d')
     try:
         p2pool_stat = P2Pool.objects.get(date=today)
         if p2pool_stat.percentage > 0:
             update  = False
         else:
-            update  = True
+            p2pool_stat.delete()
+            try:
+                coin = Coin.objects.filter(name='xmr').get(date=yesterday)
+                if coin.hashrate > 0:
+                    update = True
+                else:
+                    update  = False
+            except:
+                update  = False
     except:
         try:
             coin = Coin.objects.filter(name='xmr').get(date=yesterday)
@@ -1354,7 +1338,7 @@ def update_p2pool():
             cell = 'A' + str(k + 3)
             wks.update_value(cell, p2pool_stat.date)
             print('spreadsheet updated')
-        else:
+        else:   
             print('spreadsheet already with the latest data')
             return data
         
@@ -1368,7 +1352,6 @@ def index(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(True)
 
-    update_p2pool()
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
 
@@ -3874,14 +3857,16 @@ def sfmodel(request):
 
     now = datetime.datetime.now()
     current_time = int(now.strftime("%H"))
-    print(current_time)
-                        
+
     if update and (current_time >= 5):
         print('social')
-        #check_new_social('Bitcoin')
-        #check_new_social('Monero')
-        #check_new_social('CryptoCurrency')
+        check_new_social('Bitcoin')
+        check_new_social('Monero')
+        check_new_social('CryptoCurrency')
 
+        print('p2pool')
+        update_p2pool()
+        
         print('metrics')
         with open("settings.json") as file:
             data = json.load(file)
