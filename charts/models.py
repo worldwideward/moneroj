@@ -144,6 +144,3 @@ class P2Pool(models.Model):
 	miners = models.IntegerField()
 	totalhashes = models.IntegerField()
 	totalblocksfound = models.IntegerField()
-
-	def __str__(self):
-		return self.date

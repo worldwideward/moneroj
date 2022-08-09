@@ -1242,7 +1242,7 @@ def update_database(date_from=None, date_to=None):
 # Get latest P2Pool data
 def get_latest_p2pool():
     today = date.today()
-    yesterday = date.today() - timedelta(1)
+    yesterday = date.today() - timedelta(2)
     today = datetime.datetime.strftime(today, '%Y-%m-%d')
     try:
         print(1)
@@ -1263,7 +1263,6 @@ def get_latest_p2pool():
                 print(6)
                 return False
         except:
-            print(7)
             return False
 
     p2pool_stat = P2Pool()
@@ -1271,10 +1270,11 @@ def get_latest_p2pool():
     response = requests.get('https://p2pool.io/api/pool/stats')
     
     data = json.loads(response.text)
+    print(data)
     p2pool_stat.hashrate = data['pool_statistics']['hashRate']
     p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
     p2pool_stat.miners = data['pool_statistics']['miners']
-    p2pool_stat.totalhashes = data['pool_statistics']['3444692929009331,']
+    p2pool_stat.totalhashes = data['pool_statistics']['totalHashes']
     p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
     p2pool_stat.save()
     print('p2pool saved!')
