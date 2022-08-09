@@ -118,9 +118,6 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               {% if user.is_authenticated %}
                 <a class="nav-link" href="{% url 'users:logout' %}">Sair</a>
-              {% else %}
-                <a class="nav-link" href="{% url 'users:login' %}">Entrar</a>
-                <a class="nav-link" href="{% url 'users:register' %}">Registrar</a>
               {% endif %}
               <a class="nav-link" href="{% url 'charts:about' %}">Sobre</a>
               <div class="dropdown-divider"></div>
@@ -136,42 +133,10 @@
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
-    {% if user.is_authenticated %}
     <div class="container" style="margin-top: 100px; margin-bottom: 120px;">
       <h1>Você sabia que todos os seus dados são expostos quando você usa Bitcoin?</h1>
       <h2>Monero é o que as pessoas pensam que estão comprando quando investem em Bitcoins.</h2>
     </div>
-    {% else %}
-
-    <div class="container" style="margin-top: 100px; margin-bottom: 120px;">
-      <div class="row">
-        <div class="col-xl-9 d-flex flex-column justify-content-center">
-          <h1>Você sabia que todos os seus dados são expostos quando você usa Bitcoin?</h1>
-          <h2>Monero é o que as pessoas pensam que estão comprando quando investem em Bitcoins.</h2>
-        </div>
-    
-        <div class="col-xl-3 d-flex flex-column justify-content-center">
-          <form action="{% url 'users:login' %}" method='POST'>
-            {% csrf_token %}
-            {% if form.errors %}
-            <div class="alert alert-danger">
-              <strong><center>Usuário ou senha incorretos.</center></strong>
-            </div>
-            {% endif %}
-            <div class="form">
-              <h1><i class="bx bx-user text-white"></i></h1>
-              <p class="message">Entrar:</p><br>
-              <input type="text" name="username" placeholder="Usuário"> 
-              <input type="password" name="password" placeholder="Senha">
-              <button>Entrar</button>
-              <p class="message"><a href="{% url 'users:register' %}">Criar uma conta!</a></p>
-              <input type="hidden" name="next" value="{% url 'charts:index' %}">
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    {% endif %}
   </section>
   <!-- End Hero -->
 

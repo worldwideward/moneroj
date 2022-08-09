@@ -3,6 +3,7 @@
 {% load static %}
 
 <head>
+  <meta http-equiv="onion-location" content="http://moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion" />
   <meta content="text/html; charset=UTF-8" name="Content-Type" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Your information source about Monero, with metrics, charts, stats and articles.">
@@ -84,15 +85,10 @@
               </a>
             {% endif %}
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if user.is_authenticated %}
+              {% if user.username == 'Administrador' or user.username == 'Morpheus' %}
                 <a class="nav-link" href="{% url 'articles:write' %}">Write / Review</a>
-                {% if user.username == 'Administrador' or user.username == 'Morpheus' %}
-                  <a class="nav-link" href="{% url 'users:users' %}">Users</a>
-                {% endif %}
+                <a class="nav-link" href="{% url 'users:users' %}">Users</a>
                 <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
-              {% else %}
-                <a class="nav-link" href="{% url 'users:login' %}">Login</a>
-                <a class="nav-link" href="{% url 'users:register' %}">Register</a>
               {% endif %}
               <a class="nav-link" href="{% url 'charts:about' %}">About</a>
               <div class="dropdown-divider"></div>
