@@ -90,6 +90,7 @@ urlpatterns = [
     path('p2pool_totalblocks/', views.p2pool_totalblocks, name='p2pool_totalblocks'),
     path('metcalfesats_deviation/', views.metcalfesats_deviation, name='metcalfesats_deviation'),
     path('metcalfe_deviation/', views.metcalfe_deviation, name='metcalfe_deviation'),
+    path('marketcycle/', views.marketcycle, name='marketcycle'),
 
     # URLs to useful functions on charts/views.py
     # Only admins can use these 

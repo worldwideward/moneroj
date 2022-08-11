@@ -1033,6 +1033,9 @@ def update_database(date_from=None, date_to=None):
         print(str(date_from) + ' to ' + str(date_to))
         date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
         date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+
+    all_coins = Coin.objects.filter(name='xmr').all()
+    amount = int(len(all_coins))
     
     count = 0
     date_aux = date_from
@@ -1091,7 +1094,8 @@ def update_database(date_from=None, date_to=None):
         if data.color == 0:
             v0 = 0.002
             delta = (0.015 - 0.002)/(6*365)
-            data.color = 30*coin_xmr.pricebtc/(int(coin_xmr.id)*delta + v0)
+            data.color = 30*coin_xmr.pricebtc/((amount)*delta + v0)
+            amount += 1
         data.save()
 
         try:
@@ -4127,6 +4131,35 @@ def sfmultiple(request):
     print(dt)
     context = {'dates': dates, 'maximum': maximum, 'stock_to_flow': stock_to_flow, 'now_sf': now_sf, 'buy': buy, 'sell': sell, 'color': color}
     return render(request, 'charts/sfmultiple.html', context)
+
+
+def marketcycle(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    color = []
+    sell = []
+    buy = []
+
+    data = Sfmodel.objects.order_by('date')
+    for item in data:
+        if item.color > 0:
+            color.append(item.color)
+        else:
+            color.append('')
+
+        sell.append(100)
+        buy.append(0)
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+    now_cycle = locale.format('%.2f', item.color, grouping=True)
+    
+    dt = 'marketcycle.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'color': color, 'sell': sell, 'buy': buy, 'now_cycle': now_cycle}
+    return render(request, 'charts/marketcycle.html', context)
 
 def thermocap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
