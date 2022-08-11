@@ -3163,6 +3163,70 @@ def metcalfesats(request):
     context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
     return render(request, 'charts/metcalfesats.html', context)
 
+def metcalfesats_deviation(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+    
+    metcalfe_percentage = []
+    metcalfe = []
+    dates = []
+    now_metcalfe = 0
+    now_metcalfe_percentage = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_metcalfebtc < 0.0007 and item.xmr_pricebtc <= 0:
+            metcalfe.append('')
+            metcalfe_percentage.append('')
+        else:
+            now_metcalfe = item.xmr_metcalfebtc - item.xmr_pricebtc
+            now_metcalfe_percentage = 100*((item.xmr_metcalfebtc/item.xmr_pricebtc) - 1)
+            metcalfe.append(now_metcalfe)
+            metcalfe_percentage.append(now_metcalfe_percentage)
+    
+    now_metcalfe = locale.format('%.4f', now_metcalfe, grouping=True) 
+    now_metcalfe_percentage = locale.format('%.0f', now_metcalfe_percentage, grouping=True) 
+    
+    dt = 'metcalfesats_deviation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'metcalfe': metcalfe, 'dates': dates, 'now_metcalfe': now_metcalfe, 'now_metcalfe_percentage': now_metcalfe_percentage, 'metcalfe_percentage': metcalfe_percentage}
+    return render(request, 'charts/metcalfesats_deviation.html', context)
+
+def metcalfe_deviation(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+    
+    metcalfe_percentage = []
+    metcalfe = []
+    dates = []
+    now_metcalfe = 0
+    now_metcalfe_percentage = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_metcalfeusd < 0.0007 and item.xmr_priceusd <= 0:
+            metcalfe.append('')
+            metcalfe_percentage.append('')
+        else:
+            now_metcalfe = item.xmr_metcalfeusd - item.xmr_priceusd
+            now_metcalfe_percentage = 100*((item.xmr_metcalfeusd/item.xmr_priceusd) - 1)
+            metcalfe.append(now_metcalfe)
+            metcalfe_percentage.append(now_metcalfe_percentage)
+    
+    now_metcalfe = locale.format('%.0f', now_metcalfe, grouping=True) 
+    now_metcalfe_percentage = locale.format('%.0f', now_metcalfe_percentage, grouping=True) 
+    
+    dt = 'metcalfe_deviation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'metcalfe': metcalfe, 'dates': dates, 'now_metcalfe': now_metcalfe, 'now_metcalfe_percentage': now_metcalfe_percentage, 'metcalfe_percentage': metcalfe_percentage}
+    return render(request, 'charts/metcalfe_deviation.html', context)
+
 def metcalfeusd(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)

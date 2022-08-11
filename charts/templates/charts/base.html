@@ -174,7 +174,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTransactions"
                     aria-expanded="true" aria-controls="collapseTransactions">
                     <i class="bx bx-transfer"></i>
-                    <span>Transactions (11)</span>
+                    <span>Transactions (13)</span>
                 </a>
                 <div id="collapseTransactions" class="collapse" aria-labelledby="headingTransactions"
                     data-parent="#accordionSidebar">
@@ -189,6 +189,8 @@
                         <a class="collapse-item" href="{% url 'charts:percentmonth' %}">Monthly Percentage (Lin.)</a>
                         <a class="collapse-item" href="{% url 'charts:metcalfesats' %}">Metcalfe's Law (Sats)</a>
                         <a class="collapse-item" href="{% url 'charts:metcalfeusd' %}">Metcalfe's Law ($)</a>
+                        <a class="collapse-item" href="{% url 'charts:metcalfesats_deviation' %}">Metcalfe's Deviation (Sats)</a>
+                        <a class="collapse-item" href="{% url 'charts:metcalfe_deviation' %}">Metcalfe's Deviation ($)</a>
                         <a class="collapse-item" href="{% url 'charts:deviation_tx' %}">Transacted Price Deviation</a>
                         <a class="collapse-item" href="{% url 'charts:transactiondominance' %}">Transaction Dominance</a>
                     </div>
