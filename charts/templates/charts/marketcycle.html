@@ -35,31 +35,6 @@
                 </div>
             </div>
 
-
-            <!-- Content Row -->
-            <div class="row">
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Current Stock-to-flow Multiple</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_cycle }}</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Top Stock-to-flow Multiple Last Cycle</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ maximum }}</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
             <!-- Content Row -->
             <div class="row">
                 <div class="col-xl-11 col-md-6 mb-4">
@@ -98,11 +73,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows the Stock-to-flow Multiple, which is the comparison between its current price against
-                its supposed value. When the indicator reaches 100, it suggests
-                the coin is at the end of its cycle and will now begin a bear market. This indicator is my own
-                aprimoration of PlanB's model, since for this one I also considered
-                the coin's supply. The formula is XMR-Supply*Price/(SF-Value*1.500.000);<br>
+                This chart shows an estimated Market Cycle for Monero, based on its price agains Bitcoin. The lower the more devaluated the coin is, and closer to the end of its Bear Market. Chart provided as courtesy from Cake Wallet and Monero.com. <a href="https://monero.com/charts/cycle" target="_blank">Link.</a><br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -235,7 +206,7 @@ var layout = {
         xanchor: 'auto',
         y: 0.98,
         yanchor: 'auto',
-        text: 'Moneroj<br>https://www.moneroj.net',
+        text: 'Moneroj<br>https://www.moneroj.net<br>Chart provided as courtesy from Cake Wallet and Monero.com',
         showarrow: false,
         borderwidth: 1,
         bordercolor: '#5f5f5f',
@@ -268,7 +239,7 @@ var layout = {
     yaxis: {
         type: "linear",
         title: {
-            text: 'Price / Stock-to-flow',
+            text: 'Cycle',
             font: {
                 size: 20,
                 color: 'white'

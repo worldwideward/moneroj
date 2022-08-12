@@ -123,7 +123,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrice"
                     aria-expanded="true" aria-controls="collapsePrice">
                     <i class="bx bx-dollar"></i>
-                    <span>Price (16)</span>
+                    <span>Price (17)</span>
                 </a>
                 <div id="collapsePrice" class="collapse" aria-labelledby="headingPrice"
                     data-parent="#accordionSidebar">
@@ -133,8 +133,7 @@
                         <a class="collapse-item" href="{% url 'charts:pricelin' %}">Price in Dollars (Lin.)</a>
                         <a class="collapse-item" href="{% url 'charts:pricesats' %}">Price in Sats (Lin.)</a>
                         <a class="collapse-item" href="{% url 'charts:fractal' %}">Fractal Multiple</a>
-                        <a class="collapse-item" href="{% url 'charts:inflationfractal' %}">Inflation-Adjusted
-                            Fractal</a>
+                        <a class="collapse-item" href="{% url 'charts:inflationfractal' %}">Inflation-Adjusted Fractal</a>
                         <a class="collapse-item" href="{% url 'charts:golden' %}">Golden Ratio Multiplier</a>
                         <a class="collapse-item" href="{% url 'charts:competitors' %}">Performance ($, Log.)</a>
                         <a class="collapse-item" href="{% url 'charts:competitorslin' %}">Performance ($, Lin.)</a>
@@ -146,6 +145,7 @@
                         <a class="collapse-item" href="{% url 'charts:thermocap' %}">Thermocap Multiple</a>
                         <a class="collapse-item" href="{% url 'charts:sharpe' %}">Sharpe Ratio</a>
                         <a class="collapse-item" href="{% url 'charts:deviation' %}">Price Deviation</a>
+                        <a class="collapse-item" href="{% url 'charts:marketcycle' %}">Market Cycle</a>
                     </div>
                 </div>
             </li>            
@@ -174,7 +174,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTransactions"
                     aria-expanded="true" aria-controls="collapseTransactions">
                     <i class="bx bx-transfer"></i>
-                    <span>Transactions (13)</span>
+                    <span>Transactions (14)</span>
                 </a>
                 <div id="collapseTransactions" class="collapse" aria-labelledby="headingTransactions"
                     data-parent="#accordionSidebar">
@@ -193,6 +193,7 @@
                         <a class="collapse-item" href="{% url 'charts:metcalfe_deviation' %}">Metcalfe's Deviation ($)</a>
                         <a class="collapse-item" href="{% url 'charts:deviation_tx' %}">Transacted Price Deviation</a>
                         <a class="collapse-item" href="{% url 'charts:transactiondominance' %}">Transaction Dominance</a>
+                        <a class="collapse-item" href="{% url 'charts:shielded' %}">Shielded Transactions</a>
                     </div>
                 </div>
             </li>

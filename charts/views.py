@@ -1026,17 +1026,18 @@ def check_new_social(symbol):
 
 # Update database DailyData with most recent coin data
 def update_database(date_from=None, date_to=None):
+    date_zero = '2014-05-20'
+
     if not(date_from) or not(date_to):
         date_to = date.today()
         date_from = date_to - timedelta(5)
+        amount = date_from - datetime.datetime.strptime(date_zero, '%Y-%m-%d')
     else:
         print(str(date_from) + ' to ' + str(date_to))
         date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
         date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+        amount = date_from - datetime.datetime.strptime(date_zero, '%Y-%m-%d')
 
-    all_coins = Coin.objects.filter(name='xmr').all()
-    amount = int(len(all_coins))
-    
     count = 0
     date_aux = date_from
     while date_aux <= date_to:
@@ -1044,13 +1045,23 @@ def update_database(date_from=None, date_to=None):
         date_aux2 = date_aux - timedelta(1)
         try:
             coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
-            coin_btc = Coin.objects.filter(name='btc').get(date=date_aux)
-            coin_dash = Coin.objects.filter(name='dash').get(date=date_aux)
-            coin_zcash = Coin.objects.filter(name='zec').get(date=date_aux)
-            coin_grin = Coin.objects.filter(name='grin').get(date=date_aux)
-
             coin_xmr2 = Coin.objects.filter(name='xmr').get(date=date_aux2)
+            coin_btc = Coin.objects.filter(name='btc').get(date=date_aux)
             coin_btc2 = Coin.objects.filter(name='btc').get(date=date_aux2)
+
+            try:
+                coin_dash = Coin.objects.filter(name='dash').get(date=date_aux)
+            except:
+                coin_dash = Coin()
+            try:
+                coin_zcash = Coin.objects.filter(name='zec').get(date=date_aux)
+            except:
+                coin_zcash = Coin()
+            try:
+                coin_grin = Coin.objects.filter(name='grin').get(date=date_aux)
+            except:
+                coin_grin = Coin()
+
 
             if coin_btc.inflation == 0 or coin_xmr.inflation == 0:
                 return count
@@ -1091,11 +1102,10 @@ def update_database(date_from=None, date_to=None):
                 reward = 0.6*(10**12)
             inflation = 100*reward*720*365/supply
             data.stocktoflow = (100/(inflation))**1.65
-        if data.color == 0:
-            v0 = 0.002
-            delta = (0.015 - 0.002)/(6*365)
-            data.color = 30*coin_xmr.pricebtc/((amount)*delta + v0)
-            amount += 1
+        v0 = 0.002
+        delta = (0.015 - 0.002)/(6*365)
+        data.color = 30*coin_xmr.pricebtc/((amount.days)*delta + v0)
+        amount += timedelta(1)
         data.save()
 
         try:
@@ -4132,7 +4142,6 @@ def sfmultiple(request):
     context = {'dates': dates, 'maximum': maximum, 'stock_to_flow': stock_to_flow, 'now_sf': now_sf, 'buy': buy, 'sell': sell, 'color': color}
     return render(request, 'charts/sfmultiple.html', context)
 
-
 def marketcycle(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
@@ -4146,7 +4155,7 @@ def marketcycle(request):
     data = Sfmodel.objects.order_by('date')
     for item in data:
         if item.color > 0:
-            color.append(item.color)
+            color.append(item.color - 5)
         else:
             color.append('')
 
@@ -4160,6 +4169,64 @@ def marketcycle(request):
     print(dt)
     context = {'dates': dates, 'color': color, 'sell': sell, 'buy': buy, 'now_cycle': now_cycle}
     return render(request, 'charts/marketcycle.html', context)
+
+def shielded(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    values = []
+    values2 = []
+    values3 = []
+    
+    gc = pygsheets.authorize(service_file='service_account_credentials.json')
+    sh = gc.open('zcash_bitcoin')
+    wks = sh.worksheet_by_title('Sheet1')
+
+    dominance = 0
+    monthly = 0 
+    
+    values_mat = wks.get_values(start=(3,1), end=(999,5), returnas='matrix')
+
+    for k in range(0,len(values_mat)):
+        if values_mat[k][0] and values_mat[k][3]:
+            date = values_mat[k][0]
+            value = values_mat[k][3]
+            value3 = values_mat[k][4]
+            if not(value) or not(value):
+                break
+            else:
+                dates.append(date)
+                values.append(int(value))
+                values3.append(int(value3))
+        else:
+            break
+    
+    previous_date = 0
+    coins = Coin.objects.order_by('date').filter(name='xmr')
+    for date in dates:
+        value2 = 0
+        for coin in coins:
+            aux = str(coin.date)
+            month = aux.split("-")[0] + '-' + aux.split("-")[1]
+            if month == date:
+                if previous_date != coin.date:
+                    value2 += coin.transactions
+                    previous_date = coin.date
+        
+        values2.append(int(value2))
+    
+    dominance = 100*int(value2)/(int(value2)+int(value)+int(value3))
+    monthly = int(value2)
+    
+    monthly = format(int(monthly),',')
+    dominance = locale.format('%.2f', dominance, grouping=True)
+    
+    dt = 'shielded.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dates': dates, 'values': values, 'values2': values2, 'values3': values3, "monthly": monthly, "dominance": dominance}
+    return render(request, 'charts/shielded.html', context)
 
 def thermocap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":

@@ -5,12 +5,12 @@ from django.db import models
 
 # Create your models here.
 class Coin(models.Model):
-	name = models.CharField(max_length=4)
-	date = models.DateField()
-	priceusd = models.FloatField()
-	pricebtc = models.FloatField()
-	inflation = models.FloatField()
-	transactions = models.FloatField()
+	name = models.CharField(max_length=4, default="0")
+	date = models.DateField(default="0")
+	priceusd = models.FloatField(default="0")
+	pricebtc = models.FloatField(default="0")
+	inflation = models.FloatField(default="0")
+	transactions = models.FloatField(default="0")
 	hashrate = models.FloatField(default="0")
 	stocktoflow = models.FloatField(default="0")
 	supply = models.FloatField(default="0")
