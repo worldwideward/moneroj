@@ -92,6 +92,8 @@ urlpatterns = [
     path('metcalfe_deviation/', views.metcalfe_deviation, name='metcalfe_deviation'),
     path('marketcycle/', views.marketcycle, name='marketcycle'),
     path('shielded/', views.shielded, name='shielded'),
+    path('pricesatslog/', views.pricesatslog, name='pricesatslog'),
+    path('comptransactions/', views.comptransactions, name='comptransactions'),
 
     # URLs to useful functions on charts/views.py
     # Only admins can use these 

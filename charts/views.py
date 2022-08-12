@@ -2138,6 +2138,46 @@ def pricesats(request):
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'color': color, 'bottom': bottom}
     return render(request, 'charts/pricesats.html', context)
 
+def pricesatslog(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    
+    dates = []
+    color = []
+    values = []
+    now_price = 0
+    maximum = 0
+    bottom = 1
+
+    data = Sfmodel.objects.order_by('date')
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.color != 0:
+            color.append(item.color)
+        else:
+            color.append('')
+
+        if item.pricebtc > 0.0001:
+            values.append(item.pricebtc)
+            now_price = item.pricebtc
+            if bottom > item.pricebtc:
+                bottom = item.pricebtc
+            if maximum < item.pricebtc:
+                maximum = item.pricebtc
+        else:
+            values.append('')
+
+    now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
+    maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
+    bottom = locale.format('%.4f', bottom, grouping=True) + ' BTC'
+    
+    dt = 'pricesatslog.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'color': color, 'bottom': bottom}
+    return render(request, 'charts/pricesatslog.html', context)
+
 def fractal(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
@@ -3913,6 +3953,70 @@ def compinflation(request):
     context = {'inflationxmr': inflationxmr, 'inflationdash': inflationdash, 'inflationgrin': inflationgrin, 'inflationzcash': inflationzcash, 'inflationbtc': inflationbtc,
     'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/compinflation.html', context)
+
+
+def comptransactions(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    data = DailyData.objects.order_by('date')
+
+    dates = []
+    xmr = []
+    dash = []
+    grin = []
+    zcash = []
+    btc = []
+    now_xmr = 999999
+    now_dash = 999999
+    now_grin = 999999
+    now_zcash = 999999
+    now_btc = 999999
+    
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_transactions > 10:
+            btc.append(item.btc_transactions)
+            now_btc = item.btc_transactions
+        else:
+            btc.append('')
+
+        if item.zcash_transactions > 10:
+            zcash.append(item.zcash_transactions)
+            now_zcash = item.zcash_transactions
+        else:
+            zcash.append('')
+
+        if item.dash_transactions > 10:
+            dash.append(item.dash_transactions)
+            now_dash = item.dash_transactions
+        else:
+            dash.append('')
+
+        if item.xmr_transactions > 10:
+            xmr.append(item.xmr_transactions)
+            now_xmr = item.xmr_transactions
+        else:
+            xmr.append('')
+
+        if item.grin_transactions > 10:
+            grin.append(item.grin_transactions)
+            now_grin = item.grin_transactions
+        else:
+            grin.append('')
+            
+    now_dash = locale.format('%.0f', now_dash, grouping=True)
+    now_grin = locale.format('%.0f', now_grin, grouping=True)
+    now_zcash = locale.format('%.0f', now_zcash, grouping=True)
+    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    now_btc = locale.format('%.0f', now_btc, grouping=True) 
+    
+    dt = 'comptransactions.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'btc': btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/comptransactions.html', context)
 
 def sfmodel(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
