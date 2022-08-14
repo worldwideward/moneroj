@@ -61,12 +61,6 @@
             padding-right: 12px;
         }
         
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
         #graph1.fullscreen {
             z-index: 9999;
             width: 100%;
@@ -80,16 +74,14 @@
             min-height: 100%;
         }
 
-        #graph1 {
-            height: 650px;
+        .link_graph {
+            color: #ff4d21;
+            text-decoration: none;
         }
 
-        #link_graph {
-            color: #FF0000;
-        }
-
-        #link_graph:hover {
-            color: #00FF00;
+        .link_graph:hover {
+            color: #af3517;
+            text-decoration: none;
         }
     </style>
     
@@ -113,6 +105,7 @@
                 href="{% url 'charts:index' %}">
                 <div class="sidebar-brand-text mx-3">Moneroj</div>
             </a>
+
             <!-- Heading -->
             <div class="sidebar-heading">
                 <br>
@@ -243,7 +236,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMining"
                     aria-expanded="true" aria-controls="collapseMining">
                     <i class="bx bx-calculator"></i>
-                    <span>Mining (20)</span>
+                    <span>Mining (22)</span>
                 </a>
                 <div id="collapseMining" class="collapse" aria-labelledby="headingMining"
                     data-parent="#accordionSidebar">
@@ -256,6 +249,7 @@
                         <a class="collapse-item" href="{% url 'charts:minerrevntv' %}">Miner Revenue (Ntv.)</a>
                         <a class="collapse-item" href="{% url 'charts:minerfees' %}">Miner Fees ($)</a>
                         <a class="collapse-item" href="{% url 'charts:minerfeesntv' %}">Miner Fees (Ntv.)</a>
+                        <a class="collapse-item" href="{% url 'charts:miningprofitability' %}">Mining Profitability <span class="badge badge-pill badge-danger">New</span></a>
                         <a class="collapse-item" href="{% url 'charts:minerrevcap' %}">Revenue / Marketcap (%)</a>
                         <a class="collapse-item" href="{% url 'charts:commit' %}">Miner Commitment ($)</a>
                         <a class="collapse-item" href="{% url 'charts:commitntv' %}">Miner Commitment (Ntv.)</a>
@@ -269,6 +263,7 @@
                         <a class="collapse-item" href="{% url 'charts:p2pool_dominance' %}">P2Pool Dominance <span class="badge badge-pill badge-danger">New</span></a>
                         <a class="collapse-item" href="{% url 'charts:p2pool_miners' %}">P2Pool Miners <span class="badge badge-pill badge-danger">New</span></a>
                         <a class="collapse-item" href="{% url 'charts:p2pool_totalblocks' %}">P2Pool Blocks Found <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_totalhashes' %}">P2Pool Hashes Found <span class="badge badge-pill badge-danger">New</span></a>
                         <!--
                         <a class="collapse-item" href="{% url 'charts:difficulty' %}">Reward / Hashrate</a>
                         -->
@@ -377,7 +372,6 @@
                     </div>
                 </div>
             </li>
-
 
         </ul>
         <!-- End of Sidebar -->

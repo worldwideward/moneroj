@@ -1309,9 +1309,9 @@ def update_database(date_from=None, date_to=None):
 # Get latest P2Pool data
 def update_p2pool():
     today = date.today()
-    yesterday = date.today() - timedelta(1)
+    yesterday = date.today() - timedelta(2)
     try:
-        p2pool_stat = P2Pool.objects.get(date=today)
+        p2pool_stat = P2Pool.objects.filter(mini=False).get(date=today)
         print('achou p2pool de hoje')
         if p2pool_stat.percentage > 0:
 
@@ -1354,12 +1354,13 @@ def update_p2pool():
         p2pool_stat.miners = data['pool_statistics']['miners']
         p2pool_stat.totalhashes = data['pool_statistics']['totalHashes']
         p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
+        p2pool_stat.mini = False
         p2pool_stat.save()
         print('p2pool saved!')
 
         gc = pygsheets.authorize(service_file='service_account_credentials.json')
         sh = gc.open('zcash_bitcoin')
-        wks = sh.worksheet_by_title('Sheet9')
+        wks = sh.worksheet_by_title('p2pool')
         
         values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
 
@@ -1385,6 +1386,84 @@ def update_p2pool():
             print('spreadsheet already with the latest data')
             return data
         
+    today = date.today()
+    yesterday = date.today() - timedelta(2)
+    try:
+        p2pool_stat = P2Pool.objects.filter(mini=True).get(date=today)
+        print('achou p2pool_mini de hoje')
+        if p2pool_stat.percentage > 0:
+
+            print('porcentagem > 0')
+            update  = False
+        else:
+            print('porcentagem < 0')
+            p2pool_stat.delete()
+            try:
+                coin = Coin.objects.filter(name='xmr').get(date=yesterday)
+
+                print('achou coin de ontem')
+                if coin.hashrate > 0:
+                    update = True
+                else:
+                    update  = False
+            except:
+                print('nao achou coin de ontem')
+                update  = False
+    except:
+
+        print('nao achou p2pool_mini de hoje')
+        try:
+            coin = Coin.objects.filter(name='xmr').get(date=yesterday)
+            if coin.hashrate > 0:
+                update = True
+            else:
+                update  = False
+        except:
+            update  = False
+
+    if update:
+        p2pool_stat = P2Pool()
+        p2pool_stat.date = today
+        response = requests.get('https://p2pool.io/mini/api/pool/stats')
+        
+        data = json.loads(response.text)
+        p2pool_stat.hashrate = data['pool_statistics']['hashRate']
+        p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
+        p2pool_stat.miners = data['pool_statistics']['miners']
+        p2pool_stat.totalhashes = data['pool_statistics']['totalHashes']
+        p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
+        p2pool_stat.mini = True
+        p2pool_stat.save()
+        print('p2pool_mini saved!')
+
+        gc = pygsheets.authorize(service_file='service_account_credentials.json')
+        sh = gc.open('zcash_bitcoin')
+        wks = sh.worksheet_by_title('p2poolmini')
+        
+        values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
+
+        k = len(values_mat)
+        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        if date_aux < date_aux2:
+            cell = 'F' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.totalblocksfound)
+            cell = 'E' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.totalhashes)
+            cell = 'D' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.percentage)
+            cell = 'C' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.hashrate)
+            cell = 'B' + str(k + 3)
+            wks.update_value(cell, p2pool_stat.miners)
+            cell = 'A' + str(k + 3)
+            wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+            print('spreadsheet updated')
+        else:   
+            print('spreadsheet already with the latest data')
+            return data
+
     return True
 
 ###########################################
@@ -5410,14 +5489,10 @@ def p2pool_hashrate(request):
         combined.append(now_combined) 
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
-    
-    now_hashrate = locale.format('%.2f', now_hashrate, grouping=True)
-    now_hashrate_mini = locale.format('%.2f', now_hashrate_mini, grouping=True)
-    now_combined = locale.format('%.2f', now_combined, grouping=True)
 
     dt = 'p2pool_hashrate.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'hashrate_mini': hashrate_mini, 'now_hashrate_mini': now_hashrate_mini, 'now_combined': now_combined, 'combined': combined}
+    context = {'hashrate': hashrate, 'dates': dates, 'hashrate_mini': hashrate_mini, 'combined': combined}
     return render(request, 'charts/p2pool_hashrate.html', context)
 
 def p2pool_dominance(request):
@@ -5451,14 +5526,10 @@ def p2pool_dominance(request):
         combined.append(now_combined) 
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
-    
-    now_dominance = locale.format('%.2f', now_dominance, grouping=True)
-    now_dominance_mini = locale.format('%.2f', now_dominance_mini, grouping=True)
-    now_combined = locale.format('%.2f', now_combined, grouping=True)
 
     dt = 'p2pool_dominance.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'dominance': dominance, 'dates': dates, 'now_dominance': now_dominance, 'dominance_mini': dominance_mini, 'now_dominance_mini': now_dominance_mini, 'now_combined': now_combined, 'combined': combined}
+    context = {'dominance': dominance, 'dates': dates, 'dominance_mini': dominance_mini,'combined': combined}
     return render(request, 'charts/p2pool_dominance.html', context)
 
 def p2pool_totalblocks(request):
@@ -5466,32 +5537,76 @@ def p2pool_totalblocks(request):
         update_visitors(False)
         
     dt = datetime.datetime.now(timezone.utc).timestamp()
-    totalblocks = []
-    totalhashes = []
     dates = []
+    totalblocks = []
+    totalblocks_mini = []
+    combined = []
     now_totalblocks = 0
-    now_totalhashes = 0
+    now_totalblocks_mini = 0
+    now_combined = 0
 
-    p2pool_stats = P2Pool.objects.order_by('date')
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
     for p2pool_stat in p2pool_stats:
-        if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
-            now_totalhashes = p2pool_stat.totalhashes/1000000000000
-            now_totalblocks = p2pool_stat.totalblocksfound       
-            totalhashes.append(now_totalhashes) 
-            totalblocks.append(now_totalblocks) 
-        else:
-            totalhashes.append(now_totalhashes)
-            totalblocks.append(now_totalblocks)
+        now_combined = 0
+        if p2pool_stat.totalblocksfound > now_totalblocks:
+            now_totalblocks = p2pool_stat.totalblocksfound  
+            now_combined += p2pool_stat.totalblocksfound          
+        totalblocks.append(now_totalblocks)
+
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.totalblocksfound > now_totalblocks_mini: 
+                now_totalblocks_mini = p2pool_stat_mini.totalblocksfound    
+                now_combined += p2pool_stat_mini.totalblocksfound      
+        except:
+            pass
+        totalblocks_mini.append(now_totalblocks_mini) 
+        combined.append(now_combined) 
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
-    
-    now_totalblocks = locale.format('%.0f', now_totalblocks, grouping=True)
-    now_totalhashes = locale.format('%.0f', now_totalhashes, grouping=True)
 
     dt = 'p2pool_totalblocks.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'totalhashes': totalhashes, 'dates': dates, 'totalblocks': totalblocks, 'now_totalblocks': now_totalblocks, 'now_totalhashes': now_totalhashes}
+    context = {'totalblocks': totalblocks, 'totalblocks_mini': totalblocks_mini, 'dates': dates, 'combined': combined}
     return render(request, 'charts/p2pool_totalblocks.html', context)
+
+def p2pool_totalhashes(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    totalblocks = []
+    totalblocks_mini = []
+    combined = []
+    now_totalblocks = 0
+    now_totalblocks_mini = 0
+    now_combined = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
+    for p2pool_stat in p2pool_stats:
+        now_combined = 0
+        if p2pool_stat.totalhashes > now_totalblocks:
+            now_totalblocks = p2pool_stat.totalhashes/1000000000000
+            now_combined += p2pool_stat.totalhashes/1000000000000
+        totalblocks.append(now_totalblocks)
+
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.totalhashes > now_totalblocks_mini: 
+                now_totalblocks_mini = p2pool_stat_mini.totalhashes/1000000000000
+                now_combined += p2pool_stat_mini.totalhashes/1000000000000
+        except:
+            pass
+        totalblocks_mini.append(now_totalblocks_mini) 
+        combined.append(now_combined) 
+
+        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+
+    dt = 'p2pool_totalhashes.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'totalblocks': totalblocks, 'totalblocks_mini': totalblocks_mini, 'dates': dates, 'combined': combined}
+    return render(request, 'charts/p2pool_totalhashes.html', context)
 
 def p2pool_miners(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
@@ -5524,15 +5639,33 @@ def p2pool_miners(request):
         combined.append(now_combined) 
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
-    
-    now_miners = locale.format('%.0f', now_miners, grouping=True)
-    now_miners_mini = locale.format('%.0f', now_miners_mini, grouping=True)
-    now_combined = locale.format('%.0f', now_combined, grouping=True)
 
     dt = 'p2pool_miners.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'miners': miners, 'dates': dates, 'now_miners': now_miners, 'miners_mini': miners_mini, 'now_miners_mini': now_miners_mini, 'now_combined': now_combined, 'combined': combined}
+    context = {'miners': miners, 'dates': dates, 'miners_mini': miners_mini, 'combined': combined}
     return render(request, 'charts/p2pool_miners.html', context)
+
+def miningprofitability(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dates = []
+    value = []
+    now_value = 0
+
+    coins = Coin.objects.order_by('date').filter(name='xmr')
+    for coin in coins:
+        if coin.hashrate > 0 and coin.priceusd > 0 and coin.revenue > 0:
+            if 1000*coin.priceusd*coin.revenue/coin.hashrate < 5000:
+                now_value = 1000*coin.priceusd*coin.revenue/coin.hashrate     
+                dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))     
+                value.append(now_value)
+
+    dt = 'miningprofitability.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'value': value, 'dates': dates}
+    return render(request, 'charts/miningprofitability.html', context)
 
 def tail_emission(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":

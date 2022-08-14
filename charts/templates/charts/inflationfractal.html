@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
 
 {% block header %}
-<title>Moneroj.net - Inflation-Adjusted Fractal</title>
+<title>Moneroj.net - Fractal Multiple</title>
 {% endblock %}
 
 {% block content %}
@@ -9,81 +9,29 @@
 <!-- Content Wrapper -->
 <div id="content-wrapper" style="background-color:rgb(48, 44, 41)">
 
-    <!-- Main Content -->
-    <div id="content">
-
-        <!-- Begin Page Content -->
-        <div class="container-fluid"><br>
-            <div class="row">
-                <div class="col-xl-12 col-lg-12">
-                    <div class="card" id="graph1">
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">Inflation-Adjusted Fractal
-                            </h6>
-                            <div class="dropdown no-arrow">
-                                <a class="dropdown-toggle" href="#" role="button"
-                                    onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
-                                    <i class="bx bx-expand text-gray-400"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body pb-0 pt-0 pl-0 pr-0" style="height: 100px;">
-                            <div id="graph" style="height: 100%; width:100%;"></div>
-                        </div>
-                    </div>
-                    <br>
+    <!-- Content Row -->
+    <div class="row" style="height: 92%; margin: 10px 10px 10px 10px;">
+        <div class="card" id="graph1" style="width: 100%; height: 100%;">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                <h6 class="m-0 text-light">
+                    Inflation-Adjusted Fractal
+                </h6>
+                
+                <div class="dropdown no-arrow">
+                    <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
+                        About this chart?
+                    </a>
+                    <a class="dropdown-toggle" href="#" role="button"
+                        onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
+                        <i class="bx bx-expand text-gray-400"></i>
+                    </a>
                 </div>
             </div>
-
-
-            <!-- Content Row -->
-            <div class="row">
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Current Multiple (considering inflation)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_multiple }}</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Highest Multiple</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ maximum }}</div>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="card-body"  style="width: 100%; height: 100%; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">
+                <div id="graph"  style="width: 100%; height: 100%;  margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;"></div>
             </div>
-            <!-- Content Row -->
-            <div class="row">
-                <div class="col-xl-11 col-md-6 mb-4">
-                    <div class="alert alert-dark" role="alert">
-                        Not financial advice.
-                        For information about the chart, click the button >
-                    </div>
-                </div>
-                <div class="col-xl-1">
-                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" href="#"
-                        data-target="#id_Modal">
-                        <div class="col-auto">
-                            +
-                        </div>
-                    </button>
-                </div>
-            </div>
-
         </div>
-        <!-- /.container-fluid -->
-
     </div>
-    <!-- End of Main Content -->
 
 </div>
 <!-- End of Content Wrapper -->
@@ -101,16 +49,7 @@
             <div class="modal-body">
                 This is a very simple chart that displays Monero's two cycles, one above the other, as fractals one from
                 the other. This shows the past and current returns
-                as a multiple from the previous cycle top, considering the inflation variation since the current cycle
-                started. Formula is sqrt(inflation/inflationattop)*price.
-                The X axis is scaled and reffers to the percentage of the cycle that is completed (judging by the
-                price-action pattern). This adjustment was necessary because
-                the blue line seems to be doing exactly what the red line did, but since there is so much difference in
-                the inflation from the last local top to current price (10% to 1%),
-                the current price is way higher than it was supposed to be. This is because a lower inflation rate means
-                less sell pressure, and therefore higher prices. If
-                this logic is true, then, since inflation will fall to 0.8% soon enough, we should expect even higher
-                prices.<br>
+                as a multiple from the previous cycle top, considering its inflation.<br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -180,9 +119,9 @@
         {
             xref: 'paper',
             yref: 'paper',
-            x: 0.80,
+            x: 0.02,
             xanchor: 'auto',
-            y: 0.05,
+            y: 0.98,
             yanchor: 'auto',
             text: 'Moneroj<br>https://www.moneroj.net',
             showarrow: false,
@@ -245,11 +184,11 @@
             ,zeroline: true
         },
         margin: {
-            l: 120,
-            r: 60,
-            b: 35,
-            t: 10,
-            pad: 4
+            l: 100,
+            r: 50,
+            b: 50,
+            t: 20,
+            pad: 10
         }
     };
     
@@ -299,11 +238,11 @@
             ,zeroline: true
         },
         margin: {
-            l: 40,
-            r: 0,
-            b: 35,
-            t: 10,
-            pad: 0
+            l: 100,
+            r: 50,
+            b: 50,
+            t: 20,
+            pad: 10
         }
     };
 
@@ -330,13 +269,12 @@
     }
     env_size = findBootstrapEnvironment();
     if (env_size == "xs") {
-        document.getElementById("graph1").style.height="350px";
         Plotly.newPlot('graph', data_mobile, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
     }
     else {
-        document.getElementById("graph1").style.height="700px";
         Plotly.newPlot('graph', data, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
     }
 </script>
+
 
 {% endblock %}

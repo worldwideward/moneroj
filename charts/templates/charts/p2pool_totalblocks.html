@@ -9,81 +9,29 @@
 <!-- Content Wrapper -->
 <div id="content-wrapper" style="background-color:rgb(48, 44, 41)">
 
-    <!-- Main Content -->
-    <div id="content">
-
-        <!-- Begin Page Content -->
-        <div class="container-fluid"><br>
-            <div class="row">
-                <div class="col-xl-12 col-lg-12">
-                    <div class="card" id="graph1">
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">P2Pool Total Hashes (Tera Hashes) and Blocks Found</h6>
-                            <div class="dropdown no-arrow">
-                                <a class="dropdown-toggle" href="#" role="button"
-                                    onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
-                                    <i class="bx bx-expand text-gray-400"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body" style="height: 100px;">
-                            <div id="graph" style="height: 100%;"></div>
-                        </div>
-                    </div>
-                    <br>
+    <!-- Content Row -->
+    <div class="row" style="height: 92%; margin: 10px 10px 10px 10px;">
+        <div class="card" id="graph1" style="width: 100%; height: 100%;">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                <h6 class="m-0 text-light">
+                    P2Pool Blocks Found
+                </h6>
+                
+                <div class="dropdown no-arrow">
+                    <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
+                        About this chart?
+                    </a>
+                    <a class="dropdown-toggle" href="#" role="button"
+                        onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
+                        <i class="bx bx-expand text-gray-400"></i>
+                    </a>
                 </div>
             </div>
-
-
-            <!-- Content Row -->
-            <div class="row">
-
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total Hashes</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_totalhashes }} TH</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Blocks Found</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_totalblocks }}</div>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="card-body"  style="width: 100%; height: 100%; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">
+                <div id="graph"  style="width: 100%; height: 100%;  margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;"></div>
             </div>
-            <!-- Content Row -->
-            <div class="row">
-                <div class="col-xl-11 col-md-6 mb-4">
-                    <div class="alert alert-dark" role="alert">
-                        Not financial advice.
-                        For information about the chart, click the button >
-                    </div>
-                </div>
-                <div class="col-xl-1">
-                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" href="#"
-                        data-target="#id_Modal">
-                        <div class="col-auto">
-                            +
-                        </div>
-                    </button>
-                </div>
-            </div>
-
         </div>
-        <!-- /.container-fluid -->
-
     </div>
-    <!-- End of Main Content -->
 
 </div>
 <!-- End of Content Wrapper -->
@@ -99,7 +47,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows Monero's P2Pool (mining pool) total hashes found and blocks found so far since inception. Data prior to August 10, 2022 is estimated.<br>
+                This chart shows Monero's both P2Pool (mining pool) total number of blocks found. Data provided by community member DataHoarder.<br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -109,13 +57,12 @@
 </div>
 <!-- Fim do Modal -->
 
-
 <!-- Page level plugins -->
 <script> 
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Blocks Found',
+        name: 'P2Pool Blocks Found',
         x: {{ dates|safe }},
         y: {{ totalblocks|safe }},
         line: {
@@ -127,7 +74,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Blocks Found',
+        name: 'P2Pool Blocks Found',
         x: {{ dates|safe }},
         y: {{ totalblocks|safe }},
         line: {
@@ -136,12 +83,36 @@
         }
     };
 
+    var data2 = {
+        type: "scatter",
+        mode: "lines",
+        name: 'P2Pool_mini Blocks Found',
+        x: {{ dates|safe }},
+        y: {{ totalblocks_mini|safe }},
+        line: {
+            color: '#aa1a1a'
+            ,width: 3
+        }
+    };
+    
+    var data2_mobile = {
+        type: "scatter",
+        mode: "lines",
+        name: 'P2Pool_mini Blocks Found',
+        x: {{ dates|safe }},
+        y: {{ totalblocks_mini|safe }},
+        line: {
+            color: '#aa1a1a'
+            ,width: 3
+        }
+    };
+        
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Total Hashes (TH)',
+        name: 'Total P2Pool Blocks Found',
         x: {{ dates|safe }},
-        y: {{ totalhashes|safe }},
+        y: {{ combined|safe }},
         line: {
             color: '#00ffff'
             ,width: 3
@@ -151,17 +122,17 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Total Hashes (TH)',
+        name: 'Total P2Pool Blocks Found',
         x: {{ dates|safe }},
-        y: {{ totalhashes|safe }},
+        y: {{ combined|safe }},
         line: {
             color: '#00ffff'
             ,width: 3
         }
     }; 
         
-    var data = [data3, data1];
-    var data_mobile = [data3_mobile, data1_mobile];
+    var data = [data3, data2, data1];
+    var data_mobile = [data3_mobile, data2_mobile, data1_mobile];
 
     var layout = {
         plot_bgcolor:"#252221",
@@ -207,7 +178,7 @@
         yaxis: {
             type: "linear",
             title: {
-                text: '',
+                text: 'Blocks Found',
                 font: {
                     size: 20,
                     color: 'white'
@@ -235,10 +206,10 @@
             ,zeroline: true
         },
         margin: {
-            l: 120,
-            r: 120,
-            b: 35,
-            t: 10,
+            l: 100,
+            r: 50,
+            b: 50,
+            t: 20,
             pad: 10
         }
     };
@@ -275,17 +246,6 @@
             }
             ,gridcolor: "#444444"
         },
-        yaxis2: {
-        type: "log",
-        tickformat :",.0f"
-        ,nticks: 8
-        ,tickfont: {
-            color: "white"
-        }
-        ,gridcolor: "#252221"
-        ,side: "right"
-        ,overlaying: 'y'
-        },
         xaxis: {
             hoverformat: "%Y",
             showgrid: true,
@@ -300,10 +260,10 @@
             ,zeroline: true
         },
         margin: {
-            l: 40,
-            r: 100,
-            b: 35,
-            t: 10,
+            l: 100,
+            r: 50,
+            b: 50,
+            t: 20,
             pad: 10
         }
     };
@@ -331,11 +291,9 @@
     }
     env_size = findBootstrapEnvironment();
     if (env_size == "xs") {
-        document.getElementById("graph1").style.height="350px";
         Plotly.newPlot('graph', data_mobile, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
     }
     else {
-        document.getElementById("graph1").style.height="700px";
         Plotly.newPlot('graph', data, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
     }
 </script>
