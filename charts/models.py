@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
 from django.db import models
+from django.forms import BooleanField
 
 # Create your models here.
 class Coin(models.Model):
@@ -139,8 +140,12 @@ class DailyData(models.Model):
 
 class P2Pool(models.Model):
 	date = models.DateField()
+	mini = models.BooleanField()
 	hashrate = models.IntegerField()
 	percentage = models.FloatField()
 	miners = models.IntegerField()
 	totalhashes = models.IntegerField()
 	totalblocksfound = models.IntegerField()
+
+	def __str__(self):
+		return self.date

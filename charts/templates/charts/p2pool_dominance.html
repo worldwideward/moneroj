@@ -19,7 +19,7 @@
                     <div class="card" id="graph1">
                         <div
                             class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">P2Pool and P2Pool_mini Hashrate (MH/s)</h6>
+                            <h6 class="m-0 text-light">P2Pool and P2Pool_mini Market Share (%)</h6>
                             <div class="dropdown no-arrow">
                                 <a class="dropdown-toggle" href="#" role="button"
                                     onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -44,8 +44,8 @@
                     <div class="card border-left-new h-100 py-2">
                         <div class="card-body">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                P2Pool Hashrate</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_hashrate }} MH/s</div>
+                                P2Pool Market Share</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_dominance }} %</div>
                         </div>
                     </div>
                 </div>
@@ -54,8 +54,8 @@
                     <div class="card border-left-new h-100 py-2">
                         <div class="card-body">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                P2Pool Mini Hashrate</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_hashrate_mini }} MH/s</div>
+                                P2Pool Market Share</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_dominance_mini }} %</div>
                         </div>
                     </div>
                 </div>
@@ -64,8 +64,8 @@
                     <div class="card border-left-new h-100 py-2">
                         <div class="card-body">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                P2Pool Total Hashrate</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_combined }} MH/s</div>
+                                P2Pool Market Share</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ now_combined }} %</div>
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows Monero's both P2Pool (mining pool) total hashrate (MH/s) and its components P2Pool (main) and P2Pool mini pool.<br>
+                This chart shows Monero's both P2Pool (mining pool) total dominance (MH/s) and its components P2Pool (main) and P2Pool mini pool over the mining market.<br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -125,9 +125,9 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'P2Pool Hashrate MH/s',
+        name: 'P2Pool Dominance',
         x: {{ dates|safe }},
-        y: {{ hashrate|safe }},
+        y: {{ dominance|safe }},
         line: {
             color: '#dd1d1d'
             ,width: 3
@@ -137,9 +137,9 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'P2Pool Hashrate MH/s',
+        name: 'P2Pool Dominance',
         x: {{ dates|safe }},
-        y: {{ hashrate|safe }},
+        y: {{ dominance|safe }},
         line: {
             color: '#dd1d1d'
             ,width: 3
@@ -149,7 +149,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Total P2Pool Hashrate MH/s',
+        name: 'Total P2Pool Dominance',
         x: {{ dates|safe }},
         y: {{ combined|safe }},
         line: {
@@ -161,7 +161,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Total P2Pool Hashrate MH/s',
+        name: 'Total P2Pool Dominance',
         x: {{ dates|safe }},
         y: {{ combined|safe }},
         line: {
@@ -173,9 +173,9 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'P2Pool_mini Hashrate MH/s',
+        name: 'P2Pool_mini Dominance',
         x: {{ dates|safe }},
-        y: {{ hashrate_mini|safe }},
+        y: {{ dominance_mini|safe }},
         line: {
             color: '#aa1a1a'
             ,width: 3
@@ -185,9 +185,9 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'P2Pool_mini Hashrate MH/s',
+        name: 'P2Pool_mini Dominance',
         x: {{ dates|safe }},
-        y: {{ hashrate_mini|safe }},
+        y: {{ dominance_mini|safe }},
         line: {
             color: '#aa1a1a'
             ,width: 3
@@ -241,7 +241,7 @@
         yaxis: {
             type: "linear",
             title: {
-                text: '',
+                text: 'Percentage',
                 font: {
                     size: 20,
                     color: 'white'
@@ -258,7 +258,7 @@
         yaxis2: {
         type: "linear",
         title: {
-            text: 'Hashrate (MH/s)',
+            text: 'Dominance (%)',
             font: {
                 size: 20,
                 color: 'white'

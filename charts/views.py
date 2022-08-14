@@ -189,11 +189,11 @@ def load_rank(request, symbol):
 def load_p2pool(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         return render(request, 'users/error.html')
+
+    count = 0
     gc = pygsheets.authorize(service_file='service_account_credentials.json')
     sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet9')
-    
-    count = 0
+    wks = sh.worksheet_by_title('p2pool')
     values_mat = wks.get_values(start=(3,1), end=(9999,6), returnas='matrix')
     P2Pool.objects.all().delete()
 
@@ -206,12 +206,32 @@ def load_p2pool(request):
             p2pool_stat.percentage = float(values_mat[k][3].replace(',', '.'))
             p2pool_stat.totalhashes = float(values_mat[k][4].replace(',', '.'))
             p2pool_stat.totalblocksfound = float(values_mat[k][5].replace(',', '.'))
+            p2pool_stat.mini = False
             p2pool_stat.save()
             count += 1
-            print('p2pool data saved - ' + str(p2pool_stat.date) + ' - ' + str(p2pool_stat.percentage))
+            #print('p2poolmini data saved - ' + str(p2pool_stat.date) + ' - ' + str(p2pool_stat.percentage) + ' - ' + str(p2pool_stat.miners))
         else:
             break
 
+    wks = sh.worksheet_by_title('p2poolmini')
+    values_mat = wks.get_values(start=(3,1), end=(9999,6), returnas='matrix')
+
+    for k in range(0,len(values_mat)):
+        if values_mat[k][0] and values_mat[k][1]:
+            p2pool_stat = P2Pool()
+            p2pool_stat.date = values_mat[k][0]
+            p2pool_stat.miners = float(values_mat[k][1].replace(',', '.'))
+            p2pool_stat.hashrate = float(values_mat[k][2].replace(',', '.'))
+            p2pool_stat.percentage = float(values_mat[k][3].replace(',', '.'))
+            p2pool_stat.totalhashes = float(values_mat[k][4].replace(',', '.'))
+            p2pool_stat.totalblocksfound = float(values_mat[k][5].replace(',', '.'))
+            p2pool_stat.mini = True
+            p2pool_stat.save()
+            count += 1
+            #print('p2poolmini data saved - ' + str(p2pool_stat.date) + ' - ' + str(p2pool_stat.percentage) + ' - ' + str(p2pool_stat.miners))
+        else:
+            break
+    
     message = 'Total of ' + str(count) + ' data imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
@@ -5364,31 +5384,82 @@ def p2pool_hashrate(request):
         
     dt = datetime.datetime.now(timezone.utc).timestamp()
     hashrate = []
-    percentage = []
+    hashrate_mini = []
+    combined = []
     dates = []
     now_hashrate = 0
-    now_percentage = 0
+    now_hashrate_mini = 0
+    now_combined = 0
 
-    p2pool_stats = P2Pool.objects.order_by('date')
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
     for p2pool_stat in p2pool_stats:
+        now_combined = 0
         if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
-            now_hashrate = p2pool_stat.hashrate/1000000     
-            now_percentage = p2pool_stat.percentage       
-            hashrate.append(now_hashrate) 
-            percentage.append(now_percentage) 
-        else:
-            hashrate.append(now_hashrate)
-            percentage.append(now_percentage)
+            now_hashrate = p2pool_stat.hashrate/1000000    
+            now_combined = p2pool_stat.hashrate/1000000
+        hashrate.append(now_hashrate)
+        
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.hashrate and p2pool_stat_mini.percentage > 0:
+                now_hashrate_mini = p2pool_stat_mini.hashrate/1000000     
+                now_combined += p2pool_stat_mini.hashrate/1000000    
+        except:
+            pass
+        hashrate_mini.append(now_hashrate_mini) 
+        combined.append(now_combined) 
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
     
-    now_percentage = locale.format('%.2f', now_percentage, grouping=True)
     now_hashrate = locale.format('%.2f', now_hashrate, grouping=True)
+    now_hashrate_mini = locale.format('%.2f', now_hashrate_mini, grouping=True)
+    now_combined = locale.format('%.2f', now_combined, grouping=True)
 
     dt = 'p2pool_hashrate.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'hashrate': hashrate, 'dates': dates, 'percentage': percentage, 'now_percentage': now_percentage, 'now_hashrate': now_hashrate}
+    context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'hashrate_mini': hashrate_mini, 'now_hashrate_mini': now_hashrate_mini, 'now_combined': now_combined, 'combined': combined}
     return render(request, 'charts/p2pool_hashrate.html', context)
+
+def p2pool_dominance(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    dominance = []
+    dominance_mini = []
+    dates = []
+    combined = []
+    now_dominance = 0
+    now_dominance_mini = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
+    for p2pool_stat in p2pool_stats:
+        now_combined = 0
+        if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
+            now_dominance = p2pool_stat.percentage       
+            now_combined += p2pool_stat.percentage      
+        dominance.append(now_dominance)
+        
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.hashrate and p2pool_stat_mini.percentage > 0: 
+                now_dominance_mini = p2pool_stat_mini.percentage    
+                now_combined += p2pool_stat_mini.percentage      
+        except:
+            pass
+        dominance_mini.append(now_dominance_mini) 
+        combined.append(now_combined) 
+
+        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+    
+    now_dominance = locale.format('%.2f', now_dominance, grouping=True)
+    now_dominance_mini = locale.format('%.2f', now_dominance_mini, grouping=True)
+    now_combined = locale.format('%.2f', now_combined, grouping=True)
+
+    dt = 'p2pool_dominance.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
+    print(dt)
+    context = {'dominance': dominance, 'dates': dates, 'now_dominance': now_dominance, 'dominance_mini': dominance_mini, 'now_dominance_mini': now_dominance_mini, 'now_combined': now_combined, 'combined': combined}
+    return render(request, 'charts/p2pool_dominance.html', context)
 
 def p2pool_totalblocks(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
@@ -5428,24 +5499,39 @@ def p2pool_miners(request):
         
     dt = datetime.datetime.now(timezone.utc).timestamp()
     miners = []
+    miners_mini = []
     dates = []
+    combined = []
     now_miners = 0
-    
-    p2pool_stats = P2Pool.objects.order_by('date')
+    now_miners_mini = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
     for p2pool_stat in p2pool_stats:
-        if p2pool_stat.miners:
-            now_miners = p2pool_stat.miners     
-            miners.append(now_miners) 
-        else:
-            miners.append(now_miners)
+        now_combined = 0
+        if p2pool_stat.miners > 0:
+            now_miners = p2pool_stat.miners       
+            now_combined += p2pool_stat.miners      
+        miners.append(now_miners)
+        
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.miners > 0: 
+                now_miners_mini = p2pool_stat_mini.miners    
+                now_combined += p2pool_stat_mini.miners    
+        except:
+            pass
+        miners_mini.append(now_miners_mini) 
+        combined.append(now_combined) 
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
     
     now_miners = locale.format('%.0f', now_miners, grouping=True)
+    now_miners_mini = locale.format('%.0f', now_miners_mini, grouping=True)
+    now_combined = locale.format('%.0f', now_combined, grouping=True)
 
     dt = 'p2pool_miners.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'miners': miners, 'dates': dates, 'now_miners': now_miners}
+    context = {'miners': miners, 'dates': dates, 'now_miners': now_miners, 'miners_mini': miners_mini, 'now_miners_mini': now_miners_mini, 'now_combined': now_combined, 'combined': combined}
     return render(request, 'charts/p2pool_miners.html', context)
 
 def tail_emission(request):

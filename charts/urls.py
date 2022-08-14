@@ -86,6 +86,7 @@ urlpatterns = [
     path('securitybudget/', views.securitybudget, name='securitybudget'),
     path('efficiency/', views.efficiency, name='efficiency'),
     path('p2pool_hashrate/', views.p2pool_hashrate, name='p2pool_hashrate'),
+    path('p2pool_dominance/', views.p2pool_dominance, name='p2pool_dominance'),
     path('p2pool_miners/', views.p2pool_miners, name='p2pool_miners'),
     path('p2pool_totalblocks/', views.p2pool_totalblocks, name='p2pool_totalblocks'),
     path('metcalfesats_deviation/', views.metcalfesats_deviation, name='metcalfesats_deviation'),
