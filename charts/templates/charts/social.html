@@ -9,100 +9,45 @@
 <!-- Content Wrapper -->
 <div id="content-wrapper" style="background-color:rgb(48, 44, 41)">
 
-    <!-- Main Content -->
-    <div id="content">
-
-        <!-- Begin Page Content -->
-        <div class="container-fluid"><br>
-            <div class="row">
-                <div class="col-xl-12 col-lg-12">
-                    <div class="card" id="graph1">
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">Total Number of Reddit Subscribers for Bitcoin and CryptoCurrency
-                            </h6>
-                        </div>
-                        <div class="card-body pb-0 pt-0 pl-0 pr-0" style="height: 100px;">
-                            <div id="graph" style="height: 100%; width:100%;"></div>
-                        </div>
-                    </div>
-                    <br>
+    <!-- Content Row -->
+    <div class="row" style="height: 92%; margin: 10px 10px 10px 10px;">
+        <div class="card" id="graph1" style="width: 100%; height: 100%;">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                <h6 class="m-0 text-light">
+                    Total Number of Reddit Subscribers for Bitcoin and CryptoCurrency
+                </h6>
+                
+                <div class="dropdown no-arrow">
+                    <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
+                        About this chart?
+                    </a>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-xl-12 col-lg-12">
-                    <div class="card" id="graph_2">
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">Total Number of Reddit Subscribers for Monero</h6>
-                        </div>
-                        <div class="card-body pb-0 pt-0 pl-0 pr-0" style="height: 100px;">
-                            <div id="graph2" style="height: 100%; width:100%;"></div>
-                        </div>
-                    </div>
-                    <br>
-                </div>
+            <div class="card-body"  style="width: 100%; height: 100%; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">
+                <div id="graph"  style="width: 100%; height: 100%;  margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;"></div>
             </div>
-
-            <!-- Content Row -->
-            <div class="row">
-
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-4 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Monero Subscribers</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_xmr }}</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-4 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Bitcoin Subscribers</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_btc }}</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Earnings (Monthly) Card Example -->
-                <div class="col-xl-4 col-md-6 mb-4">
-                    <div class="card border-left-new h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                CryptoCurrency Subscribers</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_crypto }}</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <!-- Content Row -->
-            <div class="row">
-                <div class="col-xl-11 col-md-6 mb-4">
-                    <div class="alert alert-dark" role="alert">
-                        Not financial advice.
-                        For information about the chart, click the button >
-                    </div>
-                </div>
-                <div class="col-xl-1">
-                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" href="#"
-                        data-target="#id_Modal">
-                        <div class="col-auto">
-                            +
-                        </div>
-                    </button>
-                </div>
-            </div>
-
         </div>
-        <!-- /.container-fluid -->
-
     </div>
-    <!-- End of Main Content -->
+
+    <!-- Content Row -->
+    <div class="row" style="height: 92%; margin: 10px 10px 10px 10px;">
+        <div class="card" id="graph_2" style="width: 100%; height: 100%;">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                <h6 class="m-0 text-light">
+                    Total Number of Reddit Subscribers for Monero
+                </h6>
+                
+                <div class="dropdown no-arrow">
+                    <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
+                        About this chart?
+                    </a>
+                </div>
+            </div>
+            <div class="card-body"  style="width: 100%; height: 100%; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">
+                <div id="graph2"  style="width: 100%; height: 100%;  margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;"></div>
+            </div>
+        </div>
+    </div>
 
 </div>
 <!-- End of Content Wrapper -->
@@ -368,14 +313,10 @@
         }
         env_size = findBootstrapEnvironment();
         if (env_size == "xs") {
-            document.getElementById("graph1").style.height="350px";
-            document.getElementById("graph_2").style.height="350px";
             Plotly.newPlot('graph', data_mobile, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
             Plotly.newPlot('graph2', data_mobile_2, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
         }
         else {
-            document.getElementById("graph1").style.height="700px";
-            document.getElementById("graph_2").style.height="700px";
             Plotly.newPlot('graph', data, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
             Plotly.newPlot('graph2', data_2, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
         }
