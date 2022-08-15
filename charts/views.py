@@ -6,6 +6,7 @@ from django.urls import reverse
 import requests
 import json
 from .models import *
+from .forms import *
 from users.models import PageViews
 from users.views import update_visitors
 import datetime
@@ -34,6 +35,53 @@ api = PushshiftAPI()
 ###########################################
 # Useful functions for admins
 ###########################################
+
+# Add manually a new entrance for coin
+# To be used when there's a problem with the API
+@login_required
+def add_coin(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        return render(request, 'users/error.html')
+
+    if request.method != 'POST':
+        #create new page with blank form
+        form = CoinForm()
+    else:
+        #process data and submit article
+        form = CoinForm(data=request.POST)
+        if form.is_valid():
+            add_coin = form.save(commit=False)
+
+            try:
+                day = datetime.datetime.strftime(add_coin.date, '%Y-%m-%d')
+                coin = Coin.objects.filter(name=add_coin.name).get(date=day)
+                coin.delete()
+                print('coin found and deleted')
+            except:
+                print('coin not found')
+                pass
+
+            add_coin.stocktoflow = (100/add_coin.inflation)**1.65 
+            add_coin.save()
+            print('coin saved')
+            message = 'Coin added to the database!'
+
+            print(str(add_coin.name) + ' ' +str(add_coin.date) + ' ' +str(add_coin.priceusd) + ' ' +str(add_coin.pricebtc) + ' ' +str(add_coin.inflation) + ' ' +str(add_coin.name) + ' ' +str(add_coin.transactions) + ' ' +str(add_coin.hashrate) + ' ' +str(add_coin.stocktoflow) + ' ' +str(add_coin.supply) + ' ' + ' ' +str(add_coin.fee) + ' ' + ' ' +str(add_coin.revenue) )
+
+            print('updating p2pool')
+            update_p2pool()
+
+            print('updating database')
+            update_database(day, day)
+            context = {'form': form, 'message': message}
+            return render(request, 'charts/add_coin.html', context)
+        else:
+            message = 'An error has happened. Try again.'
+            context = {'form': form, 'message': message}
+            return render(request, 'charts/add_coin.html', context)
+
+    context = {'form': form}
+    return render(request, 'charts/add_coin.html', context)
 
 # Get all history for metrics of a certain coin named as 'symbol'
 # Only authorized users can download all price data via URL request
@@ -4128,7 +4176,7 @@ def sfmodel(request):
     yesterday = date.today() - timedelta(1)
     start_time = datetime.datetime.strftime(date.today() - timedelta(5), '%Y-%m-%d')
     try:
-        coin = Coin.objects.filter(name='xmr').get(date=yesterday)
+        coin = Coin.objects.filter(name='btc').get(date=yesterday)
         #coin_aux = Coin.objects.filter(name='btc').get(date=yesterday)
         if coin: #and coin_aux: 
             print('coin found yesterday')

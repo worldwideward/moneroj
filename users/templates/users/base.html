@@ -87,7 +87,7 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               {% if user.username == 'Administrador' or user.username == 'Morpheus' %}
                 <a class="nav-link" href="{% url 'articles:write' %}">Write / Review</a>
-                <a class="nav-link" href="{% url 'users:users' %}">Users</a>
+                <a class="nav-link" href="{% url 'users:users' %}">Control Panel</a>
                 <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
               {% endif %}
               <a class="nav-link" href="{% url 'charts:about' %}">About</a>

@@ -1,0 +1,204 @@
+{% extends "users/base.html" %}
+{% block header %}
+
+<title>Moneroj.net - New Article</title>
+
+<style>
+  .form button {
+    font-family: "Roboto", Sans-serif;
+    outline: 0;
+    background: #ff4d21;
+    width: 100%;
+    border: 0;
+    border-radius: 5px;
+    padding: 5px;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer
+  }
+
+  .form button:hover {
+    background: #d53b14;
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+
+<br><br><br>
+<div class="container">
+
+  {% if message %}
+  <div class="alert alert-warning">
+    <strong>
+      <center>{{ message }}</center>
+    </strong>
+  </div>
+  {% endif %}
+
+  <h2>Add a new coin:</h2><br>
+  <form class="needs-validation form" action="{% url 'charts:add_coin' %}" method='POST' novalidate>
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="col-md-4 mb-3">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" name="name" id="id_name" placeholder="Example: xmr" required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="date">Date:</label>
+        <input type="date" class="form-control" name="date" id="id_date" placeholder="Example: 2022-01-01" required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="priceusd">Price USD:</label>
+        <input type="number" class="form-control" name="priceusd" id="id_priceusd" placeholder="Example: 200,00"
+          required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-4 mb-3">
+        <label for="pricebtc">Price BTC:</label>
+        <input type="number" class="form-control" name="pricebtc" id="id_pricebtc" placeholder="Example: 0,016"
+          required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="inflation">Inflation:</label>
+        <input type="number" class="form-control" name="inflation" id="id_inflation" placeholder="Example: 0,86%"
+          required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="transactions">Transactions:</label>
+        <input type="number" class="form-control" name="transactions" id="id_transactions" placeholder="Example: 40000"
+          required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-4 mb-3">
+        <label for="hashrate">Hashrate:</label>
+        <input type="number" class="form-control" name="hashrate" id="id_hashrate" placeholder="Example: 150000000"
+          required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="supply">Supply:</label>
+        <input type="number" class="form-control" name="supply" id="id_supply" placeholder="Example: 21000000" required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="difficulty">Difficulty:</label>
+        <input type="text" class="form-control" name="difficulty" id="id_difficulty" placeholder="Example: 00000000"
+          required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-4 mb-3">
+        <label for="fee">Fee:</label>
+        <input type="number" class="form-control" name="fee" id="id_fee" placeholder="Example: 150 xmr" required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="revenue">Revenue:</label>
+        <input type="number" class="form-control" name="revenue" id="id_revenue" placeholder="Example: 150 xmr"
+          required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <label for="blocksize">Blocksize:</label>
+        <input type="number" class="form-control" name="blocksize" id="id_blocksize" placeholder="Example: 15 kb"
+          required>
+        <div class="valid-tooltip">
+          OK
+        </div>
+        <div class="invalid-tooltip">
+          This field is required
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-4 mb-3">
+        <label for="text">Save:</label>
+        <button class="" type="submit">Add</button>
+      </div>
+    </div>
+
+  </form>
+  <br><br>
+</div>
+
+
+<br><br><br>
+
+{% endblock %}

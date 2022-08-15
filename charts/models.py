@@ -19,6 +19,7 @@ class Coin(models.Model):
 	revenue = models.FloatField(default="0")
 	blocksize = models.FloatField(default="0")
 	difficulty = models.FloatField(default="0")
+	
 	def __str__(self):
 		return self.priceusd
 
