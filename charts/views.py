@@ -1357,7 +1357,7 @@ def update_database(date_from=None, date_to=None):
 # Get latest P2Pool data
 def update_p2pool():
     today = date.today()
-    yesterday = date.today() - timedelta(2)
+    yesterday = date.today() - timedelta(1)
     try:
         p2pool_stat = P2Pool.objects.filter(mini=False).get(date=today)
         print('achou p2pool de hoje')
@@ -1435,7 +1435,7 @@ def update_p2pool():
             return data
         
     today = date.today()
-    yesterday = date.today() - timedelta(2)
+    yesterday = date.today() - timedelta(1)
     try:
         p2pool_stat = P2Pool.objects.filter(mini=True).get(date=today)
         print('achou p2pool_mini de hoje')
@@ -5601,13 +5601,14 @@ def p2pool_totalblocks(request):
             now_combined += p2pool_stat.totalblocksfound          
         totalblocks.append(now_totalblocks)
 
-        try:
-            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
-            if p2pool_stat_mini.totalblocksfound > now_totalblocks_mini: 
+        p2pool_stats_mini = P2Pool.objects.filter(mini=True).filter(date=p2pool_stat.date)
+        for p2pool_stat_mini in p2pool_stats_mini:
+            if p2pool_stat_mini.totalblocksfound >= now_totalblocks_mini: 
                 now_totalblocks_mini = p2pool_stat_mini.totalblocksfound    
-                now_combined += p2pool_stat_mini.totalblocksfound      
-        except:
-            pass
+                now_combined += p2pool_stat_mini.totalblocksfound    
+                break
+                
+
         totalblocks_mini.append(now_totalblocks_mini) 
         combined.append(now_combined) 
 
@@ -5641,7 +5642,7 @@ def p2pool_totalhashes(request):
 
         try:
             p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
-            if p2pool_stat_mini.totalhashes > now_totalblocks_mini: 
+            if p2pool_stat_mini.totalhashes >= now_totalblocks_mini: 
                 now_totalblocks_mini = p2pool_stat_mini.totalhashes/1000000000000
                 now_combined += p2pool_stat_mini.totalhashes/1000000000000
         except:
