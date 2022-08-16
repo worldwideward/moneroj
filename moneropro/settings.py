@@ -36,7 +36,7 @@ SECRET_KEY = 'dafsdasdfasfa7sdfs9d7das7f9as7df8ad43525fsffdssdg455$$###77saf9df7
 DEBUG = False
 STATIC_ROOT = "/var/www/moneropro/static/"
 
-ALLOWED_HOSTS = ['www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net', 'ilt7jgmfro76wgrtt6752lvfnhcz6wk5sjqhyvntjixygp3cwpvr4nad.onion']
+ALLOWED_HOSTS = ['80.78.22.34', 'www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net', 'moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion']
 
 # Application definition
 

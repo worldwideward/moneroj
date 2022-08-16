@@ -2,15 +2,16 @@ from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import User
 from django.db import models
+from django.forms import BooleanField
 
 # Create your models here.
 class Coin(models.Model):
-	name = models.CharField(max_length=4)
-	date = models.DateField()
-	priceusd = models.FloatField()
-	pricebtc = models.FloatField()
-	inflation = models.FloatField()
-	transactions = models.FloatField()
+	name = models.CharField(max_length=4, default="0")
+	date = models.DateField(default="0")
+	priceusd = models.FloatField(default="0")
+	pricebtc = models.FloatField(default="0")
+	inflation = models.FloatField(default="0")
+	transactions = models.FloatField(default="0")
 	hashrate = models.FloatField(default="0")
 	stocktoflow = models.FloatField(default="0")
 	supply = models.FloatField(default="0")
@@ -18,6 +19,7 @@ class Coin(models.Model):
 	revenue = models.FloatField(default="0")
 	blocksize = models.FloatField(default="0")
 	difficulty = models.FloatField(default="0")
+	
 	def __str__(self):
 		return self.priceusd
 
@@ -133,6 +135,18 @@ class DailyData(models.Model):
 	crypto_subscriberCount = models.IntegerField()
 	crypto_commentsPerHour = models.FloatField()
 	crypto_postsPerHour = models.FloatField()
+
+	def __str__(self):
+		return self.date
+
+class P2Pool(models.Model):
+	date = models.DateField()
+	mini = models.BooleanField()
+	hashrate = models.IntegerField()
+	percentage = models.FloatField()
+	miners = models.IntegerField()
+	totalhashes = models.IntegerField()
+	totalblocksfound = models.IntegerField()
 
 	def __str__(self):
 		return self.date

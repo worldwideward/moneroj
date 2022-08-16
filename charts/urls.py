@@ -85,6 +85,18 @@ urlpatterns = [
     path('pageviews/', views.pageviews, name='pageviews'),
     path('securitybudget/', views.securitybudget, name='securitybudget'),
     path('efficiency/', views.efficiency, name='efficiency'),
+    path('p2pool_hashrate/', views.p2pool_hashrate, name='p2pool_hashrate'),
+    path('p2pool_dominance/', views.p2pool_dominance, name='p2pool_dominance'),
+    path('p2pool_miners/', views.p2pool_miners, name='p2pool_miners'),
+    path('p2pool_totalblocks/', views.p2pool_totalblocks, name='p2pool_totalblocks'),
+    path('metcalfesats_deviation/', views.metcalfesats_deviation, name='metcalfesats_deviation'),
+    path('metcalfe_deviation/', views.metcalfe_deviation, name='metcalfe_deviation'),
+    path('marketcycle/', views.marketcycle, name='marketcycle'),
+    path('shielded/', views.shielded, name='shielded'),
+    path('pricesatslog/', views.pricesatslog, name='pricesatslog'),
+    path('comptransactions/', views.comptransactions, name='comptransactions'),
+    path('p2pool_totalhashes/', views.p2pool_totalhashes, name='p2pool_totalhashes'),
+    path('miningprofitability/', views.miningprofitability, name='miningprofitability'),
 
     # URLs to useful functions on charts/views.py
     # Only admins can use these 
@@ -92,10 +104,12 @@ urlpatterns = [
     path('get_complete_history/<str:symbol>/', views.get_history, name='get_complete_history'),
     path('load_dominance/<str:symbol>/', views.load_dominance, name='load_dominance'),
     path('load_rank/<str:symbol>/', views.load_rank, name='load_rank'),
+    path('load_p2pool/', views.load_p2pool, name='load_p2pool'),
     path('populate_database/', views.populate_database, name='populate_database'),
     path('importer/', views.importer, name='importer'),
     path('reset/<str:symbol>/', views.reset, name='reset'),
     path('update/<str:date_from>/<str:date_to>/', views.update_database_admin, name='update'),
+    path('add_coin/',  views.add_coin, name="add_coin"),
 
     # URLs to old functions in case they need to be restablished
     # Everyone can use these, but they are hidden

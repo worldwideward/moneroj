@@ -2,12 +2,48 @@
 {% block header %}
 
 <title>Moneroj.net - Users</title>
-<style>
-    .break {
-      word-break: break-all;
-    }
+<style>  
+  .form {
+      position: relative;
+      z-index: 1;
+      background: #313030;
+      margin: 20px 20px 20px 20px;
+      max-width: 100%;
+      padding: 20px;
+      text-align: center;
+      border-radius: 20px
+  }
+  
+  .form button {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      background: #ff4d21;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      padding: 5px;
+      color: #ffffff;
+      font-size: 14px;
+      cursor: pointer
+  }
+  
+  .form button:hover,
+  .form button:active {
+      background: #db3b13
+  }
+  
+  .form .message {
+      margin: 10px 0 0;
+      color: rgb(255, 255, 255);
+      font-size: 16px
+  }
+  
+  .form .message a {
+      color: #ff4d21;
+      text-decoration: none
+  }
+  
 </style>
-
 {% endblock %}
 {% block content %}  
 
@@ -15,9 +51,14 @@
   <section id="Subscribe" class="section-bg">
     <div class="container">    
       <div class="row">
-        <div class="col-xl-12 d-flex flex-column justify-content-center">
+        <div class="col-xl-8 d-flex flex-column justify-content-center">
           <h1>Control Panel</h1>
           <h3>Edit user's profiles and access.</h3>
+        </div>
+        <div class="col-xl-3 form">
+          <h1><i class="bx bx-pen" style="color: #ffffff"></i></h1>
+          <p class="message">Problem with the API?</p><br>
+          <a href="{% url 'charts:add_coin' %}"><button type="submit">Add a coin</button></a>
         </div>
         
       </div>

@@ -61,12 +61,6 @@
             padding-right: 12px;
         }
         
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
-
         #graph1.fullscreen {
             z-index: 9999;
             width: 100%;
@@ -80,16 +74,14 @@
             min-height: 100%;
         }
 
-        #graph1 {
-            height: 650px;
+        .link_graph {
+            color: #ff4d21;
+            text-decoration: none;
         }
 
-        #link_graph {
-            color: #FF0000;
-        }
-
-        #link_graph:hover {
-            color: #00FF00;
+        .link_graph:hover {
+            color: #af3517;
+            text-decoration: none;
         }
     </style>
     
@@ -113,6 +105,7 @@
                 href="{% url 'charts:index' %}">
                 <div class="sidebar-brand-text mx-3">Moneroj</div>
             </a>
+
             <!-- Heading -->
             <div class="sidebar-heading">
                 <br>
@@ -123,7 +116,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrice"
                     aria-expanded="true" aria-controls="collapsePrice">
                     <i class="bx bx-dollar"></i>
-                    <span>Price (16)</span>
+                    <span>Price (18)</span>
                 </a>
                 <div id="collapsePrice" class="collapse" aria-labelledby="headingPrice"
                     data-parent="#accordionSidebar">
@@ -132,9 +125,9 @@
                         <a class="collapse-item" href="{% url 'charts:pricelog' %}">Price in Dollars (Log.)</a>
                         <a class="collapse-item" href="{% url 'charts:pricelin' %}">Price in Dollars (Lin.)</a>
                         <a class="collapse-item" href="{% url 'charts:pricesats' %}">Price in Sats (Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:pricesatslog' %}">Price in Sats (Log.) <span class="badge badge-pill badge-danger">New</span></a>
                         <a class="collapse-item" href="{% url 'charts:fractal' %}">Fractal Multiple</a>
-                        <a class="collapse-item" href="{% url 'charts:inflationfractal' %}">Inflation-Adjusted
-                            Fractal</a>
+                        <a class="collapse-item" href="{% url 'charts:inflationfractal' %}">Inflation-Adjusted Fractal</a>
                         <a class="collapse-item" href="{% url 'charts:golden' %}">Golden Ratio Multiplier</a>
                         <a class="collapse-item" href="{% url 'charts:competitors' %}">Performance ($, Log.)</a>
                         <a class="collapse-item" href="{% url 'charts:competitorslin' %}">Performance ($, Lin.)</a>
@@ -145,7 +138,8 @@
                         <a class="collapse-item" href="{% url 'charts:powerlaw' %}">Power Law</a>
                         <a class="collapse-item" href="{% url 'charts:thermocap' %}">Thermocap Multiple</a>
                         <a class="collapse-item" href="{% url 'charts:sharpe' %}">Sharpe Ratio</a>
-                        <a class="collapse-item" href="{% url 'charts:deviation' %}">Price Deviation</a>
+                        <a class="collapse-item" href="{% url 'charts:deviation' %}">Price Deviation <span class="badge badge-pill badge-secondary">New</span</a>
+                        <a class="collapse-item" href="{% url 'charts:marketcycle' %}">Market Cycle <span class="badge badge-pill badge-danger">New</span></a>
                     </div>
                 </div>
             </li>            
@@ -174,7 +168,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTransactions"
                     aria-expanded="true" aria-controls="collapseTransactions">
                     <i class="bx bx-transfer"></i>
-                    <span>Transactions (11)</span>
+                    <span>Transactions (15)</span>
                 </a>
                 <div id="collapseTransactions" class="collapse" aria-labelledby="headingTransactions"
                     data-parent="#accordionSidebar">
@@ -189,8 +183,12 @@
                         <a class="collapse-item" href="{% url 'charts:percentmonth' %}">Monthly Percentage (Lin.)</a>
                         <a class="collapse-item" href="{% url 'charts:metcalfesats' %}">Metcalfe's Law (Sats)</a>
                         <a class="collapse-item" href="{% url 'charts:metcalfeusd' %}">Metcalfe's Law ($)</a>
-                        <a class="collapse-item" href="{% url 'charts:deviation_tx' %}">Transacted Price Deviation</a>
-                        <a class="collapse-item" href="{% url 'charts:transactiondominance' %}">Transaction Dominance</a>
+                        <a class="collapse-item" href="{% url 'charts:metcalfesats_deviation' %}">Metc. Deviation (Sats) <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:metcalfe_deviation' %}">Metcalfe Deviation ($) <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:deviation_tx' %}">Transac. Price Dev. <span class="badge badge-pill badge-secondary">New</span</a>
+                        <a class="collapse-item" href="{% url 'charts:transactiondominance' %}">Transac. Dominance <span class="badge badge-pill badge-secondary">New</span</a>
+                        <a class="collapse-item" href="{% url 'charts:shielded' %}">Shielded Transactions <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:comptransactions' %}">Competitors' Transac. <span class="badge badge-pill badge-danger">New</span></a></a>
                     </div>
                 </div>
             </li>
@@ -238,7 +236,7 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMining"
                     aria-expanded="true" aria-controls="collapseMining">
                     <i class="bx bx-calculator"></i>
-                    <span>Mining (16)</span>
+                    <span>Mining (22)</span>
                 </a>
                 <div id="collapseMining" class="collapse" aria-labelledby="headingMining"
                     data-parent="#accordionSidebar">
@@ -251,6 +249,7 @@
                         <a class="collapse-item" href="{% url 'charts:minerrevntv' %}">Miner Revenue (Ntv.)</a>
                         <a class="collapse-item" href="{% url 'charts:minerfees' %}">Miner Fees ($)</a>
                         <a class="collapse-item" href="{% url 'charts:minerfeesntv' %}">Miner Fees (Ntv.)</a>
+                        <a class="collapse-item" href="{% url 'charts:miningprofitability' %}">Mining Profitability <span class="badge badge-pill badge-danger">New</span></a>
                         <a class="collapse-item" href="{% url 'charts:minerrevcap' %}">Revenue / Marketcap (%)</a>
                         <a class="collapse-item" href="{% url 'charts:commit' %}">Miner Commitment ($)</a>
                         <a class="collapse-item" href="{% url 'charts:commitntv' %}">Miner Commitment (Ntv.)</a>
@@ -258,8 +257,13 @@
                         <a class="collapse-item" href="{% url 'charts:blockchainsize' %}">Blockchain Size (Bytes)</a>
                         <a class="collapse-item" href="{% url 'charts:transactionsize' %}">Transaction Size (Bytes)</a>
                         <a class="collapse-item" href="{% url 'charts:difficulty' %}">Mining Difficulty</a>
-                        <a class="collapse-item" href="{% url 'charts:securitybudget' %}">Security Budget</a>
-                        <a class="collapse-item" href="{% url 'charts:efficiency' %}">Breakeven Efficiency</a>
+                        <a class="collapse-item" href="{% url 'charts:securitybudget' %}">Security Budget <span class="badge badge-pill badge-secondary">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:efficiency' %}">Breakeven Efficiency <span class="badge badge-pill badge-secondary">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_hashrate' %}">P2Pool Hashrate <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_dominance' %}">P2Pool Dominance <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_miners' %}">P2Pool Miners <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_totalblocks' %}">P2Pool Blocks Found <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_totalhashes' %}">P2Pool Hashes Found <span class="badge badge-pill badge-danger">New</span></a>
                         <!--
                         <a class="collapse-item" href="{% url 'charts:difficulty' %}">Reward / Hashrate</a>
                         -->
@@ -362,13 +366,12 @@
                     data-parent="#accordionSidebar">
                     <div class="py-2 collapse-inner rounded">
                         <h6 class="collapse-header text-dark">Info:</h6>
+                        <a class="collapse-item" href="{% url 'charts:pageviews' %}">Pageviews <span class="badge badge-pill badge-secondary">New</span></a>
                         <a class="collapse-item" href="{% url 'charts:about' %}">About Us</a>
-                        <a class="collapse-item" href="{% url 'charts:pageviews' %}">Pageviews</a>
                         <a class="collapse-item" href="https://twitter.com/CryptoMorpheus_" target="_blank">Twitter</a>
                     </div>
                 </div>
             </li>
-
 
         </ul>
         <!-- End of Sidebar -->
