@@ -51,27 +51,38 @@ def add_coin(request):
         form = CoinForm(data=request.POST)
         if form.is_valid():
             add_coin = form.save(commit=False)
-
-            try:
-                day = datetime.datetime.strftime(add_coin.date, '%Y-%m-%d')
-                coin = Coin.objects.filter(name=add_coin.name).get(date=day)
+            coin = Coin.objects.filter(name=add_coin.name).filter(date=add_coin.date)
+            if coin:
                 coin.delete()
                 print('coin found and deleted')
-            except:
+            else:
                 print('coin not found')
-                pass
 
             add_coin.stocktoflow = (100/add_coin.inflation)**1.65 
+            print(add_coin.name)
+            print(add_coin.date)
+            print(add_coin.priceusd)
+            print(add_coin.pricebtc)
+            print(add_coin.inflation)
+            print(add_coin.transactions)
+            print(add_coin.hashrate)
+            print(add_coin.stocktoflow)
+            print(add_coin.supply)
+            print(add_coin.fee)
+            print(add_coin.revenue)
+            print(add_coin.blocksize)
+            print(add_coin.difficulty)
             add_coin.save()
             print('coin saved')
             message = 'Coin added to the database!'
 
-            print(str(add_coin.name) + ' ' +str(add_coin.date) + ' ' +str(add_coin.priceusd) + ' ' +str(add_coin.pricebtc) + ' ' +str(add_coin.inflation) + ' ' +str(add_coin.name) + ' ' +str(add_coin.transactions) + ' ' +str(add_coin.hashrate) + ' ' +str(add_coin.stocktoflow) + ' ' +str(add_coin.supply) + ' ' + ' ' +str(add_coin.fee) + ' ' + ' ' +str(add_coin.revenue) )
+            print(str(add_coin.name) + ' ' +str(add_coin.date) + ' ' +str(add_coin.priceusd) + ' ' +str(add_coin.pricebtc) + ' ' +str(add_coin.inflation) + ' ' +str(add_coin.transactions) + ' ' +str(add_coin.hashrate) + ' ' +str(add_coin.stocktoflow) + ' ' +str(add_coin.supply) + ' ' + ' ' +str(add_coin.fee) + ' ' + ' ' +str(add_coin.revenue) )
 
             print('updating p2pool')
             update_p2pool()
 
             print('updating database')
+            day = datetime.datetime.strftime(add_coin.date, '%Y-%m-%d')
             update_database(day, day)
             context = {'form': form, 'message': message}
             return render(request, 'charts/add_coin.html', context)
@@ -2885,6 +2896,9 @@ def translin(request):
     now_transactions = 0
     maximum = 0
 
+    coins = Coin.objects.order_by('date')
+    for coin in coins:
+        print(str(coin.name) + '    ' + str(coin.date))
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
         if coin.transactions > 200:
