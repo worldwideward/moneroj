@@ -53,7 +53,8 @@ def add_coin(request):
             add_coin = form.save(commit=False)
             coin = Coin.objects.filter(name=add_coin.name).filter(date=add_coin.date)
             if coin:
-                coin.delete()
+                for item in coin:
+                    item.delete()
                 print('coin found and deleted')
             else:
                 print('coin not found')
@@ -75,15 +76,12 @@ def add_coin(request):
             add_coin.save()
             print('coin saved')
             message = 'Coin added to the database!'
-
-            print(str(add_coin.name) + ' ' +str(add_coin.date) + ' ' +str(add_coin.priceusd) + ' ' +str(add_coin.pricebtc) + ' ' +str(add_coin.inflation) + ' ' +str(add_coin.transactions) + ' ' +str(add_coin.hashrate) + ' ' +str(add_coin.stocktoflow) + ' ' +str(add_coin.supply) + ' ' + ' ' +str(add_coin.fee) + ' ' + ' ' +str(add_coin.revenue) )
+            coin = Coin.objects.filter(name=add_coin.name).get(date=add_coin.date)
+            print('GET: ' + str(coin.name) + ' ' +str(coin.date) + ' ' +str(coin.priceusd) + ' ' +str(coin.pricebtc) + ' ' +str(coin.inflation) + ' ' +str(coin.transactions) + ' ' +str(coin.hashrate) + ' ' +str(coin.stocktoflow) + ' ' +str(coin.supply) + ' ' + ' ' +str(coin.fee) + ' ' + ' ' +str(coin.revenue))
 
             print('updating p2pool')
             update_p2pool()
 
-            print('updating database')
-            day = datetime.datetime.strftime(add_coin.date, '%Y-%m-%d')
-            update_database(day, day)
             context = {'form': form, 'message': message}
             return render(request, 'charts/add_coin.html', context)
         else:
@@ -881,11 +879,12 @@ def get_latest_metrics(symbol, url):
             day, hour = str(item['time']).split('T')
             day = datetime.datetime.strptime(day, '%Y-%m-%d')
             day = datetime.datetime.strftime(day, '%Y-%m-%d')
-            coin = Coin.objects.filter(name=symbol).filter(date=day)
-            if coin:
-                coin.delete()
             try:
+                coin = Coin.objects.filter(name=symbol).get(date=day)
+            except:
                 coin = Coin()
+
+            try:
                 coin.name = symbol
                 coin.date = day
                 try:
@@ -922,9 +921,6 @@ def get_latest_metrics(symbol, url):
                     coin.transactions = float(item['TxCnt'])
                 except:
                     coin.transactions = 0
-                
-                if (symbol == 'xmr' or symbol == 'btc') and (coin.inflation == 0 or coin.supply == 0 or coin.hashrate == 0 or coin.transactions == 0):
-                    continue
 
                 coin.save()
                 count += 1
@@ -1127,7 +1123,6 @@ def update_database(date_from=None, date_to=None):
             coin_xmr2 = Coin.objects.filter(name='xmr').get(date=date_aux2)
             coin_btc = Coin.objects.filter(name='btc').get(date=date_aux)
             coin_btc2 = Coin.objects.filter(name='btc').get(date=date_aux2)
-
             try:
                 coin_dash = Coin.objects.filter(name='dash').get(date=date_aux)
             except:
@@ -1145,15 +1140,19 @@ def update_database(date_from=None, date_to=None):
             if coin_btc.inflation == 0 or coin_xmr.inflation == 0:
                 return count
 
+
+
             count_aux = 0
             found = False
             while count_aux < 100 and not(found):
+
                 try:
                     date_aux2 = date_aux - timedelta(count_aux)
                     social_btc = Social.objects.filter(name='Bitcoin').get(date=date_aux2)
                     social_xmr = Social.objects.filter(name='Monero').get(date=date_aux2)
                     social_crypto = Social.objects.filter(name='CryptoCurrency').get(date=date_aux2)
                     found = True
+
                 except:
                     count_aux += 1
                     found = False
@@ -1162,6 +1161,7 @@ def update_database(date_from=None, date_to=None):
 
         try:
             data = Sfmodel.objects.get(date=coin_xmr.date)
+
         except:
             data = Sfmodel()
             data.priceusd = 0
@@ -1170,10 +1170,8 @@ def update_database(date_from=None, date_to=None):
             data.greyline = 0
             data.color = 0
             data.date = coin_xmr.date
-        if data.pricebtc == 0:
-            data.pricebtc = coin_xmr.pricebtc
-        if data.priceusd == 0:
-            data.priceusd = coin_xmr.priceusd
+        data.pricebtc = coin_xmr.pricebtc
+        data.priceusd = coin_xmr.priceusd
         if data.stocktoflow == 0 and coin_xmr.supply > 0:
             supply = int(coin_xmr.supply)*10**12
             reward = (2**64 -1 - supply) >> 19
@@ -1272,6 +1270,7 @@ def update_database(date_from=None, date_to=None):
         data.dash_marketcap = coin_dash.priceusd*coin_dash.supply
         data.grin_marketcap = coin_grin.priceusd*coin_grin.supply
         data.zcash_marketcap = coin_zcash.priceusd*coin_zcash.supply
+
         # Transactions charts
         try:
             data.xmr_transacpercentage = coin_xmr.transactions/coin_btc.transactions
@@ -4233,9 +4232,9 @@ def sfmodel(request):
         symbol = 'zec'
         url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
         get_latest_metrics(symbol, url)
-        symbol = 'xmr'
-        url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
-        get_latest_metrics(symbol, url)
+        #symbol = 'xmr'
+        #url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time #url = data["metrics_provider"][0]["metrics_url"] + symbol + data["metrics_provider"][0]["metrics"] + '&start_time=' + start_time
+        #get_latest_metrics(symbol, url)
 
         print('p2pool')
         update_p2pool()
