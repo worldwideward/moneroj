@@ -122,6 +122,28 @@ def get_history(request, symbol, start_time=None, end_time=None):
 
     url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time 
 
+    coins = Coin.objects.filter(name=symbol).order_by('-date')
+    for coin in coins:
+        if coin.supply > 0:
+            supply = coin.supply
+            break
+    for coin in coins:
+        if coin.inflation > 0:
+            inflation = coin.inflation
+            break
+    for coin in coins:
+        if coin.hashrate > 0:
+            hashrate = coin.hashrate
+            break
+    for coin in coins:
+        if coin.transactions > 0:
+            transactions = coin.transactions
+            break
+    for coin in coins:
+        if coin.priceusd > 0:
+            priceusd = coin.priceusd
+            break
+
     while update: 
         response = requests.get(url)
         data_aux = json.loads(response.text)
