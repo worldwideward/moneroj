@@ -38,6 +38,48 @@ api = PushshiftAPI()
 
 # Add manually a new entrance for coin
 # To be used when there's a problem with the API
+
+def get_monero_data():
+    data = get_latest_price('xmr')
+    data_aux = get_latest_price('btc')
+    if not(data):
+        print('error updating rank')
+        return False
+    else:
+        name = 'xmr'
+        date_aux = date.today() - timedelta(1)
+        date_aux = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
+        date_aux2 = date.today() - timedelta(2)
+        date_aux2 = datetime.datetime.strftime(date_aux2, '%Y-%m-%d')
+        supply = int(data['data']['XMR']['circulating_supply'])
+        priceusd = float(data['data']['XMR']['quote']['USD']['price'])
+        pricebtc = float(data['data']['XMR']['quote']['USD']['price'])/float(data_aux['data']['BTC']['quote']['USD']['price'])
+        try:
+            coin = Coin.objects.filter(name='xmr').get(date=date_aux)
+        except:
+            return False
+        inflation = 100*365*(float(supply - coin.supply))/float(coin.supply)
+        stocktoflow = (100/inflation)**1.65 
+
+        url = 'https://xmrchain.net/api/networkinfo'
+        response = requests.get(url)
+        data = json.loads(response.text)
+        difficulty = int(data['data']['difficulty'])
+        hashrate = int(data['data']['hash_rate'])
+        height = int(data['data']['height'])
+        size = 0
+
+        for count in range(height):
+            url = 'https://xmrchain.net/api/block/' + str(height - count - 1)
+            response = requests.get(url)
+            data = json.loads(response.text)
+            timestamp_utc = datetime.datetime.strptime(data['data']['timestamp_utc'], '%Y-%m-%d %H:%M:%S')
+            print('!!!!!!!!!!!')
+            print(timestamp_utc)
+            break
+
+    return True
+
 @login_required
 def add_coin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
@@ -977,11 +1019,11 @@ def data_prep_comments(term, start_time, end_time, filters, limit):
     return pd.DataFrame(comments) 
 
 # Get latest price data for Monero
-def get_latest_price():
+def get_latest_price(symbol):
     with open("settings.json") as file:
         data = json.load(file)
 
-        url = data["metrics_provider"][0]["price_url_old"]
+        url = data["metrics_provider"][0]["price_url_old"] + symbol
         parameters = {
             'convert':'USD',
         }
@@ -999,7 +1041,7 @@ def get_latest_price():
             print('getting latest data')
             print(data)
             try:
-                if data['data']['XMR']['cmc_rank']:
+                if data['data'][symbol.upper()]['cmc_rank']:
                     print('new data received')
                     pass
                 else:
@@ -1050,7 +1092,7 @@ def update_dominance(data):
 
 # Get latest rank value and update
 def update_rank():
-    data = get_latest_price()
+    data = get_latest_price('xmr')
     if not(data):
         print('error updating rank')
         return False
@@ -1554,6 +1596,7 @@ def index(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(True)
 
+    get_monero_data()
     dt = datetime.datetime.now(timezone.utc).timestamp()
     symbol = 'xmr'
 
