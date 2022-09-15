@@ -34,90 +34,70 @@ locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 # This loads Reddit stats about a subreddit
 api = PushshiftAPI() 
 
+##########################################
+#   Asynchronous get block data
+########################################## 
+async def get_block_data(session, block: str):
+    url = 'https://xmrchain.net/api/block/' + block
+    async with session.get(url) as res:
+        data = await res.read()
+        data = json.loads(data)
+        data['provider'] = 'block_data_xmrchain'
+        if res.status < 299:
+            data['success'] = True
+        else:
+            data['success'] = False
+        return data
+
+##########################################
+#   Asynchronous get network data
+########################################## 
+async def get_network_data(session, block: str):
+    url = 'https://xmrchain.net/api/networkinfo'
+    async with session.get(url) as res:
+        data = await res.read()
+        data = json.loads(data)
+        data['provider'] = 'network_data_xmrchain'
+        if res.status < 299:
+            data['success'] = True
+        else:
+            data['success'] = False
+        return data
+
+##########################################
+#   Asynchronous get coinmarketcap data
+########################################## 
+async def get_coinmarketcap_data(session, symbol: str, convert: str):
+    with open("settings.json") as file:
+        data = json.load(file)
+        file.close()
+
+    url = data["metrics_provider"][0]["price_url_old"] + symbol
+    parameters = {'convert': convert,}
+    headers = {'Accepts': 'application/json', data["metrics_provider"][0]["api_key_name"]: data["metrics_provider"][0]["api_key_value"],}
+
+    async with session.get(url, headers=headers, params=parameters) as res:
+        data = await res.read()
+        data = json.loads(data)
+        data['provider'] = 'coinmarketcap'
+        if res.status < 299:
+            try:
+                if data['data'][symbol.upper()]['cmc_rank']:
+                    data['success'] = True
+                else:
+                    data['success'] = False
+            except:
+                data['success'] = False
+        else:
+            data['success'] = False
+        return data
+
 ###########################################
 # Useful functions for admins
 ###########################################
 
 # Add manually a new entrance for coin
 # To be used when there's a problem with the API
-
-async def get_monero_data():
-    data = get_latest_price('xmr')
-    data_aux = get_latest_price('btc')
-    if not(data):
-        print('error updating rank')
-        return False
-    else:
-        name = 'xmr'
-        date_aux = date.today() - timedelta(1)
-        date_aux = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
-        date_aux2 = date.today() - timedelta(2)
-        date_aux2 = datetime.datetime.strftime(date_aux2, '%Y-%m-%d')
-        supply = int(data['data']['XMR']['circulating_supply'])
-        priceusd = float(data['data']['XMR']['quote']['USD']['price'])
-        pricebtc = float(data['data']['XMR']['quote']['USD']['price'])/float(data_aux['data']['BTC']['quote']['USD']['price'])
-        try:
-            coin = Coin.objects.filter(name='xmr').get(date=date_aux)
-        except:
-            return False
-        inflation = 100*365*(float(supply - coin.supply))/float(coin.supply)
-        stocktoflow = (100/inflation)**1.65 
-
-        url = 'https://xmrchain.net/api/networkinfo'
-        response = requests.get(url)
-        data = json.loads(response.text)
-        difficulty = int(data['data']['difficulty'])
-        hashrate = int(data['data']['hash_rate'])
-        height = int(data['data']['height'])
-
-        ##########################################
-        #   Asynchronous
-        ##########################################
-        actions = []
-        my_timeout = aiohttp.ClientTimeout(
-            total=5,
-            sock_connect=10, 
-            sock_read=5 
-        )
-        client_args = dict(
-            trust_env=True,
-            timeout=my_timeout
-        )
-
-        async with aiohttp.ClientSession(**client_args) as session:  
-            for count in range(1, 1500):
-                block = str(height - count)
-                print(block)
-                actions.append(asyncio.ensure_future(get_block(session, block)))
-
-            try:
-                responses = await asyncio.gather(*actions, return_exceptions=True)
-            except asyncio.exceptions.TimeoutError:
-                print('Timeout!')
-
-            for response in responses:
-                try:
-                    print(datetime.datetime.strptime(response['data']['timestamp_utc'], '%Y-%m-%d %H:%M:%S'))
-                except:
-                    print('error')
-
-    return True
-
-##########################################
-#   Asynchronous get block data
-########################################## 
-async def get_block(session, block: str):
-    url = 'https://xmrchain.net/api/block/' + block
-    async with session.get(url) as res:
-        if res.status < 299:
-            data = await res.read()
-            data = json.loads(data)
-            return data
-        else:
-            return False
-
-
-
 @login_required
 def add_coin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
@@ -1126,13 +1106,12 @@ def update_dominance(data):
         else:
             print('spreadsheet already with the latest data')
             return False
-
-    #print('updated')
     return data
 
 # Get latest rank value and update
-def update_rank():
-    data = get_latest_price('xmr')
+def update_rank(data=None):
+    if not(data):
+        data = get_latest_price('xmr')
     if not(data):
         print('error updating rank')
         return False
@@ -1163,7 +1142,6 @@ def update_rank():
             print('spreadsheet already with the latest data')
             return data
 
-    #print('updated')
     return data
 
 # Load Reddit api to check if there are new followers
@@ -1635,56 +1613,61 @@ def update_p2pool():
 async def index(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(True)
+
     ###################################################################################
 
-    data = get_latest_price('xmr')
-    data_aux = get_latest_price('btc')
-    if not(data):
-        print('error updating')
-        return False
-    else:
-        name = 'xmr'
-        yesterday = date.today() - timedelta(1)
+    dt = datetime.datetime.now(timezone.utc).timestamp()
+    symbol = 'xmr'
+
+    ###################################################################################
+
+    coins = Coin.objects.filter(name=symbol).order_by('-date')
+    supply = 0
+    if coins:
+        for coin in coins:
+            if coin.supply > 0:
+                supply = coin.supply
+                inflation = coin.inflation
+                break
+    if supply == 0:
+        message = 'Website under maintenance. Check back in a few minutes'
+        context = {'message': message}
+        return render(request, 'charts/maintenance.html', context)
+
+    ###################################################################################
+
+    url = 'https://xmrchain.net/api/networkinfo'
+    response = requests.get(url)
+    data = json.loads(response.text)
+    height = int(data['data']['height'])
+    difficulty = int(data['data']['difficulty'])
+    hashrate = int(data['data']['hash_rate'])
+    blocksize = 0
+    name = 'xmr'
+    yesterday = date.today() - timedelta(1)
+
+    ##########################################
+    #   Asynchronous
+    ##########################################
+    if yesterday > coin.date:
         yesterday = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
-        supply = int(data['data']['XMR']['circulating_supply'])
-        priceusd = float(data['data']['XMR']['quote']['USD']['price'])
-        pricebtc = float(data['data']['XMR']['quote']['USD']['price'])/float(data_aux['data']['BTC']['quote']['USD']['price'])
-        try:
-            coins = Coin.objects.filter(name='xmr').order_by('-date')
-            for coin in coins:
-                if coin.supply > 0:
-                    break
-        except:
-            return False
-        inflation = 100*365*(float(supply - coin.supply))/float(coin.supply)
-        stocktoflow = (100/inflation)**1.65 
-
-        url = 'https://xmrchain.net/api/networkinfo'
-        response = requests.get(url)
-        data = json.loads(response.text)
-        difficulty = int(data['data']['difficulty'])
-        hashrate = int(data['data']['hash_rate'])
-        height = int(data['data']['height'])
-
-        ##########################################
-        #   Asynchronous
-        ##########################################
         actions = []
         my_timeout = aiohttp.ClientTimeout(
-            total=5,
+            total=10,
             sock_connect=10, 
-            sock_read=5 
+            sock_read=10 
         )
         client_args = dict(
             trust_env=True,
             timeout=my_timeout
         )
 
-        blocksize = 0
         async with aiohttp.ClientSession(**client_args) as session:  
-            for count in range(1, 1000):
+            for count in range(1, 1400):
                 block = str(height - count)
-                actions.append(asyncio.ensure_future(get_block(session, block)))
+                actions.append(asyncio.ensure_future(get_block_data(session, block)))
+            actions.append(asyncio.ensure_future(get_coinmarketcap_data(session, 'xmr', 'USD')))
+            actions.append(asyncio.ensure_future(get_coinmarketcap_data(session, 'xmr', 'BTC')))
 
             try:
                 responses = await asyncio.gather(*actions, return_exceptions=True)
@@ -1696,27 +1679,50 @@ async def index(request):
             txs = 0
             revenue = 0
             fees = 0
+            priceusd = 0
+            pricebtc = 0
             for response in responses:
-                try:
-                    date_aux = response['data']['timestamp_utc'].split(' ')[0]
-                    if date_aux == yesterday:
-                        success += 1
-                        blocksize += int(response['data']['size'])
-                        for tx in response['data']['txs']:
-                            if tx['coinbase']:
-                                revenue += int(tx['xmr_outputs'])
-                            else:
-                                txs += 1
-                                fees += int(tx['tx_fee'])
-                                revenue += int(tx['tx_fee'])
-                except:
+                if response:
+                    try:
+                        if response['provider'] == 'block_data_xmrchain':
+                            date_aux = response['data']['timestamp_utc'].split(' ')[0]
+                            if date_aux == yesterday:
+                                success += 1
+                                try:
+                                    blocksize += int(response['data']['size'])
+                                    for tx in response['data']['txs']:
+                                        if tx['coinbase']:
+                                            revenue += int(tx['xmr_outputs'])
+                                        else:
+                                            txs += 1
+                                            fees += int(tx['tx_fee'])
+                                            revenue += int(tx['tx_fee'])
+                                except:
+                                    errors += 1
+
+                        if response['provider'] == 'coinmarketcap':
+                            try:
+                                priceusd = float(response['data']['XMR']['quote']['USD']['price'])
+                                update_rank(response)    
+                                update_dominance(response)
+                            except:
+                                try:
+                                    pricebtc = float(response['data']['XMR']['quote']['BTC']['price'])
+                                except:
+                                    errors += 1
+                    except:
+                        errors += 1
+                else:
                     errors += 1
+
             blocksize = blocksize/success
             revenue = float(revenue)/10**12
             fees = float(fees)/10**12
             inflation = 100*365*(revenue)/float(coin.supply)
+            stocktoflow = (100/inflation)**1.65 
             supply = coin.supply + revenue
                     
+            print('Name: ' + name)
             print('Date: ' + str(yesterday))
             print('Success: ' + str(success))
             print('Errors: ' + str(errors))
@@ -1731,42 +1737,33 @@ async def index(request):
             print('Priceusd: ' + str(priceusd))
             print('Pricebtc: ' + str(pricebtc))
             print('Supply: ' + str(supply))
-            print('Inflation: ' + str(inflation))
-            print('Inflation: ' + str(inflation))
 
+            try:
+                coin = Coin()
+                coin.name = name
+                coin.date = datetime.datetime.strptime(yesterday, '%Y-%m-%d')
+                coin.blocksize = blocksize
+                coin.transactions = txs
+                coin.revenue = revenue
+                coin.fee = fees
+                coin.inflation = inflation
+                coin.hashrate = hashrate
+                coin.difficulty = difficulty
+                coin.stocktoflow = stocktoflow
+                coin.priceusd = priceusd
+                coin.pricebtc = pricebtc
+                coin.supply = supply
+                coin.save()
+            except:
+                pass
 
     ###################################################################################
-    dt = datetime.datetime.now(timezone.utc).timestamp()
-    symbol = 'xmr'
 
-    try:
-        rank = list(Rank.objects.order_by('-date'))[0]
-    except:
-        message = 'Page under maintenance. Check back in a few minutes.'
-        context = {'message': message}
-        return render(request, 'charts/maintenance.html', context)
-
-    if rank.date < date.today():
-        data = update_rank()    
-        update_dominance(data)
-
-    coin = list(Coin.objects.filter(name=symbol).order_by('-date'))[0]
-    if coin:
-        now_inflation = coin.inflation
-        supply = int(coin.supply)*10**12
-        now_units = supply/(10**12)
-    else:
-        message = 'Website under maintenance. Check back in a few minutes'
-        context = {'message': message}
-        return render(request, 'charts/maintenance.html', context)
-
-    now_units = locale.format('%.0f', now_units, grouping=True)
-    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-
-    
+    supply = locale.format('%.0f', supply, grouping=True)
+    inflation = locale.format('%.2f', inflation, grouping=True)+'%'    
     dt = 'index.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
     print(dt)
-    context = {'now_inflation': now_inflation, 'now_units': now_units}
+    context = {'inflation': inflation, 'supply': supply}
     return render(request, 'charts/index.html', context)
 
 def pt(request):
