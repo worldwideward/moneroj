@@ -13,20 +13,16 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Necessary for assynchronous django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rest.settings')
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 STATIC_URL = '/static/'
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'dafsdasdfasfa7sdfs9d7das7f9as7df8ad43525fsffdssdg455$$###77saf9df79as79s'
@@ -34,12 +30,10 @@ SECRET_KEY = 'dafsdasdfasfa7sdfs9d7das7f9as7df8ad43525fsffdssdg455$$###77saf9df7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True 
 #DEBUG = False
-#STATIC_ROOT = "/var/www/moneropro/static/"
 
 ALLOWED_HOSTS = ['80.78.22.34', 'www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net', 'moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -84,8 +78,6 @@ WSGI_APPLICATION = 'moneropro.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -95,8 +87,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -114,15 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/3.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
