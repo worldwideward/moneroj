@@ -1715,7 +1715,9 @@ async def index(request):
             revenue = float(revenue)/10**12
             fees = float(fees)/10**12
             inflation = 100*365*(revenue)/float(coin.supply)
+            supply = coin.supply + revenue
                     
+            print('Date: ' + str(yesterday))
             print('Success: ' + str(success))
             print('Errors: ' + str(errors))
             print('Blocksize: ' + str(blocksize))
