@@ -1,3 +1,0 @@
-# moneropro
-
-License: MIT
