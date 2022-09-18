@@ -415,6 +415,8 @@ def update_database(date_from=None, date_to=None):
         # Marketcap charts
         data.btc_marketcap = coin_btc.priceusd*coin_btc.supply
         data.xmr_marketcap = coin_xmr.priceusd*coin_xmr.supply
+        print(coin_dash.priceusd)
+        print(coin_dash.supply)
         data.dash_marketcap = coin_dash.priceusd*coin_dash.supply
         data.grin_marketcap = coin_grin.priceusd*coin_grin.supply
         data.zcash_marketcap = coin_zcash.priceusd*coin_zcash.supply

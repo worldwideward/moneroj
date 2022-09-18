@@ -907,6 +907,8 @@ async def index(request):
     if now > 1:
         try:
             coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
+            coin_xmr.delete()
+            coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin_xmr:
                 print('xmr found yesterday')
                 if coin_xmr.transactions > 0 and coin_xmr.inflation > 0:
@@ -925,21 +927,27 @@ async def index(request):
 
     if now > 5:
         try:
-            coin_btc = Coin.objects.filter(name='btc').get(date=yesterday)
-            if coin_btc:
-                print('btc found yesterday')
-                if coin_btc.transactions > 0 and coin_btc.inflation > 0:
-                    print('no need to update btc')
+            coin_btc = Coin.objects.filter(name='btc').filter(date=yesterday)
+            coin_zec = Coin.objects.filter(name='zec').filter(date=yesterday)
+            coin_dash = Coin.objects.filter(name='dash').filter(date=yesterday)
+            coin_grin = Coin.objects.filter(name='grin').filter(date=yesterday)
+            if coin_btc and coin_zec and coin_dash and coin_grin:
+                print('coins found yesterday')
+                if coin_btc.transactions > 0 and coin_btc.inflation > 0 and coin_zec.supply > 0 and coin_dash.supply > 0 and coin_grin.supply > 0:
+                    print('no need to update coins')
                     update_btc = False
                 else:
-                    print('will update btc')
+                    print('will update coins')
                     coin_btc.delete()
+                    coin_zec.delete()
+                    coin_dash.delete()
+                    coin_grin.delete()
                     update_btc = True
             else:
-                print('no btc found yesterday - 1')
+                print('no coins found yesterday - 1')
                 update_btc = True
         except:
-            print('no btc found yesterday - 2')
+            print('no coins found yesterday - 2')
             update_btc = True  
 
     coins_xmr = Coin.objects.filter(name='xmr').order_by('-date')
@@ -3429,7 +3437,6 @@ def efficiency(request):
     context = {'xmr_efficiency': xmr_efficiency, 'btc_efficiency': btc_efficiency, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/efficiency.html', context)
 
-
 def compinflation(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
@@ -3493,7 +3500,6 @@ def compinflation(request):
     context = {'inflationxmr': inflationxmr, 'inflationdash': inflationdash, 'inflationgrin': inflationgrin, 'inflationzcash': inflationzcash, 'inflationbtc': inflationbtc,
     'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/compinflation.html', context)
-
 
 def comptransactions(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
