@@ -907,8 +907,6 @@ async def index(request):
     if now > 1:
         try:
             coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
-            coin_xmr.delete()
-            coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin_xmr:
                 print('xmr found yesterday')
                 if coin_xmr.transactions > 0 and coin_xmr.inflation > 0:
@@ -927,10 +925,10 @@ async def index(request):
 
     if now > 5:
         try:
-            coin_btc = Coin.objects.filter(name='btc').filter(date=yesterday)
-            coin_zec = Coin.objects.filter(name='zec').filter(date=yesterday)
-            coin_dash = Coin.objects.filter(name='dash').filter(date=yesterday)
-            coin_grin = Coin.objects.filter(name='grin').filter(date=yesterday)
+            coin_btc = list(Coin.objects.filter(name='btc').filter(date=yesterday))[0]
+            coin_zec = list(Coin.objects.filter(name='zec').filter(date=yesterday))[0]
+            coin_dash = list(Coin.objects.filter(name='dash').filter(date=yesterday))[0]
+            coin_grin = list(Coin.objects.filter(name='grin').filter(date=yesterday))[0]
             if coin_btc and coin_zec and coin_dash and coin_grin:
                 print('coins found yesterday')
                 if coin_btc.transactions > 0 and coin_btc.inflation > 0 and coin_zec.supply > 0 and coin_dash.supply > 0 and coin_grin.supply > 0:
