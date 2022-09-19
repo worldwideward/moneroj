@@ -891,6 +891,29 @@ async def index(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(True)
 
+    # coins = Coin.objects.filter(name='xmr').order_by('-date')
+    # for coin in coins:
+    #     if '2022-09-17' == datetime.datetime.strftime(coin.date, '%Y-%m-%d'):
+    #         coin.supply = 18175769
+    #         coin.save()
+    #         print('saved')
+    #     if '2022-09-16' == datetime.datetime.strftime(coin.date, '%Y-%m-%d'):
+    #         coin.supply = 18175284
+    #         coin.save()
+    #         print('saved')
+    #     if '2022-09-15' == datetime.datetime.strftime(coin.date, '%Y-%m-%d'):
+    #         coin.supply = 18174852
+    #         coin.save()
+    #         print('saved')
+    #     coins_aux = Coin.objects.filter(name='xmr').filter(date=coin.date)
+    #     count = 1
+    #     for coin_aux in coins_aux:
+    #         if count > 1:
+    #             print('deleted one')
+    #             print(coin_aux.date)
+    #             coin_aux.delete()
+    #         count += 1
+
     dt = datetime.datetime.now(timezone.utc).timestamp()
 
     coin = list(Coin.objects.order_by('-date'))[0]
@@ -901,6 +924,7 @@ async def index(request):
 
     now = int(datetime.datetime.now().strftime("%H"))
     yesterday = datetime.datetime.strftime(date.today() - timedelta(1), '%Y-%m-%d')
+    date_aux = datetime.datetime.strftime(date.today() - timedelta(2), '%Y-%m-%d')
     update_xmr = False
     update_btc = False
 
@@ -947,11 +971,10 @@ async def index(request):
         except:
             print('no coins found yesterday - 2')
             update_btc = True  
-
-    coins_xmr = Coin.objects.filter(name='xmr').order_by('-date')
-    for coin_xmr in coins_xmr:
-        if coin_xmr.supply > 0:
-            break
+    try:
+        coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
+    except:
+        coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
 
     if update_xmr:
         await asynchronous.update_xmr_data(yesterday, coin_xmr)

@@ -180,6 +180,8 @@ async def get_social_data(session, symbol):
 #################################################################################### 
 async def update_xmr_data(yesterday, coin):
     name = coin.name
+    Coin.objects.filter(name=coin.name).filter(date=yesterday).delete()
+
     url = 'https://xmrchain.net/api/networkinfo'
     response = requests.get(url)
     data = json.loads(response.text)
