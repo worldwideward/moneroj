@@ -9,77 +9,54 @@
 <!-- Content Wrapper -->
 <div id="content-wrapper" style="background-color:rgb(48, 44, 41)">
 
-    <!-- Main Content -->
-    <div id="content">
-
-        <!-- Begin Page Content -->
-        <div class="container-fluid"><br>
-            <div class="row">
-                <div class="col-xl-12 col-lg-12">
-                    <div class="card" id="graph1">
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">Comparison to Bitcoin
-                            </h6>
-                            <div class="dropdown no-arrow">
-                                <a class="dropdown-toggle" href="#" role="button"
-                                    onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
-                                    <i class="bx bx-expand text-gray-400"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body" style="height: 100px;">
-                            <div id="graph" style="height: 100%;"></div>
-                        </div>
-                    </div>
-                    <br>
+    <!-- Content Row -->
+    <div class="row" style="height: 700; margin: 10px 10px 10px 10px;">
+        <div class="card" id="graph1" style="width: 100%; height: 100%;">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                <h6 class="m-0 text-light">
+                    Total Blockchain Size for Monero and Bitcoin (KB)
+                </h6>
+                
+                <div class="dropdown no-arrow">
+                    <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
+                        About this chart?
+                    </a>
+                    <a class="dropdown-toggle" href="#" role="button"
+                        onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
+                        <i class="bx bx-expand text-gray-400"></i>
+                    </a>
                 </div>
             </div>
-
-
-            <div class="row">
-                <div class="col-xl-12 col-lg-12">
-                    <div class="card" id="graph2">
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                            <h6 class="m-0 text-light">Comparison to Bitcoin (aligned)
-                            </h6>
-                        </div>
-                        <div class="card-body" style="height: 100px;">
-                            <div id="graph3" style="height: 100%;"></div>
-                        </div>
-                    </div>
-                    <br>
-                </div>
+            <div class="card-body"  style="width: 100%; height: 100%; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">
+                <div id="graph"  style="width: 100%; height: 100%;  margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;"></div>
             </div>
-
-
-            <!-- Content Row -->
-            <div class="row">
-                <div class="col-xl-11 col-md-6 mb-4">
-                    <div class="alert alert-dark" role="alert">
-                        Not financial advice.
-                        For information about the chart, click the button >
-                    </div>
-                </div>
-                <div class="col-xl-1">
-                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" href="#"
-                        data-target="#id_Modal">
-                        <div class="col-auto">
-                            +
-                        </div>
-                    </button>
-                </div>
-            </div>
-
         </div>
-        <!-- /.container-fluid -->
-
     </div>
-    <!-- End of Main Content -->
+
+    <!-- Content Row -->
+    <div class="row" style="height: 700; margin: 10px 10px 10px 10px;">
+        <div class="card" id="graph2" style="width: 100%; height: 100%;">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
+                <h6 class="m-0 text-light">
+                    Comparison to Bitcoin (aligned)
+                </h6>
+                
+                <div class="dropdown no-arrow">
+                    <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
+                        About this chart?
+                    </a>
+                </div>
+            </div>
+            <div class="card-body"  style="width: 100%; height: 100%; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">
+                <div id="graph3" style="width: 100%; height: 100%;  margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;"></div>
+            </div>
+        </div>
+    </div>
 
 </div>
 <!-- End of Content Wrapper -->
+
+
 
 <!-- Modal -->
 <div class="modal fade" id="id_Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
@@ -286,7 +263,7 @@
                 ,size: 13
             }
             ,gridcolor: "#333333"
-            ,range: ['2011-01-01', '']
+            ,range: ['2011-01-01', '2023-06-01']
             ,zeroline: true
         },
         margin: {
@@ -420,7 +397,7 @@
                 ,size: 7
             }
             ,gridcolor: "#444444"
-            ,range: ['2009-01-01', '']
+            ,range: ['2011-01-01', '2023-06-01']
             ,zeroline: true
         },
         margin: {

@@ -914,8 +914,6 @@ async def index(request):
     #             coin_aux.delete()
     #         count += 1
 
-    dt = datetime.datetime.now(timezone.utc).timestamp()
-
     coin = list(Coin.objects.order_by('-date'))[0]
     if not(coin):
         message = 'Website under maintenance. Check back in a few minutes'
@@ -985,8 +983,7 @@ async def index(request):
 
     supply = locale.format('%.0f', coin_xmr.supply, grouping=True)
     inflation = locale.format('%.2f', coin_xmr.inflation, grouping=True)+'%'    
-    dt = 'index.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'inflation': inflation, 'supply': supply}
     return render(request, 'charts/index.html', context)
 
@@ -1036,7 +1033,7 @@ def social(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     dates = []
     dates2 = []
@@ -1072,9 +1069,7 @@ def social(request):
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
     last_crypto = locale.format('%.0f', last_crypto, grouping=True)
-    
-    dt = 'social.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'dates2': dates2, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social.html', context)
 
@@ -1082,7 +1077,7 @@ def social2(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     dates = []
     social_btc = []
@@ -1117,9 +1112,7 @@ def social2(request):
 
     last_xmr = '$' + locale.format('%.0f', last_xmr, grouping=True)
     last_btc = '$' + locale.format('%.0f', last_btc, grouping=True)
-    
-    dt = 'social2.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'dates2': dates2, 'social_btc': social_btc, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'last_btc': last_btc}
     return render(request, 'charts/social2.html', context)
 
@@ -1127,7 +1120,7 @@ def social3(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -1153,9 +1146,7 @@ def social3(request):
 
     last_xmr = locale.format('%.1f', last_xmr, grouping=True)+ '%'
     last_crypto = locale.format('%.1f', last_crypto, grouping=True)+ '%'
-    
-    dt = 'social3.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'last_xmr': last_xmr, 'last_crypto': last_crypto}
     return render(request, 'charts/social3.html', context)
 
@@ -1163,7 +1154,7 @@ def social4(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     dates = []
     dates2 = []
@@ -1282,9 +1273,7 @@ def social4(request):
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
     last_crypto = locale.format('%.0f', last_crypto, grouping=True)
-    
-    dt = 'social4.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'speed_xmr': speed_xmr, 'speed_crypto': speed_crypto, 'speed_btc': speed_btc, 'newcomers_xmr': newcomers_xmr, 'newcomers_btc': newcomers_btc, 'newcomers_crypto': newcomers_crypto, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social4.html', context)
 
@@ -1292,7 +1281,7 @@ def social5(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     transactions = []
     dates = []
@@ -1317,9 +1306,7 @@ def social5(request):
 
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     now_transactions = locale.format('%.0f', now_transactions, grouping=True)
-    
-    dt = 'social5.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'now_transactions': now_transactions, 'transactions': transactions}
     return render(request, 'charts/social5.html', context)
 
@@ -1327,7 +1314,7 @@ def social6(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     dates = []
     social_xmr = []
@@ -1361,9 +1348,7 @@ def social6(request):
     last_xmr = locale.format('%.0f', last_xmr, grouping=True)
     last_btc = locale.format('%.0f', last_btc, grouping=True)
     last_crypto = locale.format('%.0f', last_crypto, grouping=True)
-    
-    dt = 'social6.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social6.html', context)
 
@@ -1371,7 +1356,7 @@ def social7(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     dates = []
     social_xmr = []
@@ -1405,8 +1390,6 @@ def social7(request):
     last_btc = locale.format('%.0f', last_btc, grouping=True)
     last_crypto = locale.format('%.0f', last_crypto, grouping=True)
     
-    dt = 'social7.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social7.html', context)
 
@@ -1414,7 +1397,7 @@ def pricelog(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -1459,9 +1442,7 @@ def pricelog(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-    
-    dt = 'pricelog.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'charts/pricelog.html', context)
 
@@ -1469,7 +1450,7 @@ def movingaverage(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
@@ -1515,9 +1496,7 @@ def movingaverage(request):
     for item in median:
         average1.append(item)
         average2.append(item*5)
-    
-    dt = 'movingaverage.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'color': color, 'average1': average1, 'average2': average2}
     return render(request, 'charts/movingaverage.html', context)
 
@@ -1525,7 +1504,7 @@ def powerlaw(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -1601,9 +1580,7 @@ def powerlaw(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-    
-    dt = 'powerlaw.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 
     'now_sf': now_sf, 'color': color, 'years': years, 'counter': counter, 'line1': line1, 'line2': line2, 'line3': line3}
     return render(request, 'charts/powerlaw.html', context)
@@ -1612,7 +1589,7 @@ def pricelin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -1658,9 +1635,7 @@ def pricelin(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-    
-    dt = 'pricelin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'charts/pricelin.html', context)
 
@@ -1668,7 +1643,7 @@ def pricesats(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     
     dates = []
     color = []
@@ -1698,9 +1673,7 @@ def pricesats(request):
     now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
     maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
     bottom = locale.format('%.4f', bottom, grouping=True) + ' BTC'
-    
-    dt = 'pricesats.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'color': color, 'bottom': bottom}
     return render(request, 'charts/pricesats.html', context)
 
@@ -1708,7 +1681,7 @@ def pricesatslog(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     
     dates = []
     color = []
@@ -1738,9 +1711,7 @@ def pricesatslog(request):
     now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
     maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
     bottom = locale.format('%.4f', bottom, grouping=True) + ' BTC'
-    
-    dt = 'pricesatslog.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'color': color, 'bottom': bottom}
     return render(request, 'charts/pricesatslog.html', context)
 
@@ -1748,7 +1719,7 @@ def fractal(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     dates1 = []
     dates2 = []
@@ -1778,9 +1749,7 @@ def fractal(request):
 
     now_multiple = locale.format('%.2f', now_multiple, grouping=True) + 'x'
     maximum = locale.format('%.2f', maximum, grouping=True) + 'x'
-    
-    dt = 'fractal.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'cycle1': cycle1, 'cycle2': cycle2, 'dates1': dates1, 'dates2': dates2, 'now_multiple': now_multiple, 'maximum': maximum}
     return render(request, 'charts/fractal.html', context)
 
@@ -1788,7 +1757,7 @@ def inflationfractal(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     dates1 = []
     dates2 = []
@@ -1827,9 +1796,7 @@ def inflationfractal(request):
 
     now_multiple = locale.format('%.2f', now_multiple, grouping=True) + 'x'
     maximum = locale.format('%.2f', maximum, grouping=True) + 'x'
-    
-    dt = 'inflationfractal.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'cycle1': cycle1, 'cycle2': cycle2, 'dates1': dates1, 'dates2': dates2, 'now_multiple': now_multiple, 'maximum': maximum}
     return render(request, 'charts/inflationfractal.html', context)
 
@@ -1837,7 +1804,7 @@ def golden(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     dates = []
     prices = []
@@ -1913,9 +1880,7 @@ def golden(request):
         else:
             price_cross.append('')
         i += 1
-    
-    dt = 'golden.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'prices': prices, 'm_350': m_350, 'm_350_0042': m_350_0042, 'm_350_0060': m_350_0060, 'm_350_0200': m_350_0200, 'm_350_0300': m_350_0300, 
     'm_350_0500': m_350_0500, 'm_350_0800': m_350_0800, 'm_350_1300': m_350_1300, 'median': median, 'm_111': m_111, 'price_cross': price_cross}
     return render(request, 'charts/golden.html', context)
@@ -1924,7 +1889,7 @@ def competitors(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     xmr = []
     dash = []
@@ -1993,9 +1958,7 @@ def competitors(request):
     now_grin = locale.format('%.2f', now_grin, grouping=True)
     now_zcash = locale.format('%.2f', now_zcash, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-    
-    dt = 'competitors.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/competitors.html', context)
@@ -2004,7 +1967,7 @@ def competitorslin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     xmr = []
     dash = []
@@ -2073,9 +2036,7 @@ def competitorslin(request):
     now_grin = locale.format('%.2f', now_grin, grouping=True)
     now_zcash = locale.format('%.2f', now_zcash, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-    
-    dt = 'competitorslin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/competitorslin.html', context)
@@ -2084,7 +2045,7 @@ def marketcap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -2128,9 +2089,7 @@ def marketcap(request):
     now_grin = '$'+locale.format('%.0f', now_grin, grouping=True)
     now_zcash = '$'+locale.format('%.0f', now_zcash, grouping=True)
     now_xmr = '$'+locale.format('%.0f', now_xmr, grouping=True)
-    
-    dt = 'marketcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/marketcap.html', context)
@@ -2139,7 +2098,7 @@ def inflationreturn(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     count = 0
     xmr = []
     dash = []
@@ -2217,9 +2176,7 @@ def inflationreturn(request):
     now_zcash = locale.format('%.2f', now_zcash, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
     now_btc = locale.format('%.2f', now_btc, grouping=True)
-    
-    dt = 'inflationreturn.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'inflation_btc': inflation_btc,'inflation_xmr': inflation_xmr, 'inflation_dash': inflation_dash, 'inflation_grin': inflation_grin, 'inflation_zcash': inflation_zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'btc': btc, 'xmr': xmr, 'dash': dash, 'zcash': zcash, 'grin': grin}
     return render(request, 'charts/inflationreturn.html', context)
@@ -2228,7 +2185,7 @@ def bitcoin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     dates3 = []
     dates4 = []
@@ -2286,9 +2243,7 @@ def bitcoin(request):
 
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-    
-    dt = 'bitcoin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'btc': btc, 'xmr2': xmr2, 'btc2': btc2, 'xmr3': xmr3, 'dates': dates, 'dates2': dates2, 'dates3': dates3, 'dates4': dates4}
     return render(request, 'charts/bitcoin.html', context)
 
@@ -2296,7 +2251,7 @@ def translin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2327,9 +2282,7 @@ def translin(request):
     
     now_transactions = int(now_transactions)
     maximum = int(maximum)
-    
-    dt = 'translin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'charts/translin.html', context)
 
@@ -2337,7 +2290,7 @@ def pageviews(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     pageviews = []
     unique = []
     dates = []
@@ -2352,8 +2305,6 @@ def pageviews(request):
     print(unique)
     print(pageviews)
 
-    dt = 'pageviews.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'pageviews': pageviews, 'dates': dates, 'unique': unique}
     return render(request, 'charts/pageviews.html', context)
 
@@ -2361,7 +2312,7 @@ def transmonth(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2392,9 +2343,7 @@ def transmonth(request):
 
     now_transactions = locale.format('%.0f', now_transactions, grouping=True)
     maximum = locale.format('%.0f', maximum, grouping=True)
-    
-    dt = 'transmonth.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'charts/transmonth.html', context)
 
@@ -2402,7 +2351,7 @@ def percentmonth(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2448,9 +2397,7 @@ def percentmonth(request):
 
     now_transactions = locale.format('%.1f', total, grouping=True) + ' %'
     maximum = locale.format('%.1f', maximum, grouping=True) + ' %'
-    
-    dt = 'percentmonth.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'charts/percentmonth.html', context)
 
@@ -2458,7 +2405,7 @@ def deviation(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     pricexmr = []
     dates = []
@@ -2499,8 +2446,6 @@ def deviation(request):
             deviation_price.append((float(m_short_price[count])-float(m_long_price[count]))/(1))
             deviation_percentage.append(100*(float(m_short_price[count])-float(m_long_price[count]))/(float(m_long_price[count])))
 
-    dt = 'deviation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'deviation_percentage': deviation_percentage, 'deviation_price': deviation_price, 'dates': dates, 'pricexmr': pricexmr}
     return render(request, 'charts/deviation.html', context)
 
@@ -2508,7 +2453,7 @@ def deviation_tx(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2569,8 +2514,6 @@ def deviation_tx(request):
                 calculation = -100
             deviation_percentage.append(calculation)
 
-    dt = 'deviation_tx.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'deviation_percentage': deviation_percentage, 'dates': dates, 'pricexmr': pricexmr}
     return render(request, 'charts/deviation_tx.html', context)
 
@@ -2578,7 +2521,7 @@ def percentage(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     transactions = []
@@ -2598,9 +2541,7 @@ def percentage(request):
     
     now_transactions = locale.format('%.1f', now_transactions, grouping=True) + '%'
     maximum = locale.format('%.1f', maximum, grouping=True) + '%'
-    
-    dt = 'percentage.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'transactions': transactions, 'dates': dates, 'now_transactions': now_transactions, 'maximum': maximum}
     return render(request, 'charts/percentage.html', context)
 
@@ -2608,7 +2549,7 @@ def translog(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2636,9 +2577,7 @@ def translog(request):
     
     now_transactions = int(now_transactions)
     maximum = int(maximum)
-    
-    dt = 'translog.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'charts/translog.html', context)
 
@@ -2646,7 +2585,7 @@ def hashrate(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     hashrate = []
     dates = []
@@ -2663,9 +2602,7 @@ def hashrate(request):
             hashrate.append('')
 
     now_hashrate = locale.format('%.0f', now_hashrate, grouping=True)
-    
-    dt = 'hashrate.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate}
     return render(request, 'charts/hashrate.html', context)
 
@@ -2673,7 +2610,7 @@ def hashprice(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     hashrate = []
     dates = []
@@ -2702,9 +2639,7 @@ def hashprice(request):
         count += 1
     
     now_hashrate = locale.format('%.8f', now_hashrate, grouping=True)
-    
-    dt = 'hashprice.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'buy': buy, 'sell': sell}
     return render(request, 'charts/hashprice.html', context)
 
@@ -2712,7 +2647,7 @@ def hashvsprice(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     hashrate = []
     prices = []
@@ -2746,9 +2681,7 @@ def hashvsprice(request):
     now_hashrate = locale.format('%.0f', now_hashrate, grouping=True)
     now_priceusd = '$' + locale.format('%.2f', now_priceusd, grouping=True)
     now_pricebtc = locale.format('%.5f', now_pricebtc, grouping=True) + ' BTC'
-    
-    dt = 'hashvsprice.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'prices': prices, 'now_pricebtc': now_pricebtc, 'now_priceusd': now_priceusd}
     return render(request, 'charts/hashvsprice.html', context)
 
@@ -2756,7 +2689,7 @@ def metcalfesats(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     
     color = []
@@ -2789,9 +2722,7 @@ def metcalfesats(request):
     now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
     now_metcalfe = locale.format('%.4f', now_metcalfe, grouping=True) + ' BTC'
     maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
-    
-    dt = 'metcalfesats.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
     return render(request, 'charts/metcalfesats.html', context)
 
@@ -2799,7 +2730,7 @@ def metcalfesats_deviation(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     
     metcalfe_percentage = []
@@ -2821,9 +2752,7 @@ def metcalfesats_deviation(request):
     
     now_metcalfe = locale.format('%.4f', now_metcalfe, grouping=True) 
     now_metcalfe_percentage = locale.format('%.0f', now_metcalfe_percentage, grouping=True) 
-    
-    dt = 'metcalfesats_deviation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'metcalfe': metcalfe, 'dates': dates, 'now_metcalfe': now_metcalfe, 'now_metcalfe_percentage': now_metcalfe_percentage, 'metcalfe_percentage': metcalfe_percentage}
     return render(request, 'charts/metcalfesats_deviation.html', context)
 
@@ -2831,7 +2760,7 @@ def metcalfe_deviation(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     
     metcalfe_percentage = []
@@ -2853,9 +2782,7 @@ def metcalfe_deviation(request):
     
     now_metcalfe = locale.format('%.0f', now_metcalfe, grouping=True) 
     now_metcalfe_percentage = locale.format('%.0f', now_metcalfe_percentage, grouping=True) 
-    
-    dt = 'metcalfe_deviation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'metcalfe': metcalfe, 'dates': dates, 'now_metcalfe': now_metcalfe, 'now_metcalfe_percentage': now_metcalfe_percentage, 'metcalfe_percentage': metcalfe_percentage}
     return render(request, 'charts/metcalfe_deviation.html', context)
 
@@ -2863,7 +2790,7 @@ def metcalfeusd(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
     
     color = []
@@ -2896,9 +2823,7 @@ def metcalfeusd(request):
     now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
     now_metcalfe = "$"+ locale.format('%.2f', now_metcalfe, grouping=True)
     maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
-    
-    dt = 'metcalfeusd.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
     return render(request, 'charts/metcalfeusd.html', context)
 
@@ -2906,7 +2831,7 @@ def coins(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     supplyxmr = []
@@ -2994,9 +2919,7 @@ def coins(request):
         
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-    
-    dt = 'coins.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'supplyxmr': supplyxmr, 'supplybtc': supplybtc, 'fsupplyxmr': fsupplyxmr, 'fsupplybtc': fsupplybtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/coins.html', context)
 
@@ -3004,7 +2927,7 @@ def dailyemission(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     emissionbtc = []
@@ -3043,9 +2966,7 @@ def dailyemission(request):
     now_xmr = "$" + locale.format('%.0f', now_xmr, grouping=True)
     high_btc = "$" + locale.format('%.0f', high_btc, grouping=True)
     high_xmr = "$" + locale.format('%.0f', high_xmr, grouping=True)
-    
-    dt = 'dailyemission.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'high_xmr': high_xmr, 'high_btc': high_btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/dailyemission.html', context)
 
@@ -3053,7 +2974,7 @@ def extracoins(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     nsupply = []
@@ -3127,9 +3048,7 @@ def extracoins(request):
         nsupply.append('')
         
     now_diff = locale.format('%.0f', now_diff, grouping=True)
-    
-    dt = 'extracoins.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'nsupply': nsupply, 'fsupply': fsupply, 'dates': dates, 'now_diff': now_diff}
     return render(request, 'charts/extracoins.html', context)
 
@@ -3137,7 +3056,7 @@ def inflation(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     inflationxmr = []
@@ -3186,9 +3105,7 @@ def inflation(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + '%'
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
-    
-    dt = 'inflation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'inflationxmr': inflationxmr, 'inflationbtc': inflationbtc, 'finflationxmr': finflationxmr, 'finflationbtc': finflationbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/inflation.html', context)
 
@@ -3196,7 +3113,7 @@ def blocksize(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     xmr_blocksize = []
@@ -3221,9 +3138,7 @@ def blocksize(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + ' bytes'
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + ' bytes'
-    
-    dt = 'blocksize.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/blocksize.html', context)
 
@@ -3231,7 +3146,7 @@ def transactionsize(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     xmr_blocksize = []
@@ -3257,9 +3172,7 @@ def transactionsize(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + ' bytes'
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + ' bytes'
-    
-    dt = 'transactionsize.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/transactionsize.html', context)
 
@@ -3267,7 +3180,7 @@ def transactiondominance(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     xmr_dominance = []
@@ -3287,9 +3200,7 @@ def transactiondominance(request):
         
     now_xmr = locale.format('%.1f', now_xmr, grouping=True) + '%'
     maximum = locale.format('%.1f', maximum, grouping=True) + '%'
-    
-    dt = 'transactiondominance.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr_dominance': xmr_dominance, 'now_xmr': now_xmr, 'maximum': maximum, 'dates': dates}
     return render(request, 'charts/transactiondominance.html', context)
 
@@ -3297,7 +3208,7 @@ def difficulty(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     xmr_difficulty = []
@@ -3323,9 +3234,7 @@ def difficulty(request):
         
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-    
-    dt = 'difficulty.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr_difficulty': xmr_difficulty, 'btc_difficulty': btc_difficulty, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/difficulty.html', context)
 
@@ -3333,7 +3242,7 @@ def blockchainsize(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     xmr_blocksize = []
@@ -3372,9 +3281,7 @@ def blockchainsize(request):
         
     now_btc = locale.format('%.2f', now_btc/(1024*1024), grouping=True) + ' Gb'
     now_xmr = locale.format('%.2f', now_xmr/(1024*1024), grouping=True) + ' Gb'
-    
-    dt = 'blockchainsize.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/blockchainsize.html', context)
 
@@ -3382,7 +3289,7 @@ def securitybudget(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     xmr_security = []
@@ -3408,9 +3315,7 @@ def securitybudget(request):
         
     now_btc = '$' + locale.format('%.2f', now_btc, grouping=True) 
     now_xmr = '$' + locale.format('%.2f', now_xmr, grouping=True)
-    
-    dt = 'securitybudget.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr_security': xmr_security, 'btc_security': btc_security, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/securitybudget.html', context)
 
@@ -3418,7 +3323,7 @@ def efficiency(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     xmr_efficiency = []
@@ -3452,9 +3357,7 @@ def efficiency(request):
         
     now_btc = locale.format('%.0f', now_btc, grouping=True) 
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-    
-    dt = 'efficiency.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr_efficiency': xmr_efficiency, 'btc_efficiency': btc_efficiency, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/efficiency.html', context)
 
@@ -3462,7 +3365,7 @@ def compinflation(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -3515,9 +3418,7 @@ def compinflation(request):
     now_zcash = locale.format('%.2f', now_zcash, grouping=True) + '%'
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
     now_btc = locale.format('%.2f', now_btc, grouping=True) + '%'
-    
-    dt = 'compinflation.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'inflationxmr': inflationxmr, 'inflationdash': inflationdash, 'inflationgrin': inflationgrin, 'inflationzcash': inflationzcash, 'inflationbtc': inflationbtc,
     'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/compinflation.html', context)
@@ -3526,7 +3427,7 @@ def comptransactions(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -3579,9 +3480,7 @@ def comptransactions(request):
     now_zcash = locale.format('%.0f', now_zcash, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
     now_btc = locale.format('%.0f', now_btc, grouping=True) 
-    
-    dt = 'comptransactions.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'btc': btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/comptransactions.html', context)
 
@@ -3589,7 +3488,7 @@ def sfmodel(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     stock_to_flow = []
     projection = []
@@ -3640,8 +3539,6 @@ def sfmodel(request):
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
 
-    dt = 'sfmodel.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow, 'projection': projection, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'charts/sfmodel.html', context)
 
@@ -3649,7 +3546,7 @@ def sfmodellin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     stock_to_flow = []
     projection = []
@@ -3699,9 +3596,7 @@ def sfmodellin(request):
     now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
     now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
     now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
-    
-    dt = 'sfmodellin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow,'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'charts/sfmodellin.html', context)
 
@@ -3709,7 +3604,7 @@ def sfmultiple(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
 
     now_sf = 0
@@ -3747,9 +3642,7 @@ def sfmultiple(request):
 
     now_sf = locale.format('%.2f', now_sf, grouping=True)
     maximum = locale.format('%.2f', maximum, grouping=True)
-    
-    dt = 'sfmultiple.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'maximum': maximum, 'stock_to_flow': stock_to_flow, 'now_sf': now_sf, 'buy': buy, 'sell': sell, 'color': color}
     return render(request, 'charts/sfmultiple.html', context)
 
@@ -3757,7 +3650,7 @@ def marketcycle(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     color = []
     sell = []
@@ -3775,9 +3668,7 @@ def marketcycle(request):
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
     now_cycle = locale.format('%.2f', item.color, grouping=True)
-    
-    dt = 'marketcycle.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'color': color, 'sell': sell, 'buy': buy, 'now_cycle': now_cycle}
     return render(request, 'charts/marketcycle.html', context)
 
@@ -3785,7 +3676,7 @@ def shielded(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
 
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     values = []
     values2 = []
@@ -3834,8 +3725,6 @@ def shielded(request):
     monthly = format(int(monthly),',')
     dominance = locale.format('%.2f', dominance, grouping=True)
     
-    dt = 'shielded.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'dates': dates, 'values': values, 'values2': values2, 'values3': values3, "monthly": monthly, "dominance": dominance}
     return render(request, 'charts/shielded.html', context)
 
@@ -3843,7 +3732,7 @@ def thermocap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     dates = []
     values = []
@@ -3893,9 +3782,7 @@ def thermocap(request):
         count += 1  
 
     temperature = locale.format('%.2f', temperature, grouping=True)
-    
-    dt = 'thermocap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'temperature': temperature, 'values': values, 'thermocap': thermocap, 'color': color, 'calories': calories,
     'calories2': calories2, 'calories3': calories3}
     return render(request, 'charts/thermocap.html', context)
@@ -3904,7 +3791,7 @@ def sharpe(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     dates = []
     values = []
@@ -3943,9 +3830,7 @@ def sharpe(request):
         sharpe.append('')
     for item in aux:
         sharpe.append(item*math.sqrt(52))
-    
-    dt = 'sharpe.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'values': values, 'color': color, 'sharpe': sharpe}
     return render(request, 'charts/sharpe.html', context)
 
@@ -3960,7 +3845,7 @@ def transcost(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -3984,9 +3869,7 @@ def transcost(request):
 
     now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
     now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
-    
-    dt = 'transcost.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/transcost.html', context)
 
@@ -3994,7 +3877,7 @@ def transcostntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -4018,9 +3901,7 @@ def transcostntv(request):
         
     now_btc = locale.format('%.6f', now_btc, grouping=True)
     now_xmr = locale.format('%.6f', now_xmr, grouping=True)
-    
-    dt = 'transcostntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/transcostntv.html', context)
 
@@ -4028,7 +3909,7 @@ def minerrevcap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -4052,9 +3933,7 @@ def minerrevcap(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + "%"
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + "%"
-    
-    dt = 'minerrevcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevcap.html', context)
 
@@ -4062,7 +3941,7 @@ def minerrev(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -4086,9 +3965,7 @@ def minerrev(request):
 
     now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
     now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
-    
-    dt = 'minerrev.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrev.html', context)
 
@@ -4096,7 +3973,7 @@ def minerrevntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -4121,8 +3998,6 @@ def minerrevntv(request):
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
     
-    dt = 'minerrevntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevntv.html', context)
 
@@ -4130,7 +4005,7 @@ def minerfeesntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -4154,9 +4029,7 @@ def minerfeesntv(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-    
-    dt = 'minerfeesntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerfeesntv.html', context)
 
@@ -4164,7 +4037,7 @@ def minerfees(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -4188,9 +4061,7 @@ def minerfees(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True)
     now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-    
-    dt = 'minerfees.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerfees.html', context)
 
@@ -4198,7 +4069,7 @@ def dailyemissionntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     emissionbtc = []
@@ -4229,9 +4100,7 @@ def dailyemissionntv(request):
         
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-    
-    dt = 'dailyemissionntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/dailyemissionntv.html', context)
 
@@ -4239,7 +4108,7 @@ def commit(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -4263,9 +4132,7 @@ def commit(request):
         
     now_btc = locale.format('%.2f', now_btc, grouping=True) + " hashs / dollar"
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + " hashs / dollar"
-    
-    dt = 'commit.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/commit.html', context)
 
@@ -4273,7 +4140,7 @@ def commitntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     costbtc = []
@@ -4297,9 +4164,7 @@ def commitntv(request):
         
     now_btc = locale.format('%.0f', now_btc, grouping=True) + " hashs / btc"
     now_xmr = locale.format('%.0f', now_xmr, grouping=True) + " hashs / xmr"
-    
-    dt = 'commitntv.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/commitntv.html', context)
 
@@ -4307,7 +4172,7 @@ def competitorssats(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     xmr = []
     dash = []
@@ -4376,9 +4241,7 @@ def competitorssats(request):
     now_grin = locale.format('%.3f', now_grin, grouping=True)
     now_zcash = locale.format('%.3f', now_zcash, grouping=True)
     now_xmr = locale.format('%.3f', now_xmr, grouping=True)
-    
-    dt = 'competitorssats.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/competitorssats.html', context)
@@ -4387,7 +4250,7 @@ def competitorssatslin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     xmr = []
     dash = []
@@ -4456,9 +4319,7 @@ def competitorssatslin(request):
     now_grin = locale.format('%.3f', now_grin, grouping=True)
     now_zcash = locale.format('%.3f', now_zcash, grouping=True)
     now_xmr = locale.format('%.3f', now_xmr, grouping=True)
-    
-    dt = 'competitorssatslin.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/competitorssatslin.html', context)
@@ -4467,7 +4328,7 @@ def dread_subscribers(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     data1 = []
     data2 = []
@@ -4501,9 +4362,7 @@ def dread_subscribers(request):
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
     dominance = locale.format('%.2f', dominance, grouping=True)
-    
-    dt = 'dread_subscribers.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr, 'data1': data1, "data2": data2, "dominance": dominance}
     return render(request, 'charts/dread_subscribers.html', context)
 
@@ -4511,7 +4370,7 @@ def coincards(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     data1 = []
     data2 = []
@@ -4552,9 +4411,7 @@ def coincards(request):
     now_xmr = locale.format('%.1f', now_xmr, grouping=True)
     now_eth = locale.format('%.1f', now_eth, grouping=True)
     now_others = locale.format('%.1f', now_others, grouping=True)
-    
-    dt = 'coincards.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'now_others': now_others, 'data1': data1, "data2": data2, "data3": data3, "data4": data4}
     return render(request, 'charts/coincards.html', context)
 
@@ -4562,7 +4419,7 @@ def merchants(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     data1 = []
     data2 = []
@@ -4611,9 +4468,7 @@ def merchants(request):
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
     now_eth = locale.format('%.0f', now_eth, grouping=True)
-    
-    dt = 'merchants.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'charts/merchants.html', context)
 
@@ -4621,7 +4476,7 @@ def merchants_increase(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     data1 = []
     data2 = []
@@ -4670,9 +4525,7 @@ def merchants_increase(request):
     now_btc = locale.format('%.0f', now_btc, grouping=True)
     now_xmr = locale.format('%.0f', now_xmr, grouping=True)
     now_eth = locale.format('%.0f', now_eth, grouping=True)
-    
-    dt = 'merchants_increase.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'charts/merchants_increase.html', context)
 
@@ -4680,7 +4533,7 @@ def merchants_percentage(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     data1 = []
     data2 = []
@@ -4729,9 +4582,7 @@ def merchants_percentage(request):
     now_btc = locale.format('%.1f', now_btc, grouping=True)
     now_xmr = locale.format('%.1f', now_xmr, grouping=True)
     now_eth = locale.format('%.1f', now_eth, grouping=True)
-    
-    dt = 'merchants_percentage.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'charts/merchants_percentage.html', context)
 
@@ -4739,7 +4590,7 @@ def dominance(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     values = []
     pricexmr = []
@@ -4787,9 +4638,7 @@ def dominance(request):
 
     now_value = locale.format('%.2f', now_value, grouping=True)
     maximum = locale.format('%.2f', maximum, grouping=True)
-    
-    dt = 'dominance.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'charts/dominance.html', context)
 
@@ -4797,7 +4646,7 @@ def rank(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     symbol = 'xmr'
     values = []
     pricexmr = []
@@ -4859,9 +4708,7 @@ def rank(request):
         maximum = locale.format('%.0f', maximum, grouping=True) + 'rd'
     if maximum > 3:
         maximum = locale.format('%.0f', maximum, grouping=True) + 'th'
-    
-    dt = 'rank.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'charts/rank.html', context)
 
@@ -4869,7 +4716,7 @@ def p2pool_hashrate(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     hashrate = []
     hashrate_mini = []
     combined = []
@@ -4898,8 +4745,6 @@ def p2pool_hashrate(request):
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
-    dt = 'p2pool_hashrate.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'hashrate': hashrate, 'dates': dates, 'hashrate_mini': hashrate_mini, 'combined': combined}
     return render(request, 'charts/p2pool_hashrate.html', context)
 
@@ -4907,7 +4752,7 @@ def p2pool_dominance(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dominance = []
     dominance_mini = []
     dates = []
@@ -4935,8 +4780,6 @@ def p2pool_dominance(request):
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
-    dt = 'p2pool_dominance.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'dominance': dominance, 'dates': dates, 'dominance_mini': dominance_mini,'combined': combined}
     return render(request, 'charts/p2pool_dominance.html', context)
 
@@ -4944,7 +4787,7 @@ def p2pool_totalblocks(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     totalblocks = []
     totalblocks_mini = []
@@ -4974,8 +4817,6 @@ def p2pool_totalblocks(request):
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
-    dt = 'p2pool_totalblocks.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'totalblocks': totalblocks, 'totalblocks_mini': totalblocks_mini, 'dates': dates, 'combined': combined}
     return render(request, 'charts/p2pool_totalblocks.html', context)
 
@@ -4983,7 +4824,7 @@ def p2pool_totalhashes(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     totalblocks = []
     totalblocks_mini = []
@@ -5012,8 +4853,6 @@ def p2pool_totalhashes(request):
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
-    dt = 'p2pool_totalhashes.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'totalblocks': totalblocks, 'totalblocks_mini': totalblocks_mini, 'dates': dates, 'combined': combined}
     return render(request, 'charts/p2pool_totalhashes.html', context)
 
@@ -5021,7 +4860,7 @@ def p2pool_miners(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     miners = []
     miners_mini = []
     dates = []
@@ -5049,8 +4888,6 @@ def p2pool_miners(request):
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
-    dt = 'p2pool_miners.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'miners': miners, 'dates': dates, 'miners_mini': miners_mini, 'combined': combined}
     return render(request, 'charts/p2pool_miners.html', context)
 
@@ -5058,7 +4895,7 @@ def miningprofitability(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     dates = []
     value = []
     now_value = 0
@@ -5071,8 +4908,6 @@ def miningprofitability(request):
                 dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))     
                 value.append(now_value)
 
-    dt = 'miningprofitability.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
     context = {'value': value, 'dates': dates}
     return render(request, 'charts/miningprofitability.html', context)
 
@@ -5080,7 +4915,7 @@ def tail_emission(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     inflationxmr = []
     finflationxmr = []
     dates = []
@@ -5102,9 +4937,7 @@ def tail_emission(request):
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
         
     now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
-    
-    dt = 'tail_emission.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'inflationxmr': inflationxmr, 'finflationxmr': finflationxmr, 'now_xmr': now_xmr, 'dates': dates}
     return render(request, 'charts/tail_emission.html', context)
 
@@ -5112,7 +4945,7 @@ def privacymarketcap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -5165,9 +4998,7 @@ def privacymarketcap(request):
     now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
     top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
     top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
-    
-    dt = 'privacymarketcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'marketcaps': marketcaps, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates, 'xmr_marketcaps': xmr_marketcaps}
     return render(request, 'charts/privacymarketcap.html', context)
 
@@ -5175,7 +5006,7 @@ def privacydominance(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -5229,9 +5060,7 @@ def privacydominance(request):
     now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
     top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
     top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
-    
-    dt = 'privacymarketcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'marketcaps': marketcaps, 'dominances':dominances, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
     return render(request, 'charts/privacydominance.html', context)
 
@@ -5239,7 +5068,7 @@ def monerodominance(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
-    dt = datetime.datetime.now(timezone.utc).timestamp()
+ 
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -5289,8 +5118,6 @@ def monerodominance(request):
     now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
     top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
     top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
-    
-    dt = 'privacymarketcap.html ' + locale.format('%.2f', datetime.datetime.now(timezone.utc).timestamp() - dt, grouping=True)+' seconds'
-    print(dt)
+
     context = {'marketcaps': marketcaps, 'xmr_dominance': xmr_dominance, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
     return render(request, 'charts/monerodominance.html', context)
