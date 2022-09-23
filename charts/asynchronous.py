@@ -140,39 +140,32 @@ async def get_coin_data(session, symbol, url):
 #   Asynchronous get social metrics from reddit
 #################################################################################### 
 async def get_social_data(session, symbol):
-    date_now = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-    socials = Social.objects.filter(name=symbol).filter(date=date_now)
-
-    if not(socials):
-        print('getting new data')
+    yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
+    try:
+        social = Social.objects.filter(name=symbol).get(date=yesterday)
+    except:
         url = 'https://www.reddit.com/r/'+ symbol +'/about.json'
 
         async with session.get(url, headers={'User-agent': 'Checking new social data'}) as res:
             data = await res.read()
             data = json.loads(data) 
             data = data['data']
-            subscribers = data['subscribers']
+
             social = Social()
             social.name = symbol
-            social.date = date_now
-            social.subscriberCount = subscribers
+            social.date = yesterday
+            social.subscriberCount = data['subscribers']
 
-            date_aux = date.today()
-            date_aux = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
-            date_aux = datetime.datetime.strptime(date_aux, '%Y-%m-%d')
-            timestamp1 = int(datetime.datetime.timestamp(date_aux))
-
-            timestamp2 = int(timestamp1 - 86400)
-            limit = 2000
+            timestamp1 = int(datetime.datetime.timestamp(datetime.datetime.strptime(yesterday, '%Y-%m-%d')))
+            timestamp2 = int(timestamp1 - 7200)
+            limit = 1000
             filters = []
             data = data_prep_posts(symbol, timestamp2, timestamp1, filters, limit)
-            social.postsPerHour = len(data)/24
-
-            timestamp2 = int(timestamp1 - 7200)
-            limit = 2000
+            social.postsPerHour = len(data)/2
             data = data_prep_comments(symbol, timestamp2, timestamp1, filters, limit)
             social.commentsPerHour = len(data)/2
             social.save()
+            print(str(social.name) + ' - ' + str(social.date) + ' - ' + str(social.subscriberCount) + ' - ' + str(social.commentsPerHour) + ' - ' + str(social.postsPerHour) ) 
     return True
 
 ####################################################################################
@@ -323,9 +316,9 @@ async def update_others_data(date):
 
     async with aiohttp.ClientSession(**client_args) as session:  
         # reddit data
-        actions.append(asyncio.ensure_future(get_social_data(session, 'Monero')))
-        actions.append(asyncio.ensure_future(get_social_data(session, 'Bitcoin')))
-        actions.append(asyncio.ensure_future(get_social_data(session, 'Cryptocurrency')))
+        #actions.append(asyncio.ensure_future(get_social_data(session, 'Monero')))
+        #actions.append(asyncio.ensure_future(get_social_data(session, 'Bitcoin')))
+        #actions.append(asyncio.ensure_future(get_social_data(session, 'Cryptocurrency')))
         # coinmetrics data
         actions.append(asyncio.ensure_future(get_coin_data(session, 'btc', url_btc)))
         actions.append(asyncio.ensure_future(get_coin_data(session, 'dash', url_dash)))
@@ -338,7 +331,36 @@ async def update_others_data(date):
             await asyncio.gather(*actions, return_exceptions=True)
         except asyncio.exceptions.TimeoutError:
             print('Timeout!')
-        update_database(date, date)
+
+    return True
+
+####################################################################################
+#   Asynchronous get social and coins data
+#################################################################################### 
+async def update_social_data(symbol):
+
+    actions = []
+    my_timeout = aiohttp.ClientTimeout(
+        total=10,
+        sock_connect=10, 
+        sock_read=10 
+    )
+    client_args = dict(
+        trust_env=True,
+        timeout=my_timeout
+    )
+
+    async with aiohttp.ClientSession(**client_args) as session:  
+        # reddit data
+        actions.append(asyncio.ensure_future(get_social_data(session, 'Monero')))
+        actions.append(asyncio.ensure_future(get_social_data(session, 'Bitcoin')))
+        actions.append(asyncio.ensure_future(get_social_data(session, 'Cryptocurrency')))
+        
+        try:
+            await asyncio.gather(*actions, return_exceptions=True)
+        except asyncio.exceptions.TimeoutError:
+            print('Timeout!')
+
     return True
 
 ####################################################################################

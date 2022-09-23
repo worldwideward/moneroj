@@ -925,8 +925,9 @@ async def index(request):
     date_aux = datetime.datetime.strftime(date.today() - timedelta(2), '%Y-%m-%d')
     update_xmr = False
     update_btc = False
+    update_socials = False
 
-    if now > 1:
+    if now > 1 and now < 5:
         try:
             coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin_xmr:
@@ -945,7 +946,23 @@ async def index(request):
             print('no xmr found yesterday - 2')
             update_xmr = True
 
-    if now > 5:
+    if now > 3 and now < 5:
+        try:
+            social_xmr = list(Social.objects.filter(name='Monero').filter(date=yesterday))[0]
+            social_btc = list(Social.objects.filter(name='Bitcoin').filter(date=yesterday))[0]
+            social_crypto = list(Social.objects.filter(name='Cryptocurrency').filter(date=yesterday))[0]
+
+            if social_btc and social_xmr and social_crypto:
+                print('socials found yesterday')
+                update_socials = False
+            else:
+                print('no socials found yesterday - 1')
+                update_socials = True
+        except:
+            print('no socials found yesterday - 2')
+            update_socials = True  
+
+    if now > 5 and now < 12:
         try:
             coin_btc = list(Coin.objects.filter(name='btc').filter(date=yesterday))[0]
             coin_zec = list(Coin.objects.filter(name='zec').filter(date=yesterday))[0]
@@ -969,6 +986,7 @@ async def index(request):
         except:
             print('no coins found yesterday - 2')
             update_btc = True  
+
     try:
         coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
     except:
@@ -976,6 +994,12 @@ async def index(request):
 
     if update_xmr:
         await asynchronous.update_xmr_data(yesterday, coin_xmr)
+
+    if update_socials:
+        synchronous.check_new_social('Bitcoin')
+        synchronous.check_new_social('Monero')
+        synchronous.check_new_social('Cryptocurrency')
+        #await asynchronous.update_social_data(yesterday)
 
     if update_btc:
         await asynchronous.update_others_data(yesterday)

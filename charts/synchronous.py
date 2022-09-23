@@ -215,11 +215,11 @@ def update_rank(data=None):
 
 # Load Reddit api to check if there are new followers
 def check_new_social(symbol):
-    date_now = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-    socials = Social.objects.filter(name=symbol).filter(date=date_now)
+    yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
+    socials = Social.objects.filter(name=symbol).filter(date=yesterday)
 
     if not(socials):
-        print('getting new data')
+        print('getting new data - ' + str(symbol))
         request = 'https://www.reddit.com/r/'+ symbol +'/about.json'
         response = requests.get(request, headers = {'User-agent': 'Checking new social data'})
         data = json.loads(response.content)    
@@ -227,7 +227,7 @@ def check_new_social(symbol):
         subscribers = data['subscribers']
         social = Social()
         social.name = symbol
-        social.date = date_now
+        social.date = yesterday
         social.subscriberCount = subscribers
 
         date_aux = date.today()
@@ -292,18 +292,19 @@ def update_database(date_from=None, date_to=None):
 
             count_aux = 0
             found = False
+            print(date_aux)
             while count_aux < 100 and not(found):
-
                 try:
-                    date_aux2 = date_aux - timedelta(count_aux)
-                    social_btc = Social.objects.filter(name='Bitcoin').get(date=date_aux2)
-                    social_xmr = Social.objects.filter(name='Monero').get(date=date_aux2)
-                    social_crypto = Social.objects.filter(name='CryptoCurrency').get(date=date_aux2)
+                    date_aux3 = date_aux - timedelta(count_aux)
+                    social_btc = Social.objects.filter(name='Bitcoin').get(date=date_aux3)
+                    social_xmr = Social.objects.filter(name='Monero').get(date=date_aux3)
+                    social_crypto = Social.objects.filter(name='CryptoCurrency').get(date=date_aux3)
                     found = True
-
                 except:
-                    count_aux += 1
                     found = False
+                count_aux += 1
+            
+            print(date_aux3)
         except:
             return count
 
