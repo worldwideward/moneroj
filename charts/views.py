@@ -928,7 +928,6 @@ async def index(request):
             social_xmr = list(Social.objects.filter(name='Monero').filter(date=yesterday))[0]
             social_btc = list(Social.objects.filter(name='Bitcoin').filter(date=yesterday))[0]
             social_crypto = list(Social.objects.filter(name='Cryptocurrency').filter(date=yesterday))[0]
-            print(social_xmr.subscriberCount)
             if social_btc and social_xmr and social_crypto:
                 print('socials found yesterday')
                 update_socials = False
