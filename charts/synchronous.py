@@ -293,7 +293,7 @@ def update_database(date_from=None, date_to=None):
                     date_aux3 = date_aux - timedelta(count_aux)
                     social_btc = Social.objects.filter(name='Bitcoin').get(date=date_aux3)
                     social_xmr = Social.objects.filter(name='Monero').get(date=date_aux3)
-                    social_crypto = Social.objects.filter(name='CryptoCurrency').get(date=date_aux3)
+                    social_crypto = Social.objects.filter(name='Cryptocurrency').get(date=date_aux3)
                     found = True
                 except:
                     found = False
@@ -500,7 +500,7 @@ def update_database(date_from=None, date_to=None):
             data.crypto_postsPerHour = 0
 
         data.save()
-        print(str(coin_xmr.date) + ' - ' + str(int(coin_xmr.supply)) + ' xmr @ ' + str(coin_xmr.priceusd) + ' = ' + str(int(data.xmr_marketcap)) + ' => ' + str(coin_xmr.inflation))
+        print(str(coin_xmr.date) + ' xmr ' + str(data.xmr_subscriberCount) + ' - ' + str(social_xmr.subscriberCount) + ' = ' + str(int(data.xmr_marketcap)) + ' => ' + str(coin_xmr.inflation))
 
         count += 1
 
