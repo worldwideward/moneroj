@@ -165,7 +165,6 @@ async def get_social_data(session, symbol):
             data = data_prep_comments(symbol, timestamp2, timestamp1, filters, limit)
             social.commentsPerHour = len(data)/2
             social.save()
-            print(str(social.name) + ' - ' + str(social.date) + ' - ' + str(social.subscriberCount) + ' - ' + str(social.commentsPerHour) + ' - ' + str(social.postsPerHour) ) 
     return True
 
 ####################################################################################
@@ -254,21 +253,21 @@ async def update_xmr_data(yesterday, coin):
         stocktoflow = (100/inflation)**1.65 
         supply = coin.supply + revenue
                 
-        print('Name: ' + name)
-        print('Date: ' + str(yesterday))
-        print('Success: ' + str(success))
-        print('Errors: ' + str(errors))
-        print('Blocksize: ' + str(blocksize))
-        print('Transactions: ' + str(txs))
-        print('Revenue: ' + str(revenue))
-        print('Fees: ' + str(fees))
-        print('Inflation: ' + str(inflation))
-        print('Hashrate: ' + str(hashrate))
-        print('Difficulty: ' + str(difficulty))
-        print('Stocktoflow: ' + str(stocktoflow))
-        print('Priceusd: ' + str(priceusd))
-        print('Pricebtc: ' + str(pricebtc))
-        print('Supply: ' + str(supply))
+        #print('Name: ' + name)
+        #print('Date: ' + str(yesterday))
+        #print('Success: ' + str(success))
+        #print('Errors: ' + str(errors))
+        #print('Blocksize: ' + str(blocksize))
+        #print('Transactions: ' + str(txs))
+        #print('Revenue: ' + str(revenue))
+        #print('Fees: ' + str(fees))
+        #print('Inflation: ' + str(inflation))
+        #print('Hashrate: ' + str(hashrate))
+        #print('Difficulty: ' + str(difficulty))
+        #print('Stocktoflow: ' + str(stocktoflow))
+        #print('Priceusd: ' + str(priceusd))
+        #print('Pricebtc: ' + str(pricebtc))
+        #print('Supply: ' + str(supply))
 
         try:
             coin = Coin()

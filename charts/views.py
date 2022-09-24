@@ -891,29 +891,6 @@ async def index(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(True)
 
-    # coins = Coin.objects.filter(name='xmr').order_by('-date')
-    # for coin in coins:
-    #     if '2022-09-17' == datetime.datetime.strftime(coin.date, '%Y-%m-%d'):
-    #         coin.supply = 18175769
-    #         coin.save()
-    #         print('saved')
-    #     if '2022-09-16' == datetime.datetime.strftime(coin.date, '%Y-%m-%d'):
-    #         coin.supply = 18175284
-    #         coin.save()
-    #         print('saved')
-    #     if '2022-09-15' == datetime.datetime.strftime(coin.date, '%Y-%m-%d'):
-    #         coin.supply = 18174852
-    #         coin.save()
-    #         print('saved')
-    #     coins_aux = Coin.objects.filter(name='xmr').filter(date=coin.date)
-    #     count = 1
-    #     for coin_aux in coins_aux:
-    #         if count > 1:
-    #             print('deleted one')
-    #             print(coin_aux.date)
-    #             coin_aux.delete()
-    #         count += 1
-
     coin = list(Coin.objects.order_by('-date'))[0]
     if not(coin):
         message = 'Website under maintenance. Check back in a few minutes'
@@ -2209,7 +2186,6 @@ def bitcoin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     dates = []
     dates3 = []
     dates4 = []

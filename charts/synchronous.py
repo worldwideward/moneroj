@@ -125,10 +125,8 @@ def get_latest_price(symbol):
 
         try:
             response = session.get(url, params=parameters)
-            print(response)
             data = json.loads(response.text)
             print('getting latest data')
-            print(data)
             try:
                 if data['data'][symbol.upper()]['cmc_rank']:
                     print('new data received')
@@ -215,11 +213,10 @@ def update_rank(data=None):
 
 # Load Reddit api to check if there are new followers
 def check_new_social(symbol):
-    yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
+    yesterday = datetime.datetime.strftime(date.today()-timedelta(2), '%Y-%m-%d')
     socials = Social.objects.filter(name=symbol).filter(date=yesterday)
 
     if not(socials):
-        print('getting new data - ' + str(symbol))
         request = 'https://www.reddit.com/r/'+ symbol +'/about.json'
         response = requests.get(request, headers = {'User-agent': 'Checking new social data'})
         data = json.loads(response.content)    
@@ -239,15 +236,14 @@ def check_new_social(symbol):
         limit = 1000
         filters = []
         data = data_prep_posts(symbol, timestamp2, timestamp1, filters, limit)
-        print(len(data))
         social.postsPerHour = len(data)/12
 
         timestamp2 = int(timestamp1 - 3600)
         limit = 1000
         data = data_prep_comments(symbol, timestamp2, timestamp1, filters, limit)
-        print(len(data))
         social.commentsPerHour = len(data)/1
         social.save()
+        print('getting new data - ' + str(social.name) + ' - ' + str(social.date))
     return True
 
 # Update database DailyData with most recent coin data
@@ -292,7 +288,6 @@ def update_database(date_from=None, date_to=None):
 
             count_aux = 0
             found = False
-            print(date_aux)
             while count_aux < 100 and not(found):
                 try:
                     date_aux3 = date_aux - timedelta(count_aux)
@@ -303,8 +298,6 @@ def update_database(date_from=None, date_to=None):
                 except:
                     found = False
                 count_aux += 1
-            
-            print(date_aux3)
         except:
             return count
 
