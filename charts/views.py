@@ -925,9 +925,9 @@ async def index(request):
 
     if now > 3 and now < 6:
         try:
-            social_xmr = list(Social.objects.filter(name='Monero').filter(date=yesterday))[0]
-            social_btc = list(Social.objects.filter(name='Bitcoin').filter(date=yesterday))[0]
-            social_crypto = list(Social.objects.filter(name='Cryptocurrency').filter(date=yesterday))[0]
+            social_xmr = Social.objects.filter(name='Monero').get(date=yesterday)
+            social_btc = Social.objects.filter(name='Bitcoin').get(date=yesterday)
+            social_crypto = Social.objects.filter(name='Cryptocurrency').get(date=yesterday)
             if social_btc and social_xmr and social_crypto:
                 print('socials found yesterday')
                 update_socials = False
@@ -975,6 +975,7 @@ async def index(request):
         synchronous.check_new_social('Bitcoin')
         synchronous.check_new_social('Monero')
         synchronous.check_new_social('Cryptocurrency')
+        #synchronous.update_database(yesterday, yesterday)
         #await asynchronous.update_social_data(yesterday)
 
     if update_btc:
@@ -3486,7 +3487,6 @@ def comptransactions(request):
 def sfmodel(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     dates = []
     stock_to_flow = []
@@ -3544,7 +3544,6 @@ def sfmodel(request):
 def sfmodellin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     dates = []
     stock_to_flow = []
@@ -3602,10 +3601,8 @@ def sfmodellin(request):
 def sfmultiple(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     symbol = 'xmr'
-
     now_sf = 0
     maximum = 0
     dates = []
@@ -3616,7 +3613,6 @@ def sfmultiple(request):
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
     count = 0
-
     sf_aux = 0 
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
@@ -3649,12 +3645,10 @@ def marketcycle(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     dates = []
     color = []
     sell = []
     buy = []
-
     data = Sfmodel.objects.order_by('date')
     for item in data:
         if item.color > 0:
@@ -3675,19 +3669,15 @@ def shielded(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
 
- 
     dates = []
     values = []
     values2 = []
     values3 = []
-    
     gc = pygsheets.authorize(service_file='service_account_credentials.json')
     sh = gc.open('zcash_bitcoin')
     wks = sh.worksheet_by_title('Sheet1')
-
     dominance = 0
     monthly = 0 
-    
     values_mat = wks.get_values(start=(3,1), end=(999,5), returnas='matrix')
 
     for k in range(0,len(values_mat)):
@@ -3731,7 +3721,6 @@ def thermocap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     symbol = 'xmr'
     dates = []
     values = []
@@ -3746,7 +3735,6 @@ def thermocap(request):
     calories = []
     calories2 = []
     calories3 = []
-
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
         dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
@@ -3790,7 +3778,6 @@ def sharpe(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     symbol = 'xmr'
     dates = []
     values = []
@@ -3844,9 +3831,7 @@ def transcost(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
@@ -3876,9 +3861,7 @@ def transcostntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
@@ -3908,9 +3891,7 @@ def minerrevcap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
@@ -3940,9 +3921,7 @@ def minerrev(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
@@ -3972,15 +3951,12 @@ def minerrevntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
     now_btc = 0
     now_xmr = 0
-
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_minerrevntv < 0.0001:
@@ -4004,15 +3980,12 @@ def minerfeesntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
     now_btc = 0
     now_xmr = 0
-
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_minerfeesntv < 0.1:
@@ -4036,15 +4009,12 @@ def minerfees(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
     now_btc = 0
     now_xmr = 0
-
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_minerfeesusd < 1:
@@ -4068,15 +4038,12 @@ def dailyemissionntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     emissionbtc = []
     emissionxmr = []
     dates = []
     now_btc = 0
     now_xmr = 0
-
     for item in data:
         if item.btc_emissionntv == 0:
             emissionbtc.append('')
@@ -4107,9 +4074,7 @@ def commit(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
@@ -4139,9 +4104,7 @@ def commitntv(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     data = DailyData.objects.order_by('date')
-
     costbtc = []
     costxmr = []
     dates = []
@@ -4171,7 +4134,6 @@ def competitorssats(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     dates = []
     xmr = []
     dash = []
@@ -4182,7 +4144,6 @@ def competitorssats(request):
     now_dash = 0
     now_grin = 0
     now_zcash = 0
-
     count = 0
     coins_xmr = Coin.objects.order_by('date').filter(name='xmr')
     for coin_xmr in coins_xmr:
@@ -4248,7 +4209,6 @@ def competitorssats(request):
 def competitorssatslin(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     dates = []
     xmr = []
@@ -4260,7 +4220,6 @@ def competitorssatslin(request):
     now_dash = 0
     now_grin = 0
     now_zcash = 0
-
     count = 0
     coins_xmr = Coin.objects.order_by('date').filter(name='xmr')
     for coin_xmr in coins_xmr:
@@ -4327,17 +4286,14 @@ def dread_subscribers(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     dates = []
     data1 = []
     data2 = []
     now_xmr = 0
     now_btc = 0
-
     gc = pygsheets.authorize(service_file='service_account_credentials.json')
     sh = gc.open('zcash_bitcoin')
     wks = sh.worksheet_by_title('Sheet6')
-    
     values_mat = wks.get_values(start=(3,1), end=(99,3), returnas='matrix')
 
     for k in range(0,len(values_mat)):
@@ -4368,7 +4324,6 @@ def dread_subscribers(request):
 def coincards(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     dates = []
     data1 = []
@@ -4418,7 +4373,6 @@ def merchants(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     dates = []
     data1 = []
     data2 = []
@@ -4475,7 +4429,6 @@ def merchants_increase(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     dates = []
     data1 = []
     data2 = []
@@ -4531,7 +4484,6 @@ def merchants_increase(request):
 def merchants_percentage(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     dates = []
     data1 = []
@@ -4589,7 +4541,6 @@ def dominance(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     symbol = 'xmr'
     values = []
     pricexmr = []
@@ -4644,7 +4595,6 @@ def dominance(request):
 def rank(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     symbol = 'xmr'
     values = []
@@ -4715,7 +4665,6 @@ def p2pool_hashrate(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     hashrate = []
     hashrate_mini = []
     combined = []
@@ -4785,7 +4734,6 @@ def p2pool_dominance(request):
 def p2pool_totalblocks(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     dates = []
     totalblocks = []
@@ -4822,7 +4770,6 @@ def p2pool_totalblocks(request):
 def p2pool_totalhashes(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     dates = []
     totalblocks = []
@@ -4858,7 +4805,6 @@ def p2pool_totalhashes(request):
 def p2pool_miners(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     miners = []
     miners_mini = []
@@ -4894,7 +4840,6 @@ def miningprofitability(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     dates = []
     value = []
     now_value = 0
@@ -4914,7 +4859,6 @@ def tail_emission(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
         
- 
     inflationxmr = []
     finflationxmr = []
     dates = []
@@ -4943,7 +4887,6 @@ def tail_emission(request):
 def privacymarketcap(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     data = DailyData.objects.order_by('date')
 
@@ -5004,10 +4947,8 @@ def privacymarketcap(request):
 def privacydominance(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     data = DailyData.objects.order_by('date')
-
     dates = []
     marketcaps = []
     dominances = []
@@ -5066,10 +5007,8 @@ def privacydominance(request):
 def monerodominance(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(False)
-        
  
     data = DailyData.objects.order_by('date')
-
     dates = []
     marketcaps = []
     xmr_dominance = []

@@ -213,10 +213,10 @@ def update_rank(data=None):
 
 # Load Reddit api to check if there are new followers
 def check_new_social(symbol):
-    yesterday = datetime.datetime.strftime(date.today()-timedelta(2), '%Y-%m-%d')
+    yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
     socials = Social.objects.filter(name=symbol).filter(date=yesterday)
-
     if not(socials):
+        print('new social')
         request = 'https://www.reddit.com/r/'+ symbol +'/about.json'
         response = requests.get(request, headers = {'User-agent': 'Checking new social data'})
         data = json.loads(response.content)    
