@@ -252,27 +252,12 @@ async def update_xmr_data(yesterday, coin):
         inflation = 100*365*(revenue)/float(coin.supply)
         stocktoflow = (100/inflation)**1.65 
         supply = coin.supply + revenue
-                
-        #print('Name: ' + name)
-        #print('Date: ' + str(yesterday))
-        #print('Success: ' + str(success))
-        #print('Errors: ' + str(errors))
-        #print('Blocksize: ' + str(blocksize))
-        #print('Transactions: ' + str(txs))
-        #print('Revenue: ' + str(revenue))
-        #print('Fees: ' + str(fees))
-        #print('Inflation: ' + str(inflation))
-        #print('Hashrate: ' + str(hashrate))
-        #print('Difficulty: ' + str(difficulty))
-        #print('Stocktoflow: ' + str(stocktoflow))
-        #print('Priceusd: ' + str(priceusd))
-        #print('Pricebtc: ' + str(pricebtc))
-        #print('Supply: ' + str(supply))
 
-        try:
+        try:        
             coin = Coin()
             coin.name = name
             coin.date = datetime.datetime.strptime(yesterday, '%Y-%m-%d')
+            coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
             coin.blocksize = blocksize
             coin.transactions = txs
             coin.revenue = revenue
@@ -285,6 +270,21 @@ async def update_xmr_data(yesterday, coin):
             coin.pricebtc = pricebtc
             coin.supply = supply
             coin.save()
+
+            # print('Success: ' + str(success))
+            # print('Errors: ' + str(errors))
+            # print('Name: ' + coin.name)
+            # print('Date: ' + str(coin.date))
+            # print('Blocksize: ' + str(coin.blocksize))
+            # print('Transactions: ' + str(coin.transactions))
+            # print('Revenue: ' + str(coin.revenue))
+            # print('Fees: ' + str(coin.fee))
+            # print('Inflation: ' + str(coin.inflation))
+            # print('Hashrate: ' + str(coin.hashrate))
+            # print('Stocktoflow: ' + str(coin.stocktoflow))
+            # print('Priceusd: ' + str(coin.priceusd))
+            # print('Pricebtc: ' + str(coin.pricebtc))
+            # print('Supply: ' + str(coin.supply))
         except:
             return False
     return True

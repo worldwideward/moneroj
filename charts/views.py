@@ -904,12 +904,14 @@ async def index(request):
     update_btc = False
     update_socials = False
 
-    if now > 1 and now < 6:
+    if now > 1 and now < 11:
         try:
             coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
+            # coin_xmr.delete()
+            # coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin_xmr:
                 print('xmr found yesterday')
-                if coin_xmr.transactions > 0 and coin_xmr.inflation > 0:
+                if coin_xmr.priceusd > 1 and coin_xmr.transactions > 0 and coin_xmr.inflation > 0:
                     print('no need to update xmr')
                     update_xmr = False
                 else:
@@ -923,7 +925,7 @@ async def index(request):
             print('no xmr found yesterday - 2')
             update_xmr = True
 
-    if now > 3 and now < 6:
+    if now > 3 and now < 11:
         try:
             social_xmr = Social.objects.filter(name='Monero').get(date=yesterday)
             social_btc = Social.objects.filter(name='Bitcoin').get(date=yesterday)
@@ -962,6 +964,17 @@ async def index(request):
         except:
             print('no coins found yesterday - 2')
             update_btc = True  
+        try:
+            data = list(DailyData.objects.filter(date=yesterday))[0]
+            if data:
+                print('data found yesterday')
+                update_data = False
+            else:
+                print('no data found yesterday - 1')
+                update_data = True
+        except:
+            print('no data found yesterday - 2')
+            update_data = True  
 
     try:
         coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
@@ -975,11 +988,11 @@ async def index(request):
         synchronous.check_new_social('Bitcoin')
         synchronous.check_new_social('Monero')
         synchronous.check_new_social('Cryptocurrency')
-        #synchronous.update_database(yesterday, yesterday)
-        #await asynchronous.update_social_data(yesterday)
 
     if update_btc:
         await asynchronous.update_others_data(yesterday)
+
+    if update_data:
         synchronous.update_database(yesterday, yesterday)
 
     supply = locale.format('%.0f', coin_xmr.supply, grouping=True)
@@ -5016,19 +5029,31 @@ def monerodominance(request):
     now_dominance = 0
     top_marketcap = 0
     top_dominance = 0
+    zec_cap = 0
+    dash_cap = 0
+    grin_cap = 0
     
     for item in data:
         marketcap = 0
         dominance = 0
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         if item.zcash_marketcap > 1000000:
-            marketcap += item.zcash_marketcap
+            zec_cap = item.zcash_marketcap
+            marketcap += zec_cap
+        else:
+            marketcap += zec_cap
 
         if item.dash_marketcap > 1000000:
-            marketcap += item.dash_marketcap
+            dash_cap = item.dash_marketcap
+            marketcap += dash_cap
+        else:
+            marketcap += dash_cap
 
         if item.grin_marketcap > 1000000:
-            marketcap += item.grin_marketcap
+            grin_cap = item.grin_marketcap
+            marketcap += grin_cap
+        else:
+            marketcap += grin_cap
 
         if item.xmr_marketcap > 1000000:
             marketcap += item.xmr_marketcap
