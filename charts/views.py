@@ -903,6 +903,7 @@ async def index(request):
     update_xmr = False
     update_btc = False
     update_socials = False
+    update_data = False
 
     if now > 1 and now < 11:
         try:
