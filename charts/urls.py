@@ -109,6 +109,7 @@ urlpatterns = [
     path('importer/', views.importer, name='importer'),
     path('reset/<str:symbol>/', views.reset, name='reset'),
     path('update/<str:date_from>/<str:date_to>/', views.update_database_admin, name='update'),
+    path('update_pageviews/<str:date>/<int:value>/', views.update_pageviews, name='update_pageviews'),
     path('add_coin/',  views.add_coin, name="add_coin"),
     
 ]
