@@ -12,24 +12,28 @@ import pygsheets
 ####################################################################################
 #   Reddit api
 ####################################################################################
-api = PushshiftAPI() 
+#api = PushshiftAPI() 
+api = False
 
 # Get daily post on Reddit
 def data_prep_posts(subreddit, start_time, end_time, filters, limit):
     if(len(filters) == 0):
         filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments'] 
 
-    posts = list(api.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
-
-    return pd.DataFrame(posts)
+    if not(api == False):
+        posts = list(api.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
+        return pd.DataFrame(posts)
+    return 0
 
 # Get daily comments on Reddit
 def data_prep_comments(term, start_time, end_time, filters, limit):
     if (len(filters) == 0):
         filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit'] 
 
-    comments = list(api.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
-    return pd.DataFrame(comments) 
+    if not(api == False):
+        comments = list(api.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
+        return pd.DataFrame(comments) 
+    return 0
 
 ####################################################################################
 #   Other useful functions                  
@@ -236,12 +240,18 @@ def check_new_social(symbol):
         limit = 1000
         filters = []
         data = data_prep_posts(symbol, timestamp2, timestamp1, filters, limit)
-        social.postsPerHour = len(data)/12
+        if data != 0:
+            social.postsPerHour = len(data)/12
+        else:
+            social.postsPerHour = 0
 
         timestamp2 = int(timestamp1 - 3600)
         limit = 1000
         data = data_prep_comments(symbol, timestamp2, timestamp1, filters, limit)
-        social.commentsPerHour = len(data)/1
+        if data != 0:
+            social.commentsPerHour = len(data)/1
+        else:
+            social.commentsPerHour = 0
         social.save()
         print('getting new data - ' + str(social.name) + ' - ' + str(social.date))
     return True
