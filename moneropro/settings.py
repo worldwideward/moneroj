@@ -28,8 +28,8 @@ STATICFILES_DIRS = [
 SECRET_KEY = 'dafsdasdfasfa7sdfs9d7das7f9as7df8ad43525fsffdssdg455$$###77saf9df79as79s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True 
-DEBUG = False
+DEBUG = True 
+#DEBUG = False
 
 ALLOWED_HOSTS = ['80.78.22.34', 'www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net', 'moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion']
 
