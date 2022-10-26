@@ -1397,7 +1397,7 @@ async def index(request):
             print('no xmr found yesterday - 2')
             update_xmr = True
 
-    if now > 3 and now < 11:
+    if now > 3 and now < 20:
         try:
             social_xmr = Social.objects.filter(name='Monero').get(date=yesterday)
             social_btc = Social.objects.filter(name='Bitcoin').get(date=yesterday)
