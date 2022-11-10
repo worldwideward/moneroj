@@ -12,7 +12,7 @@ import pygsheets
 #   Asynchronous get block data from xmrchain
 #################################################################################### 
 async def get_block_data(session, block: str):
-    url = 'https://xmrchain.net/api/block/' + block
+    url = 'https://blox.minexmr.com/api/block/' + block
     async with session.get(url) as res:
         data = await res.read()
         data = json.loads(data)
@@ -27,7 +27,7 @@ async def get_block_data(session, block: str):
 #   Asynchronous get network data from xmrchain
 #################################################################################### 
 async def get_network_data(session, block: str):
-    url = 'https://xmrchain.net/api/networkinfo'
+    url = 'https://blox.minexmr.com/api/networkinfo'
     async with session.get(url) as res:
         data = await res.read()
         data = json.loads(data)
@@ -174,7 +174,7 @@ async def update_xmr_data(yesterday, coin):
     name = coin.name
     Coin.objects.filter(name=coin.name).filter(date=yesterday).delete()
 
-    url = 'https://xmrchain.net/api/networkinfo'
+    url = 'https://blox.minexmr.com/api/networkinfo'
     response = requests.get(url)
     data = json.loads(response.text)
     height = int(data['data']['height'])
