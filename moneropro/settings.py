@@ -17,20 +17,23 @@ from pathlib import Path
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rest.settings')
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+
+#Comment for Local:
+#DEBUG = False
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+#Comment for deploy:
+DEBUG = True
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
+
+STATIC_URL = '/static/'
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, "locale/"),
+)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dafsdasdfasfa7sdfs9d7das7f9as7df8ad43525fsffdssdg455$$###77saf9df79as79s'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True 
-DEBUG = False
-
+SECRET_KEY = 'sdfasfasdfas324fdsfsd234234dsfdfghfhgf675756748fas0f89as90fd8as9'
 ALLOWED_HOSTS = ['80.78.22.34', 'www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net', 'moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion']
 
 # Application definition

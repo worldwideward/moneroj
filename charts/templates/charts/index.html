@@ -77,44 +77,40 @@
 
   <div class="container">
     <div class="row align-items-center">
-      <div class="col-xl-7 col-lg-7" style="margin:20px 0 10px 0px;">
-        <h1>Did you know all your data is exposed when you use Bitcoin?</h1>
-        <h2 style="margin-bottom:10px;">Monero is what people think they are buying when they invest in Bitcoin.</h2>
-      </div>
-      <div class="col-xl-5 d-flex justify-content-center align-items-center" style="margin-bottom: 40px;margin-top: 40px;">
-        <div class="icon-boxes justify-content-center" style="height:435px;width:400px;margin:0px 0;">
-          <iframe src="https://trocador.app/step1/?ref=pbhBEQR5WU" width="100%" height="100%" style="border:0px white solid;" scrolling="no"></iframe>
-          <!-- <div class="icon-box mt-4 mt-xl-0">
-            <h4>Crowdfunding to help us</h4>
-            <p style="text-align: justify; text-justify: inter-word;">Moneroj.net needs help to pay for server expenses
-              and development. There's 25
-              new charts since the CCS Proposal, our new TOR link and a new Articles section.
-              Also major loading speed improvement on the Charts.
-              <a href="https://moneroj.net/article/New-charts-released,-and-why-we-gave-up-the-CCS-Proposal">Read more
-                about it.</a> <text class="break">Donation address:
-                  8Agy1JvbsttEV2Jp2ecyRLSoKiCQwr4f2FKjWh2dz8Q1Y4LXCxXDNBf5praUrc1v8vDSqHYUefqxkiLNgnjvDfQNQStwvP6
-                </text>
-            </p>
-            
+      <div class="col-lg-7" style="margin:20px 0 10px 0px;">
 
-            <div class="row">
-              <div class="col">
-                <p>
-                  <i class="bx bx-user"></i> Morpheus
-                  <i class="bx bx-calendar"></i> May 11,<br>80 contributions
-                </p>
-              </div>
-              <div class="col">
-                <p style="text-align: right;">
-                  (manual update) <i class="bx bx-money"></i> Raised<br>26.05 of 46 XMR
-                </p>
-              </div>
+        <div class="row align-items-center">
+          <div class="col-lg-12">
+            <h1>Did you know all your data is exposed when you use Bitcoin?</h1>
+            <h2 style="margin-bottom:10px;">Monero is what people think they are buying when they invest in Bitcoin.</h2>
+            <br>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col-lg-12">
+            {% if enabled == True %}
+            <div class="alert alert-success">
+              <strong><center>Binance withdrawals are enabled for Monero</center></strong>
             </div>
-            <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: 57%; background: #ff4d21"
-                aria-valuenow="26.05" aria-valuemin="0" aria-valuemax="46"></div>
-            </div> 
-          </div> -->
+            {% elif enabled == False %}
+            <div class="alert alert-danger">
+              <strong><center>Binance withdrawals are disabled for Monero</center></strong>
+            </div>
+            {% else %}
+            <div class="alert alert-dark">
+              <strong><center>Error in getting Binance information about Binance withdrawals, please tell Morpheus about this</center></strong>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-5 d-flex justify-content-center align-items-center" style="margin-bottom:40px; margin-top: 40px;">
+        <div class="row align-items-center">
+          <div class="col-lg-12">
+            <div class="icon-boxes justify-content-center" style="height:435px;width:400px;margin:0px 0;">
+              <iframe src="https://trocador.app/step1/?ref=pbhBEQR5WU" width="100%" height="100%" style="border:0px white solid;" scrolling="no"></iframe>
+            </div>
+          </div>
         </div>
       </div>
     </div>

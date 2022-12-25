@@ -4,7 +4,7 @@ import json
 import requests
 import datetime
 from datetime import date, timedelta
-from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData
+from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, Withdrawal
 from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import pygsheets
@@ -12,8 +12,8 @@ import pygsheets
 ####################################################################################
 #   Reddit api
 ####################################################################################
-api = PushshiftAPI() 
-api = False
+#api = PushshiftAPI()   # When it's working
+api = False             # When it's not
 
 # Get daily post on Reddit
 def data_prep_posts(subreddit, start_time, end_time, filters, limit):
@@ -38,7 +38,6 @@ def data_prep_comments(term, start_time, end_time, filters, limit):
 ####################################################################################
 #   Other useful functions                  
 ####################################################################################
-
 # Get most recent metrics from a data provider of your choice for 'symbol'
 def get_latest_metrics(symbol, url):
     update = True
@@ -108,6 +107,48 @@ def get_latest_metrics(symbol, url):
             update = False
             break 
     return count
+
+# Get binance withdrawal state
+def get_binance_withdrawal(symbol):
+    url = 'https://www.binance.com/en/network'
+    
+    withdrawals = Withdrawal.objects.order_by('-date')
+    if len(withdrawals) > 0:
+        for withdrawal in withdrawals:
+            break
+    else:
+        withdrawal = Withdrawal()
+        withdrawal.state = True
+        withdrawal.save()
+        return True
+
+    response = requests.get(url)
+    result = response.text
+    position = result.find(symbol)
+    result = result[position:position+400]
+    position = result.find('withdrawEnable')
+    result = result[position:position+25]
+    try:
+        result.index('true')
+        print(result.index('true'))
+        print('Enabled')
+        if not(withdrawal.state):
+            new_withdrawal = Withdrawal()
+            new_withdrawal.state = True
+            new_withdrawal.save()
+        return True
+    except:
+        try:
+            result.index('false')
+            print(result.index('false'))
+            print('Disabled')
+            if withdrawal.state:
+                new_withdrawal = Withdrawal()
+                new_withdrawal.state = False
+                new_withdrawal.save()
+            return False
+        except:
+            return None
 
 # Get latest price data for Monero
 def get_latest_price(symbol):
