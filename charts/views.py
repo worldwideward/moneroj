@@ -5504,3 +5504,21 @@ def monerodominance(request):
 
     context = {'marketcaps': marketcaps, 'xmr_dominance': xmr_dominance, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
     return render(request, 'charts/monerodominance.html', context)
+
+def withdrawals(request):
+    if request.user.username != "Administrador" and request.user.username != "Morpheus":
+        update_visitors(False)
+        
+    states = []
+    dates = []
+
+    withdrawals = Withdrawal.objects.order_by('date')
+    for withdrawal in withdrawals:
+        dates.append(datetime.datetime.strftime(withdrawal.date, '%Y-%m-%d %H'))
+        if withdrawal.state:
+            states.append(1)
+        else:
+            states.append(0)
+    
+    context = {'states': states, 'dates': dates}
+    return render(request, 'charts/withdrawals.html', context)

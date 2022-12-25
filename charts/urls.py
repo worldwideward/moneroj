@@ -97,6 +97,7 @@ urlpatterns = [
     path('comptransactions/', views.comptransactions, name='comptransactions'),
     path('p2pool_totalhashes/', views.p2pool_totalhashes, name='p2pool_totalhashes'),
     path('miningprofitability/', views.miningprofitability, name='miningprofitability'),
+    path('withdrawals/', views.withdrawals, name='withdrawals'),
 
     # URLs to useful functions on charts/views.py
     # Only admins can use these 

@@ -8,6 +8,7 @@ from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, W
 from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import pygsheets
+import pytz
 
 ####################################################################################
 #   Reddit api
@@ -122,6 +123,7 @@ def get_binance_withdrawal(symbol):
         withdrawal.save()
         return True
 
+    current_date = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
     response = requests.get(url)
     result = response.text
     position = result.find(symbol)
@@ -130,9 +132,7 @@ def get_binance_withdrawal(symbol):
     result = result[position:position+25]
     try:
         result.index('true')
-        print(result.index('true'))
-        print('Enabled')
-        if not(withdrawal.state):
+        if (current_date - withdrawal.date).seconds > 3600:
             new_withdrawal = Withdrawal()
             new_withdrawal.state = True
             new_withdrawal.save()
@@ -140,9 +140,7 @@ def get_binance_withdrawal(symbol):
     except:
         try:
             result.index('false')
-            print(result.index('false'))
-            print('Disabled')
-            if withdrawal.state:
+            if (current_date - withdrawal.date).seconds > 3600:
                 new_withdrawal = Withdrawal()
                 new_withdrawal.state = False
                 new_withdrawal.save()

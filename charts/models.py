@@ -152,7 +152,7 @@ class P2Pool(models.Model):
 		return self.date
 
 class Withdrawal(models.Model):
-	date = models.DateTimeField(auto_now_add=False)
+	date = models.DateTimeField(auto_now_add=True)
 	state = models.BooleanField()
 
 	def __str__(self):
