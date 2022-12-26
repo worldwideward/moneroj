@@ -140,7 +140,7 @@ def get_binance_withdrawal(symbol):
     except:
         try:
             result.index('false')
-            if (current_date - withdrawal.date).seconds > 3600:
+            if ((current_date - withdrawal.date).seconds > 3600) or withdrawal.state:
                 new_withdrawal = Withdrawal()
                 new_withdrawal.state = False
                 new_withdrawal.save()
