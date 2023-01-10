@@ -8,12 +8,20 @@
     word-break: break-all;
   }
   .link {
-      color: #ff4d21;
+      color: #e35835;
       }
 
   .link:hover {
-      color: #ff8262;
+      color: #ef7f62;
       text-decoration: none;
+  }
+  .monerotopia {
+      color: #f6937a;
+      }
+
+  .monerotopia:hover {
+      color: #f6b5a4;
+      text-decoration: bold;
   }
 </style>
 
@@ -24,42 +32,41 @@
 <section id="hero">
 
   <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-7" style="margin:20px 0 10px 0px;">
-
+    <div class="row">
+        <div class="col-lg-12" style="margin-top: 20px;">
+          {% if enabled == True %}
+          <div class="alert alert-success">
+            <strong><center>Binance withdrawals are enabled for Monero</center></strong>
+          </div>
+          {% elif enabled == False %}
+          <div class="alert alert-danger">
+            <strong><center>Binance withdrawals are disabled for Monero</center></strong>
+          </div>
+          {% else %}
+          <div class="alert alert-dark">
+            <strong><center>Error in getting Binance information about Binance withdrawals, please tell Morpheus about this</center></strong>
+          </div>
+          {% endif %}
+        </div>
+    </div>
+    <div class="row align-items-center" style="margin-bottom: 40px;">
+      <div class="col-lg-8">
         <div class="row align-items-center">
           <div class="col-lg-12">
-            <h1>Did you know all your data is exposed when you use Bitcoin?</h1>
-            <h2 style="margin-bottom:10px;">Monero is what people think they are buying when they invest in Bitcoin.</h2>
+            <h1>Introducing: MoneroTopia 2023</h1>
+            <h2 style="margin-bottom:10px;">
+              Bring monero, because that is how you will live at the conference for two days - among local Mexico City XMR accepting vendors. 
+              But remember boating accidents are common around here so be sure to secure your private keys!
+              <br>
+              <br>
+              <b><a class="monerotopia" style="width: 200px;" href="https://monerotopia.com/" target="_blank">Get Tickets</a></b>
+            </h2>
             <br>
           </div>
         </div>
-        <div class="row align-items-center">
-          <div class="col-lg-12">
-            {% if enabled == True %}
-            <div class="alert alert-success">
-              <strong><center>Binance withdrawals are enabled for Monero</center></strong>
-            </div>
-            {% elif enabled == False %}
-            <div class="alert alert-danger">
-              <strong><center>Binance withdrawals are disabled for Monero</center></strong>
-            </div>
-            {% else %}
-            <div class="alert alert-dark">
-              <strong><center>Error in getting Binance information about Binance withdrawals, please tell Morpheus about this</center></strong>
-            </div>
-            {% endif %}
-          </div>
-        </div>
       </div>
-      <div class="col-xl-5 d-flex justify-content-center align-items-center" style="margin-bottom:40px; margin-top: 40px;">
-        <div class="row align-items-center">
-          <div class="col-lg-12">
-            <div class="icon-boxes justify-content-center" style="height:435px;width:400px;margin:0px 0;">
-              <iframe src="https://trocador.app/step1/?ref=pbhBEQR5WU" width="100%" height="100%" style="border:0px white solid;" scrolling="no"></iframe>
-            </div>
-          </div>
-        </div>
+      <div class="col-xl-4 d-flex justify-content-center align-items-center">
+        <img src="../../../static/img/monerotopia.png" width="100%" class="img-fluid" alt=""  style="margin-top: 0px; border-radius: 20px;">
       </div>
     </div>
     <br><br>
@@ -72,41 +79,36 @@
   <!-- ======= Why Us Section ======= -->
   <section id="why-us" class="why-us">
     <div class="container">
-
+      <br>
       <div class="row">
-        <div class="col-xl-12 col-lg-7 d-flex">
+        <div class="col-xl-4 d-flex justify-content-center align-items-center">
+          <iframe src="https://trocador.app/step1/?ref=pbhBEQR5WU" style="border:0px white solid;height:435px;width:100%;" scrolling="no"></iframe>
+        </div>
+        <div class="col-xl-8 d-flex">
           <div class="icon-boxes d-flex flex-column justify-content-center">
-            <div class="row">
-              <div class="col-xl-4 d-flex align-items-stretch">
-                <img src="../../../static/img/Hardcover.png" width="100%" class="img-fluid" alt=""  style="margin-top: 0px; border-radius: 0px;">
-              </div>
-              <div class="col-xl-8">
-                <div class="icon-box mt-4 mt-xl-0">
-                  <h4>Book: The Monero Standard</h4>
-                  <p>
-                    The fiat system we live under today is nothing like the monetary systems of the past. At least not the prosperous ones.
-                    
-                    It is a rather strange time in which a small minority of global elites are able to control or influence nearly every aspect of our lives through control of the monetary system.
-                    
-                    They are able to take from us and give to them what they please with control of the monetary system.
-                    <br><br>
-                    The Monero Standard is about how we can use money to fundamentally revolutionize societies incentive structures, the challenges we face in society today & how we overcome them to build a long lasting platform for freedom and prosperity.
-                    
-                    We look at why Monero is the best tool the world has ever seen to provide that platform.
-                    
-                    We can vote all we want and protest all we want. <b>It will not change anything.</b> 
-                    
-                    We must change that by opting into the strongest form of money the world has ever seen.
-                  </p>  
-                  <a class="link" style="width: 200px;" href="https://monerostandard.com/" target="_blank">Read More</a>
-                  <br>
-                </div>
-              </div>
+            <div class="icon-box mt-4 mt-xl-0">
+              <h4>Book: The Monero Standard</h4>
+              <p>
+                The fiat system we live under today is nothing like the monetary systems of the past. At least not the prosperous ones.
+                
+                It is a rather strange time in which a small minority of global elites are able to control or influence nearly every aspect of our lives through control of the monetary system.
+                
+                They are able to take from us and give to them what they please with control of the monetary system.
+                <br><br>
+                The Monero Standard is about how we can use money to fundamentally revolutionize societies incentive structures, the challenges we face in society today & how we overcome them to build a long lasting platform for freedom and prosperity.
+                
+                We look at why Monero is the best tool the world has ever seen to provide that platform.
+                
+                We can vote all we want and protest all we want. <b>It will not change anything.</b> 
+                
+                We must change that by opting into the strongest form of money the world has ever seen.
+              </p>  
+              <a class="link" style="width: 200px;" href="https://monerostandard.com/" target="_blank">Read More</a>
+              <br>
             </div>
           </div>
         </div>
-      </div><br><br>
-
+      </div><br>
 
       <div class="row">
         <div class="col-xl-4 col-lg-5">
@@ -597,6 +599,22 @@
                 <a href="https://trocador.app" target="_blank">
                   <img src="../../../static/img/Trocador_square.png" width="250" class="img-fluid" alt="" style="margin-top: 20px; border-radius: 20px;">
                 </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="row">
+
+              <div class="col">
+                <a href="https://monerotopia.com/" target="_blank">
+                  <img src="../../../static/img/monerotopia.png" width="250" class="img-fluid" alt="" style="margin-top: 20px; border-radius: 20px;">
+                </a>
+              </div>
+  
+              <div class="col">
+              </div>
+  
+              <div class="col">
               </div>
             </div>
           </div>
