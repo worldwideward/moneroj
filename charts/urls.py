@@ -26,7 +26,6 @@ urlpatterns = [
     path('extracoins/', views.extracoins, name='extracoins'),
     path('sfmodel/', views.sfmodel, name='sfmodel'),
     path('sfmodellin/', views.sfmodellin, name='sfmodellin'),
-    path('sfmodel/', views.sfmodel, name='sfmodel'),
     path('sfmultiple/', views.sfmultiple, name='sfmultiple'),
     path('about/', views.about, name='about'),
     path('compinflation/', views.compinflation, name='compinflation'),

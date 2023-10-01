@@ -178,7 +178,10 @@ def get_history(request, symbol, start_time=None, end_time=None):
                     coin.inflation = inflation
                     coin.stocktoflow = stocktoflow
                 try:
-                    coin.supply = float(item['SplyCur'])
+                    if float(item['SplyCur']) < 18000000:
+                        coin.supply = float(item['SplyCur']) + 497108
+                    else:
+                        coin.supply = float(item['SplyCur'])
                     supply = coin.supply
                 except:
                     coin.supply = supply
@@ -215,7 +218,7 @@ def get_history(request, symbol, start_time=None, end_time=None):
 
                 coin.save()
                 count += 1
-                print(str(symbol) + ' ' + str(coin.date))
+                print(str(symbol) + ' ' + str(coin.date) + ' ' + str(item['SplyCur']))
 
             except:
                 pass
@@ -1361,6 +1364,16 @@ async def index(request):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         update_visitors(True)
 
+    coins = Coin.objects.filter(name='xmr').order_by('-date')
+    count = 0
+    for coin in coins:
+        count += 1
+        if count< 200:
+            if coin.supply < 18000000:
+                coin.supply += 499736
+                print(coin.date)
+                coin.save()
+
     coin = list(Coin.objects.order_by('-date'))[0]
     if not(coin):
         message = 'Website under maintenance. Check back in a few minutes'
@@ -1453,7 +1466,8 @@ async def index(request):
         coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
 
     if update_xmr:
-        await asynchronous.update_xmr_data(yesterday, coin_xmr)
+        get_history(request, 'xmr', yesterday, yesterday)
+        #await asynchronous.update_xmr_data(yesterday, coin_xmr)
 
     if update_socials:
         synchronous.check_new_social('Bitcoin')
@@ -1754,9 +1768,14 @@ def social4(request):
                 last_xmr = ''
             newcomers_xmr.append(last_xmr)
 
-    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
-    last_btc = locale.format('%.0f', last_btc, grouping=True)
-    last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    try:
+        last_xmr = locale.format('%.0f', last_xmr, grouping=True)
+        last_btc = locale.format('%.0f', last_btc, grouping=True)
+        last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    except:
+        last_xmr = 0
+        last_btc = 0
+        last_crypto = 0
 
     context = {'dates': dates, 'speed_xmr': speed_xmr, 'speed_crypto': speed_crypto, 'speed_btc': speed_btc, 'newcomers_xmr': newcomers_xmr, 'newcomers_btc': newcomers_btc, 'newcomers_crypto': newcomers_crypto, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social4.html', context)

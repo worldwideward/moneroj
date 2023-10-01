@@ -258,6 +258,22 @@ def update_rank(data=None):
 def check_new_social(symbol):
     yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
     socials = Social.objects.filter(name=symbol).filter(date=yesterday)
+    if symbol == 'Bitcoin':
+        timeframe = 14400
+        hours = 86400/timeframe
+        timeframe2 = 3600
+        hours2 = 86400/timeframe2
+    elif symbol == 'Monero':
+        timeframe = 43200
+        hours = 86400/timeframe
+        timeframe2 = 43200
+        hours2 = 86400/timeframe2
+    elif symbol == 'Cryptocurrency':
+        timeframe = 14400
+        hours = 86400/timeframe
+        timeframe2 = 1800
+        hours2 = 86400/timeframe2
+
     if not(socials):
         print('new social')
         request = 'https://www.reddit.com/r/'+ symbol +'/about.json'
@@ -275,20 +291,20 @@ def check_new_social(symbol):
         date_aux = datetime.datetime.strptime(date_aux, '%Y-%m-%d')
         timestamp1 = int(datetime.datetime.timestamp(date_aux))
 
-        timestamp2 = int(timestamp1 - 43200)
+        timestamp2 = int(timestamp1 - timeframe)
         limit = 1000
         filters = []
         data = data_prep_posts(symbol, timestamp2, timestamp1, filters, limit)
         if data != 0:
-            social.postsPerHour = len(data)/12
+            social.postsPerHour = len(data)/hours
         else:
             social.postsPerHour = 0
 
-        timestamp2 = int(timestamp1 - 3600)
+        timestamp2 = int(timestamp1 - timeframe2)
         limit = 1000
         data = data_prep_comments(symbol, timestamp2, timestamp1, filters, limit)
         if data != 0:
-            social.commentsPerHour = len(data)/1
+            social.commentsPerHour = len(data)/hours2
         else:
             social.commentsPerHour = 0
         social.save()
@@ -549,7 +565,7 @@ def update_database(date_from=None, date_to=None):
             data.crypto_postsPerHour = 0
 
         data.save()
-        print(str(coin_xmr.date) + ' xmr ' + str(data.xmr_subscriberCount) + ' - ' + str(social_xmr.subscriberCount) + ' = ' + str(int(data.xmr_marketcap)) + ' => ' + str(coin_xmr.inflation))
+        print(str(coin_xmr.supply) + ' xmr ' + str(data.xmr_subscriberCount) + ' - ' + str(social_xmr.subscriberCount) + ' = ' + str(int(data.xmr_marketcap)) + ' => ' + str(coin_xmr.inflation))
 
         count += 1
 

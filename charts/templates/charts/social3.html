@@ -11,26 +11,6 @@
 
     <!-- Content Row -->
     <div class="row" style="height: 92%; margin: 10px 10px 10px 10px;">
-        <div class="card" id="graph1" style="width: 100%; height: 100%;">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
-                <h6 class="m-0 text-light">
-                    Reddit Subscribers of /CryptoCurrency as a Percentage of /Bitcoin
-                </h6>
-                
-                <div class="dropdown no-arrow">
-                    <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
-                    </a>
-                </div>
-            </div>
-            <div class="card-body"  style="width: 100%; height: 100%; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;">
-                <div id="graph"  style="width: 100%; height: 100%;  margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Content Row -->
-    <div class="row" style="height: 92%; margin: 10px 10px 10px 10px;">
         <div class="card" id="graph_2" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
@@ -291,11 +271,9 @@ var data1 = {
         }
         env_size = findBootstrapEnvironment();
         if (env_size == "xs") {
-            Plotly.newPlot('graph', data_mobile, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
             Plotly.newPlot('graph2', data_mobile_2, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
         }
         else {
-            Plotly.newPlot('graph', data, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
             Plotly.newPlot('graph2', data_2, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
         }
     </script>

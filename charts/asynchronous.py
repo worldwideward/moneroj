@@ -12,11 +12,11 @@ import pygsheets
 #   Asynchronous get block data from xmrchain
 #################################################################################### 
 async def get_block_data(session, block: str):
-    url = 'https://xmrchain.net/api/block/' + block
+    url = 'https://localmonero.co/blocks/api/get_block_data/' + block
     async with session.get(url) as res:
         data = await res.read()
         data = json.loads(data)
-        data['provider'] = 'xmrchain'
+        data['provider'] = 'localmonero'
         if res.status < 299:
             data['success'] = True
         else:
@@ -174,12 +174,13 @@ async def update_xmr_data(yesterday, coin):
     name = coin.name
     Coin.objects.filter(name=coin.name).filter(date=yesterday).delete()
 
-    url = 'https://xmrchain.net/api/networkinfo'
+    url = 'https://localmonero.co/blocks/api/get_stats'
     response = requests.get(url)
     data = json.loads(response.text)
-    height = int(data['data']['height'])
-    difficulty = int(data['data']['difficulty'])
-    hashrate = int(data['data']['hash_rate'])
+    height = int(data['height'])
+    difficulty = int(data['difficulty'])
+    hashrate = int(data['hashrate'])
+    supply = int(data['total_emission'])
     blocksize = 0        
     actions = []
 
@@ -215,12 +216,12 @@ async def update_xmr_data(yesterday, coin):
         for response in responses:
             if response:
                 try:
-                    if response['provider'] == 'xmrchain':
-                        date_aux = response['data']['timestamp_utc'].split(' ')[0]
+                    if response['provider'] == 'localmonero':
+                        date_aux = response['block_header']['timestamp']
                         if date_aux == yesterday:
                             try:
-                                blocksize += int(response['data']['size'])
-                                for tx in response['data']['txs']:
+                                blocksize += int(response['block_header']['size'])
+                                for tx in response['block_header']['txs']:
                                     if tx['coinbase']:
                                         revenue += int(tx['xmr_outputs'])
                                     else:
