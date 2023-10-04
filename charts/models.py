@@ -19,9 +19,6 @@ class Coin(models.Model):
 	revenue = models.FloatField(default="0")
 	blocksize = models.FloatField(default="0")
 	difficulty = models.FloatField(default="0")
-	
-	def __str__(self):
-		return self.priceusd
 
 class Social(models.Model):
 	name = models.CharField(max_length=4)
@@ -29,9 +26,6 @@ class Social(models.Model):
 	subscriberCount = models.IntegerField()
 	commentsPerHour = models.FloatField()
 	postsPerHour = models.FloatField()
-
-	def __str__(self):
-		return self.subscriberCount
 
 class Dominance(models.Model):
 	name = models.CharField(max_length=4)
@@ -56,9 +50,6 @@ class Sfmodel(models.Model):
 	color = models.FloatField()
 	stocktoflow = models.FloatField()
 	greyline = models.FloatField()
-
-	def __str__(self):
-		return self.date
 
 class DailyData(models.Model):
 	# Date field
@@ -136,9 +127,6 @@ class DailyData(models.Model):
 	crypto_commentsPerHour = models.FloatField()
 	crypto_postsPerHour = models.FloatField()
 
-	def __str__(self):
-		return self.date
-
 class P2Pool(models.Model):
 	date = models.DateField()
 	mini = models.BooleanField()
@@ -148,12 +136,6 @@ class P2Pool(models.Model):
 	totalhashes = models.IntegerField()
 	totalblocksfound = models.IntegerField()
 
-	def __str__(self):
-		return self.date
-
 class Withdrawal(models.Model):
 	date = models.DateTimeField(auto_now_add=True)
 	state = models.BooleanField()
-
-	def __str__(self):
-		return self.id

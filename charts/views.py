@@ -26,6 +26,7 @@ import pygsheets
 from django.contrib.auth.decorators import login_required
 from requests import Session
 from django.contrib.staticfiles.storage import staticfiles_storage  
+from charts.synchronous import get_history_function
 
 ####################################################################################
 #   Set some parameters 
@@ -98,138 +99,16 @@ def add_coin(request):
 def get_history(request, symbol, start_time=None, end_time=None):
     if request.user.username != "Administrador" and request.user.username != "Morpheus":
         return render(request, 'users/error.html')
-    update = True
-    count = 0
-    priceusd = 0
-    inflation = 0
-    pricebtc = 0
-    stocktoflow = 0
-    supply = 0
-    fee = 0
-    revenue = 0
-    hashrate = 0
-    transactions = 0
-    blocksize = 0
-    difficulty = 0
 
-    with open("settings.json") as file:
-        data = json.load(file)
-        file.close()
+    count = get_history_function(symbol, start_time, end_time)
 
-    if not(start_time and end_time):
-        start_time = '2000-01-01'
-        end_time = '2100-01-01'
+    if type(count) in [int, 'int']:
+        message = 'Total of ' + str(count) + ' data imported'
+        context = {'message': message}
+    else:
+        message = 'Failed to load the data'
+        context = {'message': message}
 
-    url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time 
-
-    coins = Coin.objects.filter(name=symbol).order_by('-date')
-    for coin in coins:
-        if coin.supply > 0:
-            supply = coin.supply
-            break
-    for coin in coins:
-        if coin.inflation > 0:
-            inflation = coin.inflation
-            break
-    for coin in coins:
-        if coin.hashrate > 0:
-            hashrate = coin.hashrate
-            break
-    for coin in coins:
-        if coin.transactions > 0:
-            transactions = coin.transactions
-            break
-    for coin in coins:
-        if coin.priceusd > 0:
-            priceusd = coin.priceusd
-            break
-
-    while update: 
-        response = requests.get(url)
-        data_aux = json.loads(response.text)
-        data_aux2 = data_aux['data']
-        for item in data_aux2:
-            day, hour = str(item['time']).split('T')
-            day = datetime.datetime.strptime(day, '%Y-%m-%d')
-            day = datetime.datetime.strftime(day, '%Y-%m-%d')
-            coin = Coin.objects.filter(name=symbol).filter(date=day)
-            if coin:
-                coin.delete()
-            try:
-                coin = Coin()
-                coin.name = symbol
-                coin.date = day
-                try:
-                    coin.priceusd = float(item['PriceUSD'])
-                    priceusd = coin.priceusd
-                except:
-                    coin.priceusd = priceusd
-                try:
-                    coin.pricebtc = float(item['PriceBTC'])
-                    pricebtc = coin.pricebtc
-                except:
-                    coin.pricebtc = pricebtc
-                try:
-                    coin.inflation = float(item['IssContPctAnn'])  
-                    coin.stocktoflow = (100/coin.inflation)**1.65 
-                    inflation = coin.inflation
-                    stocktoflow = coin.stocktoflow
-                except:
-                    coin.inflation = inflation
-                    coin.stocktoflow = stocktoflow
-                try:
-                    if float(item['SplyCur']) < 18000000:
-                        coin.supply = float(item['SplyCur']) + 497108
-                    else:
-                        coin.supply = float(item['SplyCur'])
-                    supply = coin.supply
-                except:
-                    coin.supply = supply
-                try:
-                    coin.fee = float(item['FeeTotNtv'])
-                    fee = coin.fee
-                except:
-                    coin.fee = fee
-                try:
-                    coin.revenue = float(item['RevNtv'])
-                    revenue = coin.revenue
-                except:
-                    coin.revenue = revenue
-                try:
-                    coin.hashrate = float(item['HashRate'])
-                    hashrate = coin.hashrate
-                except:
-                    coin.hashrate = hashrate
-                try:
-                    coin.transactions = float(item['TxCnt'])
-                    transactions = coin.transactions
-                except:
-                    coin.transactions = transactions
-                try:
-                    coin.blocksize = float(item['BlkSizeMeanByte'])
-                    blocksize = coin.blocksize
-                except:
-                    coin.blocksize = blocksize
-                try:
-                    coin.difficulty = float(item['DiffLast'])
-                    difficulty = coin.difficulty
-                except:
-                    coin.difficulty = difficulty
-
-                coin.save()
-                count += 1
-                print(str(symbol) + ' ' + str(coin.date) + ' ' + str(item['SplyCur']))
-
-            except:
-                pass
-        try:
-            url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time + '/' + data_aux['next_page_token']
-        except:
-            update = False
-            break
-
-    message = 'Total of ' + str(count) + ' data imported'
-    context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
 # Populate database with rank history
@@ -1388,11 +1267,9 @@ async def index(request):
     update_socials = False
     update_data = False
 
-    if now > 1 and now < 6:
+    if now > 2 and now < 12:
         try:
             coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
-            # coin_xmr.delete()
-            # coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin_xmr:
                 print('xmr found yesterday')
                 if coin_xmr.priceusd > 1 and coin_xmr.transactions > 0 and coin_xmr.inflation > 0:
@@ -1465,8 +1342,8 @@ async def index(request):
     except:
         coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
 
-    if update_xmr:
-        get_history(request, 'xmr', yesterday, yesterday)
+    if True: #update_xmr:
+        count = get_history_function('xmr', yesterday, yesterday)
         #await asynchronous.update_xmr_data(yesterday, coin_xmr)
 
     if update_socials:
