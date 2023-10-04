@@ -1342,7 +1342,7 @@ async def index(request):
     except:
         coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
 
-    if True: #update_xmr:
+    if update_xmr:
         count = get_history_function('xmr', yesterday, yesterday)
         #await asynchronous.update_xmr_data(yesterday, coin_xmr)
 
