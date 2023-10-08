@@ -195,9 +195,9 @@ async def update_xmr_data(yesterday, coin):
     )
 
     async with aiohttp.ClientSession(**client_args) as session:  
-        for count in range(1, 1400):
-            block = str(height - count)
-            actions.append(asyncio.ensure_future(get_block_data(session, block)))
+        #for count in range(1, 1400):
+        #    block = str(height - count)
+        #    actions.append(asyncio.ensure_future(get_block_data(session, block)))
         actions.append(asyncio.ensure_future(get_coinmarketcap_data(session, 'xmr', 'USD')))
         actions.append(asyncio.ensure_future(get_coinmarketcap_data(session, 'xmr', 'BTC')))
 
@@ -216,21 +216,21 @@ async def update_xmr_data(yesterday, coin):
         for response in responses:
             if response:
                 try:
-                    if response['provider'] == 'localmonero':
-                        date_aux = response['block_header']['timestamp']
-                        if date_aux == yesterday:
-                            try:
-                                blocksize += int(response['block_header']['size'])
-                                for tx in response['block_header']['txs']:
-                                    if tx['coinbase']:
-                                        revenue += int(tx['xmr_outputs'])
-                                    else:
-                                        txs += 1
-                                        fees += int(tx['tx_fee'])
-                                        revenue += int(tx['tx_fee'])
-                                success += 1
-                            except:
-                                errors += 1
+                    # if response['provider'] == 'localmonero':
+                    #     date_aux = response['block_header']['timestamp']
+                    #     if date_aux == yesterday:
+                    #         try:
+                    #             blocksize += int(response['block_header']['size'])
+                    #             for tx in response['block_header']['txs']:
+                    #                 if tx['coinbase']:
+                    #                     revenue += int(tx['xmr_outputs'])
+                    #                 else:
+                    #                     txs += 1
+                    #                     fees += int(tx['tx_fee'])
+                    #                     revenue += int(tx['tx_fee'])
+                    #             success += 1
+                    #         except:
+                    #             errors += 1
 
                     if response['provider'] == 'coinmarketcap':
                         try:

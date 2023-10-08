@@ -1344,7 +1344,7 @@ async def index(request):
 
     if update_xmr:
         count = get_history_function('xmr', yesterday, yesterday)
-        #await asynchronous.update_xmr_data(yesterday, coin_xmr)
+        await asynchronous.update_xmr_data(yesterday, coin_xmr)
 
     if update_socials:
         synchronous.check_new_social('Bitcoin')
