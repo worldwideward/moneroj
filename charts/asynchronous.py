@@ -172,7 +172,7 @@ async def get_social_data(session, symbol):
 #################################################################################### 
 async def update_xmr_data(yesterday, coin):
     name = coin.name
-    Coin.objects.filter(name=coin.name).filter(date=yesterday).delete()
+    #Coin.objects.filter(name=coin.name).filter(date=yesterday).delete()
 
     url = 'https://localmonero.co/blocks/api/get_stats'
     response = requests.get(url)
@@ -234,7 +234,7 @@ async def update_xmr_data(yesterday, coin):
 
                     if response['provider'] == 'coinmarketcap':
                         try:
-                            priceusd = float(response['data']['XMR']['quote']['USD']['price'])
+                            #priceusd = float(response['data']['XMR']['quote']['USD']['price'])
                             update_rank(response)    
                             update_dominance(response)
                         except:
@@ -247,47 +247,47 @@ async def update_xmr_data(yesterday, coin):
             else:
                 errors += 1
 
-        blocksize = blocksize/success
-        revenue = float(revenue)/10**12
-        fees = float(fees)/10**12
-        inflation = 100*365*(revenue)/float(coin.supply)
-        stocktoflow = (100/inflation)**1.65 
-        supply = coin.supply + revenue
+        # blocksize = blocksize/success
+        # revenue = float(revenue)/10**12
+        # fees = float(fees)/10**12
+        # inflation = 100*365*(revenue)/float(coin.supply)
+        # stocktoflow = (100/inflation)**1.65 
+        # supply = coin.supply + revenue
 
-        try:        
-            coin = Coin()
-            coin.name = name
-            coin.date = datetime.datetime.strptime(yesterday, '%Y-%m-%d')
-            coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
-            coin.blocksize = blocksize
-            coin.transactions = txs
-            coin.revenue = revenue
-            coin.fee = fees
-            coin.inflation = inflation
-            coin.hashrate = hashrate
-            coin.difficulty = difficulty
-            coin.stocktoflow = stocktoflow
-            coin.priceusd = priceusd
-            coin.pricebtc = pricebtc
-            coin.supply = supply
-            coin.save()
+        # try:        
+        #     coin = Coin.objects.filter(name='xmr').get(date=yesterday)
+        #     coin.name = name
+        #     coin.date = datetime.datetime.strptime(yesterday, '%Y-%m-%d')
+        #     coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        #     #coin.blocksize = blocksize
+        #     #coin.transactions = txs
+        #     #coin.revenue = revenue
+        #     #coin.fee = fees
+        #     #coin.inflation = inflation
+        #     #coin.hashrate = hashrate
+        #     #coin.difficulty = difficulty
+        #     #coin.stocktoflow = stocktoflow
+        #     coin.priceusd = priceusd
+        #     coin.pricebtc = pricebtc
+        #     #coin.supply = supply
+        #     coin.save()
 
-            # print('Success: ' + str(success))
-            # print('Errors: ' + str(errors))
-            # print('Name: ' + coin.name)
-            # print('Date: ' + str(coin.date))
-            # print('Blocksize: ' + str(coin.blocksize))
-            # print('Transactions: ' + str(coin.transactions))
-            # print('Revenue: ' + str(coin.revenue))
-            # print('Fees: ' + str(coin.fee))
-            # print('Inflation: ' + str(coin.inflation))
-            # print('Hashrate: ' + str(coin.hashrate))
-            # print('Stocktoflow: ' + str(coin.stocktoflow))
-            # print('Priceusd: ' + str(coin.priceusd))
-            # print('Pricebtc: ' + str(coin.pricebtc))
-            # print('Supply: ' + str(coin.supply))
-        except:
-            return False
+        #     # print('Success: ' + str(success))
+        #     # print('Errors: ' + str(errors))
+        #     # print('Name: ' + coin.name)
+        #     # print('Date: ' + str(coin.date))
+        #     # print('Blocksize: ' + str(coin.blocksize))
+        #     # print('Transactions: ' + str(coin.transactions))
+        #     # print('Revenue: ' + str(coin.revenue))
+        #     # print('Fees: ' + str(coin.fee))
+        #     # print('Inflation: ' + str(coin.inflation))
+        #     # print('Hashrate: ' + str(coin.hashrate))
+        #     # print('Stocktoflow: ' + str(coin.stocktoflow))
+        #     # print('Priceusd: ' + str(coin.priceusd))
+        #     # print('Pricebtc: ' + str(coin.pricebtc))
+        #     # print('Supply: ' + str(coin.supply))
+        # except:
+        #     return False
     return True
 
 ####################################################################################
