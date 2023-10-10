@@ -47,10 +47,10 @@ INSTALLED_APPS = [
     'charts',
     'users',
     'articles',
-    'csp.middleware.CSPMiddleware',
 ]
 
 MIDDLEWARE = [
+    'csp.middleware.CSPMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
