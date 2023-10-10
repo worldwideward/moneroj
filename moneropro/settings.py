@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'charts',
     'users',
     'articles',
+    'csp.middleware.CSPMiddleware',
 ]
 
 MIDDLEWARE = [
@@ -112,4 +113,14 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+# Security policy
+CSP_DEFAULT_SRC = ("'self'")
+CSP_IMG_SRC = ("'self'", 'data: w3.org/svg/2000','https://content-api.changenow.io/')
+CSP_STYLE_SRC = ("'unsafe-inline'",'https://site-assets.fontawesome.com',"'self'" )
+CSP_FONT_SRC = ('http://site-assets.fontawesome.com',"'self'" )
+CSP_SCRIPT_SRC = ("'self'")
+CSP_FRAME_ANCESTORS = ("'self'",'https://trocador.app', 'http://127.0.0.1')
+CSP_FRAME_SRC = ("'self'", '*')
+#CSRF_COOKIE_SAMESITE = 'None'
 
