@@ -123,4 +123,22 @@ CSP_SCRIPT_SRC = ("'self'")
 CSP_FRAME_ANCESTORS = ("'self'",'https://trocador.app', 'http://127.0.0.1')
 CSP_FRAME_SRC = ("'self'", '*')
 #CSRF_COOKIE_SAMESITE = 'None'
+PERMISSIONS_POLICY = {
+    "accelerometer": [],
+    "ambient-light-sensor": [],
+    "autoplay": [],
+    "camera": [],
+    "display-capture": [],
+    "document-domain": [],
+    "encrypted-media": [],
+    "fullscreen": [],
+    "geolocation": [],
+    "gyroscope": [],
+    "interest-cohort": [],
+    "magnetometer": [],
+    "microphone": [],
+    "midi": [],
+    "payment": [],
+    "usb": [],
+}
 
