@@ -50,7 +50,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'csp.middleware.CSPMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -113,6 +112,3 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-CSP_FRAME_ANCESTORS = ("'self'",'https://trocador.app', 'http://127.0.0.1', 'https://cdn.plot.ly')
-CSP_FRAME_SRC = ("'self'", '*', 'https://cdn.plot.ly')
