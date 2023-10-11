@@ -114,31 +114,5 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Security policy
-CSP_DEFAULT_SRC = ("'self'", 'https://cdn.plot.ly')
-CSP_IMG_SRC = ("'self'", 'data: w3.org/svg/2000','https://content-api.changenow.io/', 'https://cdn.plot.ly')
-CSP_STYLE_SRC = ("'unsafe-inline'",'https://site-assets.fontawesome.com', 'https://cdn.plot.ly',"'self'" )
-CSP_FONT_SRC = ('http://site-assets.fontawesome.com',"'self'", 'https://cdn.plot.ly')
-CSP_SCRIPT_SRC = ("'self'", 'https://cdn.plot.ly')
 CSP_FRAME_ANCESTORS = ("'self'",'https://trocador.app', 'http://127.0.0.1', 'https://cdn.plot.ly')
 CSP_FRAME_SRC = ("'self'", '*', 'https://cdn.plot.ly')
-#CSRF_COOKIE_SAMESITE = 'None'
-PERMISSIONS_POLICY = {
-    "accelerometer": [],
-    "ambient-light-sensor": [],
-    "autoplay": [],
-    "camera": [],
-    "display-capture": [],
-    "document-domain": [],
-    "encrypted-media": [],
-    "fullscreen": [],
-    "geolocation": [],
-    "gyroscope": [],
-    "interest-cohort": [],
-    "magnetometer": [],
-    "microphone": [],
-    "midi": [],
-    "payment": [],
-    "usb": [],
-}
-
