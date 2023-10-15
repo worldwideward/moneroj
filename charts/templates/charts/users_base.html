@@ -49,9 +49,7 @@
 
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
-      {% if page == 'article' %}
-        <a class="navbar-brand" href="{% url 'articles:articles' %}"><text class="color-orange">Gazeto</text> Monero<text class="color-orange">j</text> </a>
-      {% elif page == 'exchange' %}
+      {% if page == 'exchange' %}
         <a class="navbar-brand" href="{% url 'charts:index' %}"><text class="color-orange">Banko</text> Monero<text class="color-orange">j</text> </a>
       {% elif page == 'market' %}
         <a class="navbar-brand" href="{% url 'charts:index' %}"><text class="color-orange">Merkato</text> Monero<text class="color-orange">j</text> </a>
@@ -69,30 +67,14 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'charts:sfmodel' %}">Charts</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'articles:articles' %}">Articles</a>
-          </li>
           <li class="nav-item dropdown" >
-            {% if user.is_authenticated %}
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Hi, {{ user.username }}.
-              </a>
-            {% else %}
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Settings
-              </a>
-            {% endif %}
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Settings
+            </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% if user.username == 'Administrador' or user.username == 'Morpheus' %}
-                <a class="nav-link" href="{% url 'articles:write' %}">Write / Review</a>
-                <a class="nav-link" href="{% url 'users:users' %}">Control Panel</a>
-                <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
-              {% endif %}
               <a class="nav-link" href="{% url 'charts:about' %}">About</a>
               <div class="dropdown-divider"></div>
               <a class="nav-link" href="{% url 'charts:index' %}">English</a>
-              <!--<a class="nav-link" href="{% url 'charts:fr' %}">French</a>
-              <a class="nav-link" href="{% url 'charts:pt' %}">Portuguese</a>-->
             </div>
           </li>
         </ul>
@@ -149,10 +131,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-

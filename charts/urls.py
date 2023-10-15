@@ -30,9 +30,6 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('compinflation/', views.compinflation, name='compinflation'),
     path('bitcoin/', views.bitcoin, name='bitcoin'),
-    path('pt/', views.pt, name='pt'),
-    path('fr/', views.fr, name='fr'),
-    path('index_pt/', views.pt, name='index_pt'),
     path('thermocap/', views.thermocap, name='thermocap'),
     path('sharpe/', views.sharpe, name='sharpe'),
     path('pricesats/', views.pricesats, name='pricesats'),
@@ -81,7 +78,6 @@ urlpatterns = [
     path('deviation_tx/', views.deviation_tx, name='deviation_tx'),
     path('transactiondominance/', views.transactiondominance, name='transactiondominance'),
     path('percentmonth/', views.percentmonth, name='percentmonth'),
-    path('pageviews/', views.pageviews, name='pageviews'),
     path('securitybudget/', views.securitybudget, name='securitybudget'),
     path('efficiency/', views.efficiency, name='efficiency'),
     path('p2pool_hashrate/', views.p2pool_hashrate, name='p2pool_hashrate'),
@@ -109,7 +105,6 @@ urlpatterns = [
     path('importer/', views.importer, name='importer'),
     path('reset/<str:symbol>/', views.reset, name='reset'),
     path('update/<str:date_from>/<str:date_to>/', views.update_database_admin, name='update'),
-    path('update_pageviews/<str:date>/<int:value>/', views.update_pageviews, name='update_pageviews'),
     path('add_coin/',  views.add_coin, name="add_coin"),
     
 ]
