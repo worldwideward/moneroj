@@ -1258,22 +1258,6 @@ async def index(request):
         except:
             print('no xmr found yesterday - 2')
             update_xmr = True
-
-    if now > 1 and now < 6:
-        try:
-            social_xmr = Social.objects.filter(name='Monero').get(date=yesterday)
-            social_btc = Social.objects.filter(name='Bitcoin').get(date=yesterday)
-            social_crypto = Social.objects.filter(name='Cryptocurrency').get(date=yesterday)
-            if social_btc and social_xmr and social_crypto:
-                print('socials found yesterday')
-                update_socials = False
-            else:
-                print('no socials found yesterday - 1')
-                update_socials = True
-        except:
-            print('no socials found yesterday - 2')
-            update_socials = True  
-
     if now > 6 and now < 12:
         try:
             coin_btc = list(Coin.objects.filter(name='btc').filter(date=yesterday))[0]
@@ -1318,11 +1302,6 @@ async def index(request):
     if update_xmr:
         count = get_history_function('xmr', yesterday, yesterday)
         await asynchronous.update_xmr_data(yesterday, coin_xmr)
-
-    if update_socials:
-        synchronous.check_new_social('Bitcoin')
-        synchronous.check_new_social('Monero')
-        synchronous.check_new_social('Cryptocurrency')
 
     if update_btc:
         await asynchronous.update_others_data(yesterday)
