@@ -1312,11 +1312,7 @@ async def index(request):
     if True:
         enabled = synchronous.get_binance_withdrawal('Monero')
 
-    supply = locale.format('%.0f', coin_xmr.supply, grouping=True)
-    inflation = locale.format('%.2f', coin_xmr.inflation, grouping=True)+'%'    
-
-    context = {'inflation': inflation, 'supply': supply, 'enabled': enabled}
-    return render(request, 'charts/index.html', context)
+    return HttpResponseRedirect(reverse('trocadorapp:sfmodel'))
 
 def social(request):
     data = DailyData.objects.order_by('date')
