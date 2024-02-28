@@ -1312,7 +1312,7 @@ async def index(request):
     if True:
         enabled = synchronous.get_binance_withdrawal('Monero')
 
-    return HttpResponseRedirect(reverse('trocadorapp:sfmodel'))
+    return HttpResponseRedirect(reverse('charts:sfmodel'))
 
 def social(request):
     data = DailyData.objects.order_by('date')
