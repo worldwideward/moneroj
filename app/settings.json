@@ -5,8 +5,8 @@
 			"price_url": "https://api.coingecko.com/api/v3/coins/monero?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false",
 			"price_url_old": "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=",
 			"api_key_name": "X-CMC_PRO_API_KEY",
-			"api_key_value": "59ddc4bf-b6a4-4e36-b7c2-254c0f854a37",
-			"api_key_value_old": "787c7281-c873-4dab-8bb3-51c07c00e55f",
+			"api_key_value": "VALUE",
+			"api_key_value_old": "VALUE2",
 			"metrics_url": "https://community-api.coinmetrics.io/v4/timeseries/asset-metrics?assets=",
 			"metrics_url_new": "http://162.210.173.181/coinmetrics/",
             "metrics": "&metrics=PriceUSD,PriceBTC,IssContPctAnn,TxCnt,SplyCur,HashRate,FeeTotNtv,RevNtv,BlkSizeMeanByte,DiffLast&frequency=1d&pretty=false"

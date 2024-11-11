@@ -21,11 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 #Comment for Local:
 DEBUG = False
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 #Comment for deploy:
-#DEBUG = True
-#STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
+DEBUG = True
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
 
 STATIC_URL = '/static/'
 LOCALE_PATHS = (
@@ -33,8 +33,8 @@ LOCALE_PATHS = (
 )
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'sdfasfasdfas324fdsfsd234234dsfdfghfhgf675756748fas0f89as90fd8as9'
-ALLOWED_HOSTS = ['80.78.22.34', 'www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net', 'moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion']
+SECRET_KEY = 'sdfasfasdfas324fdsfsd234234dsfdgdffdfghfdfasfasdasfadsffhgf675756748fas0f89as90fd8as9'
+ALLOWED_HOSTS = ['www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net', 'moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion']
 
 # Application definition
 INSTALLED_APPS = [
@@ -81,7 +81,8 @@ WSGI_APPLICATION = 'moneropro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': '/opt/db.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
