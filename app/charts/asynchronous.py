@@ -350,12 +350,12 @@ async def update_social_data(symbol):
         timeout=my_timeout
     )
 
-    async with aiohttp.ClientSession(**client_args) as session:  
+    async with aiohttp.ClientSession(**client_args) as session:
         # reddit data
         actions.append(asyncio.ensure_future(get_social_data(session, 'Monero')))
         actions.append(asyncio.ensure_future(get_social_data(session, 'Bitcoin')))
         actions.append(asyncio.ensure_future(get_social_data(session, 'Cryptocurrency')))
-        
+
         try:
             await asyncio.gather(*actions, return_exceptions=True)
         except asyncio.exceptions.TimeoutError:
@@ -468,16 +468,9 @@ async def get_p2pool_data(session, mini):
                     cell = 'A' + str(k + 3)
                     wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
                     print('spreadsheet updated')
-                else:   
+                else:
                     print('spreadsheet already with the latest data')
                     return data
-    else:   
+    else:
         return False
     return True
-
-
-
-
-
-
-
