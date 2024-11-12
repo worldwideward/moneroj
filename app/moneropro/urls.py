@@ -18,7 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from charts import views
 
+from django.conf import settings
+from django.views.static import serve
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'', include(('charts.urls', 'charts'), namespace='charts')),
+    url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT})
 ]
