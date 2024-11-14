@@ -461,12 +461,12 @@ def update_database(date_from=None, date_to=None):
     if not(date_from) or not(date_to):
         date_to = date.today()
         date_from = date_to - timedelta(5)
-        amount = date_from - datetime.datetime.strptime(date_zero, '%Y-%m-%d')
+        amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d").date()
     else:
-        print(str(date_from) + ' to ' + str(date_to))
-        date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
-        date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
-        amount = date_from - datetime.datetime.strptime(date_zero, '%Y-%m-%d')
+        print(str(date_from) + " to " + str(date_to))
+        date_from = datetime.datetime.strptime(date_from, "%Y-%m-%d")
+        date_to = datetime.datetime.strptime(date_to, "%Y-%m-%d")
+        amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d").date()
 
     count = 0
     date_aux = date_from
