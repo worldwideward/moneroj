@@ -345,11 +345,14 @@ def update_dominance(data):
         date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
         date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
         if date_aux < date_aux2:
-            cell = 'B' + str(k + 3)
-            wks.update_value(cell, dominance.dominance)
-            cell = 'A' + str(k + 3)
-            wks.update_value(cell, dominance.date)
-            print('spreadsheet updated')
+
+            values_mat[k][1] = dominance.dominance
+            values_mat[k][0] = dominance.date
+
+            df.iloc[start_row:end_row, start_col:end_col] = values_mat
+            df.to_excel(DATA_FILE, sheet_name="Sheet7", index=False)
+
+            print("spreadsheet updated")
         else:
             print('spreadsheet already with the latest data')
             return False
@@ -380,11 +383,14 @@ def update_rank(data=None):
         date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
         date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
         if date_aux < date_aux2:
-            cell = 'B' + str(k + 3)
-            wks.update_value(cell, rank.rank)
-            cell = 'A' + str(k + 3)
-            wks.update_value(cell, rank.date)
-            print('spreadsheet updated')
+
+            values_mat[k][1] = rank.rank
+            values_mat[k][0] = rank.date
+
+            df.iloc[start_row:end_row, start_col:end_col] = values_mat
+            df.to_excel(DATA_FILE, sheet_name="Sheet8", index=False)
+
+            print("spreadsheet updated")
         else:
             print('spreadsheet already with the latest data')
             return data
@@ -690,7 +696,7 @@ def update_database(date_from=None, date_to=None):
             data.crypto_subscriberCount = social_crypto.subscriberCount
             data.crypto_commentsPerHour = social_crypto.commentsPerHour
             data.crypto_postsPerHour = social_crypto.postsPerHour
-        except:
+        except (Social.DoesNotExist, UnboundLocalError):
             data.btc_subscriberCount = 0
             data.btc_commentsPerHour = 0
             data.btc_postsPerHour = 0
