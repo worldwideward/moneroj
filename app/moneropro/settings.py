@@ -78,6 +78,7 @@ WSGI_APPLICATION = 'moneropro.wsgi.application'
 
 
 # Database
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
