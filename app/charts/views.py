@@ -39,7 +39,7 @@ locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 # To be used when there's a problem with the API
 @login_required
 def add_coin(request):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
     if request.method != 'POST':
@@ -95,7 +95,7 @@ def add_coin(request):
 # Only authorized users can download all price data via URL request
 @login_required
 def get_history(request, symbol, start_time=None, end_time=None):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
     count = get_history_function(symbol, start_time, end_time)
@@ -113,7 +113,7 @@ def get_history(request, symbol, start_time=None, end_time=None):
 # Only authorized users can do this
 @login_required 
 def load_rank(request, symbol):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
     gc = pygsheets.authorize(service_file='service_account_credentials.json')
     sh = gc.open('zcash_bitcoin')
@@ -146,7 +146,7 @@ def load_rank(request, symbol):
 # Only authorized users can do this
 @login_required 
 def load_p2pool(request):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
     count = 0
@@ -199,7 +199,7 @@ def load_p2pool(request):
 # Only authorized users can do this
 @login_required 
 def load_dominance(request, symbol):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
     gc = pygsheets.authorize(service_file='service_account_credentials.json')
     sh = gc.open('zcash_bitcoin')
@@ -231,7 +231,7 @@ def load_dominance(request, symbol):
 # Only authorized users can do this
 @login_required 
 def importer(request):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
     count = 0
     Social.objects.all().delete()
@@ -288,7 +288,7 @@ def importer(request):
 # Only authorized users can do this
 @login_required 
 def reset(request, symbol):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
     Coin.objects.filter(name=symbol).all().delete()
     
@@ -300,7 +300,7 @@ def reset(request, symbol):
 # Only authorized users can do this
 @login_required 
 def populate_database(request):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
     count = 0
 
@@ -754,7 +754,7 @@ def populate_database(request):
 # Only authorized users can do this
 @login_required 
 def update_database_admin(request, date_from, date_to):
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
     synchronous.update_database(date_from, date_to)
@@ -762,7 +762,7 @@ def update_database_admin(request, date_from, date_to):
     message = 'Database updated from ' + str(date_from) + ' to ' + str(date_to)
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
-    if request.user.username != "Administrator":
+    if not request.user.is_superuser:
         return render(request, 'users/error.html')
     count = 0
 
