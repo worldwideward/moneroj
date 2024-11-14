@@ -702,7 +702,21 @@ def update_database(date_from=None, date_to=None):
             data.crypto_postsPerHour = 0
 
         data.save()
-        print(str(coin_xmr.supply) + ' xmr ' + str(data.xmr_subscriberCount) + ' - ' + str(social_xmr.subscriberCount) + ' = ' + str(int(data.xmr_marketcap)) + ' => ' + str(coin_xmr.inflation))
+
+        try:
+            print(
+                str(coin_xmr.supply)
+                + " xmr "
+                + str(data.xmr_subscriberCount)
+                + " - "
+                + str(social_xmr.subscriberCount)
+                + " = "
+                + str(int(data.xmr_marketcap))
+                + " => "
+                + str(coin_xmr.inflation)
+            )
+        except (Social.DoesNotExist, UnboundLocalError):
+            pass
 
         count += 1
 
