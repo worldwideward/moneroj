@@ -714,25 +714,25 @@ def update_p2pool():
     yesterday = date.today() - timedelta(1)
     try:
         p2pool_stat = P2Pool.objects.filter(mini=False).get(date=today)
-        print('achou p2pool de hoje')
+        print("Found P2Pool of today")
         if p2pool_stat.percentage > 0:
-            print('porcentagem > 0')
-            update  = False
+            print("Percentage > 0")
+            update = False
         else:
-            print('porcentagem < 0')
+            print("Percentage < 0")
             p2pool_stat.delete()
             try:
-                coin = Coin.objects.filter(name='xmr').get(date=yesterday)
-                print('achou coin de ontem')
+                coin = Coin.objects.filter(name="xmr").get(date=yesterday)
+                print("Found coin of yesterday")
                 if coin.hashrate > 0:
                     update = True
                 else:
-                    update  = False
-            except:
-                print('nao achou coin de ontem')
-                update  = False
-    except:
-        print('nao achou p2pool de hoje')
+                    update = False
+            except Coin.DoesNotExist:
+                print("Didn't find coin of yesterday")
+                update = False
+    except P2Pool.DoesNotExist:
+        print("Didn't find P2Pool of today")
         try:
             coin = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin.hashrate > 0:
@@ -789,27 +789,26 @@ def update_p2pool():
     yesterday = date.today() - timedelta(1)
     try:
         p2pool_stat = P2Pool.objects.filter(mini=True).get(date=today)
-        print('achou p2pool_mini de hoje')
+        print("Found P2PoolMini of today")
         if p2pool_stat.percentage > 0:
-
-            print('porcentagem > 0')
-            update  = False
+            print("Percentage > 0")
+            update = False
         else:
-            print('porcentagem < 0')
+            print("Percentage < 0")
             p2pool_stat.delete()
             try:
                 coin = Coin.objects.filter(name='xmr').get(date=yesterday)
 
-                print('achou coin de ontem')
+                print("Found coin of yesterday")
                 if coin.hashrate > 0:
                     update = True
                 else:
-                    update  = False
-            except:
-                print('nao achou coin de ontem')
-                update  = False
-    except:
-        print('nao achou p2pool_mini de hoje')
+                    update = False
+            except Coin.DoesNotExist:
+                print("Didn't find coin of yesterday")
+                update = False
+    except P2Pool.DoesNotExist:
+        print("Didn't find P2PoolMini of today")
         try:
             coin = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin.hashrate > 0:
