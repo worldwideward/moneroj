@@ -334,11 +334,11 @@ def update_dominance(data):
         dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
         dominance.save()
 
-        gc = pygsheets.authorize(service_file='service_account_credentials.json')
-        sh = gc.open('zcash_bitcoin')
-        wks = sh.worksheet_by_title('Sheet7')
-        
-        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+        gc = pygsheets.authorize(service_file="service_account_credentials.json")
+        sh = gc.open("zcash_bitcoin")
+        wks = sh.worksheet_by_title("Sheet7")
+
+        values_mat = wks.get_values(start=(3, 1), end=(9999, 2), returnas="matrix")
 
         k = len(values_mat)
         date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
