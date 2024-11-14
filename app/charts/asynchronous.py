@@ -7,6 +7,9 @@ from datetime import date, timedelta
 from .models import Coin, Social, P2Pool
 import requests
 import pygsheets
+from django.conf import settings
+
+BASE_DIR = settings.BASE_DIR
 
 ####################################################################################
 #   Asynchronous get block data from xmrchain
@@ -42,7 +45,7 @@ async def get_network_data(session, block: str):
 #   Asynchronous get coinmarketcap data for price USD and BTC
 #################################################################################### 
 async def get_coinmarketcap_data(session, symbol: str, convert: str):
-    with open("settings.json") as file:
+    with open(BASE_DIR / "settings.json") as file:
         data = json.load(file)
         file.close()
 
@@ -294,7 +297,7 @@ async def update_xmr_data(yesterday, coin):
 #   Asynchronous get social and coins data
 #################################################################################### 
 async def update_others_data(date):
-    with open("settings.json") as file:
+    with open(BASE_DIR / "settings.json") as file:
         data = json.load(file)
         file.close()
 
