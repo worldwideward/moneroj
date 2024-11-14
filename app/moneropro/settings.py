@@ -14,100 +14,116 @@ import os
 from pathlib import Path
 
 # Necessary for assynchronous django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rest.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rest.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-#Comment for Local:
+# TODO: Handle the following settings dynamically.
+
+# Comment for Local:
 DEBUG = False
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-#Comment for deploy:
-#DEBUG = True
-#STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
+# Comment for deploy:
+DEBUG = True
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
-STATIC_URL = '/static/'
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, "locale/"),
-)
+STATIC_URL = "/static/"
+LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'sdfasfasdfas324fdsfsd234234dsfdgdffdfghfdfasfasdasfadsffhgf675756748fas0f89as90fd8as9'
-ALLOWED_HOSTS = ['www.moneroj.net', 'localhost', '127.0.0.1', 'moneroj.net', 'moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion']
+SECRET_KEY = "sdfasfasdfas324fdsfsd234234dsfdgdffdfghfdfasfasdasfadsffhgf675756748fas0f89as90fd8as9"  # TODO: Move this somewhere else.
+ALLOWED_HOSTS = [
+    "www.moneroj.net",
+    "localhost",
+    "127.0.0.1",
+    "moneroj.net",
+    "moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion",
+]  # TODO: Move this somewhere else.
+
+if "MONEROPRO_DEV_HOST" in os.environ:
+    ALLOWED_HOSTS.append(os.environ["MONEROPRO_DEV_HOST"])
+
+CORS_ALLOWED_ORIGINS = [f"http://{host}" for host in ALLOWED_HOSTS] + [
+    f"https://{host}" for host in ALLOWED_HOSTS
+]
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'charts',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "charts",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
-ROOT_URLCONF = 'moneropro.urls'
+ROOT_URLCONF = "moneropro.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'moneropro.wsgi.application'
+WSGI_APPLICATION = "moneropro.wsgi.application"
 
 
 # Database
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/opt/db.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 
 # Internationalization
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
