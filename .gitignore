@@ -4,3 +4,4 @@ venv/
 *.sqlite3-journal
 migrations/
 data/
+.vscode/
