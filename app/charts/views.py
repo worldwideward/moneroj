@@ -93,9 +93,9 @@ def add_coin(request):
 
 # Get all history for metrics of a certain coin named as 'symbol'
 # Only authorized users can download all price data via URL request
-@login_required 
+@login_required
 def get_history(request, symbol, start_time=None, end_time=None):
-    if request.user.username != "Administrator": #and request.user.username != "Morpheus":
+    if request.user.username != "Administrator":
         return render(request, 'users/error.html')
 
     count = get_history_function(symbol, start_time, end_time)
@@ -118,7 +118,7 @@ def load_rank(request, symbol):
     gc = pygsheets.authorize(service_file='service_account_credentials.json')
     sh = gc.open('zcash_bitcoin')
     wks = sh.worksheet_by_title('Sheet8')
-    
+
     count = 0
     values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
     print(len(values_mat))
