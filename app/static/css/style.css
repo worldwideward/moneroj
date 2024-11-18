@@ -4,7 +4,7 @@
 --------------------------------------------------------------*/
 body {
   font-family: "Open Sans", sans-serif;
-  color: #313030;
+  color: #ffffff;
 }
 
 a {
@@ -31,7 +31,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 3px;
   right: 15px;
   bottom: 15px;
-  background: #ff4d21;
+  background: #0f0f0f;
   color: #fff;
   transition: display 0.5s ease-in-out;
   z-index: 99999;
@@ -140,19 +140,24 @@ h1, h2, h3, h4, h5, h6 {
 
 #main {
   z-index: 3;
+  background-color: #0f0f0f;
+  color: #e6e6e6; 
 }
 
 /*--------------------------------------------------------------
 # Navigation Menu
 --------------------------------------------------------------*/
 /* Desktop Navigation */
+.navbar {
+  background-color: #0f0f0f;
+}
+
 .navbar .nav-link {
-  color: #554b49;
+  color: #e6e6e6;
   font-size: 16px;
   font-family: "Poppins", sans-serif;
 }
 .navbar .navbar-brand {
-  color: #675f5f;
   font-size: 30px;
   font-weight: bold;
   letter-spacing: 2px;
@@ -276,7 +281,7 @@ section {
 }
 
 .section-bg {
-  background-color: #f9f6f6;
+  background-color: #0f0f0f;
 }
 
 .section-title {
@@ -290,7 +295,7 @@ section {
   margin-bottom: 20px;
   padding-bottom: 0;
   font-family: "Poppins", sans-serif;
-  color: #635551;
+  color:#e9e9e99;
 }
 
 .section-title p {
@@ -342,9 +347,9 @@ section {
 
 .why-us .content {
   padding: 30px;
-  background: #ff4d21;
+  background: #ef7726;
   border-radius: 20px;
-  color: #fff;
+  color: #0f0f0f;
 }
 
 .why-us .content h3 {
@@ -361,11 +366,13 @@ section {
 
 .why-us .content .more-btn {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
+  background: #ef7726;
   padding: 6px 30px 8px 30px;
-  color: #fff;
+  color: #0f0f0f;
   border-radius: 10px;
   transition: all ease-in-out 0.4s;
+  border: 1px solid;
+  box-shadow: 10px 5px 30px rgba(0, 0, 0, 0.1);
 }
 
 .why-us .content .more-btn i {
@@ -373,15 +380,15 @@ section {
 }
 
 .why-us .content .more-btn:hover {
-  color: #ff4d21;
-  background: #fff;
+  color: #0f0f0f;
+  background: #e9e9e9;
   text-decoration: none;
 }
 
 .why-us .icon-boxes .icon-box {
   text-align: center;
   border-radius: 15px;
-  background: #fff;
+  background: #0f0f0f;
   box-shadow: 10px 5px 30px rgba(0, 0, 0, 0.1);
   padding: 20px 20px;
   width: 100%;
@@ -389,7 +396,7 @@ section {
 
 .why-us .icon-boxes .icon-box i {
   font-size: 40px;
-  color: #ff4d21;
+  color: #ef7726;
   margin-bottom: 30px;
 }
 
@@ -401,7 +408,7 @@ section {
 
 .why-us .icon-boxes .icon-box p {
   font-size: 15px;
-  color: #716f6f;
+  color: #e9e9e9;
   text-align: center;
   text-justify: inter-word;
 }
@@ -605,14 +612,14 @@ section {
 --------------------------------------------------------------*/
 .about .icon-boxes h4 {
   font-size: 18px;
-  color: #7f6d68;
+  color: #e9e9e9;
   margin-bottom: 15px;
 }
 
 .about .icon-boxes h3 {
   font-size: 28px;
   font-weight: 700;
-  color: #554945;
+  color: #ef7726;
   margin-bottom: 15px;
 }
 
@@ -630,17 +637,17 @@ section {
   border: 2px solid #ffcbba;
   border-radius: 50px;
   transition: 0.5s;
-  background: #fff;
+  background: #0f0f0f;
 }
 
 .about .icon-box .icon i {
-  color: #ff4d21;
+  color: #ef7726;
   font-size: 32px;
 }
 
 .about .icon-box:hover .icon {
-  background: #ff4d21;
-  border-color: #ff4d21;
+  background: #ef7726;
+  border-color: #e9e9e9;
 }
 
 .about .icon-box:hover .icon i {
@@ -660,12 +667,12 @@ section {
 }
 
 .about .icon-box .title a {
-  color: #343a40;
+  color: #ef7726;
   transition: 0.3s;
 }
 
 .about .icon-box .title a:hover {
-  color: #ff4d21;
+  color: #e9e9e9;
   text-decoration: none;
 }
 
@@ -832,22 +839,33 @@ section {
   text-align: center;
   height: 200px;
   position: relative;
-  background: #fff;
+  background: #ed7524;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
 }
 
+.services .icon-box p {
+  color: #0f0f0f;
+}
+.services .icon-box a {
+  color: #ffffff;
+}
+.services .icon-box a:hover {
+  color: #e6e6e6;
+}
+
 .services a {
-  color: #ff4d21;
+  color: #ed7524;
 }
 
 .services a:hover {
-  color: #ff7b4f;
+  color: #e6e6e6;
   text-decoration: none;
 }
 
 .services p {
   text-align: center;
   text-justify: inter-word;
+  color: #e6e6e6;
 }
 
 .services .icon {
@@ -856,7 +874,7 @@ section {
   left: calc(50% - 36px);
   transition: 0.2s;
   border-radius: 50%;
-  border: 6px solid #fff;
+  border: 6px solid #0f0f0f;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -864,11 +882,11 @@ section {
   text-align: center;
   width: 72px;
   height: 72px;
-  background: #ff4d21;
+  background: #ef7726;
 }
 
 .services .icon i {
-  color: #fff;
+  color: #ffffff;
   font-size: 24px;
 }
 
@@ -884,8 +902,8 @@ section {
 }
 
 .services .icon-box:hover .icon {
-  background: #fff;
-  border: 2px solid #ff4d21;
+  background: #0f0f0f;
+  border: 2px solid #ef7726;
 }
 
 .services .icon-box:hover .icon i {
@@ -893,7 +911,7 @@ section {
 }
 
 .services .icon-box:hover .title a {
-  color: #ff4d21;
+  color: #0f0f0f;
 }
 
 .services .description {
@@ -1461,9 +1479,10 @@ section {
 
 .faq .faq-list li {
   padding: 20px;
-  background: #fff;
+  background: #ee7625;
   border-radius: 4px;
   position: relative;
+  color: #0f0f0f;
 }
 
 .faq .faq-list a {
@@ -1483,7 +1502,7 @@ section {
   position: absolute;
   right: 0;
   left: 20px;
-  color: #ffb8a1;
+  color: #0f0f0f;
 }
 
 .faq .faq-list .icon-show, .faq .faq-list .icon-close {
@@ -1505,14 +1524,13 @@ section {
 }
 
 .faq .faq-list a.collapsed {
-  color: #464d55;
+  color: #0f0f0f;
 }
 .faq .faq-list a {
-  color: #ff4d21;
+  color: #0f0f0f;
 }
 
 .faq .faq-list a:hover {
-  color: #ff7b4f;
   text-decoration: none;
 }
 
@@ -1624,7 +1642,7 @@ section {
 }
 
 .contact .php-email-form input::focus, .contact .php-email-form textarea::focus {
-  background-color: #ff4d21;
+  background-color: #0f0f0f;
 }
 
 .contact .php-email-form input {
@@ -1762,7 +1780,7 @@ section {
 
 .blog .entry .entry-content blockquote {
   overflow: hidden;
-  background-color: #fafafa;
+  background-color: #0f0f0f;
   padding: 60px;
   position: relative;
   text-align: center;
@@ -2199,18 +2217,22 @@ section {
 # Footer
 --------------------------------------------------------------*/
 #footer {
-  color: #313030;
+  color: #0f0f0f;
   font-size: 14px;
-  background: #fff;
+  background: #e9e9e9;
 }
 
 #footer .footer-top {
   padding: 60px 0 30px 0;
-  background: #f5f0f0;
+  background: #0f0f0f;
 }
 
 #footer .footer-top .footer-contact {
   margin-bottom: 30px;
+}
+
+#footer .footer-top .footer-contact h3 {
+  color: #e6e6e6;
 }
 
 #footer .footer-top .footer-contact h4 {
@@ -2226,13 +2248,13 @@ section {
   line-height: 24px;
   margin-bottom: 0;
   font-family: "Raleway", sans-serif;
-  color: #656262;
+  color: #0f0f0f;
 }
 
 #footer .footer-top h4 {
   font-size: 16px;
   font-weight: bold;
-  color: #313030;
+  color: #e6e6e6;
   position: relative;
   padding-bottom: 12px;
 }
@@ -2249,7 +2271,7 @@ section {
 
 #footer .footer-top .footer-links ul i {
   padding-right: 2px;
-  color: #ffa587;
+  color: #ef7726;
   font-size: 18px;
   line-height: 1;
 }
@@ -2265,7 +2287,7 @@ section {
 }
 
 #footer .footer-top .footer-links ul a {
-  color: #656262;
+  color: #e9e9e9;
   transition: 0.3s;
   display: inline-block;
   line-height: 1;
@@ -2273,7 +2295,7 @@ section {
 
 #footer .footer-top .footer-links ul a:hover {
   text-decoration: none;
-  color: #ff4d21;
+  color: #ef7726;
 }
 
 #footer .footer-newsletter {
