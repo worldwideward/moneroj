@@ -393,7 +393,7 @@ section {
 .why-us .icon-boxes .icon-box {
   text-align: center;
   border-radius: 15px;
-  background: #0f0f0f;
+  background: #212121;
   box-shadow: 10px 5px 30px rgba(0, 0, 0, 0.1);
   padding: 20px 20px;
   width: 100%;
@@ -630,6 +630,12 @@ section {
 
 .about .icon-box {
   margin-top: 40px;
+  text-align: center;
+  border-radius: 15px;
+  background: #212121;
+  box-shadow: 10px 5px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px 20px;
+  width: 100%;
 }
 
 .about .icon-box .icon {
