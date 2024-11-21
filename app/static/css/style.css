@@ -844,7 +844,7 @@ section {
 # Services
 --------------------------------------------------------------*/
 .services .icon-box {
-  padding: 50px 20px;
+  padding: 50px 20px 10px 10px;
   margin-top: 35px;
   margin-bottom: 25px;
   text-align: center;
@@ -858,7 +858,12 @@ section {
   color: #0f0f0f;
 }
 .services .icon-box a {
-  color: #ffffff;
+  color: #0f0f0f;
+}
+
+.services .icon-box h4 a {
+  color: #0f0f0f;
+  text-decoration: none;
 }
 .services .icon-box a:hover {
   color: #e6e6e6;
@@ -866,11 +871,12 @@ section {
 
 .services a {
   color: #ed7524;
+  text-decoration: underline;
 }
 
 .services a:hover {
   color: #e6e6e6;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .services p {
@@ -1490,10 +1496,10 @@ section {
 
 .faq .faq-list li {
   padding: 20px;
-  background: #ee7625;
+  background: #212121;
   border-radius: 4px;
   position: relative;
-  color: #0f0f0f;
+  color: #e6e6e6;
 }
 
 .faq .faq-list a {
@@ -1513,7 +1519,7 @@ section {
   position: absolute;
   right: 0;
   left: 20px;
-  color: #0f0f0f;
+  color: #e6e6e6;
 }
 
 .faq .faq-list .icon-show, .faq .faq-list .icon-close {
@@ -1535,10 +1541,10 @@ section {
 }
 
 .faq .faq-list a.collapsed {
-  color: #0f0f0f;
+  color: #e6e6e6;
 }
 .faq .faq-list a {
-  color: #0f0f0f;
+  color: #e6e6e6;
 }
 
 .faq .faq-list a:hover {
