@@ -7,8 +7,11 @@ from datetime import date, timedelta
 from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, Withdrawal
 from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
-import pygsheets
 import pytz
+from .spreadsheets import PandasSpreadSheetManager
+
+sheets = PandasSpreadSheetManager()
+
 
 ####################################################################################
 #   Reddit api
@@ -334,11 +337,7 @@ def update_dominance(data):
         dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
         dominance.save()
 
-        gc = pygsheets.authorize(service_file="service_account_credentials.json")
-        sh = gc.open("zcash_bitcoin")
-        wks = sh.worksheet_by_title("Sheet7")
-
-        values_mat = wks.get_values(start=(3, 1), end=(9999, 2), returnas="matrix")
+        values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet7", start=(2, 0), end=(9999, 2))
 
         k = len(values_mat)
         date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
@@ -372,12 +371,7 @@ def update_rank(data=None):
         rank.rank = int(data['data']['XMR']['cmc_rank'])
         rank.save()
 
-        gc = pygsheets.authorize(service_file='service_account_credentials.json')
-        sh = gc.open('zcash_bitcoin')
-        wks = sh.worksheet_by_title('Sheet8')
-        
-        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
-
+        values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet8", start=(2, 0), end=(9999, 2))
         k = len(values_mat)
         date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
         date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
@@ -777,11 +771,7 @@ def update_p2pool():
         p2pool_stat.save()
         print('p2pool saved!')
 
-        gc = pygsheets.authorize(service_file='service_account_credentials.json')
-        sh = gc.open('zcash_bitcoin')
-        wks = sh.worksheet_by_title('p2pool')
-        
-        values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
+        values_mat = sheets.get_values("zcash_bitcoin.ods", "p2pool", start=(2, 0), end=(9999, 3))
 
         k = len(values_mat)
         date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
@@ -853,11 +843,7 @@ def update_p2pool():
         p2pool_stat.save()
         print('p2pool_mini saved!')
 
-        gc = pygsheets.authorize(service_file='service_account_credentials.json')
-        sh = gc.open('zcash_bitcoin')
-        wks = sh.worksheet_by_title('p2poolmini')
-        
-        values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
+        values_mat = sheets.get_values("zcash_bitcoin.ods", "p2poolmini", start=(2, 0), end=(9999, 3))
 
         k = len(values_mat)
         date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')

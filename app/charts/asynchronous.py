@@ -6,10 +6,12 @@ import datetime
 from datetime import date, timedelta
 from .models import Coin, Social, P2Pool
 import requests
-import pygsheets
 from django.conf import settings
+from .spreadsheets import PandasSpreadSheetManager
 
 BASE_DIR = settings.BASE_DIR
+
+sheets = PandasSpreadSheetManager()
 
 ####################################################################################
 #   Asynchronous get block data from xmrchain
@@ -412,10 +414,7 @@ async def get_p2pool_data(session, mini):
                 p2pool_stat.mini = False
                 p2pool_stat.save()
                 print('p2pool saved!')
-                gc = pygsheets.authorize(service_file='service_account_credentials.json')
-                sh = gc.open('zcash_bitcoin')
-                wks = sh.worksheet_by_title('p2pool')
-                values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
+                values_mat = sheets.get_values("zcash_bitcoin.ods", "p2pool", start=(2,0), end=(9999,3))
                 k = len(values_mat)
                 date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
                 date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
@@ -449,10 +448,7 @@ async def get_p2pool_data(session, mini):
                 p2pool_stat.mini = True
                 p2pool_stat.save()
                 print('p2pool_mini saved!')
-                gc = pygsheets.authorize(service_file='service_account_credentials.json')
-                sh = gc.open('zcash_bitcoin')
-                wks = sh.worksheet_by_title('p2poolmini')
-                values_mat = wks.get_values(start=(3,1), end=(9999,3), returnas='matrix')
+                values_mat = sheets.get_values("zcash_bitcoin.ods", "p2poolmini", start=(2,0), end=(9999,3))
                 k = len(values_mat)
                 date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
                 date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
