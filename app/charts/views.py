@@ -4223,7 +4223,6 @@ def dread_subscribers(request):
     dominance = locale._format('%.2f', dominance, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr, 'data1': data1, "data2": data2, "dominance": dominance}
-    print(context, flush=True)
     return render(request, 'charts/dread_subscribers.html', context)
 
 def coincards(request):
