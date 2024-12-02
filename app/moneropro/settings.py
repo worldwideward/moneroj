@@ -20,6 +20,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rest.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 # Database on sepatare path than source code, so code can be treated as ephemeral
+MONEROJ_SPREADSHEET_DIR = "/opt"
 SQLITE_FILEPATH = "/opt/db.sqlite3"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,11 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
-
-STATIC_URL = "/static/"
+STATIC_URL = "static/"
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 
 # SECURITY WARNING: keep the secret key used in production secret!
