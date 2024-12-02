@@ -20,16 +20,18 @@ from operator import truediv
 from datetime import timezone
 import aiohttp
 import asyncio
-import pygsheets
 from django.contrib.auth.decorators import login_required
 from requests import Session
 from django.contrib.staticfiles.storage import staticfiles_storage
 from charts.synchronous import get_history_function
+from .spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
 ####################################################################################
 #   Set some parameters 
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+
+sheets = PandasSpreadSheetManager()
 
 ####################################################################################
 #   Useful functions for admins
@@ -115,12 +117,10 @@ def get_history(request, symbol, start_time=None, end_time=None):
 def load_rank(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet8')
 
     count = 0
-    values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet8", start=(2, 0), end=(9999, 2))
     print(len(values_mat))
     Rank.objects.all().delete()
 
@@ -129,7 +129,7 @@ def load_rank(request, symbol):
             rank = Rank()
             rank.name = symbol
             rank.date = values_mat[k][0]
-            rank.rank = int(values_mat[k][1].replace(',', '.'))
+            rank.rank = values_mat[k][1]
             if not(rank.rank) and not(rank.date):
                 break
             else:
@@ -150,21 +150,18 @@ def load_p2pool(request):
         return render(request, 'users/error.html')
 
     count = 0
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('p2pool')
-    values_mat = wks.get_values(start=(3,1), end=(9999,6), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "p2pool", start=(2, 0), end=(9999, 6))
     P2Pool.objects.all().delete()
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][1]:
             p2pool_stat = P2Pool()
             p2pool_stat.date = values_mat[k][0]
-            p2pool_stat.miners = float(values_mat[k][1].replace(',', '.'))
-            p2pool_stat.hashrate = float(values_mat[k][2].replace(',', '.'))
-            p2pool_stat.percentage = float(values_mat[k][3].replace(',', '.'))
-            p2pool_stat.totalhashes = float(values_mat[k][4].replace(',', '.'))
-            p2pool_stat.totalblocksfound = float(values_mat[k][5].replace(',', '.'))
+            p2pool_stat.miners = values_mat[k][1]
+            p2pool_stat.hashrate = values_mat[k][2]
+            p2pool_stat.percentage = values_mat[k][3]
+            p2pool_stat.totalhashes = values_mat[k][4]
+            p2pool_stat.totalblocksfound = values_mat[k][5]
             p2pool_stat.mini = False
             p2pool_stat.save()
             count += 1
@@ -172,25 +169,24 @@ def load_p2pool(request):
         else:
             break
 
-    wks = sh.worksheet_by_title('p2poolmini')
-    values_mat = wks.get_values(start=(3,1), end=(9999,6), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "p2poolmini", start=(2,0), end=(994,6), returnas='matrix')
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][1]:
             p2pool_stat = P2Pool()
             p2pool_stat.date = values_mat[k][0]
-            p2pool_stat.miners = float(values_mat[k][1].replace(',', '.'))
-            p2pool_stat.hashrate = float(values_mat[k][2].replace(',', '.'))
-            p2pool_stat.percentage = float(values_mat[k][3].replace(',', '.'))
-            p2pool_stat.totalhashes = float(values_mat[k][4].replace(',', '.'))
-            p2pool_stat.totalblocksfound = float(values_mat[k][5].replace(',', '.'))
+            p2pool_stat.miners = values_mat[k][1]
+            p2pool_stat.hashrate = values_mat[k][2]
+            p2pool_stat.percentage = values_mat[k][3]
+            p2pool_stat.totalhashes = values_mat[k][4]
+            p2pool_stat.totalblocksfound = values_mat[k][5]
             p2pool_stat.mini = True
             p2pool_stat.save()
             count += 1
             #print('p2poolmini data saved - ' + str(p2pool_stat.date) + ' - ' + str(p2pool_stat.percentage) + ' - ' + str(p2pool_stat.miners))
         else:
             break
-    
+
     message = 'Total of ' + str(count) + ' data imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
@@ -201,12 +197,9 @@ def load_p2pool(request):
 def load_dominance(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet7')
-    
+
     count = 0
-    values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet7", start=(2, 0), end=(9999, 2))
     Dominance.objects.all().delete()
 
     for k in range(0,len(values_mat)):
@@ -214,7 +207,7 @@ def load_dominance(request, symbol):
             dominance = Dominance()
             dominance.name = symbol
             dominance.date = values_mat[k][0]
-            dominance.dominance = float(values_mat[k][1].replace(',', '.'))
+            dominance.dominance = values_mat[k][1]
             if not(dominance.dominance) and not(dominance.date):
                 break
             else:
@@ -1216,106 +1209,8 @@ def update_database_admin(request, date_from, date_to):
 #   Views
 ####################################################################################
 async def index(request):
-    coins = Coin.objects.filter(name='xmr').order_by('-date')
-    count = 0
-    for coin in coins:
-        count += 1
-        if count< 200:
-            if coin.supply < 18000000:
-                coin.supply += 499736
-                print(coin.date)
-                coin.save()
 
-    coin = list(Coin.objects.order_by('-date'))[0]
-    if not(coin):
-        message = 'Website under maintenance. Check back in a few minutes'
-        context = {'message': message}
-        return render(request, 'charts/maintenance.html', context)
-
-    now = int(datetime.datetime.now().strftime("%H"))
-    yesterday = datetime.datetime.strftime(date.today() - timedelta(1), '%Y-%m-%d')
-    date_aux = datetime.datetime.strftime(date.today() - timedelta(2), '%Y-%m-%d')
-    update_xmr = False
-    update_btc = False
-    update_socials = False
-    update_data = False
-
-    if now > 2 and now < 12:
-        try:
-            coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
-            if coin_xmr:
-                print('xmr found yesterday')
-                if coin_xmr.priceusd > 1 and coin_xmr.transactions > 0 and coin_xmr.inflation > 0:
-                    print('no need to update xmr')
-                    update_xmr = False
-                else:
-                    print('will update xmr')
-                    coin_xmr.delete()
-                    update_xmr = True
-            else:
-                print('no xmr found yesterday - 1')
-                update_xmr = True
-        except:
-            print('no xmr found yesterday - 2')
-            update_xmr = True
-    if now > 6 and now < 12:
-        try:
-            coin_btc = list(Coin.objects.filter(name='btc').filter(date=yesterday))[0]
-            coin_zec = list(Coin.objects.filter(name='zec').filter(date=yesterday))[0]
-            coin_dash = list(Coin.objects.filter(name='dash').filter(date=yesterday))[0]
-            coin_grin = list(Coin.objects.filter(name='grin').filter(date=yesterday))[0]
-            if coin_btc and coin_zec and coin_dash and coin_grin:
-                print('coins found yesterday')
-                if coin_btc.transactions > 0 and coin_btc.inflation > 0 and coin_zec.supply > 0 and coin_dash.supply > 0 and coin_grin.supply > 0:
-                    print('no need to update coins')
-                    update_btc = False
-                else:
-                    print('will update coins')
-                    coin_btc.delete()
-                    coin_zec.delete()
-                    coin_dash.delete()
-                    coin_grin.delete()
-                    update_btc = True
-            else:
-                print('no coins found yesterday - 1')
-                update_btc = True
-        except:
-            print('no coins found yesterday - 2')
-            update_btc = True  
-        try:
-            data = list(DailyData.objects.filter(date=yesterday))[0]
-            if data:
-                print('data found yesterday')
-                update_data = False
-            else:
-                print('no data found yesterday - 1')
-                update_data = True
-        except:
-            print('no data found yesterday - 2')
-            update_data = True  
-
-    try:
-        coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
-    except:
-        coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
-
-    if update_xmr:
-        count = get_history_function('xmr', yesterday, yesterday)
-        await asynchronous.update_xmr_data(yesterday, coin_xmr)
-
-    if update_btc:
-        await asynchronous.update_others_data(yesterday)
-
-    if update_data:
-        synchronous.update_database(yesterday, yesterday)
-
-    if True:
-        enabled = synchronous.get_binance_withdrawal('Monero')
-
-    supply = locale.format('%.0f', coin_xmr.supply, grouping=True)
-    inflation = locale.format('%.2f', coin_xmr.inflation, grouping=True)+'%'
-    context = {'inflation': inflation, 'supply': supply, 'enabled': enabled}
-    return render(request, 'charts/index.html', context)
+    return render(request, 'charts/index.html')
 
 def social(request):
     data = DailyData.objects.order_by('date')
@@ -1350,9 +1245,9 @@ def social(request):
         else:
             social_crypto.append(last_crypto)
 
-    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
-    last_btc = locale.format('%.0f', last_btc, grouping=True)
-    last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    last_xmr = locale._format('%.0f', last_xmr, grouping=True)
+    last_btc = locale._format('%.0f', last_btc, grouping=True)
+    last_crypto = locale._format('%.0f', last_crypto, grouping=True)
 
     context = {'dates': dates, 'dates2': dates2, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social.html', context)
@@ -1390,8 +1285,8 @@ def social2(request):
         else:
             social_xmr.append(last_xmr)
 
-    last_xmr = '$' + locale.format('%.0f', last_xmr, grouping=True)
-    last_btc = '$' + locale.format('%.0f', last_btc, grouping=True)
+    last_xmr = '$' + locale._format('%.0f', last_xmr, grouping=True)
+    last_btc = '$' + locale._format('%.0f', last_btc, grouping=True)
 
     context = {'dates': dates, 'dates2': dates2, 'social_btc': social_btc, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'last_btc': last_btc}
     return render(request, 'charts/social2.html', context)
@@ -1420,8 +1315,8 @@ def social3(request):
         else:
             social_crypto.append(last_crypto)
 
-    last_xmr = locale.format('%.1f', last_xmr, grouping=True)+ '%'
-    last_crypto = locale.format('%.1f', last_crypto, grouping=True)+ '%'
+    last_xmr = locale._format('%.1f', last_xmr, grouping=True)+ '%'
+    last_crypto = locale._format('%.1f', last_crypto, grouping=True)+ '%'
 
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'last_xmr': last_xmr, 'last_crypto': last_crypto}
     return render(request, 'charts/social3.html', context)
@@ -1543,9 +1438,9 @@ def social4(request):
             newcomers_xmr.append(last_xmr)
 
     try:
-        last_xmr = locale.format('%.0f', last_xmr, grouping=True)
-        last_btc = locale.format('%.0f', last_btc, grouping=True)
-        last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+        last_xmr = locale._format('%.0f', last_xmr, grouping=True)
+        last_btc = locale._format('%.0f', last_btc, grouping=True)
+        last_crypto = locale._format('%.0f', last_crypto, grouping=True)
     except:
         last_xmr = 0
         last_btc = 0
@@ -1577,8 +1472,8 @@ def social5(request):
         else:
             transactions.append('')
 
-    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
-    now_transactions = locale.format('%.0f', now_transactions, grouping=True)
+    last_xmr = locale._format('%.0f', last_xmr, grouping=True)
+    now_transactions = locale._format('%.0f', now_transactions, grouping=True)
 
     context = {'dates': dates, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'now_transactions': now_transactions, 'transactions': transactions}
     return render(request, 'charts/social5.html', context)
@@ -1614,9 +1509,9 @@ def social6(request):
             last_crypto = item.crypto_commentsPerHour*24
             social_crypto.append(last_crypto)
 
-    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
-    last_btc = locale.format('%.0f', last_btc, grouping=True)
-    last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    last_xmr = locale._format('%.0f', last_xmr, grouping=True)
+    last_btc = locale._format('%.0f', last_btc, grouping=True)
+    last_crypto = locale._format('%.0f', last_crypto, grouping=True)
 
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social6.html', context)
@@ -1651,9 +1546,9 @@ def social7(request):
         else:
             social_crypto.append(last_crypto)
 
-    last_xmr = locale.format('%.0f', last_xmr, grouping=True)
-    last_btc = locale.format('%.0f', last_btc, grouping=True)
-    last_crypto = locale.format('%.0f', last_crypto, grouping=True)
+    last_xmr = locale._format('%.0f', last_xmr, grouping=True)
+    last_btc = locale._format('%.0f', last_btc, grouping=True)
+    last_crypto = locale._format('%.0f', last_crypto, grouping=True)
     
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social7.html', context)
@@ -1699,10 +1594,10 @@ def pricelog(request):
             reward = 0.6*(  10**12)
         supply += int(720*reward)
 
-    now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
-    now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
-    maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
-    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+    now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
+    now_sf = "$"+ locale._format('%.2f', now_sf, grouping=True)
+    maximum = "$"+ locale._format('%.2f', maximum, grouping=True)
+    now_inflation = locale._format('%.2f', now_inflation, grouping=True)+'%'
 
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'charts/pricelog.html', context)
@@ -1829,10 +1724,10 @@ def powerlaw(request):
             years.append(yearnumber)
             dates.append(days)   
 
-    now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
-    now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
-    maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
-    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+    now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
+    now_sf = "$"+ locale._format('%.2f', now_sf, grouping=True)
+    maximum = "$"+ locale._format('%.2f', maximum, grouping=True)
+    now_inflation = locale._format('%.2f', now_inflation, grouping=True)+'%'
 
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 
     'now_sf': now_sf, 'color': color, 'years': years, 'counter': counter, 'line1': line1, 'line2': line2, 'line3': line3}
@@ -1880,10 +1775,10 @@ def pricelin(request):
         supply += int(720*reward)
         stock = (100/(100*reward*720*365/supply))**1.65         
 
-    now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
-    now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
-    maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
-    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+    now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
+    now_sf = "$"+ locale._format('%.2f', now_sf, grouping=True)
+    maximum = "$"+ locale._format('%.2f', maximum, grouping=True)
+    now_inflation = locale._format('%.2f', now_inflation, grouping=True)+'%'
 
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'charts/pricelin.html', context)
@@ -1914,9 +1809,9 @@ def pricesats(request):
         else:
             values.append('')
 
-    now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
-    maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
-    bottom = locale.format('%.4f', bottom, grouping=True) + ' BTC'
+    now_price = locale._format('%.4f', now_price, grouping=True) + ' BTC'
+    maximum = locale._format('%.4f', maximum, grouping=True) + ' BTC'
+    bottom = locale._format('%.4f', bottom, grouping=True) + ' BTC'
 
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'color': color, 'bottom': bottom}
     return render(request, 'charts/pricesats.html', context)
@@ -1947,9 +1842,9 @@ def pricesatslog(request):
         else:
             values.append('')
 
-    now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
-    maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
-    bottom = locale.format('%.4f', bottom, grouping=True) + ' BTC'
+    now_price = locale._format('%.4f', now_price, grouping=True) + ' BTC'
+    maximum = locale._format('%.4f', maximum, grouping=True) + ' BTC'
+    bottom = locale._format('%.4f', bottom, grouping=True) + ' BTC'
 
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'color': color, 'bottom': bottom}
     return render(request, 'charts/pricesatslog.html', context)
@@ -1982,8 +1877,8 @@ def fractal(request):
             now_multiple = coin.priceusd/477.12
             count2 += 0.86
 
-    now_multiple = locale.format('%.2f', now_multiple, grouping=True) + 'x'
-    maximum = locale.format('%.2f', maximum, grouping=True) + 'x'
+    now_multiple = locale._format('%.2f', now_multiple, grouping=True) + 'x'
+    maximum = locale._format('%.2f', maximum, grouping=True) + 'x'
 
     context = {'cycle1': cycle1, 'cycle2': cycle2, 'dates1': dates1, 'dates2': dates2, 'now_multiple': now_multiple, 'maximum': maximum}
     return render(request, 'charts/fractal.html', context)
@@ -2025,8 +1920,8 @@ def inflationfractal(request):
             now_multiple = delta*coin.priceusd/477.12
             count2 += 0.86
 
-    now_multiple = locale.format('%.2f', now_multiple, grouping=True) + 'x'
-    maximum = locale.format('%.2f', maximum, grouping=True) + 'x'
+    now_multiple = locale._format('%.2f', now_multiple, grouping=True) + 'x'
+    maximum = locale._format('%.2f', maximum, grouping=True) + 'x'
 
     context = {'cycle1': cycle1, 'cycle2': cycle2, 'dates1': dates1, 'dates2': dates2, 'now_multiple': now_multiple, 'maximum': maximum}
     return render(request, 'charts/inflationfractal.html', context)
@@ -2177,10 +2072,10 @@ def competitors(request):
             zcash.append('')
         dates.append(count)
 
-    now_dash = locale.format('%.2f', now_dash, grouping=True) 
-    now_grin = locale.format('%.2f', now_grin, grouping=True)
-    now_zcash = locale.format('%.2f', now_zcash, grouping=True)
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
+    now_dash = locale._format('%.2f', now_dash, grouping=True) 
+    now_grin = locale._format('%.2f', now_grin, grouping=True)
+    now_zcash = locale._format('%.2f', now_zcash, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
@@ -2251,10 +2146,10 @@ def competitorslin(request):
             zcash.append('')
         dates.append(count)
 
-    now_dash = locale.format('%.2f', now_dash, grouping=True) 
-    now_grin = locale.format('%.2f', now_grin, grouping=True)
-    now_zcash = locale.format('%.2f', now_zcash, grouping=True)
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
+    now_dash = locale._format('%.2f', now_dash, grouping=True) 
+    now_grin = locale._format('%.2f', now_grin, grouping=True)
+    now_zcash = locale._format('%.2f', now_zcash, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
@@ -2300,10 +2195,10 @@ def marketcap(request):
         else:
             grin.append('')
 
-    now_dash = '$'+locale.format('%.0f', now_dash, grouping=True) 
-    now_grin = '$'+locale.format('%.0f', now_grin, grouping=True)
-    now_zcash = '$'+locale.format('%.0f', now_zcash, grouping=True)
-    now_xmr = '$'+locale.format('%.0f', now_xmr, grouping=True)
+    now_dash = '$'+locale._format('%.0f', now_dash, grouping=True) 
+    now_grin = '$'+locale._format('%.0f', now_grin, grouping=True)
+    now_zcash = '$'+locale._format('%.0f', now_zcash, grouping=True)
+    now_xmr = '$'+locale._format('%.0f', now_xmr, grouping=True)
 
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
@@ -2382,11 +2277,11 @@ def inflationreturn(request):
             btc.append(now_btc)
             inflation_btc.append(100/coin.inflation)
 
-    now_dash = locale.format('%.2f', now_dash, grouping=True) 
-    now_grin = locale.format('%.2f', now_grin, grouping=True)
-    now_zcash = locale.format('%.2f', now_zcash, grouping=True)
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
-    now_btc = locale.format('%.2f', now_btc, grouping=True)
+    now_dash = locale._format('%.2f', now_dash, grouping=True) 
+    now_grin = locale._format('%.2f', now_grin, grouping=True)
+    now_zcash = locale._format('%.2f', now_zcash, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
+    now_btc = locale._format('%.2f', now_btc, grouping=True)
 
     context = {'inflation_btc': inflation_btc,'inflation_xmr': inflation_xmr, 'inflation_dash': inflation_dash, 'inflation_grin': inflation_grin, 'inflation_zcash': inflation_zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'btc': btc, 'xmr': xmr, 'dash': dash, 'zcash': zcash, 'grin': grin}
@@ -2448,8 +2343,8 @@ def bitcoin(request):
         else:
             xmr2.append('')
 
-    now_btc = locale.format('%.2f', now_btc, grouping=True)
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
+    now_btc = locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'btc': btc, 'xmr2': xmr2, 'btc2': btc2, 'xmr3': xmr3, 'dates': dates, 'dates2': dates2, 'dates3': dates3, 'dates4': dates4}
     return render(request, 'charts/bitcoin.html', context)
@@ -2518,8 +2413,8 @@ def transmonth(request):
     now_transactions = int(total)
     maximum = int(maximum)
 
-    now_transactions = locale.format('%.0f', now_transactions, grouping=True)
-    maximum = locale.format('%.0f', maximum, grouping=True)
+    now_transactions = locale._format('%.0f', now_transactions, grouping=True)
+    maximum = locale._format('%.0f', maximum, grouping=True)
 
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'charts/transmonth.html', context)
@@ -2568,8 +2463,8 @@ def percentmonth(request):
     else:
         total = 0    
 
-    now_transactions = locale.format('%.1f', total, grouping=True) + ' %'
-    maximum = locale.format('%.1f', maximum, grouping=True) + ' %'
+    now_transactions = locale._format('%.1f', total, grouping=True) + ' %'
+    maximum = locale._format('%.1f', maximum, grouping=True) + ' %'
 
     context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
     return render(request, 'charts/percentmonth.html', context)
@@ -2700,8 +2595,8 @@ def percentage(request):
         else:
             transactions.append('')
     
-    now_transactions = locale.format('%.1f', now_transactions, grouping=True) + '%'
-    maximum = locale.format('%.1f', maximum, grouping=True) + '%'
+    now_transactions = locale._format('%.1f', now_transactions, grouping=True) + '%'
+    maximum = locale._format('%.1f', maximum, grouping=True) + '%'
 
     context = {'transactions': transactions, 'dates': dates, 'now_transactions': now_transactions, 'maximum': maximum}
     return render(request, 'charts/percentage.html', context)
@@ -2754,7 +2649,7 @@ def hashrate(request):
         else:
             hashrate.append('')
 
-    now_hashrate = locale.format('%.0f', now_hashrate, grouping=True)
+    now_hashrate = locale._format('%.0f', now_hashrate, grouping=True)
 
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate}
     return render(request, 'charts/hashrate.html', context)
@@ -2787,7 +2682,7 @@ def hashprice(request):
             color.append(new_color)
         count += 1
     
-    now_hashrate = locale.format('%.8f', now_hashrate, grouping=True)
+    now_hashrate = locale._format('%.8f', now_hashrate, grouping=True)
 
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'buy': buy, 'sell': sell}
     return render(request, 'charts/hashprice.html', context)
@@ -2823,9 +2718,9 @@ def hashvsprice(request):
             color.append(new_color)
         count += 1
     
-    now_hashrate = locale.format('%.0f', now_hashrate, grouping=True)
-    now_priceusd = '$' + locale.format('%.2f', now_priceusd, grouping=True)
-    now_pricebtc = locale.format('%.5f', now_pricebtc, grouping=True) + ' BTC'
+    now_hashrate = locale._format('%.0f', now_hashrate, grouping=True)
+    now_priceusd = '$' + locale._format('%.2f', now_priceusd, grouping=True)
+    now_pricebtc = locale._format('%.5f', now_pricebtc, grouping=True) + ' BTC'
 
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'prices': prices, 'now_pricebtc': now_pricebtc, 'now_priceusd': now_priceusd}
     return render(request, 'charts/hashvsprice.html', context)
@@ -2860,9 +2755,9 @@ def metcalfesats(request):
             prices.append(now_price)
             count += 1
     
-    now_price = locale.format('%.4f', now_price, grouping=True) + ' BTC'
-    now_metcalfe = locale.format('%.4f', now_metcalfe, grouping=True) + ' BTC'
-    maximum = locale.format('%.4f', maximum, grouping=True) + ' BTC'
+    now_price = locale._format('%.4f', now_price, grouping=True) + ' BTC'
+    now_metcalfe = locale._format('%.4f', now_metcalfe, grouping=True) + ' BTC'
+    maximum = locale._format('%.4f', maximum, grouping=True) + ' BTC'
 
     context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
     return render(request, 'charts/metcalfesats.html', context)
@@ -2887,8 +2782,8 @@ def metcalfesats_deviation(request):
             metcalfe.append(now_metcalfe)
             metcalfe_percentage.append(now_metcalfe_percentage)
     
-    now_metcalfe = locale.format('%.4f', now_metcalfe, grouping=True) 
-    now_metcalfe_percentage = locale.format('%.0f', now_metcalfe_percentage, grouping=True) 
+    now_metcalfe = locale._format('%.4f', now_metcalfe, grouping=True) 
+    now_metcalfe_percentage = locale._format('%.0f', now_metcalfe_percentage, grouping=True) 
 
     context = {'metcalfe': metcalfe, 'dates': dates, 'now_metcalfe': now_metcalfe, 'now_metcalfe_percentage': now_metcalfe_percentage, 'metcalfe_percentage': metcalfe_percentage}
     return render(request, 'charts/metcalfesats_deviation.html', context)
@@ -2913,8 +2808,8 @@ def metcalfe_deviation(request):
             metcalfe.append(now_metcalfe)
             metcalfe_percentage.append(now_metcalfe_percentage)
     
-    now_metcalfe = locale.format('%.0f', now_metcalfe, grouping=True) 
-    now_metcalfe_percentage = locale.format('%.0f', now_metcalfe_percentage, grouping=True) 
+    now_metcalfe = locale._format('%.0f', now_metcalfe, grouping=True) 
+    now_metcalfe_percentage = locale._format('%.0f', now_metcalfe_percentage, grouping=True) 
 
     context = {'metcalfe': metcalfe, 'dates': dates, 'now_metcalfe': now_metcalfe, 'now_metcalfe_percentage': now_metcalfe_percentage, 'metcalfe_percentage': metcalfe_percentage}
     return render(request, 'charts/metcalfe_deviation.html', context)
@@ -2949,9 +2844,9 @@ def metcalfeusd(request):
             prices.append(now_price)
             count += 1
 
-    now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
-    now_metcalfe = "$"+ locale.format('%.2f', now_metcalfe, grouping=True)
-    maximum = "$"+ locale.format('%.2f', maximum, grouping=True)
+    now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
+    now_metcalfe = "$"+ locale._format('%.2f', now_metcalfe, grouping=True)
+    maximum = "$"+ locale._format('%.2f', maximum, grouping=True)
 
     context = {'metcalfe': metcalfe, 'dates': dates, 'maximum': maximum, 'now_metcalfe': now_metcalfe, 'color': color, 'prices': prices, 'now_price': now_price}
     return render(request, 'charts/metcalfeusd.html', context)
@@ -2966,7 +2861,7 @@ def coins(request):
     dates = []
     now_xmr = 0
     now_btc = 0
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -3042,8 +2937,8 @@ def coins(request):
         supplyxmr.append('')
         supplybtc.append('')
         
-    now_btc = locale.format('%.0f', now_btc, grouping=True)
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
 
     context = {'supplyxmr': supplyxmr, 'supplybtc': supplybtc, 'fsupplyxmr': fsupplyxmr, 'fsupplybtc': fsupplybtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/coins.html', context)
@@ -3083,10 +2978,10 @@ def dailyemission(request):
         emissionxmr.append('')
         emissionbtc.append('')
         
-    now_btc = "$" + locale.format('%.0f', now_btc, grouping=True)
-    now_xmr = "$" + locale.format('%.0f', now_xmr, grouping=True)
-    high_btc = "$" + locale.format('%.0f', high_btc, grouping=True)
-    high_xmr = "$" + locale.format('%.0f', high_xmr, grouping=True)
+    now_btc = "$" + locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = "$" + locale._format('%.0f', now_xmr, grouping=True)
+    high_btc = "$" + locale._format('%.0f', high_btc, grouping=True)
+    high_xmr = "$" + locale._format('%.0f', high_xmr, grouping=True)
 
     context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'high_xmr': high_xmr, 'high_btc': high_btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/dailyemission.html', context)
@@ -3164,7 +3059,7 @@ def extracoins(request):
             supplybitcoin = 21000000
         nsupply.append('')
         
-    now_diff = locale.format('%.0f', now_diff, grouping=True)
+    now_diff = locale._format('%.0f', now_diff, grouping=True)
 
     context = {'nsupply': nsupply, 'fsupply': fsupply, 'dates': dates, 'now_diff': now_diff}
     return render(request, 'charts/extracoins.html', context)
@@ -3216,8 +3111,8 @@ def inflation(request):
         inflationxmr.append('')
         inflationbtc.append('')
         
-    now_btc = locale.format('%.2f', now_btc, grouping=True) + '%'
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + '%'
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
 
     context = {'inflationxmr': inflationxmr, 'inflationbtc': inflationbtc, 'finflationxmr': finflationxmr, 'finflationbtc': finflationbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/inflation.html', context)
@@ -3245,8 +3140,8 @@ def blocksize(request):
         else:
             xmr_blocksize.append('')
         
-    now_btc = locale.format('%.2f', now_btc, grouping=True) + ' bytes'
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + ' bytes'
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + ' bytes'
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + ' bytes'
 
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/blocksize.html', context)
@@ -3275,8 +3170,8 @@ def transactionsize(request):
         else:
             xmr_blocksize.append('')
         
-    now_btc = locale.format('%.2f', now_btc, grouping=True) + ' bytes'
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + ' bytes'
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + ' bytes'
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + ' bytes'
 
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/transactionsize.html', context)
@@ -3299,8 +3194,8 @@ def transactiondominance(request):
             maximum = now_xmr
         xmr_dominance.append(now_xmr)
         
-    now_xmr = locale.format('%.1f', now_xmr, grouping=True) + '%'
-    maximum = locale.format('%.1f', maximum, grouping=True) + '%'
+    now_xmr = locale._format('%.1f', now_xmr, grouping=True) + '%'
+    maximum = locale._format('%.1f', maximum, grouping=True) + '%'
 
     context = {'xmr_dominance': xmr_dominance, 'now_xmr': now_xmr, 'maximum': maximum, 'dates': dates}
     return render(request, 'charts/transactiondominance.html', context)
@@ -3329,8 +3224,8 @@ def difficulty(request):
         else:
             xmr_difficulty.append('')
         
-    now_btc = locale.format('%.0f', now_btc, grouping=True)
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
 
     context = {'xmr_difficulty': xmr_difficulty, 'btc_difficulty': btc_difficulty, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/difficulty.html', context)
@@ -3372,8 +3267,8 @@ def blockchainsize(request):
         else:
             xmr_blocksize.append('')
         
-    now_btc = locale.format('%.2f', now_btc/(1024*1024), grouping=True) + ' Gb'
-    now_xmr = locale.format('%.2f', now_xmr/(1024*1024), grouping=True) + ' Gb'
+    now_btc = locale._format('%.2f', now_btc/(1024*1024), grouping=True) + ' Gb'
+    now_xmr = locale._format('%.2f', now_xmr/(1024*1024), grouping=True) + ' Gb'
 
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/blockchainsize.html', context)
@@ -3402,8 +3297,8 @@ def securitybudget(request):
         else:
             xmr_security.append('')
         
-    now_btc = '$' + locale.format('%.2f', now_btc, grouping=True) 
-    now_xmr = '$' + locale.format('%.2f', now_xmr, grouping=True)
+    now_btc = '$' + locale._format('%.2f', now_btc, grouping=True) 
+    now_xmr = '$' + locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'xmr_security': xmr_security, 'btc_security': btc_security, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/securitybudget.html', context)
@@ -3440,8 +3335,8 @@ def efficiency(request):
         else:
             xmr_efficiency.append('')
         
-    now_btc = locale.format('%.0f', now_btc, grouping=True) 
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    now_btc = locale._format('%.0f', now_btc, grouping=True) 
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
 
     context = {'xmr_efficiency': xmr_efficiency, 'btc_efficiency': btc_efficiency, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/efficiency.html', context)
@@ -3494,11 +3389,11 @@ def compinflation(request):
         else:
             inflationgrin.append('')
             
-    now_dash = locale.format('%.2f', now_dash, grouping=True) + '%'
-    now_grin = locale.format('%.2f', now_grin, grouping=True) + '%'
-    now_zcash = locale.format('%.2f', now_zcash, grouping=True) + '%'
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
-    now_btc = locale.format('%.2f', now_btc, grouping=True) + '%'
+    now_dash = locale._format('%.2f', now_dash, grouping=True) + '%'
+    now_grin = locale._format('%.2f', now_grin, grouping=True) + '%'
+    now_zcash = locale._format('%.2f', now_zcash, grouping=True) + '%'
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + '%'
 
     context = {'inflationxmr': inflationxmr, 'inflationdash': inflationdash, 'inflationgrin': inflationgrin, 'inflationzcash': inflationzcash, 'inflationbtc': inflationbtc,
     'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
@@ -3552,11 +3447,11 @@ def comptransactions(request):
         else:
             grin.append('')
             
-    now_dash = locale.format('%.0f', now_dash, grouping=True)
-    now_grin = locale.format('%.0f', now_grin, grouping=True)
-    now_zcash = locale.format('%.0f', now_zcash, grouping=True)
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-    now_btc = locale.format('%.0f', now_btc, grouping=True) 
+    now_dash = locale._format('%.0f', now_dash, grouping=True)
+    now_grin = locale._format('%.0f', now_grin, grouping=True)
+    now_zcash = locale._format('%.0f', now_zcash, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
+    now_btc = locale._format('%.0f', now_btc, grouping=True) 
 
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'btc': btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/comptransactions.html', context)
@@ -3662,9 +3557,9 @@ def sfmodellin(request):
     
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-    now_price = "$"+ locale.format('%.2f', now_price, grouping=True)
-    now_sf = "$"+ locale.format('%.2f', now_sf, grouping=True)
-    now_inflation = locale.format('%.2f', now_inflation, grouping=True)+'%'
+    now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
+    now_sf = "$"+ locale._format('%.2f', now_sf, grouping=True)
+    now_inflation = locale._format('%.2f', now_inflation, grouping=True)+'%'
 
     context = {'values': values, 'dates': dates, 'stock_to_flow': stock_to_flow,'now_price': now_price, 'now_inflation': now_inflation, 'now_sf': now_sf, 'color': color}
     return render(request, 'charts/sfmodellin.html', context)
@@ -3703,8 +3598,8 @@ def sfmultiple(request):
         color.append(new_color)
         count += 1  
 
-    now_sf = locale.format('%.2f', now_sf, grouping=True)
-    maximum = locale.format('%.2f', maximum, grouping=True)
+    now_sf = locale._format('%.2f', now_sf, grouping=True)
+    maximum = locale._format('%.2f', maximum, grouping=True)
 
     context = {'dates': dates, 'maximum': maximum, 'stock_to_flow': stock_to_flow, 'now_sf': now_sf, 'buy': buy, 'sell': sell, 'color': color}
     return render(request, 'charts/sfmultiple.html', context)
@@ -3725,7 +3620,7 @@ def marketcycle(request):
         buy.append(0)
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-    now_cycle = locale.format('%.2f', item.color, grouping=True)
+    now_cycle = locale._format('%.2f', item.color, grouping=True)
 
     context = {'dates': dates, 'color': color, 'sell': sell, 'buy': buy, 'now_cycle': now_cycle}
     return render(request, 'charts/marketcycle.html', context)
@@ -3735,12 +3630,10 @@ def shielded(request):
     values = []
     values2 = []
     values3 = []
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet1')
     dominance = 0
-    monthly = 0 
-    values_mat = wks.get_values(start=(3,1), end=(999,5), returnas='matrix')
+    monthly = 0
+
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet1", start=(2, 0), end=(999, 5))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][3]:
@@ -3774,7 +3667,7 @@ def shielded(request):
     monthly = int(value2)
     
     monthly = format(int(monthly),',')
-    dominance = locale.format('%.2f', dominance, grouping=True)
+    dominance = locale._format('%.2f', dominance, grouping=True)
     
     context = {'dates': dates, 'values': values, 'values2': values2, 'values3': values3, "monthly": monthly, "dominance": dominance}
     return render(request, 'charts/shielded.html', context)
@@ -3827,7 +3720,7 @@ def thermocap(request):
         supply = coin.supply
         count += 1  
 
-    temperature = locale.format('%.2f', temperature, grouping=True)
+    temperature = locale._format('%.2f', temperature, grouping=True)
 
     context = {'dates': dates, 'temperature': temperature, 'values': values, 'thermocap': thermocap, 'color': color, 'calories': calories,
     'calories2': calories2, 'calories3': calories3}
@@ -3901,8 +3794,8 @@ def transcost(request):
             costbtc.append(item.btc_transcostusd)
             now_btc = item.btc_transcostusd
 
-    now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
-    now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
+    now_btc = "$" + locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = "$" + locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/transcost.html', context)
@@ -3928,8 +3821,8 @@ def transcostntv(request):
             costbtc.append(item.btc_transcostntv)
             now_btc = item.btc_transcostntv
         
-    now_btc = locale.format('%.6f', now_btc, grouping=True)
-    now_xmr = locale.format('%.6f', now_xmr, grouping=True)
+    now_btc = locale._format('%.6f', now_btc, grouping=True)
+    now_xmr = locale._format('%.6f', now_xmr, grouping=True)
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/transcostntv.html', context)
@@ -3955,8 +3848,8 @@ def minerrevcap(request):
             costbtc.append(item.btc_minerrevcap)
             now_btc = item.btc_minerrevcap
         
-    now_btc = locale.format('%.2f', now_btc, grouping=True) + "%"
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + "%"
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + "%"
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + "%"
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevcap.html', context)
@@ -3982,8 +3875,8 @@ def minerrev(request):
             costxmr.append(item.xmr_minerrevusd)
             now_xmr = item.xmr_minerrevusd
 
-    now_btc = "$" + locale.format('%.2f', now_btc, grouping=True)
-    now_xmr = "$" + locale.format('%.2f', now_xmr, grouping=True)
+    now_btc = "$" + locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = "$" + locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrev.html', context)
@@ -4008,8 +3901,8 @@ def minerrevntv(request):
             costxmr.append(item.xmr_minerrevntv)
             now_xmr = item.xmr_minerrevntv
         
-    now_btc = locale.format('%.2f', now_btc, grouping=True)
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
+    now_btc = locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
     
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevntv.html', context)
@@ -4034,8 +3927,8 @@ def minerfeesntv(request):
             costxmr.append(item.xmr_minerfeesntv)
             now_xmr = item.xmr_minerfeesntv
         
-    now_btc = locale.format('%.2f', now_btc, grouping=True)
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
+    now_btc = locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerfeesntv.html', context)
@@ -4060,8 +3953,8 @@ def minerfees(request):
             costxmr.append(item.xmr_minerfeesusd)
             now_xmr = item.xmr_minerfeesusd
         
-    now_btc = locale.format('%.2f', now_btc, grouping=True)
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True)
+    now_btc = locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerfees.html', context)
@@ -4093,8 +3986,8 @@ def dailyemissionntv(request):
         emissionxmr.append('')
         emissionbtc.append('')
         
-    now_btc = locale.format('%.0f', now_btc, grouping=True)
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
 
     context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/dailyemissionntv.html', context)
@@ -4120,8 +4013,8 @@ def commit(request):
             costxmr.append(item.xmr_commitusd)
             now_xmr = item.xmr_commitusd
         
-    now_btc = locale.format('%.2f', now_btc, grouping=True) + " hashs / dollar"
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + " hashs / dollar"
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + " hashs / dollar"
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + " hashs / dollar"
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/commit.html', context)
@@ -4147,8 +4040,8 @@ def commitntv(request):
             costxmr.append(item.xmr_commitntv)
             now_xmr = item.xmr_commitntv
         
-    now_btc = locale.format('%.0f', now_btc, grouping=True) + " hashs / btc"
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True) + " hashs / xmr"
+    now_btc = locale._format('%.0f', now_btc, grouping=True) + " hashs / btc"
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True) + " hashs / xmr"
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/commitntv.html', context)
@@ -4217,10 +4110,10 @@ def competitorssats(request):
             zcash.append('')
         dates.append(count)
 
-    now_dash = locale.format('%.3f', now_dash, grouping=True) 
-    now_grin = locale.format('%.3f', now_grin, grouping=True)
-    now_zcash = locale.format('%.3f', now_zcash, grouping=True)
-    now_xmr = locale.format('%.3f', now_xmr, grouping=True)
+    now_dash = locale._format('%.3f', now_dash, grouping=True) 
+    now_grin = locale._format('%.3f', now_grin, grouping=True)
+    now_zcash = locale._format('%.3f', now_zcash, grouping=True)
+    now_xmr = locale._format('%.3f', now_xmr, grouping=True)
 
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
@@ -4290,10 +4183,10 @@ def competitorssatslin(request):
             zcash.append('')
         dates.append(count)
 
-    now_dash = locale.format('%.3f', now_dash, grouping=True) 
-    now_grin = locale.format('%.3f', now_grin, grouping=True)
-    now_zcash = locale.format('%.3f', now_zcash, grouping=True)
-    now_xmr = locale.format('%.3f', now_xmr, grouping=True)
+    now_dash = locale._format('%.3f', now_dash, grouping=True) 
+    now_grin = locale._format('%.3f', now_grin, grouping=True)
+    now_zcash = locale._format('%.3f', now_zcash, grouping=True)
+    now_xmr = locale._format('%.3f', now_xmr, grouping=True)
 
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
@@ -4305,10 +4198,7 @@ def dread_subscribers(request):
     data2 = []
     now_xmr = 0
     now_btc = 0
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet6')
-    values_mat = wks.get_values(start=(3,1), end=(99,3), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet6", start=(1, 0), end=(99, 4))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4325,12 +4215,12 @@ def dread_subscribers(request):
                 now_btc = int(value1)
         else:
             break
-        
+
     dominance = 100*int(value2)/(int(value2)+int(value1))
 
-    now_btc = locale.format('%.0f', now_btc, grouping=True)
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-    dominance = locale.format('%.2f', dominance, grouping=True)
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
+    dominance = locale._format('%.2f', dominance, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr, 'data1': data1, "data2": data2, "dominance": dominance}
     return render(request, 'charts/dread_subscribers.html', context)
@@ -4344,11 +4234,7 @@ def coincards(request):
     now_xmr = 0
     now_btc = 0
 
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet2')
-    
-    values_mat = wks.get_values(start=(3,1), end=(99,5), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet2", start=(2, 0), end=(99, 5))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4361,21 +4247,21 @@ def coincards(request):
                 break
             else:
                 dates.append(date)
-                data1.append(float(value1.replace(',','.')))
-                data2.append(float(value2.replace(',','.')))
-                data3.append(float(value3.replace(',','.')))
-                data4.append(float(value4.replace(',','.')))
-                now_btc = float(value1.replace(',','.'))
-                now_xmr = float(value2.replace(',','.'))
-                now_eth = float(value3.replace(',','.'))
-                now_others = float(value4.replace(',','.'))
+                data1.append(value1)
+                data2.append(value2)
+                data3.append(value3)
+                data4.append(value4)
+                now_btc = value1
+                now_xmr = value2
+                now_eth = value3
+                now_others = value4
         else:
             break
 
-    now_btc = locale.format('%.1f', now_btc, grouping=True)
-    now_xmr = locale.format('%.1f', now_xmr, grouping=True)
-    now_eth = locale.format('%.1f', now_eth, grouping=True)
-    now_others = locale.format('%.1f', now_others, grouping=True)
+    now_btc = locale._format('%.1f', now_btc, grouping=True)
+    now_xmr = locale._format('%.1f', now_xmr, grouping=True)
+    now_eth = locale._format('%.1f', now_eth, grouping=True)
+    now_others = locale._format('%.1f', now_others, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'now_others': now_others, 'data1': data1, "data2": data2, "data3": data3, "data4": data4}
     return render(request, 'charts/coincards.html', context)
@@ -4393,11 +4279,7 @@ def merchants(request):
     now_btc = 0
     now_eth = 0
 
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet3')
-    
-    values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet3", start=(2, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4426,9 +4308,9 @@ def merchants(request):
         else:
             break
 
-    now_btc = locale.format('%.0f', now_btc, grouping=True)
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-    now_eth = locale.format('%.0f', now_eth, grouping=True)
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
+    now_eth = locale._format('%.0f', now_eth, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'charts/merchants.html', context)
@@ -4446,11 +4328,7 @@ def merchants_increase(request):
     now_btc = 0
     now_eth = 0
 
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet4')
-    
-    values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet4", start=(2, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4479,9 +4357,9 @@ def merchants_increase(request):
         else:
             break
 
-    now_btc = locale.format('%.0f', now_btc, grouping=True)
-    now_xmr = locale.format('%.0f', now_xmr, grouping=True)
-    now_eth = locale.format('%.0f', now_eth, grouping=True)
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
+    now_eth = locale._format('%.0f', now_eth, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'charts/merchants_increase.html', context)
@@ -4498,12 +4376,8 @@ def merchants_percentage(request):
     now_xmr = 0
     now_btc = 0
     now_eth = 0
-    
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet5')
-    
-    values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
+
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet2", start=(2, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4519,22 +4393,22 @@ def merchants_percentage(request):
                 break
             else:
                 dates.append(date)
-                data1.append(float(value1.replace(',', '.')))
-                data2.append(float(value2.replace(',', '.')))
-                data3.append(float(value3.replace(',', '.')))
-                data4.append(float(value4.replace(',', '.')))
-                data5.append(float(value5.replace(',', '.')))
-                data6.append(float(value6.replace(',', '.')))
-                data7.append(float(value7.replace(',', '.')))
-                now_btc = float(value1.replace(',', '.'))
-                now_xmr = float(value2.replace(',', '.'))
-                now_eth = float(value3.replace(',', '.'))
+                data1.append(value1)
+                data2.append(value2)
+                data3.append(value3)
+                data4.append(value4)
+                data5.append(value5)
+                data6.append(value6)
+                data7.append(value7)
+                now_btc = value1
+                now_xmr = value2
+                now_eth = value3
         else:
             break
 
-    now_btc = locale.format('%.1f', now_btc, grouping=True)
-    now_xmr = locale.format('%.1f', now_xmr, grouping=True)
-    now_eth = locale.format('%.1f', now_eth, grouping=True)
+    now_btc = locale._format('%.1f', now_btc, grouping=True)
+    now_xmr = locale._format('%.1f', now_xmr, grouping=True)
+    now_eth = locale._format('%.1f', now_eth, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
     return render(request, 'charts/merchants_percentage.html', context)
@@ -4585,8 +4459,8 @@ def dominance(request):
         except:
             pass
 
-    now_value = locale.format('%.2f', now_value, grouping=True)
-    maximum = locale.format('%.2f', maximum, grouping=True)
+    now_value = locale._format('%.2f', now_value, grouping=True)
+    maximum = locale._format('%.2f', maximum, grouping=True)
 
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'charts/dominance.html', context)
@@ -4638,21 +4512,21 @@ def rank(request):
             pass
 
     if now_value == 1:
-        now_value = locale.format('%.0f', now_value, grouping=True) + 'st'
+        now_value = locale._format('%.0f', now_value, grouping=True) + 'st'
     if now_value == 2:
-        now_value = locale.format('%.0f', now_value, grouping=True) + 'nd'
+        now_value = locale._format('%.0f', now_value, grouping=True) + 'nd'
     if now_value == 3:
-        now_value = locale.format('%.0f', now_value, grouping=True) + 'rd'
+        now_value = locale._format('%.0f', now_value, grouping=True) + 'rd'
     if now_value > 3:
-        now_value = locale.format('%.0f', now_value, grouping=True) + 'th'
+        now_value = locale._format('%.0f', now_value, grouping=True) + 'th'
     if maximum == 1:
-        maximum = locale.format('%.0f', maximum, grouping=True) + 'st'
+        maximum = locale._format('%.0f', maximum, grouping=True) + 'st'
     if maximum == 2:
-        maximum = locale.format('%.0f', maximum, grouping=True) + 'nd'
+        maximum = locale._format('%.0f', maximum, grouping=True) + 'nd'
     if maximum == 3:
-        maximum = locale.format('%.0f', maximum, grouping=True) + 'rd'
+        maximum = locale._format('%.0f', maximum, grouping=True) + 'rd'
     if maximum > 3:
-        maximum = locale.format('%.0f', maximum, grouping=True) + 'th'
+        maximum = locale._format('%.0f', maximum, grouping=True) + 'th'
 
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'charts/rank.html', context)
@@ -4853,7 +4727,7 @@ def tail_emission(request):
         date_aux = coin.date + timedelta(i)
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
         
-    now_xmr = locale.format('%.2f', now_xmr, grouping=True) + '%'
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
 
     context = {'inflationxmr': inflationxmr, 'finflationxmr': finflationxmr, 'now_xmr': now_xmr, 'dates': dates}
     return render(request, 'charts/tail_emission.html', context)
@@ -4907,10 +4781,10 @@ def privacymarketcap(request):
         else:
             marketcaps.append('')
 
-    now_marketcap = '$'+locale.format('%.0f', now_marketcap, grouping=True) 
-    now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
-    top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
-    top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
+    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True) 
+    now_dominance = locale._format('%.2f', now_dominance, grouping=True) + '%'
+    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True) 
+    top_dominance = locale._format('%.2f', top_dominance, grouping=True) + '%'
 
     context = {'marketcaps': marketcaps, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates, 'xmr_marketcaps': xmr_marketcaps}
     return render(request, 'charts/privacymarketcap.html', context)
@@ -4964,10 +4838,10 @@ def privacydominance(request):
         else:
             dominances.append('')
 
-    now_marketcap = '$'+locale.format('%.0f', now_marketcap, grouping=True) 
-    now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
-    top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
-    top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
+    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True) 
+    now_dominance = locale._format('%.2f', now_dominance, grouping=True) + '%'
+    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True) 
+    top_dominance = locale._format('%.2f', top_dominance, grouping=True) + '%'
 
     context = {'marketcaps': marketcaps, 'dominances':dominances, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
     return render(request, 'charts/privacydominance.html', context)
@@ -5029,10 +4903,10 @@ def monerodominance(request):
         else:
             xmr_dominance.append('')
 
-    now_marketcap = '$'+locale.format('%.0f', now_marketcap, grouping=True) 
-    now_dominance = locale.format('%.2f', now_dominance, grouping=True) + '%'
-    top_marketcap = '$'+locale.format('%.0f', top_marketcap, grouping=True) 
-    top_dominance = locale.format('%.2f', top_dominance, grouping=True) + '%'
+    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True) 
+    now_dominance = locale._format('%.2f', now_dominance, grouping=True) + '%'
+    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True) 
+    top_dominance = locale._format('%.2f', top_dominance, grouping=True) + '%'
 
     context = {'marketcaps': marketcaps, 'xmr_dominance': xmr_dominance, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
     return render(request, 'charts/monerodominance.html', context)
