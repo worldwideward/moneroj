@@ -47,6 +47,6 @@ soupsieve==2.2
 sqlparse==0.4.1
 static3==0.7.0
 uritemplate==4.1.1
-urllib3==1.26.3
+urllib3==2.2.3
 yarl==1.17.1
 django-csp==3.7

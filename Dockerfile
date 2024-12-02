@@ -18,4 +18,4 @@ COPY app/ app/
 
 WORKDIR /src/app
 
-CMD ["gunicorn", "moneropro.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "8"]
+ENTRYPOINT ["gunicorn", "moneropro.wsgi:application"]
