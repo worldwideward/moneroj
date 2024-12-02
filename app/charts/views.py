@@ -129,7 +129,7 @@ def load_rank(request, symbol):
             rank = Rank()
             rank.name = symbol
             rank.date = values_mat[k][0]
-            rank.rank = int(values_mat[k][1].replace(',', '.'))
+            rank.rank = values_mat[k][1]
             if not(rank.rank) and not(rank.date):
                 break
             else:
@@ -157,11 +157,11 @@ def load_p2pool(request):
         if values_mat[k][0] and values_mat[k][1]:
             p2pool_stat = P2Pool()
             p2pool_stat.date = values_mat[k][0]
-            p2pool_stat.miners = float(values_mat[k][1].replace(',', '.'))
-            p2pool_stat.hashrate = float(values_mat[k][2].replace(',', '.'))
-            p2pool_stat.percentage = float(values_mat[k][3].replace(',', '.'))
-            p2pool_stat.totalhashes = float(values_mat[k][4].replace(',', '.'))
-            p2pool_stat.totalblocksfound = float(values_mat[k][5].replace(',', '.'))
+            p2pool_stat.miners = values_mat[k][1]
+            p2pool_stat.hashrate = values_mat[k][2]
+            p2pool_stat.percentage = values_mat[k][3]
+            p2pool_stat.totalhashes = values_mat[k][4]
+            p2pool_stat.totalblocksfound = values_mat[k][5]
             p2pool_stat.mini = False
             p2pool_stat.save()
             count += 1
@@ -169,25 +169,24 @@ def load_p2pool(request):
         else:
             break
 
-    wks = sh.worksheet_by_title('p2poolmini')
-    values_mat = wks.get_values(start=(3,1), end=(9999,6), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "p2poolmini", start=(2,0), end=(994,6), returnas='matrix')
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][1]:
             p2pool_stat = P2Pool()
             p2pool_stat.date = values_mat[k][0]
-            p2pool_stat.miners = float(values_mat[k][1].replace(',', '.'))
-            p2pool_stat.hashrate = float(values_mat[k][2].replace(',', '.'))
-            p2pool_stat.percentage = float(values_mat[k][3].replace(',', '.'))
-            p2pool_stat.totalhashes = float(values_mat[k][4].replace(',', '.'))
-            p2pool_stat.totalblocksfound = float(values_mat[k][5].replace(',', '.'))
+            p2pool_stat.miners = values_mat[k][1]
+            p2pool_stat.hashrate = values_mat[k][2]
+            p2pool_stat.percentage = values_mat[k][3]
+            p2pool_stat.totalhashes = values_mat[k][4]
+            p2pool_stat.totalblocksfound = values_mat[k][5]
             p2pool_stat.mini = True
             p2pool_stat.save()
             count += 1
             #print('p2poolmini data saved - ' + str(p2pool_stat.date) + ' - ' + str(p2pool_stat.percentage) + ' - ' + str(p2pool_stat.miners))
         else:
             break
-    
+
     message = 'Total of ' + str(count) + ' data imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
@@ -208,7 +207,7 @@ def load_dominance(request, symbol):
             dominance = Dominance()
             dominance.name = symbol
             dominance.date = values_mat[k][0]
-            dominance.dominance = float(values_mat[k][1].replace(',', '.'))
+            dominance.dominance = values_mat[k][1]
             if not(dominance.dominance) and not(dominance.date):
                 break
             else:
@@ -4199,7 +4198,7 @@ def dread_subscribers(request):
     data2 = []
     now_xmr = 0
     now_btc = 0
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet6", start=(2, 0), end=(99, 4))
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet6", start=(1, 0), end=(99, 4))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4216,7 +4215,7 @@ def dread_subscribers(request):
                 now_btc = int(value1)
         else:
             break
-        
+
     dominance = 100*int(value2)/(int(value2)+int(value1))
 
     now_btc = locale._format('%.0f', now_btc, grouping=True)
@@ -4224,6 +4223,7 @@ def dread_subscribers(request):
     dominance = locale._format('%.2f', dominance, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr, 'data1': data1, "data2": data2, "dominance": dominance}
+    print(context, flush=True)
     return render(request, 'charts/dread_subscribers.html', context)
 
 def coincards(request):
@@ -4248,14 +4248,14 @@ def coincards(request):
                 break
             else:
                 dates.append(date)
-                data1.append(float(value1.replace(',','.')))
-                data2.append(float(value2.replace(',','.')))
-                data3.append(float(value3.replace(',','.')))
-                data4.append(float(value4.replace(',','.')))
-                now_btc = float(value1.replace(',','.'))
-                now_xmr = float(value2.replace(',','.'))
-                now_eth = float(value3.replace(',','.'))
-                now_others = float(value4.replace(',','.'))
+                data1.append(value1)
+                data2.append(value2)
+                data3.append(value3)
+                data4.append(value4)
+                now_btc = value1
+                now_xmr = value2
+                now_eth = value3
+                now_others = value4
         else:
             break
 
@@ -4394,16 +4394,16 @@ def merchants_percentage(request):
                 break
             else:
                 dates.append(date)
-                data1.append(float(value1.replace(',', '.')))
-                data2.append(float(value2.replace(',', '.')))
-                data3.append(float(value3.replace(',', '.')))
-                data4.append(float(value4.replace(',', '.')))
-                data5.append(float(value5.replace(',', '.')))
-                data6.append(float(value6.replace(',', '.')))
-                data7.append(float(value7.replace(',', '.')))
-                now_btc = float(value1.replace(',', '.'))
-                now_xmr = float(value2.replace(',', '.'))
-                now_eth = float(value3.replace(',', '.'))
+                data1.append(value1)
+                data2.append(value2)
+                data3.append(value3)
+                data4.append(value4)
+                data5.append(value5)
+                data6.append(value6)
+                data7.append(value7)
+                now_btc = value1
+                now_xmr = value2
+                now_eth = value3
         else:
             break
 
