@@ -20,16 +20,18 @@ from operator import truediv
 from datetime import timezone
 import aiohttp
 import asyncio
-import pygsheets
 from django.contrib.auth.decorators import login_required
 from requests import Session
 from django.contrib.staticfiles.storage import staticfiles_storage
 from charts.synchronous import get_history_function
+from .spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
 ####################################################################################
 #   Set some parameters 
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+
+sheets = PandasSpreadSheetManager()
 
 ####################################################################################
 #   Useful functions for admins
@@ -115,12 +117,10 @@ def get_history(request, symbol, start_time=None, end_time=None):
 def load_rank(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet8')
 
     count = 0
-    values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet8", start=(2, 0), end=(9999, 2))
     print(len(values_mat))
     Rank.objects.all().delete()
 
@@ -150,10 +150,7 @@ def load_p2pool(request):
         return render(request, 'users/error.html')
 
     count = 0
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('p2pool')
-    values_mat = wks.get_values(start=(3,1), end=(9999,6), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "p2pool", start=(2, 0), end=(9999, 6))
     P2Pool.objects.all().delete()
 
     for k in range(0,len(values_mat)):
@@ -201,12 +198,9 @@ def load_p2pool(request):
 def load_dominance(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet7')
-    
+
     count = 0
-    values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet7", start=(2, 0), end=(9999, 2))
     Dominance.objects.all().delete()
 
     for k in range(0,len(values_mat)):
@@ -3637,12 +3631,10 @@ def shielded(request):
     values = []
     values2 = []
     values3 = []
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet1')
     dominance = 0
-    monthly = 0 
-    values_mat = wks.get_values(start=(3,1), end=(999,5), returnas='matrix')
+    monthly = 0
+
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet1", start=(2, 0), end=(999, 5))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][3]:
@@ -4207,10 +4199,7 @@ def dread_subscribers(request):
     data2 = []
     now_xmr = 0
     now_btc = 0
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet6')
-    values_mat = wks.get_values(start=(3,1), end=(99,3), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet6", start=(2, 0), end=(99, 4))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4246,11 +4235,7 @@ def coincards(request):
     now_xmr = 0
     now_btc = 0
 
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet2')
-    
-    values_mat = wks.get_values(start=(3,1), end=(99,5), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet2", start=(2, 0), end=(99, 5))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4295,11 +4280,7 @@ def merchants(request):
     now_btc = 0
     now_eth = 0
 
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet3')
-    
-    values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet3", start=(2, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4348,11 +4329,7 @@ def merchants_increase(request):
     now_btc = 0
     now_eth = 0
 
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet4')
-    
-    values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet4", start=(2, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4400,12 +4377,8 @@ def merchants_percentage(request):
     now_xmr = 0
     now_btc = 0
     now_eth = 0
-    
-    gc = pygsheets.authorize(service_file='service_account_credentials.json')
-    sh = gc.open('zcash_bitcoin')
-    wks = sh.worksheet_by_title('Sheet5')
-    
-    values_mat = wks.get_values(start=(3,1), end=(99,8), returnas='matrix')
+
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet2", start=(2, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
