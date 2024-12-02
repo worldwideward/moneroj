@@ -334,22 +334,25 @@ def update_dominance(data):
         dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
         dominance.save()
 
-        gc = pygsheets.authorize(service_file='service_account_credentials.json')
-        sh = gc.open('zcash_bitcoin')
-        wks = sh.worksheet_by_title('Sheet7')
-        
-        values_mat = wks.get_values(start=(3,1), end=(9999,2), returnas='matrix')
+        gc = pygsheets.authorize(service_file="service_account_credentials.json")
+        sh = gc.open("zcash_bitcoin")
+        wks = sh.worksheet_by_title("Sheet7")
+
+        values_mat = wks.get_values(start=(3, 1), end=(9999, 2), returnas="matrix")
 
         k = len(values_mat)
         date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
         date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
         date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
         if date_aux < date_aux2:
-            cell = 'B' + str(k + 3)
-            wks.update_value(cell, dominance.dominance)
-            cell = 'A' + str(k + 3)
-            wks.update_value(cell, dominance.date)
-            print('spreadsheet updated')
+
+            values_mat[k][1] = dominance.dominance
+            values_mat[k][0] = dominance.date
+
+            df.iloc[start_row:end_row, start_col:end_col] = values_mat
+            df.to_excel(DATA_FILE, sheet_name="Sheet7", index=False)
+
+            print("spreadsheet updated")
         else:
             print('spreadsheet already with the latest data')
             return False
@@ -380,11 +383,14 @@ def update_rank(data=None):
         date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
         date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
         if date_aux < date_aux2:
-            cell = 'B' + str(k + 3)
-            wks.update_value(cell, rank.rank)
-            cell = 'A' + str(k + 3)
-            wks.update_value(cell, rank.date)
-            print('spreadsheet updated')
+
+            values_mat[k][1] = rank.rank
+            values_mat[k][0] = rank.date
+
+            df.iloc[start_row:end_row, start_col:end_col] = values_mat
+            df.to_excel(DATA_FILE, sheet_name="Sheet8", index=False)
+
+            print("spreadsheet updated")
         else:
             print('spreadsheet already with the latest data')
             return data
@@ -455,12 +461,12 @@ def update_database(date_from=None, date_to=None):
     if not(date_from) or not(date_to):
         date_to = date.today()
         date_from = date_to - timedelta(5)
-        amount = date_from - datetime.datetime.strptime(date_zero, '%Y-%m-%d')
+        amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d").date()
     else:
-        print(str(date_from) + ' to ' + str(date_to))
-        date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
-        date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
-        amount = date_from - datetime.datetime.strptime(date_zero, '%Y-%m-%d')
+        print(str(date_from) + " to " + str(date_to))
+        date_from = datetime.datetime.strptime(date_from, "%Y-%m-%d")
+        date_to = datetime.datetime.strptime(date_to, "%Y-%m-%d")
+        amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d").date()
 
     count = 0
     date_aux = date_from
@@ -690,7 +696,7 @@ def update_database(date_from=None, date_to=None):
             data.crypto_subscriberCount = social_crypto.subscriberCount
             data.crypto_commentsPerHour = social_crypto.commentsPerHour
             data.crypto_postsPerHour = social_crypto.postsPerHour
-        except:
+        except (Social.DoesNotExist, UnboundLocalError):
             data.btc_subscriberCount = 0
             data.btc_commentsPerHour = 0
             data.btc_postsPerHour = 0
@@ -702,7 +708,21 @@ def update_database(date_from=None, date_to=None):
             data.crypto_postsPerHour = 0
 
         data.save()
-        print(str(coin_xmr.supply) + ' xmr ' + str(data.xmr_subscriberCount) + ' - ' + str(social_xmr.subscriberCount) + ' = ' + str(int(data.xmr_marketcap)) + ' => ' + str(coin_xmr.inflation))
+
+        try:
+            print(
+                str(coin_xmr.supply)
+                + " xmr "
+                + str(data.xmr_subscriberCount)
+                + " - "
+                + str(social_xmr.subscriberCount)
+                + " = "
+                + str(int(data.xmr_marketcap))
+                + " => "
+                + str(coin_xmr.inflation)
+            )
+        except (Social.DoesNotExist, UnboundLocalError):
+            pass
 
         count += 1
 
@@ -714,25 +734,25 @@ def update_p2pool():
     yesterday = date.today() - timedelta(1)
     try:
         p2pool_stat = P2Pool.objects.filter(mini=False).get(date=today)
-        print('achou p2pool de hoje')
+        print("Found P2Pool of today")
         if p2pool_stat.percentage > 0:
-            print('porcentagem > 0')
-            update  = False
+            print("Percentage > 0")
+            update = False
         else:
-            print('porcentagem < 0')
+            print("Percentage < 0")
             p2pool_stat.delete()
             try:
-                coin = Coin.objects.filter(name='xmr').get(date=yesterday)
-                print('achou coin de ontem')
+                coin = Coin.objects.filter(name="xmr").get(date=yesterday)
+                print("Found coin of yesterday")
                 if coin.hashrate > 0:
                     update = True
                 else:
-                    update  = False
-            except:
-                print('nao achou coin de ontem')
-                update  = False
-    except:
-        print('nao achou p2pool de hoje')
+                    update = False
+            except Coin.DoesNotExist:
+                print("Didn't find coin of yesterday")
+                update = False
+    except P2Pool.DoesNotExist:
+        print("Didn't find P2Pool of today")
         try:
             coin = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin.hashrate > 0:
@@ -789,27 +809,26 @@ def update_p2pool():
     yesterday = date.today() - timedelta(1)
     try:
         p2pool_stat = P2Pool.objects.filter(mini=True).get(date=today)
-        print('achou p2pool_mini de hoje')
+        print("Found P2PoolMini of today")
         if p2pool_stat.percentage > 0:
-
-            print('porcentagem > 0')
-            update  = False
+            print("Percentage > 0")
+            update = False
         else:
-            print('porcentagem < 0')
+            print("Percentage < 0")
             p2pool_stat.delete()
             try:
                 coin = Coin.objects.filter(name='xmr').get(date=yesterday)
 
-                print('achou coin de ontem')
+                print("Found coin of yesterday")
                 if coin.hashrate > 0:
                     update = True
                 else:
-                    update  = False
-            except:
-                print('nao achou coin de ontem')
-                update  = False
-    except:
-        print('nao achou p2pool_mini de hoje')
+                    update = False
+            except Coin.DoesNotExist:
+                print("Didn't find coin of yesterday")
+                update = False
+    except P2Pool.DoesNotExist:
+        print("Didn't find P2PoolMini of today")
         try:
             coin = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin.hashrate > 0:

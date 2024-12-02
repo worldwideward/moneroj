@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.12-slim
 
 RUN apt update && apt install -y locales
 
@@ -18,4 +18,4 @@ COPY app/ app/
 
 WORKDIR /src/app
 
-ENTRYPOINT ["gunicorn", "moneropro.wsgi:application", "--bind", "0.0.0.0:8000"]
+ENTRYPOINT ["gunicorn", "moneropro.wsgi:application"]
