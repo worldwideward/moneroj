@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+## Default settings for a development environment, create a separate settings file for other environments
+
 import os
 from pathlib import Path
 
@@ -17,16 +19,15 @@ from pathlib import Path
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rest.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
+# Database on sepatare path than source code, so code can be treated as ephemeral
+SQLITE_FILEPATH = "/opt/db.sqlite3"
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # TODO: Handle the following settings dynamically.
-
-# Comment for Local:
-DEBUG = False
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-# Comment for deploy:
 DEBUG = True
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
@@ -37,15 +38,9 @@ LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "sdfasfasdfas324fdsfsd234234dsfdgdffdfghfdfasfasdasfadsffhgf675756748fas0f89as90fd8as9"  # TODO: Move this somewhere else.
 ALLOWED_HOSTS = [
-    "www.moneroj.net",
     "localhost",
     "127.0.0.1",
-    "moneroj.net",
-    "moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion",
-]  # TODO: Move this somewhere else.
-
-if "MONEROPRO_DEV_HOST" in os.environ:
-    ALLOWED_HOSTS.append(os.environ["MONEROPRO_DEV_HOST"])
+    ]
 
 CORS_ALLOWED_ORIGINS = [f"http://{host}" for host in ALLOWED_HOSTS] + [
     f"https://{host}" for host in ALLOWED_HOSTS
@@ -97,7 +92,7 @@ WSGI_APPLICATION = "moneropro.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": SQLITE_FILEPATH,
     }
 }
 
