@@ -2,9 +2,11 @@ import asyncio
 import datetime
 from charts.models import Coin
 from charts.asynchronous import update_xmr_data
+from charts.asynchronous import update_others_data
+from charts.synchronous import update_database
 from charts.synchronous import get_history_function
 
-def xmr_updates(yesterday, date_aux):
+async def xmr_updates(yesterday, date_aux):
 
     try:
         coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
@@ -15,6 +17,15 @@ def xmr_updates(yesterday, date_aux):
     count = get_history_function('xmr', yesterday, yesterday)
     await update_xmr_data(yesterday, coin_xmr)
 
+    return None
+
+async def competitors_updates(yesterday):
+
+    await update_others_data(yesterday)
+    return None
+
+def daily_objects_updates(yesterday, yesterday):
+    update_database(yesterday, yesterday)
     return None
 
 def check_for_updates(yesterday) -> bool:
