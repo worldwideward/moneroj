@@ -30,7 +30,7 @@ def work():
     agent = celery().agent
 
     @agent.task
-    def todo_list():
+    async def todo_list():
 
         message = check_monero_available()
         print(message)
@@ -53,14 +53,14 @@ def work():
 
         if result == True:
             print("Executing updates..")
-            xmr_updates(yesterday, date_aux)
+            #await xmr_updates(yesterday, date_aux)
 
         ### check competitor updates
         result = check_competitors_for_updates(yesterday)
 
         if result == True:
             print("Executing updates..")
-            competitors_updates(yesterday)
+            await competitors_updates(yesterday)
 
         result = check_daily_objects_for_updates(yesterday)
 
@@ -70,7 +70,7 @@ def work():
         print(f'executed all jobs', flush=True)
         return None
 
-    todo_list()
+    asyncio.run(todo_list())
 
     sys.exit(0)
 
