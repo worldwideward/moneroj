@@ -13,8 +13,8 @@ from tasks.data_sync import check_monero_available
 from tasks.data_sync import check_competitors_for_updates
 from tasks.data_sync import check_daily_objects_for_updates
 from tasks.data_sync import xmr_updates
-from charts.asynchronous import update_others_data
-from charts.synchronous import update_database
+from tasks.data_sync import competitors_updates
+from tasks.data_sync import daily_objects_updates
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
 
@@ -60,13 +60,12 @@ def work():
 
         if result == True:
             print("Executing updates..")
-            await update_others_data(yesterday)
+            competitors_updates(yesterday)
 
         result = check_daily_objects_for_updates(yesterday)
 
         if result == True:
-            await update_database(yesterday, yesterday)
-
+            daily_objects_updates(yesterday, yesterday)
 
         print(f'executed all jobs', flush=True)
         return None
