@@ -24,7 +24,7 @@ async def competitors_updates(yesterday):
     await update_others_data(yesterday)
     return None
 
-def daily_objects_updates(yesterday, yesterday):
+def daily_objects_updates(yesterday):
     update_database(yesterday, yesterday)
     return None
 

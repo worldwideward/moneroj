@@ -65,7 +65,7 @@ def work():
         result = check_daily_objects_for_updates(yesterday)
 
         if result == True:
-            daily_objects_updates(yesterday, yesterday)
+            daily_objects_updates(yesterday)
 
         print(f'executed all jobs', flush=True)
         return None
