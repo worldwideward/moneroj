@@ -20,10 +20,14 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rest.settings")
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 # Database on sepatare path than source code, so code can be treated as ephemeral
+MONEROJ_REDIS_HOST = "redis:6379"
 MONEROJ_SPREADSHEET_DIR = "/opt"
 SQLITE_FILEPATH = "/opt/db.sqlite3"
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+CELERYD_CHDIR=BASE_DIR
+CELERY_BIN="/usr/local/bin/celery"
 
 # TODO: Handle the following settings dynamically.
 DEBUG = True
@@ -52,6 +56,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "charts",
+    "tasks",
 ]
 
 MIDDLEWARE = [
