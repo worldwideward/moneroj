@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 from charts.models import Coin
 from charts.asynchronous import update_xmr_data
@@ -12,7 +13,7 @@ def xmr_updates(yesterday, date_aux):
 
     print(f'[INFO] XMR: {coin_xmr}')
     count = get_history_function('xmr', yesterday, yesterday)
-    update_xmr_data(yesterday, coin_xmr)
+    await update_xmr_data(yesterday, coin_xmr)
 
     return None
 
