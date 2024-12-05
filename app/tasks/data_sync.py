@@ -13,7 +13,6 @@ async def xmr_updates(yesterday, date_aux):
     except:
         coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
 
-    print(f'[INFO] XMR: {coin_xmr}')
     count = get_history_function('xmr', yesterday, yesterday)
     await update_xmr_data(yesterday, coin_xmr)
 
@@ -33,7 +32,6 @@ def check_for_updates(yesterday) -> bool:
 
     try:
         coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
-        print(coin_xmr, flush=True)
         if coin_xmr:
             print('xmr found yesterday', flush=True)
             if coin_xmr.priceusd > 1 and coin_xmr.transactions > 0 and coin_xmr.inflation > 0:
