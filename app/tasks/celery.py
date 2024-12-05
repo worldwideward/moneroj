@@ -1,5 +1,6 @@
 import sys
 import os
+import asyncio
 import django
 import time
 import datetime
@@ -59,18 +60,12 @@ def work():
 
         if result == True:
             print("Executing updates..")
-            update_others_data(yesterday)
-
-        try:
-            coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
-        except:
-            coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
-
+            await update_others_data(yesterday)
 
         result = check_daily_objects_for_updates(yesterday)
 
         if result == True:
-            update_database(yesterday, yesterday)
+            await update_database(yesterday, yesterday)
 
 
         print(f'executed all jobs', flush=True)
