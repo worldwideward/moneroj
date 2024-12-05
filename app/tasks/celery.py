@@ -53,7 +53,7 @@ def work():
 
         if result == True:
             print("Executing updates..")
-            #await xmr_updates(yesterday, date_aux)
+            await xmr_updates(yesterday, date_aux)
 
         ### check competitor updates
         result = check_competitors_for_updates(yesterday)
