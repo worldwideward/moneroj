@@ -52,19 +52,20 @@ def work():
         result = check_for_updates(yesterday)
 
         if result == True:
-            print("Executing updates..")
+            print("Executing XMR updates..")
             await xmr_updates(yesterday, date_aux)
 
         ### check competitor updates
         result = check_competitors_for_updates(yesterday)
 
         if result == True:
-            print("Executing updates..")
+            print("Executing Competitor updates..")
             await competitors_updates(yesterday)
 
         result = check_daily_objects_for_updates(yesterday)
 
         if result == True:
+            print("Executing daily updates..")
             daily_objects_updates(yesterday)
 
         print(f'executed all jobs', flush=True)
