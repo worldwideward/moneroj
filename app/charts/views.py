@@ -4208,7 +4208,8 @@ def dread_subscribers(request):
             if not(value1) or not(value2):
                 break
             else:
-                dates.append(date)
+                print(date, flush=True)
+                dates.append(date.strftime("%Y-%m-%d"))
                 data1.append(int(value1))
                 data2.append(int(value2))
                 now_xmr = int(value2)
@@ -4246,7 +4247,7 @@ def coincards(request):
             if not(value1) or not(value2) or not(value3) or not(value4):
                 break
             else:
-                dates.append(date)
+                dates.append(date.strftime("%Y-%m-%d"))
                 data1.append(value1)
                 data2.append(value2)
                 data3.append(value3)
@@ -4294,7 +4295,7 @@ def merchants(request):
             if not(value1) or not(value2) or not(value3) or not(value4) or not(value5) or not(value6) or not(value7):
                 break
             else:
-                dates.append(date)
+                dates.append(date.strftime("%Y-%m-%d"))
                 data1.append(int(value1))
                 data2.append(int(value2))
                 data3.append(int(value3))
@@ -4343,7 +4344,7 @@ def merchants_increase(request):
             if not(value1) or not(value2) or not(value3) or not(value4) or not(value5) or not(value6) or not(value7):
                 break
             else:
-                dates.append(date)
+                dates.append(date.strftime("%Y-%m-%d"))
                 data1.append(int(value1))
                 data2.append(int(value2))
                 data3.append(int(value3))
@@ -4392,7 +4393,7 @@ def merchants_percentage(request):
             if not(value1) or not(value2) or not(value3) or not(value4) or not(value5) or not(value6) or not(value7):
                 break
             else:
-                dates.append(date)
+                dates.append(date.strftime("%Y-%m-%d"))
                 data1.append(value1)
                 data2.append(value2)
                 data3.append(value3)
@@ -4429,7 +4430,7 @@ def dominance(request):
                 values.append(dominance.dominance)
                 now_value = dominance.dominance
                 if now_value > maximum:
-                    maximum = now_value            
+                    maximum = now_value
             else:
                 values.append('')
         except:
@@ -4451,11 +4452,11 @@ def dominance(request):
         try:
             dominance = list(Dominance.objects.order_by('-date'))[0]
             if str(dominance.date) == str(today):
-                now_value = dominance.dominance 
+                now_value = dominance.dominance
                 dates.append(today)
                 values.append(now_value)
                 if now_value > maximum:
-                    maximum = now_value  
+                    maximum = now_value
         except:
             pass
 
@@ -4481,7 +4482,7 @@ def rank(request):
                 values.append(rank.rank)
                 now_value = rank.rank
                 if now_value < maximum:
-                    maximum = now_value            
+                    maximum = now_value
             else:
                 values.append(now_value)
         except:
