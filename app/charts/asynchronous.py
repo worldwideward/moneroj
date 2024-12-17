@@ -149,7 +149,13 @@ async def get_social_data(session, symbol):
     try:
         social = Social.objects.filter(name=symbol).get(date=yesterday)
     except:
-        url = 'https://www.reddit.com/r/'+ symbol +'/about.json'
+        #url = 'https://www.reddit.com/r/'+ symbol +'/about.json'
+        url = 'https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion/r/'+ symbol +'/about.json'
+
+        proxies = {
+                'http': 'socks5://127.0.0.1:9050',
+                'https': 'socks5://127.0.0.1:9050'
+        }
 
         async with session.get(url, headers={'User-agent': 'Checking new social data'}) as res:
             data = await res.read()
