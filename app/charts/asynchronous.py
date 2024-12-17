@@ -144,7 +144,8 @@ async def get_coin_data(session, symbol, url):
 ####################################################################################
 #   Asynchronous get social metrics from reddit
 #################################################################################### 
-async def get_social_data(session, symbol):
+#async def get_social_data(session, symbol):
+async def get_social_data(symbol):
     yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
     try:
         social = Social.objects.filter(name=symbol).get(date=yesterday)
@@ -153,11 +154,11 @@ async def get_social_data(session, symbol):
         url = 'https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion/r/'+ symbol +'/about.json'
 
         proxies = {
-                'http': 'socks5://127.0.0.1:9050',
-                'https': 'socks5://127.0.0.1:9050'
+                'http': 'socks5h://127.0.0.1:9050',
+                'https': 'socks5h://127.0.0.1:9050'
         }
 
-        async with session.get(url, headers={'User-agent': 'Checking new social data'}) as res:
+        async with requests.get(url, headers={'User-agent': 'Checking new social data'}) as res:
             data = await res.read()
             data = json.loads(data) 
             data = data['data']

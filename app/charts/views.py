@@ -702,7 +702,7 @@ def populate_database(request):
             data.grin_inflation = 0
             data.grin_marketcap = 0
             data.grin_transactions = 0
-    
+
         socials = Social.objects.filter(name='Bitcoin').filter(date=coin_btc.date)
         if socials:
             for social in socials:
@@ -713,7 +713,7 @@ def populate_database(request):
             data.btc_subscriberCount = 0
             data.btc_commentsPerHour = 0
             data.btc_postsPerHour = 0
-        
+
         socials = Social.objects.filter(name='Monero').filter(date=coin_btc.date)
         if socials:
             for social in socials:
@@ -779,7 +779,7 @@ def update_database_admin(request, date_from, date_to):
             coin.pricebtc = 0.000001
         if coin.stocktoflow > sf_aux*1.3+100:
             coin.stocktoflow = sf_aux
-        
+
         sf_aux = coin.stocktoflow
         if coin.supply > 0:
             supply = int(coin.supply)*10**12
@@ -1209,6 +1209,8 @@ def update_database_admin(request, date_from, date_to):
 #   Views
 ####################################################################################
 async def index(request):
+
+    await asynchronous.get_social_data('xmr')
 
     return render(request, 'charts/index.html')
 
