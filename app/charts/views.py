@@ -121,7 +121,6 @@ def load_rank(request, symbol):
     count = 0
 
     values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet8", start=(2, 0), end=(9999, 2))
-    print(len(values_mat))
     Rank.objects.all().delete()
 
     for k in range(0,len(values_mat)):
@@ -1208,9 +1207,7 @@ def update_database_admin(request, date_from, date_to):
 ####################################################################################
 #   Views
 ####################################################################################
-async def index(request):
-
-    await asynchronous.get_social_data('xmr')
+def index(request):
 
     return render(request, 'charts/index.html')
 
@@ -3635,7 +3632,7 @@ def shielded(request):
     dominance = 0
     monthly = 0
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet1", start=(2, 0), end=(999, 5))
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet1", start=(1, 0), end=(999, 5))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][3]:
@@ -3645,12 +3642,12 @@ def shielded(request):
             if not(value) or not(value):
                 break
             else:
-                dates.append(date)
+                dates.append(date.strftime("%Y-%m-%d"))
                 values.append(int(value))
                 values3.append(int(value3))
         else:
             break
-    
+
     previous_date = 0
     coins = Coin.objects.order_by('date').filter(name='xmr')
     for date in dates:
@@ -4282,7 +4279,7 @@ def merchants(request):
     now_btc = 0
     now_eth = 0
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet3", start=(2, 0), end=(99, 8))
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet3", start=(1, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
@@ -4331,34 +4328,30 @@ def merchants_increase(request):
     now_btc = 0
     now_eth = 0
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet4", start=(2, 0), end=(99, 8))
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet4", start=(1, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][2]:
-            date = values_mat[k][0]
-            value1 = values_mat[k][1]
-            value2 = values_mat[k][2]
-            value3 = values_mat[k][3]
-            value4 = values_mat[k][4]
-            value5 = values_mat[k][5]
-            value6 = values_mat[k][6]
-            value7 = values_mat[k][7]
-            if not(value1) or not(value2) or not(value3) or not(value4) or not(value5) or not(value6) or not(value7):
-                break
-            else:
-                dates.append(date.strftime("%Y-%m-%d"))
-                data1.append(int(value1))
-                data2.append(int(value2))
-                data3.append(int(value3))
-                data4.append(int(value4))
-                data5.append(int(value5))
-                data6.append(int(value6))
-                data7.append(int(value7))
-                now_btc = int(value1)
-                now_xmr = int(value2)
-                now_eth = int(value3)
-        else:
-            break
+
+        date = values_mat[k][0]
+        value1 = values_mat[k][1]
+        value2 = values_mat[k][2]
+        value3 = values_mat[k][3]
+        value4 = values_mat[k][4]
+        value5 = values_mat[k][5]
+        value6 = values_mat[k][6]
+        value7 = values_mat[k][7]
+
+        dates.append(date.strftime("%Y-%m-%d"))
+        data1.append(int(value1))
+        data2.append(int(value2))
+        data3.append(int(value3))
+        data4.append(int(value4))
+        data5.append(int(value5))
+        data6.append(int(value6))
+        data7.append(int(value7))
+        now_btc = int(value1)
+        now_xmr = int(value2)
+        now_eth = int(value3)
 
     now_btc = locale._format('%.0f', now_btc, grouping=True)
     now_xmr = locale._format('%.0f', now_xmr, grouping=True)
@@ -4380,40 +4373,37 @@ def merchants_percentage(request):
     now_btc = 0
     now_eth = 0
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet2", start=(2, 0), end=(99, 8))
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet2", start=(1, 0), end=(99, 8))
 
     for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][2]:
-            date = values_mat[k][0]
-            value1 = values_mat[k][1]
-            value2 = values_mat[k][2]
-            value3 = values_mat[k][3]
-            value4 = values_mat[k][4]
-            value5 = values_mat[k][5]
-            value6 = values_mat[k][6]
-            value7 = values_mat[k][7]
-            if not(value1) or not(value2) or not(value3) or not(value4) or not(value5) or not(value6) or not(value7):
-                break
-            else:
-                dates.append(date.strftime("%Y-%m-%d"))
-                data1.append(value1)
-                data2.append(value2)
-                data3.append(value3)
-                data4.append(value4)
-                data5.append(value5)
-                data6.append(value6)
-                data7.append(value7)
-                now_btc = value1
-                now_xmr = value2
-                now_eth = value3
-        else:
-            break
+
+       date = values_mat[k][0]
+       value1 = values_mat[k][1]
+       value2 = values_mat[k][2]
+       value3 = values_mat[k][3]
+       value4 = values_mat[k][4]
+       value5 = values_mat[k][5]
+       value6 = values_mat[k][6]
+       value7 = values_mat[k][7]
+
+       dates.append(date.strftime("%Y-%m-%d"))
+       data1.append(value1)
+       data2.append(value2)
+       data3.append(value3)
+       data4.append(value4)
+       data5.append(value5)
+       data6.append(value6)
+       data7.append(value7)
+       now_btc = value1
+       now_xmr = value2
+       now_eth = value3
 
     now_btc = locale._format('%.1f', now_btc, grouping=True)
     now_xmr = locale._format('%.1f', now_xmr, grouping=True)
     now_eth = locale._format('%.1f', now_eth, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
+    print(f'DEBUG: {context}', flush=True)
     return render(request, 'charts/merchants_percentage.html', context)
 
 def dominance(request):
@@ -4801,7 +4791,7 @@ def privacydominance(request):
     now_dominance = 0
     top_marketcap = 0
     top_dominance = 0
-    
+
     for item in data:
         marketcap = 0
         dominance = 0
@@ -4841,9 +4831,9 @@ def privacydominance(request):
         else:
             dominances.append('')
 
-    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True) 
+    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True)
     now_dominance = locale._format('%.2f', now_dominance, grouping=True) + '%'
-    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True) 
+    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True)
     top_dominance = locale._format('%.2f', top_dominance, grouping=True) + '%'
 
     context = {'marketcaps': marketcaps, 'dominances':dominances, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
