@@ -33,7 +33,7 @@ CELERY_BIN="/usr/local/bin/celery"
 DEBUG = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATIC_URL = "static/"
+STATIC_URL = "/static"
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -41,6 +41,7 @@ SECRET_KEY = "sdfasfasdfas324fdsfsd234234dsfdgdffdfghfdfasfasdasfadsffhgf6757567
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "django",
     ]
 
 CORS_ALLOWED_ORIGINS = [f"http://{host}" for host in ALLOWED_HOSTS] + [
