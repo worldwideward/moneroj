@@ -1,4 +1,4 @@
-# Django with SQLite database and optional Celery worker
+## Django with Static files by NGINX
 
 name: moneroj
 
@@ -6,29 +6,17 @@ services:
   django:
     build:
       context: .
-    ports:
-      - 8000:8000
     volumes:
       - ./data:/opt
       - ./app:/src/app
     entrypoint:
-      - "bin/sh"
+      - "/bin/sh"
       - "-c"
       - "gunicorn moneropro.wsgi:application --bind 0.0.0.0:8000 --timeout 300 --workers 2"
-#    depends_on:
-#      - redis
-#  celery:
-#    build:
-#      context: .
-#    volumes:
-#      - ./data:/opt
-#      - ./app:/src/app
-#    entrypoint:
-#      - celery
-#      - -A 
-#      - tasks
-#      - worker
-#    depends_on:
-#      - redis
-#  redis:
-#    image: redis:7
+  nginx:
+    image: nginx:1.27
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app/static:/usr/share/nginx/html/static
+      - ./default.conf:/etc/nginx/conf.d/default.conf:ro
