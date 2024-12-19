@@ -113,7 +113,7 @@ def get_history(request, symbol, start_time=None, end_time=None):
 
 # Populate database with rank history
 # Only authorized users can do this
-@login_required 
+@login_required
 def load_rank(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
@@ -143,7 +143,7 @@ def load_rank(request, symbol):
 
 # Populate database with p2pool history
 # Only authorized users can do this
-@login_required 
+@login_required
 def load_p2pool(request):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
@@ -190,9 +190,9 @@ def load_p2pool(request):
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
-# Populate database with dominance history
+# Populate database with ominance history
 # Only authorized users can do this
-@login_required 
+@login_required
 def load_dominance(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
@@ -278,19 +278,19 @@ def importer(request):
 
 # Erase all data for a certain coin
 # Only authorized users can do this
-@login_required 
+@login_required
 def reset(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
     Coin.objects.filter(name=symbol).all().delete()
-    
+
     message = 'All data for ' + str(symbol) + ' erased'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
 # Populate database with especific chart variables
 # Only authorized users can do this
-@login_required 
+@login_required
 def populate_database(request):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
@@ -316,7 +316,7 @@ def populate_database(request):
             coin.pricebtc = 0.000001
         if coin.stocktoflow > sf_aux*1.3+100:
             coin.stocktoflow = sf_aux
-        
+
         sf_aux = coin.stocktoflow
         if coin.supply > 0:
             supply = int(coin.supply)*10**12
@@ -3659,15 +3659,15 @@ def shielded(request):
                 if previous_date != coin.date:
                     value2 += coin.transactions
                     previous_date = coin.date
-        
+
         values2.append(int(value2))
-    
+
     dominance = 100*int(value2)/(int(value2)+int(value)+int(value3))
     monthly = int(value2)
-    
+
     monthly = format(int(monthly),',')
     dominance = locale._format('%.2f', dominance, grouping=True)
-    
+
     context = {'dates': dates, 'values': values, 'values2': values2, 'values3': values3, "monthly": monthly, "dominance": dominance}
     return render(request, 'charts/shielded.html', context)
 
@@ -4403,7 +4403,6 @@ def merchants_percentage(request):
     now_eth = locale._format('%.1f', now_eth, grouping=True)
 
     context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
-    print(f'DEBUG: {context}', flush=True)
     return render(request, 'charts/merchants_percentage.html', context)
 
 def dominance(request):
