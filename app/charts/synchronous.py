@@ -1,9 +1,11 @@
-from psaw import PushshiftAPI
-import pandas as pd
+'''Synchronous functions'''
+
 import json
 import requests
 import datetime
 from datetime import date, timedelta
+import pandas as pd
+from psaw import PushshiftAPI
 from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, Withdrawal
 from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
@@ -19,31 +21,33 @@ sheets = PandasSpreadSheetManager()
 #api = PushshiftAPI()   # When it's working
 api = False             # When it's not
 
-# Get daily post on Reddit
 def data_prep_posts(subreddit, start_time, end_time, filters, limit):
+    '''Get daily posts in a certain subreddit '''
+
     if(len(filters) == 0):
-        filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments'] 
+        filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments']
 
     if not(api == False):
         posts = list(api.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
         return pd.DataFrame(posts)
     return 0
 
-# Get daily comments on Reddit
 def data_prep_comments(term, start_time, end_time, filters, limit):
+    '''Get daily comments in a certain subreddit'''
     if (len(filters) == 0):
-        filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit'] 
+        filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit']
 
     if not(api == False):
         comments = list(api.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
-        return pd.DataFrame(comments) 
+        return pd.DataFrame(comments)
     return 0
 
 ####################################################################################
 #   Other useful functions                  
 ####################################################################################
-# Get data from a coin 
+
 def get_history_function(symbol, start_time=None, end_time=None):
+    '''Get historic data from a cryptocurrency coin'''
     update = True
     count = 0
     priceusd = 0
@@ -91,7 +95,7 @@ def get_history_function(symbol, start_time=None, end_time=None):
             priceusd = coin.priceusd
             break
 
-    while update: 
+    while update:
         response = requests.get(url)
         data_aux = json.loads(response.text)
         data_aux2 = data_aux['data']
@@ -117,8 +121,8 @@ def get_history_function(symbol, start_time=None, end_time=None):
                 except:
                     coin.pricebtc = pricebtc
                 try:
-                    coin.inflation = float(item['IssContPctAnn'])  
-                    coin.stocktoflow = (100/coin.inflation)**1.65 
+                    coin.inflation = float(item['IssContPctAnn'])
+                    coin.stocktoflow = (100/coin.inflation)**1.65
                     inflation = coin.inflation
                     stocktoflow = coin.stocktoflow
                 except:
@@ -179,12 +183,13 @@ def get_history_function(symbol, start_time=None, end_time=None):
             break
     return count
 
-# Get most recent metrics from a data provider of your choice for 'symbol'
 def get_latest_metrics(symbol, url):
+    '''Get most recent metrics from a data provider of your choice for 'symbol'''
+
     update = True
     count = 0
 
-    while update: 
+    while update:
         response = requests.get(url)
         data = json.loads(response.text)
         data_aux = data['data']
@@ -246,13 +251,14 @@ def get_latest_metrics(symbol, url):
             update = True
         except:
             update = False
-            break 
+            break
     return count
 
-# Get binance withdrawal state
 def get_binance_withdrawal(symbol):
+    '''Get binance withdrawal state'''
+
     url = 'https://www.binance.com/en/network'
-    
+
     withdrawals = Withdrawal.objects.order_by('-date')
     if len(withdrawals) > 0:
         for withdrawal in withdrawals:
@@ -288,8 +294,9 @@ def get_binance_withdrawal(symbol):
         except:
             return None
 
-# Get latest price data for Monero
 def get_latest_price(symbol):
+    '''Get latest price data for Monero'''
+
     with open("settings.json") as file:
         data = json.load(file)
 
@@ -325,8 +332,9 @@ def get_latest_price(symbol):
         file.close()
     return data
 
-# Get latest dominance value and update
 def update_dominance(data):
+    '''Get latest dominance value and update'''
+
     if not(data):
         print('error updating dominance')
         return False
@@ -357,8 +365,9 @@ def update_dominance(data):
             return False
     return data
 
-# Get latest rank value and update
 def update_rank(data=None):
+    '''Get latest rank value and update'''
+
     if not(data):
         data = get_latest_price('xmr')
     if not(data):
@@ -391,8 +400,9 @@ def update_rank(data=None):
 
     return data
 
-# Load Reddit api to check if there are new followers
 def check_new_social(symbol):
+    '''Load Reddit api to check if there are new followers'''
+
     yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
     socials = Social.objects.filter(name=symbol).filter(date=yesterday)
     if symbol == 'Bitcoin':
@@ -415,13 +425,13 @@ def check_new_social(symbol):
         print('new social')
         request = 'https://www.reddit.com/r/'+ symbol +'/about.json'
         response = requests.get(request, headers = {'User-agent': 'Checking new social data'})
-        data = json.loads(response.content)    
+        data = json.loads(response.content)
         data = data['data']
         subscribers = data['subscribers']
         social = Social()
         social.name = symbol
         social.date = yesterday
-        social.subscriberCount = subscribers
+        social.subscriber_count = subscribers
 
         date_aux = date.today()
         date_aux = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
@@ -433,23 +443,24 @@ def check_new_social(symbol):
         filters = []
         data = data_prep_posts(symbol, timestamp2, timestamp1, filters, limit)
         if data != 0:
-            social.postsPerHour = len(data)/hours
+            social.posts_per_hour = len(data)/hours
         else:
-            social.postsPerHour = 0
+            social.posts_per_hour = 0
 
         timestamp2 = int(timestamp1 - timeframe2)
         limit = 1000
         data = data_prep_comments(symbol, timestamp2, timestamp1, filters, limit)
         if data != 0:
-            social.commentsPerHour = len(data)/hours2
+            social.comments_per_hour = len(data)/hours2
         else:
-            social.commentsPerHour = 0
+            social.comments_per_hour = 0
         social.save()
         print('getting new data - ' + str(social.name) + ' - ' + str(social.date))
     return True
 
-# Update database DailyData with most recent coin data
 def update_database(date_from=None, date_to=None):
+    '''Update database DailyData with most recent coin data'''
+
     date_zero = '2014-05-20'
 
     if not(date_from) or not(date_to):
@@ -531,7 +542,7 @@ def update_database(date_from=None, date_to=None):
 
         try:
             data = DailyData.objects.get(date=coin_xmr.date)
-        except: 
+        except:
             data = DailyData()
             # Date field
             data.date = coin_xmr.date
@@ -592,16 +603,16 @@ def update_database(date_from=None, date_to=None):
             data.btc_difficulty = 0
             data.xmr_difficulty = 0
             # Reddit charts
-            data.btc_subscriberCount = 0
-            data.btc_commentsPerHour = 0
-            data.btc_postsPerHour = 0
-            data.xmr_subscriberCount = 0
-            data.xmr_commentsPerHour = 0
-            data.xmr_postsPerHour = 0
-            data.crypto_subscriberCount = 0
-            data.crypto_commentsPerHour = 0
-            data.crypto_postsPerHour = 0
-            
+            data.btc_subscriber_count = 0
+            data.btc_comments_per_hour = 0
+            data.btc_posts_per_hour = 0
+            data.xmr_subscriber_count = 0
+            data.xmr_comments_per_hour = 0
+            data.xmr_posts_per_hour = 0
+            data.crypto_subscriber_count = 0
+            data.crypto_comments_per_hour = 0
+            data.crypto_posts_per_hour = 0
+
         # Date field
         data.date = coin_xmr.date
         # Basic information
@@ -681,25 +692,25 @@ def update_database(date_from=None, date_to=None):
             pass
         # Reddit charts
         try:
-            data.btc_subscriberCount = social_btc.subscriberCount
-            data.btc_commentsPerHour = social_btc.commentsPerHour
-            data.btc_postsPerHour = social_btc.postsPerHour
-            data.xmr_subscriberCount = social_xmr.subscriberCount
-            data.xmr_commentsPerHour = social_xmr.commentsPerHour
-            data.xmr_postsPerHour = social_xmr.postsPerHour
-            data.crypto_subscriberCount = social_crypto.subscriberCount
-            data.crypto_commentsPerHour = social_crypto.commentsPerHour
-            data.crypto_postsPerHour = social_crypto.postsPerHour
+            data.btc_subscriber_count = social_btc.subscriber_count
+            data.btc_comments_per_hour = social_btc.comments_per_hour
+            data.btc_posts_per_hour = social_btc.posts_per_hour
+            data.xmr_subscriber_count = social_xmr.subscriber_count
+            data.xmr_comments_per_hour = social_xmr.comments_per_hour
+            data.xmr_posts_per_hour = social_xmr.posts_per_hour
+            data.crypto_subscriber_count = social_crypto.subscriber_count
+            data.crypto_comments_per_hour = social_crypto.comments_per_hour
+            data.crypto_posts_per_hour = social_crypto.posts_per_hour
         except (Social.DoesNotExist, UnboundLocalError):
-            data.btc_subscriberCount = 0
-            data.btc_commentsPerHour = 0
-            data.btc_postsPerHour = 0
-            data.xmr_subscriberCount = 0
-            data.xmr_commentsPerHour = 0
-            data.xmr_postsPerHour = 0
-            data.crypto_subscriberCount = 0
-            data.crypto_commentsPerHour = 0
-            data.crypto_postsPerHour = 0
+            data.btc_subscriber_count = 0
+            data.btc_comments_per_hour = 0
+            data.btc_posts_per_hour = 0
+            data.xmr_subscriber_count = 0
+            data.xmr_comments_per_hour = 0
+            data.xmr_posts_per_hour = 0
+            data.crypto_subscriber_count = 0
+            data.crypto_comments_per_hour = 0
+            data.crypto_posts_per_hour = 0
 
         data.save()
 
@@ -722,8 +733,9 @@ def update_database(date_from=None, date_to=None):
 
     return count
 
-# Get latest P2Pool data
 def update_p2pool():
+    '''Get latest P2Pool data'''
+
     today = date.today()
     yesterday = date.today() - timedelta(1)
     try:
@@ -760,7 +772,7 @@ def update_p2pool():
         p2pool_stat = P2Pool()
         p2pool_stat.date = today
         response = requests.get('https://p2pool.io/api/pool/stats')
-        
+
         data = json.loads(response.text)
         p2pool_stat.hashrate = data['pool_statistics']['hashRate']
         p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
@@ -791,10 +803,10 @@ def update_p2pool():
             cell = 'A' + str(k + 3)
             wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
             print('spreadsheet updated')
-        else:   
+        else:
             print('spreadsheet already with the latest data')
             return data
-        
+
     today = date.today()
     yesterday = date.today() - timedelta(1)
     try:
@@ -832,7 +844,7 @@ def update_p2pool():
         p2pool_stat = P2Pool()
         p2pool_stat.date = today
         response = requests.get('https://p2pool.io/mini/api/pool/stats')
-        
+
         data = json.loads(response.text)
         p2pool_stat.hashrate = data['pool_statistics']['hashRate']
         p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
@@ -863,7 +875,7 @@ def update_p2pool():
             cell = 'A' + str(k + 3)
             wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
             print('spreadsheet updated')
-        else:   
+        else:
             print('spreadsheet already with the latest data')
             return data
 
