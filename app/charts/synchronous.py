@@ -8,7 +8,7 @@ import pandas as pd
 from psaw import PushshiftAPI
 from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, Withdrawal
 from requests import Session
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+from requests.exceptions import Timeout, TooManyRedirects
 import pytz
 from .spreadsheets import PandasSpreadSheetManager
 
@@ -18,32 +18,32 @@ sheets = PandasSpreadSheetManager()
 ####################################################################################
 #   Reddit api
 ####################################################################################
-#api = PushshiftAPI()   # When it's working
-api = False             # When it's not
+#API = PushshiftAPI()   # When it's working
+API = False             # When it's not
 
 def data_prep_posts(subreddit, start_time, end_time, filters, limit):
     '''Get daily posts in a certain subreddit '''
 
-    if(len(filters) == 0):
+    if len(filters) == 0:
         filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments']
 
-    if not(api == False):
-        posts = list(api.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
+    if not API:
+        posts = list(API.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
         return pd.DataFrame(posts)
     return 0
 
 def data_prep_comments(term, start_time, end_time, filters, limit):
     '''Get daily comments in a certain subreddit'''
-    if (len(filters) == 0):
+    if len(filters) == 0:
         filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit']
 
-    if not(api == False):
-        comments = list(api.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
+    if not API:
+        comments = list(API.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
         return pd.DataFrame(comments)
     return 0
 
 ####################################################################################
-#   Other useful functions                  
+#   Other useful functions
 ####################################################################################
 
 def get_history_function(symbol, start_time=None, end_time=None):
@@ -62,7 +62,7 @@ def get_history_function(symbol, start_time=None, end_time=None):
     blocksize = 0
     difficulty = 0
 
-    with open("settings.json") as file:
+    with open("settings.json", 'r', encoding="utf8") as file:
         data = json.load(file)
         file.close()
 
@@ -70,8 +70,8 @@ def get_history_function(symbol, start_time=None, end_time=None):
         start_time = '2000-01-01'
         end_time = '2100-01-01'
 
-    url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time 
-    print(url)
+    url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time
+    print(url, flush=True)
 
     coins = Coin.objects.filter(name=symbol).order_by('-date')
     for coin in coins:
@@ -96,12 +96,12 @@ def get_history_function(symbol, start_time=None, end_time=None):
             break
 
     while update:
-        response = requests.get(url)
+        response = requests.get(url, timeout=60)
         data_aux = json.loads(response.text)
         data_aux2 = data_aux['data']
         for item in data_aux2:
-            day, hour = str(item['time']).split('T')
-            day = datetime.datetime.strptime(day, '%Y-%m-%d')
+            time_array = str(item['time']).split('T')
+            day = datetime.datetime.strptime(time_array[0], '%Y-%m-%d')
             day = datetime.datetime.strftime(day, '%Y-%m-%d')
             coin = Coin.objects.filter(name=symbol).filter(date=day)
             if coin:
@@ -113,19 +113,22 @@ def get_history_function(symbol, start_time=None, end_time=None):
                 try:
                     coin.priceusd = float(item['PriceUSD'])
                     priceusd = coin.priceusd
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.priceusd = priceusd
                 try:
                     coin.pricebtc = float(item['PriceBTC'])
                     pricebtc = coin.pricebtc
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.pricebtc = pricebtc
                 try:
                     coin.inflation = float(item['IssContPctAnn'])
                     coin.stocktoflow = (100/coin.inflation)**1.65
                     inflation = coin.inflation
                     stocktoflow = coin.stocktoflow
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.inflation = inflation
                     coin.stocktoflow = stocktoflow
                 try:
@@ -138,47 +141,55 @@ def get_history_function(symbol, start_time=None, end_time=None):
                     else:
                         coin.supply = float(item['SplyCur'])
                         supply = coin.supply
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.supply = supply
                 try:
                     coin.fee = float(item['FeeTotNtv'])
                     fee = coin.fee
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.fee = fee
                 try:
                     coin.revenue = float(item['RevNtv'])
                     revenue = coin.revenue
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.revenue = revenue
                 try:
                     coin.hashrate = float(item['HashRate'])
                     hashrate = coin.hashrate
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.hashrate = hashrate
                 try:
                     coin.transactions = float(item['TxCnt'])
                     transactions = coin.transactions
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.transactions = transactions
                 try:
                     coin.blocksize = float(item['BlkSizeMeanByte'])
                     blocksize = coin.blocksize
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.blocksize = blocksize
                 try:
                     coin.difficulty = float(item['DiffLast'])
                     difficulty = coin.difficulty
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.difficulty = difficulty
                 coin.save()
                 count += 1
-                print(coin.name + ' ' + str(coin.date) + ' ' + str(item['SplyCur']))
+                print(coin.name + ' ' + str(coin.date) + ' ' + str(item['SplyCur']), flush=True)
 
-            except:
-                pass
+            except Exception as error:
+                print(f'Something went wrong: {error}', flush=True)
         try:
             url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time + '/' + data_aux['next_page_token']
-        except:
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
             update = False
             break
     return count
@@ -190,16 +201,17 @@ def get_latest_metrics(symbol, url):
     count = 0
 
     while update:
-        response = requests.get(url)
+        response = requests.get(url, timeout=60)
         data = json.loads(response.text)
         data_aux = data['data']
         for item in data_aux:
-            day, hour = str(item['time']).split('T')
-            day = datetime.datetime.strptime(day, '%Y-%m-%d')
+            time_array = str(item['time']).split('T')
+            day = datetime.datetime.strptime(time_array[0], '%Y-%m-%d')
             day = datetime.datetime.strftime(day, '%Y-%m-%d')
             try:
                 coin = Coin.objects.filter(name=symbol).get(date=day)
-            except:
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
                 coin = Coin()
 
             try:
@@ -207,49 +219,58 @@ def get_latest_metrics(symbol, url):
                 coin.date = day
                 try:
                     coin.priceusd = float(item['PriceUSD'])
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.priceusd = 0
                 try:
                     coin.pricebtc = float(item['PriceBTC'])
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.pricebtc = 0
                 try:
-                    coin.inflation = float(item['IssContPctAnn'])  
-                    coin.stocktoflow = (100/coin.inflation)**1.65 
-                except:
+                    coin.inflation = float(item['IssContPctAnn'])
+                    coin.stocktoflow = (100/coin.inflation)**1.65
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.inflation = 0
                     coin.stocktoflow = 0
                 try:
                     coin.supply = float(item['SplyCur'])
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.supply = 0
                 try:
                     coin.fee = float(item['FeeTotNtv'])
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.fee = 0
                 try:
                     coin.revenue = float(item['RevNtv'])
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.revenue = 0
                 try:
                     coin.hashrate = float(item['HashRate'])
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.hashrate = 0
                 try:
                     coin.transactions = float(item['TxCnt'])
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     coin.transactions = 0
 
                 coin.save()
                 count += 1
-                print(str(symbol) + ' ' + str(coin.date))
+                print(str(symbol) + ' ' + str(coin.date), flush=True)
 
-            except:
-                pass
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
         try:
             url = data['next_page_url']
             update = True
-        except:
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
             update = False
             break
     return count
@@ -270,7 +291,7 @@ def get_binance_withdrawal(symbol):
         return True
 
     current_date = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
     result = response.text
     position = result.find(symbol)
     result = result[position:position+400]
@@ -283,7 +304,8 @@ def get_binance_withdrawal(symbol):
             new_withdrawal.state = True
             new_withdrawal.save()
         return True
-    except:
+    except Exception as error:
+        print(f'Something went wrong {error}', flush=True)
         try:
             result.index('false')
             if ((current_date - withdrawal.date).seconds > 3600) or withdrawal.state:
@@ -291,17 +313,18 @@ def get_binance_withdrawal(symbol):
                 new_withdrawal.state = False
                 new_withdrawal.save()
             return False
-        except:
+        except Exception as inner_error:
+            print(f'Something went wrong {inner_error}', flush=True)
             return None
 
 def get_latest_price(symbol):
     '''Get latest price data for Monero'''
 
-    with open("settings.json") as file:
+    with open("settings.json", 'r', encoding="utf8") as file:
         data = json.load(file)
 
         url = data["metrics_provider"][0]["price_url_old"] + symbol
-        print(url)
+        print(url, flush=True)
         parameters = {
             'convert':'USD',
         }
@@ -316,17 +339,18 @@ def get_latest_price(symbol):
         try:
             response = session.get(url, params=parameters)
             data = json.loads(response.text)
-            print('getting latest data')
+            print('getting latest data', flush=True)
             try:
                 if data['data'][symbol.upper()]['cmc_rank']:
-                    print('new data received')
-                    pass
+                    print('new data received', flush=True)
                 else:
-                    print('problem with the data provider')
+                    print('problem with the data provider', flush=True)
                     data = False
-            except:
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
                 data = False
-        except (ConnectionError, Timeout, TooManyRedirects) as e:
+        except (ConnectionError, Timeout, TooManyRedirects) as error:
+            print(f'Something went wrong {error}', flush=True)
             data = False
 
         file.close()
@@ -335,68 +359,72 @@ def get_latest_price(symbol):
 def update_dominance(data):
     '''Get latest dominance value and update'''
 
-    if not(data):
-        print('error updating dominance')
+    if not data:
+        print('error updating dominance', flush=True)
         return False
+
+    dominance = Dominance()
+    dominance.name = 'xmr'
+    dominance.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+    dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
+    dominance.save()
+
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet7", start=(2, 0), end=(9999, 2))
+
+    k = len(values_mat)
+    date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+    date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+    date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+
+    if date_aux < date_aux2:
+
+        values_mat[k][1] = dominance.dominance
+        values_mat[k][0] = dominance.date
+
+        #TODO: Figure out where undefined vars came from
+        df.iloc[start_row:end_row, start_col:end_col] = values_mat
+        df.to_excel(DATA_FILE, sheet_name="Sheet7", index=False)
+
+        print("spreadsheet updated", flush=True)
     else:
-        dominance = Dominance()
-        dominance.name = 'xmr'
-        dominance.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
-        dominance.save()
+        print('spreadsheet already with the latest data', flush=True)
+        return False
 
-        values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet7", start=(2, 0), end=(9999, 2))
-
-        k = len(values_mat)
-        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-        if date_aux < date_aux2:
-
-            values_mat[k][1] = dominance.dominance
-            values_mat[k][0] = dominance.date
-
-            df.iloc[start_row:end_row, start_col:end_col] = values_mat
-            df.to_excel(DATA_FILE, sheet_name="Sheet7", index=False)
-
-            print("spreadsheet updated")
-        else:
-            print('spreadsheet already with the latest data')
-            return False
     return data
 
 def update_rank(data=None):
     '''Get latest rank value and update'''
 
-    if not(data):
+    if not data:
         data = get_latest_price('xmr')
-    if not(data):
-        print('error updating rank')
+    if not data:
+        print('error updating rank', flush=True)
         return False
+
+    rank = Rank()
+    rank.name = 'xmr'
+    rank.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+    rank.rank = int(data['data']['XMR']['cmc_rank'])
+    rank.save()
+
+    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet8", start=(2, 0), end=(9999, 2))
+    k = len(values_mat)
+    date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+    date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+    date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+
+    if date_aux < date_aux2:
+
+        values_mat[k][1] = rank.rank
+        values_mat[k][0] = rank.date
+
+        #TODO: Figure out where undefined vars came from
+        df.iloc[start_row:end_row, start_col:end_col] = values_mat
+        df.to_excel(DATA_FILE, sheet_name="Sheet8", index=False)
+
+        print("spreadsheet updated", flush=True)
     else:
-        rank = Rank()
-        rank.name = 'xmr'
-        rank.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        rank.rank = int(data['data']['XMR']['cmc_rank'])
-        rank.save()
-
-        values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet8", start=(2, 0), end=(9999, 2))
-        k = len(values_mat)
-        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-        if date_aux < date_aux2:
-
-            values_mat[k][1] = rank.rank
-            values_mat[k][0] = rank.date
-
-            df.iloc[start_row:end_row, start_col:end_col] = values_mat
-            df.to_excel(DATA_FILE, sheet_name="Sheet8", index=False)
-
-            print("spreadsheet updated")
-        else:
-            print('spreadsheet already with the latest data')
-            return data
+        print('spreadsheet already with the latest data', flush=True)
 
     return data
 
@@ -410,21 +438,23 @@ def check_new_social(symbol):
         hours = 86400/timeframe
         timeframe2 = 3600
         hours2 = 86400/timeframe2
-    elif symbol == 'Monero':
+
+    if symbol == 'Monero':
         timeframe = 43200
         hours = 86400/timeframe
         timeframe2 = 43200
         hours2 = 86400/timeframe2
-    elif symbol == 'Cryptocurrency':
+
+    if symbol == 'Cryptocurrency':
         timeframe = 14400
         hours = 86400/timeframe
         timeframe2 = 1800
         hours2 = 86400/timeframe2
 
-    if not(socials):
-        print('new social')
+    if not socials:
+        print('new social', flush=True)
         request = 'https://www.reddit.com/r/'+ symbol +'/about.json'
-        response = requests.get(request, headers = {'User-agent': 'Checking new social data'})
+        response = requests.get(request, headers = {'User-agent': 'Checking new social data'}, timeout=60)
         data = json.loads(response.content)
         data = data['data']
         subscribers = data['subscribers']
@@ -455,7 +485,7 @@ def check_new_social(symbol):
         else:
             social.comments_per_hour = 0
         social.save()
-        print('getting new data - ' + str(social.name) + ' - ' + str(social.date))
+        print('getting new data - ' + str(social.name) + ' - ' + str(social.date), flush=True)
     return True
 
 def update_database(date_from=None, date_to=None):
@@ -463,12 +493,12 @@ def update_database(date_from=None, date_to=None):
 
     date_zero = '2014-05-20'
 
-    if not(date_from) or not(date_to):
+    if not date_from or not date_to:
         date_to = date.today()
         date_from = date_to - timedelta(5)
         amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d").date()
     else:
-        print(str(date_from) + " to " + str(date_to))
+        print(str(date_from) + " to " + str(date_to), flush=True)
         date_from = datetime.datetime.strptime(date_from, "%Y-%m-%d")
         date_to = datetime.datetime.strptime(date_to, "%Y-%m-%d")
         amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d")
@@ -485,15 +515,18 @@ def update_database(date_from=None, date_to=None):
             coin_btc2 = Coin.objects.filter(name='btc').get(date=date_aux2)
             try:
                 coin_dash = Coin.objects.filter(name='dash').get(date=date_aux)
-            except:
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
                 coin_dash = Coin()
             try:
                 coin_zcash = Coin.objects.filter(name='zec').get(date=date_aux)
-            except:
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
                 coin_zcash = Coin()
             try:
                 coin_grin = Coin.objects.filter(name='grin').get(date=date_aux)
-            except:
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
                 coin_grin = Coin()
 
             if coin_btc.inflation == 0 or coin_xmr.inflation == 0:
@@ -501,14 +534,15 @@ def update_database(date_from=None, date_to=None):
 
             count_aux = 0
             found = False
-            while count_aux < 100 and not(found):
+            while count_aux < 100 and not found:
                 try:
                     date_aux3 = date_aux - timedelta(count_aux)
                     social_btc = Social.objects.filter(name='Bitcoin').get(date=date_aux3)
                     social_xmr = Social.objects.filter(name='Monero').get(date=date_aux3)
                     social_crypto = Social.objects.filter(name='Cryptocurrency').get(date=date_aux3)
                     found = True
-                except:
+                except Exception as error:
+                    print(f'Something went wrong {error}', flush=True)
                     found = False
                 count_aux += 1
         except:
@@ -517,7 +551,8 @@ def update_database(date_from=None, date_to=None):
         try:
             data = Sfmodel.objects.get(date=coin_xmr.date)
 
-        except:
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
             data = Sfmodel()
             data.priceusd = 0
             data.pricebtc = 0
@@ -542,7 +577,8 @@ def update_database(date_from=None, date_to=None):
 
         try:
             data = DailyData.objects.get(date=coin_xmr.date)
-        except:
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
             data = DailyData()
             # Date field
             data.date = coin_xmr.date
@@ -629,8 +665,9 @@ def update_database(date_from=None, date_to=None):
         # Transactions charts
         try:
             data.xmr_transacpercentage = coin_xmr.transactions/coin_btc.transactions
-        except:
-            pass
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
+
         data.xmr_transactions = coin_xmr.transactions
         data.btc_transactions = coin_btc.transactions
         data.zcash_transactions = coin_zcash.transactions
@@ -647,8 +684,9 @@ def update_database(date_from=None, date_to=None):
         try:
             data.xmr_metcalfebtc = coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
             data.xmr_metcalfeusd = coin_btc.priceusd*coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
-        except:
-            pass
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
+
         data.btc_return = coin_btc.priceusd/30
         data.xmr_return = coin_xmr.priceusd/5.01
         data.btc_emissionusd = (coin_btc.supply - coin_btc2.supply)*coin_btc.priceusd
@@ -669,27 +707,31 @@ def update_database(date_from=None, date_to=None):
             data.xmr_transcostntv = coin_xmr.fee/coin_xmr.transactions
             data.btc_transcostusd = coin_btc.priceusd*coin_btc.fee/coin_btc.transactions
             data.xmr_transcostusd = coin_xmr.priceusd*coin_xmr.fee/coin_xmr.transactions
-        except:
-            pass
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
+
         try:
             data.xmr_minerrevcap = 365*100*coin_xmr.revenue/coin_xmr.supply
             data.btc_minerrevcap = 365*100*coin_btc.revenue/coin_btc.supply
-        except:
-            pass
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
+
         try:
             data.btc_commitntv = coin_btc.hashrate/(coin_btc.revenue)
             data.xmr_commitntv = coin_xmr.hashrate/(coin_xmr.revenue)
             data.btc_commitusd = coin_btc.hashrate/(coin_btc.revenue*coin_btc.priceusd)
             data.xmr_commitusd = coin_xmr.hashrate/(coin_xmr.revenue*coin_xmr.priceusd)
-        except:
-            pass
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
+
         try:
             data.btc_blocksize = coin_btc.blocksize
             data.xmr_blocksize = coin_xmr.blocksize
             data.btc_difficulty = coin_btc.difficulty
             data.xmr_difficulty = coin_xmr.difficulty
-        except:
-            pass
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
+
         # Reddit charts
         try:
             data.btc_subscriber_count = social_btc.subscriber_count
@@ -725,9 +767,9 @@ def update_database(date_from=None, date_to=None):
                 + str(int(data.xmr_marketcap))
                 + " => "
                 + str(coin_xmr.inflation)
-            )
-        except (Social.DoesNotExist, UnboundLocalError):
-            pass
+            , flush=True)
+        except (Social.DoesNotExist, UnboundLocalError) as error:
+            print(f'Something went wrong {error}', flush=True)
 
         count += 1
 
@@ -740,32 +782,33 @@ def update_p2pool():
     yesterday = date.today() - timedelta(1)
     try:
         p2pool_stat = P2Pool.objects.filter(mini=False).get(date=today)
-        print("Found P2Pool of today")
+        print("Found P2Pool of today", flush=True)
         if p2pool_stat.percentage > 0:
-            print("Percentage > 0")
+            print("Percentage > 0", flush=True)
             update = False
         else:
-            print("Percentage < 0")
+            print("Percentage < 0", flush=True)
             p2pool_stat.delete()
             try:
                 coin = Coin.objects.filter(name="xmr").get(date=yesterday)
-                print("Found coin of yesterday")
+                print("Found coin of yesterday", flush=True)
                 if coin.hashrate > 0:
                     update = True
                 else:
                     update = False
             except Coin.DoesNotExist:
-                print("Didn't find coin of yesterday")
+                print("Didn't find coin of yesterday", flush=True)
                 update = False
     except P2Pool.DoesNotExist:
-        print("Didn't find P2Pool of today")
+        print("Didn't find P2Pool of today", flush=True)
         try:
             coin = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin.hashrate > 0:
                 update = True
             else:
                 update  = False
-        except:
+        except Exception as error:
+            print(f'Something went wrong {error}', flush=True)
             update  = False
 
     if update:
@@ -781,7 +824,7 @@ def update_p2pool():
         p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
         p2pool_stat.mini = False
         p2pool_stat.save()
-        print('p2pool saved!')
+        print('p2pool saved!', flush=True)
 
         values_mat = sheets.get_values("zcash_bitcoin.ods", "p2pool", start=(2, 0), end=(9999, 3))
 
@@ -802,35 +845,35 @@ def update_p2pool():
             wks.update_value(cell, p2pool_stat.miners)
             cell = 'A' + str(k + 3)
             wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
-            print('spreadsheet updated')
+            print('spreadsheet updated', flush=True)
         else:
-            print('spreadsheet already with the latest data')
+            print('spreadsheet already with the latest data', flush=True)
             return data
 
     today = date.today()
     yesterday = date.today() - timedelta(1)
     try:
         p2pool_stat = P2Pool.objects.filter(mini=True).get(date=today)
-        print("Found P2PoolMini of today")
+        print("Found P2PoolMini of today", flush=True)
         if p2pool_stat.percentage > 0:
-            print("Percentage > 0")
+            print("Percentage > 0", flush=True)
             update = False
         else:
-            print("Percentage < 0")
+            print("Percentage < 0", flush=True)
             p2pool_stat.delete()
             try:
                 coin = Coin.objects.filter(name='xmr').get(date=yesterday)
 
-                print("Found coin of yesterday")
+                print("Found coin of yesterday", flush=True)
                 if coin.hashrate > 0:
                     update = True
                 else:
                     update = False
             except Coin.DoesNotExist:
-                print("Didn't find coin of yesterday")
+                print("Didn't find coin of yesterday", flush=True)
                 update = False
     except P2Pool.DoesNotExist:
-        print("Didn't find P2PoolMini of today")
+        print("Didn't find P2PoolMini of today", flush=True)
         try:
             coin = Coin.objects.filter(name='xmr').get(date=yesterday)
             if coin.hashrate > 0:
@@ -853,7 +896,7 @@ def update_p2pool():
         p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
         p2pool_stat.mini = True
         p2pool_stat.save()
-        print('p2pool_mini saved!')
+        print('p2pool_mini saved!', flush=True)
 
         values_mat = sheets.get_values("zcash_bitcoin.ods", "p2poolmini", start=(2, 0), end=(9999, 3))
 
@@ -874,9 +917,9 @@ def update_p2pool():
             wks.update_value(cell, p2pool_stat.miners)
             cell = 'A' + str(k + 3)
             wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
-            print('spreadsheet updated')
+            print('spreadsheet updated', flush=True)
         else:
-            print('spreadsheet already with the latest data')
+            print('spreadsheet already with the latest data', flush=True)
             return data
 
     return True
