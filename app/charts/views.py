@@ -41,6 +41,8 @@ sheets = PandasSpreadSheetManager()
 # To be used when there's a problem with the API
 @login_required
 def add_coin(request):
+    '''Add a new cryptocurrency coin to the database'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
@@ -235,40 +237,40 @@ def importer(request):
             symbol = data['name']
             item = data['subscriberCountTimeSeries']
             dates = []
-            subscriberCount = []
-            commentsPerHour = []
-            postsPerHour = []
+            subscriber_count = []
+            comments_per_hour = []
+            posts_per_hour = []
             for unit in item:
                 date_now = datetime.datetime.strptime('1970-01-01', '%Y-%m-%d')
                 date_now += timedelta(int(unit['utcDay']))
                 dates.append(datetime.datetime.strftime(date_now, '%Y-%m-%d'))
                 value = float(unit['count'])
-                subscriberCount.append(value)
+                subscriber_count.append(value)
             item = data['commentsPerHourTimeSeries']
             for unit in item:
                 value = float(unit['commentsPerHour'])
-                commentsPerHour.append(value)
+                comments_per_hour.append(value)
             item = data['postsPerHourTimeSeries']
             for unit in item:
                 value = float(unit['postsPerHour'])
-                postsPerHour.append(value)
-                
+                posts_per_hour.append(value)
+
             for i in range(len(dates)-1):
                 social = Social()
                 social.name = symbol
                 social.date = dates[i]
-                if i >= len(dates) - len(subscriberCount):
-                    social.subscriberCount = subscriberCount[i-len(subscriberCount)]
-                else: 
-                    social.subscriberCount = 0
-                if i >= len(dates) - len(commentsPerHour):
-                    social.commentsPerHour = commentsPerHour[i-(len(dates) - len(commentsPerHour))]
-                else: 
-                    social.commentsPerHour = 0
-                if i >= len(dates) - len(postsPerHour):
-                    social.postsPerHour = postsPerHour[i-(len(dates) - len(postsPerHour))]
-                else: 
-                    social.postsPerHour = 0 
+                if i >= len(dates) - len(subscriber_count):
+                    social.subscriber_count = subscriber_count[i-len(subscriber_count)]
+                else:
+                    social.subscriber_count = 0
+                if i >= len(dates) - len(comments_per_hour):
+                    social.comments_per_hour = comments_per_hour[i-(len(dates) - len(comments_per_hour))]
+                else:
+                    social.comments_per_hour = 0
+                if i >= len(dates) - len(posts_per_hour):
+                    social.posts_per_hour = posts_per_hour[i-(len(dates) - len(posts_per_hour))]
+                else:
+                    social.posts_per_hour = 0
                 social.save()
                 count += 1
 
@@ -276,10 +278,9 @@ def importer(request):
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
-# Erase all data for a certain coin
-# Only authorized users can do this
 @login_required
 def reset(request, symbol):
+    '''Erase all data for a certain coin'''
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
     Coin.objects.filter(name=symbol).all().delete()
@@ -288,10 +289,10 @@ def reset(request, symbol):
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
-# Populate database with especific chart variables
-# Only authorized users can do this
 @login_required
 def populate_database(request):
+    '''Populate database with specific chart variables'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
     count = 0
@@ -299,7 +300,7 @@ def populate_database(request):
     ###################################################################
     # SF model charts
     ###################################################################
-    print('Populating database for sfmodel.html, sfmodelin.html and pricesats.html, wait a moment...')
+    print('Populating database for sfmodel.html, sfmodelin.html and pricesats.html, wait a moment...', flush=True)
     Sfmodel.objects.all().delete()
     timevar = 1283
     v0 = 0.002
@@ -308,6 +309,8 @@ def populate_database(request):
     supply = 0
     sf_aux = 0
     count_aux = 0
+
+    print('Populating XMR coin', flush=True)
 
     coins = Coin.objects.order_by('date').filter(name='xmr')
     for coin in coins:
@@ -345,7 +348,7 @@ def populate_database(request):
             day = date_aux2 - timedelta(timevar+1)
             coin_aux2 = Coin.objects.filter(name='xmr').get(date=day)
             date_aux3 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
-            
+
             if date_aux3 + timedelta(int(count_aux*2)) < datetime.datetime.strptime('2021-07-03', '%Y-%m-%d'):
                 day = date_aux3 + timedelta(int(count_aux*2))
                 coin_aux3 = Coin.objects.filter(name='xmr').get(date=day)
@@ -361,7 +364,7 @@ def populate_database(request):
                     reward2 = 0.6*(10**12)
                 supply2 += int(720*reward2)
                 current_inflation = 100*reward2*720*365/supply2
-                
+
             if coin_aux1 and coin_aux2:
                 lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice
                 actualprice = lastprice*(math.sqrt(coin.inflation/current_inflation))
@@ -381,10 +384,10 @@ def populate_database(request):
 
         data = Sfmodel()
         data.date = datetime.datetime.strftime(date_now, '%Y-%m-%d')
-        data.stocktoflow = (100/(100*reward*720*365/supply))**1.65   
+        data.stocktoflow = (100/(100*reward*720*365/supply))**1.65
         data.priceusd = 0
         data.pricebtc = 0
-        data.greyline = 0    
+        data.greyline = 0
         data.color = 0
         data.priceusd = 0
         data.greyline = 0
@@ -405,19 +408,19 @@ def populate_database(request):
         count_aux += 1
         data = DailyData()
         data.date = datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d')
-        
+
         if coin_btc.blocksize > 0:
             data.btc_blocksize = coin_btc.blocksize
             data.btc_transactions = coin_btc.transactions
         else:
             data.btc_blocksize = 0
             data.btc_transactions = 0
-        
+
         if coin_btc.difficulty > 0:
             data.btc_difficulty = coin_btc.difficulty
         else:
             data.btc_difficulty = 0
-        
+
         if coin_btc.transactions == 0:
             data.btc_transcostusd = 0
             data.btc_transcostntv = 0
@@ -474,7 +477,7 @@ def populate_database(request):
             data.btc_minerfeesntv = coin_btc.revenue - coin_btc.supply + supply_btc
             data.btc_minerfeesusd = (coin_btc.revenue - coin_btc.supply + supply_btc)*coin_btc.priceusd
             data.btc_emissionntv = coin_btc.supply -  supply_btc
-        
+
         if (coin_btc.supply - supply_btc)*coin_btc.priceusd < 1000:
             data.btc_emissionusd = 0
         else:
@@ -662,7 +665,7 @@ def populate_database(request):
                         data.zcash_inflation = coin_zcash.inflation
                     else:
                         data.zcash_inflation = 0
-                
+
                     if coin_zcash.priceusd > 0:
                         data.zcash_marketcap = coin_zcash.priceusd*coin_zcash.supply
                     else:
@@ -705,35 +708,35 @@ def populate_database(request):
         socials = Social.objects.filter(name='Bitcoin').filter(date=coin_btc.date)
         if socials:
             for social in socials:
-                data.btc_subscriberCount = social.subscriberCount
-                data.btc_commentsPerHour = social.commentsPerHour
-                data.btc_postsPerHour = social.postsPerHour
+                data.btc_subscriber_count = social.subscriber_count
+                data.btc_comments_per_hour = social.comments_per_hour
+                data.btc_posts_per_hour = social.posts_per_hour
         else:
-            data.btc_subscriberCount = 0
-            data.btc_commentsPerHour = 0
-            data.btc_postsPerHour = 0
+            data.btc_subscriber_count = 0
+            data.btc_comments_per_hour = 0
+            data.btc_posts_per_hour = 0
 
         socials = Social.objects.filter(name='Monero').filter(date=coin_btc.date)
         if socials:
             for social in socials:
-                data.xmr_subscriberCount = social.subscriberCount
-                data.xmr_commentsPerHour = social.commentsPerHour
-                data.xmr_postsPerHour = social.postsPerHour
+                data.xmr_subscriber_count = social.subscriber_count
+                data.xmr_comments_per_hour = social.comments_per_hour
+                data.xmr_posts_per_hour = social.posts_per_hour
         else:
-            data.xmr_subscriberCount = 0
-            data.xmr_commentsPerHour = 0
-            data.xmr_postsPerHour = 0
+            data.xmr_subscriber_count = 0
+            data.xmr_comments_per_hour = 0
+            data.xmr_posts_per_hour = 0
 
         socials = Social.objects.filter(name='CryptoCurrency').filter(date=coin_btc.date)
         if socials:
             for social in socials:
-                data.crypto_subscriberCount = social.subscriberCount
-                data.crypto_commentsPerHour = social.commentsPerHour
-                data.crypto_postsPerHour = social.postsPerHour
+                data.crypto_subscriber_count = social.subscriber_count
+                data.crypto_comments_per_hour = social.comments_per_hour
+                data.crypto_posts_per_hour = social.posts_per_hour
         else:
-            data.crypto_subscriberCount = 0
-            data.crypto_commentsPerHour = 0
-            data.crypto_postsPerHour = 0
+            data.crypto_subscriber_count = 0
+            data.crypto_comments_per_hour = 0
+            data.crypto_posts_per_hour = 0
 
         data.save()
         count += 1
@@ -742,10 +745,10 @@ def populate_database(request):
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
-# Update database with between certain dates
-# Only authorized users can do this
-@login_required 
+@login_required
 def update_database_admin(request, date_from, date_to):
+    '''Update database between certain dates'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
@@ -807,7 +810,7 @@ def update_database_admin(request, date_from, date_to):
             day = date_aux2 - timedelta(timevar+1)
             coin_aux2 = Coin.objects.filter(name='xmr').get(date=day)
             date_aux3 = datetime.datetime.strptime('2017-12-29', '%Y-%m-%d')
-            
+
             if date_aux3 + timedelta(int(count_aux*2)) < datetime.datetime.strptime('2021-07-03', '%Y-%m-%d'):
                 day = date_aux3 + timedelta(int(count_aux*2))
                 coin_aux3 = Coin.objects.filter(name='xmr').get(date=day)
@@ -823,7 +826,7 @@ def update_database_admin(request, date_from, date_to):
                     reward2 = 0.6*(10**12)
                 supply2 += int(720*reward2)
                 current_inflation = 100*reward2*720*365/supply2
-                
+
             if coin_aux1 and coin_aux2:
                 lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice
                 actualprice = lastprice*(math.sqrt(coin.inflation/current_inflation))
@@ -843,10 +846,10 @@ def update_database_admin(request, date_from, date_to):
 
         data = Sfmodel()
         data.date = datetime.datetime.strftime(date_now, '%Y-%m-%d')
-        data.stocktoflow = (100/(100*reward*720*365/supply))**1.65   
+        data.stocktoflow = (100/(100*reward*720*365/supply))**1.65
         data.priceusd = 0
         data.pricebtc = 0
-        data.greyline = 0    
+        data.greyline = 0
         data.color = 0
         data.priceusd = 0
         data.greyline = 0
@@ -867,19 +870,19 @@ def update_database_admin(request, date_from, date_to):
         count_aux += 1
         data = DailyData()
         data.date = datetime.datetime.strftime(coin_btc.date, '%Y-%m-%d')
-        
+
         if coin_btc.blocksize > 0:
             data.btc_blocksize = coin_btc.blocksize
             data.btc_transactions = coin_btc.transactions
         else:
             data.btc_blocksize = 0
             data.btc_transactions = 0
-        
+
         if coin_btc.difficulty > 0:
             data.btc_difficulty = coin_btc.difficulty
         else:
             data.btc_difficulty = 0
-        
+
         if coin_btc.transactions == 0:
             data.btc_transcostusd = 0
             data.btc_transcostntv = 0
@@ -936,7 +939,7 @@ def update_database_admin(request, date_from, date_to):
             data.btc_minerfeesntv = coin_btc.revenue - coin_btc.supply + supply_btc
             data.btc_minerfeesusd = (coin_btc.revenue - coin_btc.supply + supply_btc)*coin_btc.priceusd
             data.btc_emissionntv = coin_btc.supply -  supply_btc
-        
+
         if (coin_btc.supply - supply_btc)*coin_btc.priceusd < 1000:
             data.btc_emissionusd = 0
         else:
@@ -1124,7 +1127,7 @@ def update_database_admin(request, date_from, date_to):
                         data.zcash_inflation = coin_zcash.inflation
                     else:
                         data.zcash_inflation = 0
-                
+
                     if coin_zcash.priceusd > 0:
                         data.zcash_marketcap = coin_zcash.priceusd*coin_zcash.supply
                     else:
@@ -1163,39 +1166,39 @@ def update_database_admin(request, date_from, date_to):
             data.grin_inflation = 0
             data.grin_marketcap = 0
             data.grin_transactions = 0
-    
+
         socials = Social.objects.filter(name='Bitcoin').filter(date=coin_btc.date)
         if socials:
             for social in socials:
-                data.btc_subscriberCount = social.subscriberCount
-                data.btc_commentsPerHour = social.commentsPerHour
-                data.btc_postsPerHour = social.postsPerHour
+                data.btc_subscriber_count = social.subscriber_count
+                data.btc_comments_per_hour = social.comments_per_hour
+                data.btc_posts_per_hour = social.posts_per_hour
         else:
-            data.btc_subscriberCount = 0
-            data.btc_commentsPerHour = 0
-            data.btc_postsPerHour = 0
-        
+            data.btc_subscriber_count = 0
+            data.btc_comments_per_hour = 0
+            data.btc_posts_per_hour = 0
+
         socials = Social.objects.filter(name='Monero').filter(date=coin_btc.date)
         if socials:
             for social in socials:
-                data.xmr_subscriberCount = social.subscriberCount
-                data.xmr_commentsPerHour = social.commentsPerHour
-                data.xmr_postsPerHour = social.postsPerHour
+                data.xmr_subscriber_count = social.subscriber_count
+                data.xmr_comments_per_hour = social.comments_per_hour
+                data.xmr_posts_per_hour = social.posts_per_hour
         else:
-            data.xmr_subscriberCount = 0
-            data.xmr_commentsPerHour = 0
-            data.xmr_postsPerHour = 0
+            data.xmr_subscriber_count = 0
+            data.xmr_comments_per_hour = 0
+            data.xmr_posts_per_hour = 0
 
         socials = Social.objects.filter(name='CryptoCurrency').filter(date=coin_btc.date)
         if socials:
             for social in socials:
-                data.crypto_subscriberCount = social.subscriberCount
-                data.crypto_commentsPerHour = social.commentsPerHour
-                data.crypto_postsPerHour = social.postsPerHour
+                data.crypto_subscriber_count = social.subscriber_count
+                data.crypto_comments_per_hour = social.comments_per_hour
+                data.crypto_posts_per_hour = social.posts_per_hour
         else:
-            data.crypto_subscriberCount = 0
-            data.crypto_commentsPerHour = 0
-            data.crypto_postsPerHour = 0
+            data.crypto_subscriber_count = 0
+            data.crypto_comments_per_hour = 0
+            data.crypto_posts_per_hour = 0
 
         data.save()
         count += 1
@@ -1208,10 +1211,13 @@ def update_database_admin(request, date_from, date_to):
 #   Views
 ####################################################################################
 def index(request):
+    '''The main Charts view'''
 
     return render(request, 'charts/index.html')
 
 def social(request):
+    '''The Soical platform charts'''
+
     data = DailyData.objects.order_by('date')
     dates = []
     dates2 = []
@@ -4917,3 +4923,11 @@ def withdrawals(request):
     
     context = {'states': states, 'dates': dates}
     return render(request, 'charts/withdrawals.html', context)
+
+def reddit_data(request):
+
+    asynchronous.get_social_data("XMR")
+
+    context = {}
+
+    return render(request, 'charts/maintenance.html', context)
