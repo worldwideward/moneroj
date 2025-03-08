@@ -1,3 +1,4 @@
+import os
 import aiohttp
 import asyncio
 import json
@@ -145,37 +146,43 @@ async def get_coin_data(session, symbol, url):
 #   Asynchronous get social metrics from reddit
 #################################################################################### 
 #async def get_social_data(session, symbol):
-async def get_social_data(symbol):
+#async def get_social_data(symbol):
+def get_social_data(symbol):
     yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
     try:
         social = Social.objects.filter(name=symbol).get(date=yesterday)
     except:
+
+        session = requests.session()
+
+        tor_host = os.environ["TOR_SOCKS_HOST"]
+
         #url = 'https://www.reddit.com/r/'+ symbol +'/about.json'
         url = 'https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion/r/'+ symbol +'/about.json'
 
-        proxies = {
-                'http': 'socks5h://127.0.0.1:9050',
-                'https': 'socks5h://127.0.0.1:9050'
+        session.proxies = {
+                'http': f'socks5h://{tor_host}:9050',
+                'https': f'socks5h://{tor_host}:9050'
         }
 
-        async with requests.get(url, headers={'User-agent': 'Checking new social data'}) as res:
-            data = await res.read()
-            data = json.loads(data) 
+        with session.get(url, headers={'User-agent': 'Checking new social data'}) as res:
+            data = res.content
+            data = json.loads(data)
             data = data['data']
 
             social = Social()
             social.name = symbol
             social.date = yesterday
-            social.subscriberCount = data['subscribers']
+            social.subscriber_count = data['subscribers']
 
             timestamp1 = int(datetime.datetime.timestamp(datetime.datetime.strptime(yesterday, '%Y-%m-%d')))
             timestamp2 = int(timestamp1 - 7200)
             limit = 1000
             filters = []
             data = data_prep_posts(symbol, timestamp2, timestamp1, filters, limit)
-            social.postsPerHour = len(data)/2
+            social.posts_per_hour = len(data)/2
             data = data_prep_comments(symbol, timestamp2, timestamp1, filters, limit)
-            social.commentsPerHour = len(data)/2
+            social.comments_per_hour = len(data)/2
             social.save()
     return True
 
