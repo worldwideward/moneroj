@@ -1,34 +1,15 @@
-import asyncio
-import datetime
+'''Tasks to perform with Celery for updating chart data'''
+
 from charts.models import Coin
+from charts.models import DailyData
 from charts.asynchronous import update_xmr_data
 from charts.asynchronous import update_others_data
 from charts.synchronous import update_database
 from charts.synchronous import get_history_function
 
-async def xmr_updates(yesterday, date_aux):
-
-    try:
-        coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
-    except:
-        coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
-
-    count = get_history_function('xmr', yesterday, yesterday)
-    await update_xmr_data(yesterday, coin_xmr)
-
-    return None
-
-async def competitors_updates(yesterday):
-
-    await update_others_data(yesterday)
-    return None
-
-def daily_objects_updates(yesterday):
-    update_database(yesterday, yesterday)
-    return None
 
 def check_for_updates(yesterday) -> bool:
-    '''Check if it is necessary to update coin data'''
+    '''Check if it is necessary to update XMR data'''
 
     try:
         coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
@@ -49,7 +30,44 @@ def check_for_updates(yesterday) -> bool:
 
     return False
 
+def check_monero_available() -> str:
+    '''Check if coin data about Monero is present in the database'''
+
+    coins = Coin.objects.filter(name='xmr').order_by('-date')
+    count = 0
+    for coin in coins:
+        count += 1
+        if count< 200:
+            if coin.supply < 18000000:
+                coin.supply += 499736
+                print(coin.date)
+                coin.save()
+
+    coin = list(Coin.objects.order_by('-date'))[0]
+
+    message = coin
+
+    if not coin:
+        message = 'Monero unavailable'
+
+    return message
+
+async def xmr_updates(yesterday, date_aux):
+    '''Update XMR data from the last day'''
+
+    try:
+        coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
+    except Exception as error:
+        coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
+        print(f'Error during XMR updates: {error}')
+
+    get_history_function('xmr', yesterday, yesterday)
+    await update_xmr_data(yesterday, coin_xmr)
+
+    return None
+
 def check_competitors_for_updates(yesterday) -> bool:
+    '''Check if it is necessary to update non-XMR coin data'''
     try:
         coin_btc = list(Coin.objects.filter(name='btc').filter(date=yesterday))[0]
         coin_zec = list(Coin.objects.filter(name='zec').filter(date=yesterday))[0]
@@ -70,13 +88,19 @@ def check_competitors_for_updates(yesterday) -> bool:
         else:
             print('no coins found yesterday - 1')
             return True
-    except:
-        print('no coins found yesterday - 2')
+    except Exception as error:
+        print(f'no coins found yesterday: {error}')
         return True
 
     return False
 
+async def competitors_updates(yesterday):
+    '''Update data from non-XMR coins'''
+
+    await update_others_data(yesterday)
+
 def check_daily_objects_for_updates(yesterday) -> bool:
+    '''Check if recent data in the database is present'''
 
     try:
         data = list(DailyData.objects.filter(date=yesterday))[0]
@@ -91,24 +115,7 @@ def check_daily_objects_for_updates(yesterday) -> bool:
 
     return False
 
-def check_monero_available() -> str:
-    '''Check if coin data about Monero is present'''
+def daily_objects_updates(yesterday):
+    '''Update database with recent data'''
 
-    coins = Coin.objects.filter(name='xmr').order_by('-date')
-    count = 0
-    for coin in coins:
-        count += 1
-        if count< 200:
-            if coin.supply < 18000000:
-                coin.supply += 499736
-                print(coin.date)
-                coin.save()
-
-    coin = list(Coin.objects.order_by('-date'))[0]
-
-    message = coin
-
-    if not(coin):
-        message = 'Monero unavailable'
-
-    return message
+    update_database(yesterday, yesterday)
