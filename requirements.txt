@@ -53,3 +53,4 @@ uritemplate==4.1.1
 urllib3==2.2.3
 yarl==1.17.1
 django-csp==3.7
+pylint

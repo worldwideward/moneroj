@@ -8,7 +8,7 @@ ENV LANGUAGE=en_US:en
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-WORKDIR src
+WORKDIR /src
 
 COPY requirements.txt requirements.txt
 
@@ -17,5 +17,9 @@ RUN pip install -r requirements.txt
 COPY app/ app/
 
 WORKDIR /src/app
+
+RUN pylint \
+    --rcfile="/src/app/.pylintrc" \
+    /src/app
 
 ENTRYPOINT ["gunicorn", "moneropro.wsgi:application"]
