@@ -27,9 +27,9 @@ class Social(models.Model):
 
     name = models.CharField(max_length=4)
     date = models.DateField()
-    subscriberCount = models.IntegerField()
-    commentsPerHour = models.FloatField()
-    postsPerHour = models.FloatField()
+    subscriber_count = models.IntegerField()
+    comments_per_hour = models.FloatField()
+    posts_per_hour = models.FloatField()
 
 
 class Dominance(models.Model):
@@ -133,15 +133,15 @@ class DailyData(models.Model):
     xmr_difficulty = models.FloatField()
 
     # Reddit charts
-    btc_subscriberCount = models.IntegerField()
-    btc_commentsPerHour = models.FloatField()
-    btc_postsPerHour = models.FloatField()
-    xmr_subscriberCount = models.IntegerField()
-    xmr_commentsPerHour = models.FloatField()
-    xmr_postsPerHour = models.FloatField()
-    crypto_subscriberCount = models.IntegerField()
-    crypto_commentsPerHour = models.FloatField()
-    crypto_postsPerHour = models.FloatField()
+    btc_subscriber_count = models.IntegerField()
+    btc_comments_per_hour = models.FloatField()
+    btc_posts_per_hour = models.FloatField()
+    xmr_subscriber_count = models.IntegerField()
+    xmr_comments_per_hour = models.FloatField()
+    xmr_posts_per_hour = models.FloatField()
+    crypto_subscriber_count = models.IntegerField()
+    crypto_comments_per_hour = models.FloatField()
+    crypto_posts_per_hour = models.FloatField()
 
 
 class P2Pool(models.Model):
