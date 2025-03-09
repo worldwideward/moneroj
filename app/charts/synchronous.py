@@ -1,25 +1,23 @@
 '''Synchronous functions'''
 
 import json
-import requests
 import datetime
 from datetime import date, timedelta
+import pytz
+import requests
 import pandas as pd
 from psaw import PushshiftAPI
-from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, Withdrawal
 from requests import Session
 from requests.exceptions import Timeout, TooManyRedirects
-import pytz
+from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, Withdrawal
 from .spreadsheets import PandasSpreadSheetManager
 
 sheets = PandasSpreadSheetManager()
 
-
 ####################################################################################
 #   Reddit api
 ####################################################################################
-#API = PushshiftAPI()   # When it's working
-API = False             # When it's not
+API = PushshiftAPI()
 
 def data_prep_posts(subreddit, start_time, end_time, filters, limit):
     '''Get daily posts in a certain subreddit '''
@@ -27,20 +25,24 @@ def data_prep_posts(subreddit, start_time, end_time, filters, limit):
     if len(filters) == 0:
         filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments']
 
-    if not API:
+    try:
         posts = list(API.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
         return pd.DataFrame(posts)
-    return 0
+    except Exception as error:
+        print(f'Something went wrong: {error}', flush=True)
+        return None
 
 def data_prep_comments(term, start_time, end_time, filters, limit):
     '''Get daily comments in a certain subreddit'''
     if len(filters) == 0:
         filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit']
 
-    if not API:
+    try:
         comments = list(API.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
         return pd.DataFrame(comments)
-    return 0
+    except Exception as error:
+        print(f'Something went wrong: {error}', flush=True)
+        return None
 
 ####################################################################################
 #   Other useful functions
@@ -565,8 +567,7 @@ def update_database(date_from=None, date_to=None):
         if data.stocktoflow == 0 and coin_xmr.supply > 0:
             supply = int(coin_xmr.supply)*10**12
             reward = (2**64 -1 - supply) >> 19
-            if reward < 0.6*(10**12):
-                reward = 0.6*(10**12)
+            reward = max(0.6*(10**12))
             inflation = 100*reward*720*365/supply
             data.stocktoflow = (100/(inflation))**1.65
         v0 = 0.002
@@ -814,7 +815,7 @@ def update_p2pool():
     if update:
         p2pool_stat = P2Pool()
         p2pool_stat.date = today
-        response = requests.get('https://p2pool.io/api/pool/stats')
+        response = requests.get('https://p2pool.io/api/pool/stats', timeout=60)
 
         data = json.loads(response.text)
         p2pool_stat.hashrate = data['pool_statistics']['hashRate']
@@ -880,13 +881,14 @@ def update_p2pool():
                 update = True
             else:
                 update  = False
-        except:
+        except Exception as error:
+            print(f'Something went wrong: {error}', flush=True)
             update  = False
 
     if update:
         p2pool_stat = P2Pool()
         p2pool_stat.date = today
-        response = requests.get('https://p2pool.io/mini/api/pool/stats')
+        response = requests.get('https://p2pool.io/mini/api/pool/stats', timeout=60)
 
         data = json.loads(response.text)
         p2pool_stat.hashrate = data['pool_statistics']['hashRate']
