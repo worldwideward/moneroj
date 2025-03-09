@@ -17,7 +17,6 @@ sheets = PandasSpreadSheetManager()
 ####################################################################################
 #   Reddit api
 ####################################################################################
-API = PushshiftAPI()
 
 def data_prep_posts(subreddit, start_time, end_time, filters, limit):
     '''Get daily posts in a certain subreddit '''
@@ -26,7 +25,8 @@ def data_prep_posts(subreddit, start_time, end_time, filters, limit):
         filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments']
 
     try:
-        posts = list(API.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
+        api = PushshiftAPI()
+        posts = list(api.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
         return pd.DataFrame(posts)
     except Exception as error:
         print(f'Something went wrong: {error}', flush=True)
@@ -38,7 +38,8 @@ def data_prep_comments(term, start_time, end_time, filters, limit):
         filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit']
 
     try:
-        comments = list(API.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
+        api = PushshiftAPI()
+        comments = list(api.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
         return pd.DataFrame(comments)
     except Exception as error:
         print(f'Something went wrong: {error}', flush=True)
