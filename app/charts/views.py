@@ -1,3 +1,5 @@
+'''Views module'''
+
 from ctypes import sizeof
 from os import readlink
 from django.shortcuts import render
@@ -27,7 +29,7 @@ from charts.synchronous import get_history_function
 from .spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
 ####################################################################################
-#   Set some parameters 
+#   Set some parameters
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
@@ -37,8 +39,6 @@ sheets = PandasSpreadSheetManager()
 #   Useful functions for admins
 ####################################################################################
 
-# Add manually a new entrance for coin
-# To be used when there's a problem with the API
 @login_required
 def add_coin(request):
     '''Add a new cryptocurrency coin to the database'''
@@ -62,7 +62,7 @@ def add_coin(request):
             else:
                 print('coin not found')
 
-            add_coin.stocktoflow = (100/add_coin.inflation)**1.65 
+            add_coin.stocktoflow = (100/add_coin.inflation)**1.65
             print(add_coin.name)
             print(add_coin.date)
             print(add_coin.priceusd)
@@ -95,10 +95,10 @@ def add_coin(request):
     context = {'form': form}
     return render(request, 'charts/add_coin.html', context)
 
-# Get all history for metrics of a certain coin named as 'symbol'
-# Only authorized users can download all price data via URL request
 @login_required
 def get_history(request, symbol, start_time=None, end_time=None):
+    '''Get all history for metrics of a certain coin named as 'symbol'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
@@ -113,10 +113,10 @@ def get_history(request, symbol, start_time=None, end_time=None):
 
     return render(request, 'charts/maintenance.html', context)
 
-# Populate database with rank history
-# Only authorized users can do this
 @login_required
 def load_rank(request, symbol):
+    '''Populate database with rank history'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
@@ -131,7 +131,7 @@ def load_rank(request, symbol):
             rank.name = symbol
             rank.date = values_mat[k][0]
             rank.rank = values_mat[k][1]
-            if not(rank.rank) and not(rank.date):
+            if not rank.rank and not rank.date:
                 break
             else:
                 rank.save()
@@ -143,10 +143,10 @@ def load_rank(request, symbol):
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
-# Populate database with p2pool history
-# Only authorized users can do this
 @login_required
 def load_p2pool(request):
+    '''Populate database with p2pool history'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
@@ -192,10 +192,10 @@ def load_p2pool(request):
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
-# Populate database with ominance history
-# Only authorized users can do this
 @login_required
 def load_dominance(request, symbol):
+    '''Populate database with dominance history'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
@@ -209,7 +209,7 @@ def load_dominance(request, symbol):
             dominance.name = symbol
             dominance.date = values_mat[k][0]
             dominance.dominance = values_mat[k][1]
-            if not(dominance.dominance) and not(dominance.date):
+            if not dominance.dominance and not dominance.date:
                 break
             else:
                 dominance.save()
@@ -221,10 +221,10 @@ def load_dominance(request, symbol):
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
-# Import Reddit history from file on static folder
-# Only authorized users can do this
-@login_required 
+@login_required
 def importer(request):
+    '''Import Reddit history from file on static folder'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
     count = 0
@@ -1216,7 +1216,7 @@ def index(request):
     return render(request, 'charts/index.html')
 
 def social(request):
-    '''The Soical platform charts'''
+    '''Total Reddit subscribers chart'''
 
     data = DailyData.objects.order_by('date')
     dates = []
@@ -1257,7 +1257,8 @@ def social(request):
     context = {'dates': dates, 'dates2': dates2, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social.html', context)
 
-def social2(request): 
+def social2(request):
+    '''Marketcap Divided by Number of Reddit Subscribers'''
     data = DailyData.objects.order_by('date')
     dates = []
     social_btc = []
@@ -1297,6 +1298,7 @@ def social2(request):
     return render(request, 'charts/social2.html', context)
 
 def social3(request):
+    '''Reddit Subscribers of /Monero as a Percentage of /Bitcoin'''
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -1327,6 +1329,7 @@ def social3(request):
     return render(request, 'charts/social3.html', context)
 
 def social4(request):
+    '''/Bitcoin, /CryptoCurrency and /Monero Monthly New Subscribers'''
     data = DailyData.objects.order_by('date')
     dates = []
     dates2 = []
@@ -1382,7 +1385,7 @@ def social4(request):
         if i < N:
             newcomers_btc.append(last_btc)
         else:
-            last_btc = (social_btc[i] - social_btc[i-N])
+            last_btc = social_btc[i] - social_btc[i-N]
             if last_btc < 10:
                 last_btc = ''
             newcomers_btc.append(last_btc)
@@ -1409,7 +1412,7 @@ def social4(request):
         if i < N:
             newcomers_crypto.append(last_crypto)
         else:
-            last_crypto = (social_crypto[i] - social_crypto[i-N])
+            last_crypto = social_crypto[i] - social_crypto[i-N]
             if last_crypto < 2:
                 last_crypto = ''
             newcomers_crypto.append(last_crypto)
@@ -1437,7 +1440,7 @@ def social4(request):
         if i < N:
             newcomers_xmr.append(last_xmr)
         else:
-            last_xmr = (social_xmr[i] - social_xmr[i-N])
+            last_xmr = social_xmr[i] - social_xmr[i-N]
             if last_xmr < 0:
                 last_xmr = ''
             newcomers_xmr.append(last_xmr)
@@ -1455,6 +1458,7 @@ def social4(request):
     return render(request, 'charts/social4.html', context)
 
 def social5(request):
+    '''Total Number of Reddit Subscribers for Monero and Number of Transactions'''
     data = DailyData.objects.order_by('date')
     transactions = []
     dates = []
@@ -1484,6 +1488,7 @@ def social5(request):
     return render(request, 'charts/social5.html', context)
 
 def social6(request):
+    '''Comments per day on Subreddits /Bitcoin and /CryptoCurrency'''
     data = DailyData.objects.order_by('date')
     dates = []
     social_xmr = []
@@ -1522,6 +1527,7 @@ def social6(request):
     return render(request, 'charts/social6.html', context)
 
 def social7(request):
+    '''Posts per day on Subreddits /Bitcoin and /CryptoCurrency & Posts per day on Reddit /Monero'''
     data = DailyData.objects.order_by('date')
     dates = []
     social_xmr = []
@@ -1554,11 +1560,13 @@ def social7(request):
     last_xmr = locale._format('%.0f', last_xmr, grouping=True)
     last_btc = locale._format('%.0f', last_btc, grouping=True)
     last_crypto = locale._format('%.0f', last_crypto, grouping=True)
-    
+
     context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
     return render(request, 'charts/social7.html', context)
 
 def pricelog(request):
+    '''Monero price logarithmic'''
+
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -1608,6 +1616,9 @@ def pricelog(request):
     return render(request, 'charts/pricelog.html', context)
 
 def movingaverage(request):
+    '''Moving average chart'''
+
+    #TODO: Template does not exist - needs fixing?
     symbol = 'xmr'
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
@@ -1641,9 +1652,9 @@ def movingaverage(request):
             color.append(new_color)
         else:
             color.append(new_color)
-        
+
         count += 1
-    
+
     n = 1460
     median = pd.Series(values).rolling(window=n).mean().iloc[n-1:].values
 
@@ -1658,6 +1669,7 @@ def movingaverage(request):
     return render(request, 'charts/movingaverage.html', context)
 
 def powerlaw(request):
+    '''Power Law chart'''
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -1714,8 +1726,8 @@ def powerlaw(request):
         count += 1
 
     for count in range(1, 3650):
-        date_now = date.today() + timedelta(count)   
-        values.append('')     
+        date_now = date.today() + timedelta(count)
+        values.append('')
         days += 1
         price3 = a3*(days**b3)
         price2 = a2*(days**b2)
@@ -1727,18 +1739,20 @@ def powerlaw(request):
         if date_now.year > yearnumber:
             yearnumber += 1
             years.append(yearnumber)
-            dates.append(days)   
+            dates.append(days)
 
     now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
     now_sf = "$"+ locale._format('%.2f', now_sf, grouping=True)
     maximum = "$"+ locale._format('%.2f', maximum, grouping=True)
     now_inflation = locale._format('%.2f', now_inflation, grouping=True)+'%'
 
-    context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation, 
+    context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_price': now_price, 'now_inflation': now_inflation,
     'now_sf': now_sf, 'color': color, 'years': years, 'counter': counter, 'line1': line1, 'line2': line2, 'line3': line3}
     return render(request, 'charts/powerlaw.html', context)
 
 def pricelin(request):
+    '''Monero price linear'''
+
     symbol = 'xmr'
     now_price = 0
     now_sf = 0
@@ -1778,7 +1792,7 @@ def pricelin(request):
         if reward < 0.6*(10**12):
             reward = 0.6*(  10**12)
         supply += int(720*reward)
-        stock = (100/(100*reward*720*365/supply))**1.65         
+        stock = (100/(100*reward*720*365/supply))**1.65
 
     now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
     now_sf = "$"+ locale._format('%.2f', now_sf, grouping=True)
@@ -1789,6 +1803,7 @@ def pricelin(request):
     return render(request, 'charts/pricelin.html', context)
 
 def pricesats(request):
+    '''Bitcoin price linear'''
     dates = []
     color = []
     values = []
@@ -1822,6 +1837,7 @@ def pricesats(request):
     return render(request, 'charts/pricesats.html', context)
 
 def pricesatslog(request):
+    '''Bitcoin price logarythmic'''
     dates = []
     color = []
     values = []
@@ -1855,6 +1871,8 @@ def pricesatslog(request):
     return render(request, 'charts/pricesatslog.html', context)
 
 def fractal(request):
+    '''Fractal Multiple chart'''
+
     symbol = 'xmr'
     dates1 = []
     dates2 = []
@@ -1865,7 +1883,7 @@ def fractal(request):
 
     count1 = 1
     count2 = 1
-    date1_aux = datetime.datetime(2017, 12, 29) 
+    date1_aux = datetime.datetime(2017, 12, 29)
     date2_aux = datetime.datetime(2014, 6, 21)
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
@@ -1889,6 +1907,8 @@ def fractal(request):
     return render(request, 'charts/fractal.html', context)
 
 def inflationfractal(request):
+    '''Inflation-Adjusted Fractal Chart'''
+
     symbol = 'xmr'
     dates1 = []
     dates2 = []
@@ -1901,7 +1921,7 @@ def inflationfractal(request):
     start_inflation = 0
     count1 = 1
     count2 = 1
-    date1_aux = datetime.datetime(2017, 12, 29) 
+    date1_aux = datetime.datetime(2017, 12, 29)
     date2_aux = datetime.datetime(2014, 6, 21)
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
@@ -1932,6 +1952,8 @@ def inflationfractal(request):
     return render(request, 'charts/inflationfractal.html', context)
 
 def golden(request):
+    '''Golden Ratio Multiplier chart'''
+
     symbol = 'xmr'
     dates = []
     prices = []
@@ -1939,7 +1961,7 @@ def golden(request):
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
         firstdate = coin.date
-        break     
+        break
 
     day = firstdate - timedelta(350)
     for i in range(350):
@@ -1952,7 +1974,7 @@ def golden(request):
             prices.append(coin.priceusd)
         else:
             prices.append(0.2)
-    
+
     n = 350
     median = pd.Series(prices).rolling(window=n).mean().iloc[n-1:].values
     m_350 = []
@@ -2008,11 +2030,13 @@ def golden(request):
             price_cross.append('')
         i += 1
 
-    context = {'dates': dates, 'prices': prices, 'm_350': m_350, 'm_350_0042': m_350_0042, 'm_350_0060': m_350_0060, 'm_350_0200': m_350_0200, 'm_350_0300': m_350_0300, 
+    context = {'dates': dates, 'prices': prices, 'm_350': m_350, 'm_350_0042': m_350_0042, 'm_350_0060': m_350_0060, 'm_350_0200': m_350_0200, 'm_350_0300': m_350_0300,
     'm_350_0500': m_350_0500, 'm_350_0800': m_350_0800, 'm_350_1300': m_350_1300, 'median': median, 'm_111': m_111, 'price_cross': price_cross}
     return render(request, 'charts/golden.html', context)
 
 def competitors(request):
+    '''Competitor Performance (Logarithmic Scale) '''
+
     dates = []
     xmr = []
     dash = []
@@ -2077,16 +2101,17 @@ def competitors(request):
             zcash.append('')
         dates.append(count)
 
-    now_dash = locale._format('%.2f', now_dash, grouping=True) 
+    now_dash = locale._format('%.2f', now_dash, grouping=True)
     now_grin = locale._format('%.2f', now_grin, grouping=True)
     now_zcash = locale._format('%.2f', now_zcash, grouping=True)
     now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
-    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
+    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr,
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/competitors.html', context)
 
 def competitorslin(request):
+    '''Competitor Performance (Linear Scale) '''
     dates = []
     xmr = []
     dash = []
@@ -2151,16 +2176,17 @@ def competitorslin(request):
             zcash.append('')
         dates.append(count)
 
-    now_dash = locale._format('%.2f', now_dash, grouping=True) 
+    now_dash = locale._format('%.2f', now_dash, grouping=True)
     now_grin = locale._format('%.2f', now_grin, grouping=True)
     now_zcash = locale._format('%.2f', now_zcash, grouping=True)
     now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
-    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
+    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr,
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/competitorslin.html', context)
 
 def marketcap(request):
+    '''Privacy coins Marketcap (USD)'''
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -2172,7 +2198,7 @@ def marketcap(request):
     now_dash = 0
     now_grin = 0
     now_zcash = 0
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -2200,16 +2226,18 @@ def marketcap(request):
         else:
             grin.append('')
 
-    now_dash = '$'+locale._format('%.0f', now_dash, grouping=True) 
+    now_dash = '$'+locale._format('%.0f', now_dash, grouping=True)
     now_grin = '$'+locale._format('%.0f', now_grin, grouping=True)
     now_zcash = '$'+locale._format('%.0f', now_zcash, grouping=True)
     now_xmr = '$'+locale._format('%.0f', now_xmr, grouping=True)
 
-    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
+    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr,
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/marketcap.html', context)
 
 def inflationreturn(request):
+    '''Return Versus Inflation chart'''
+
     count = 0
     xmr = []
     dash = []
@@ -2282,17 +2310,18 @@ def inflationreturn(request):
             btc.append(now_btc)
             inflation_btc.append(100/coin.inflation)
 
-    now_dash = locale._format('%.2f', now_dash, grouping=True) 
+    now_dash = locale._format('%.2f', now_dash, grouping=True)
     now_grin = locale._format('%.2f', now_grin, grouping=True)
     now_zcash = locale._format('%.2f', now_zcash, grouping=True)
     now_xmr = locale._format('%.2f', now_xmr, grouping=True)
     now_btc = locale._format('%.2f', now_btc, grouping=True)
 
-    context = {'inflation_btc': inflation_btc,'inflation_xmr': inflation_xmr, 'inflation_dash': inflation_dash, 'inflation_grin': inflation_grin, 'inflation_zcash': inflation_zcash, 'now_xmr': now_xmr, 
+    context = {'inflation_btc': inflation_btc,'inflation_xmr': inflation_xmr, 'inflation_dash': inflation_dash, 'inflation_grin': inflation_grin, 'inflation_zcash': inflation_zcash, 'now_xmr': now_xmr,
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'btc': btc, 'xmr': xmr, 'dash': dash, 'zcash': zcash, 'grin': grin}
     return render(request, 'charts/inflationreturn.html', context)
 
 def bitcoin(request):
+    '''Total Blockchain Size for Monero and Bitcoin (KB) & Comparison to Bitcoin (aligned)'''
     dates = []
     dates3 = []
     dates4 = []
@@ -2334,7 +2363,7 @@ def bitcoin(request):
     dates2 = []
     xmr2 = []
     btc2 = []
-    
+
     for item in data:
         dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -2355,6 +2384,8 @@ def bitcoin(request):
     return render(request, 'charts/bitcoin.html', context)
 
 def translin(request):
+    '''Monero Transaction Count (linear)'''
+
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2371,10 +2402,10 @@ def translin(request):
             transactions.append(coin.transactions)
             now_transactions = coin.transactions
             if now_transactions > maximum:
-                maximum = now_transactions            
+                maximum = now_transactions
         else:
             transactions.append('')
-        
+
         if coin.priceusd > 0.001:
             pricexmr.append(coin.priceusd)
         else:
@@ -2382,7 +2413,7 @@ def translin(request):
 
         coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
-    
+
     now_transactions = int(now_transactions)
     maximum = int(maximum)
 
@@ -2390,6 +2421,7 @@ def translin(request):
     return render(request, 'charts/translin.html', context)
 
 def transmonth(request):
+    '''Monero Monthly Transactions'''
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2413,7 +2445,7 @@ def transmonth(request):
             month_previous = month
 
         if coin.transactions > 0:
-            total += coin.transactions         
+            total += coin.transactions
 
     now_transactions = int(total)
     maximum = int(maximum)
@@ -2425,6 +2457,7 @@ def transmonth(request):
     return render(request, 'charts/transmonth.html', context)
 
 def percentmonth(request):
+    '''Monthly Percentage (XMR's tx / BTC's tx)'''
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2443,8 +2476,11 @@ def percentmonth(request):
         month = aux.split("-")[0] + '-' + aux.split("-")[1]
         try:
             coin_btc = Coin.objects.filter(name='btc').get(date=coin.date)
-        except:
-            pass
+        except Coin.DoesNotExist as error:
+
+            class coin_btc:
+                transactions = 0
+
         if month != month_previous:
             dates.append(month_previous)
             if total_btc > 0:
@@ -2459,14 +2495,14 @@ def percentmonth(request):
             month_previous = month
 
         if coin.transactions > 0:
-            total_xmr += coin.transactions    
+            total_xmr += coin.transactions
         if coin_btc.transactions > 0:
-            total_btc += coin_btc.transactions     
-    
+            total_btc += coin_btc.transactions
+
     if total_btc > 0:
         total = 100*total_xmr/total_btc
     else:
-        total = 0    
+        total = 0
 
     now_transactions = locale._format('%.1f', total, grouping=True) + ' %'
     maximum = locale._format('%.1f', maximum, grouping=True) + ' %'
@@ -2475,12 +2511,14 @@ def percentmonth(request):
     return render(request, 'charts/percentmonth.html', context)
 
 def deviation(request):
+    '''Price Deviation from 6 Months Average'''
+
     symbol = 'xmr'
     pricexmr = []
     dates = []
 
     coins = Coin.objects.order_by('date').filter(name=symbol)
-    for coin in coins:        
+    for coin in coins:
         if coin.priceusd > 0.001:
             pricexmr.append(coin.priceusd)
         else:
@@ -2519,6 +2557,8 @@ def deviation(request):
     return render(request, 'charts/deviation.html', context)
 
 def deviation_tx(request):
+    '''Transacted Price Deviation (USD)'''
+
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2526,7 +2566,7 @@ def deviation_tx(request):
 
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        transactions.append(coin.transactions)        
+        transactions.append(coin.transactions)
         if coin.priceusd > 0.001:
             pricexmr.append(coin.priceusd)
         else:
@@ -2583,13 +2623,14 @@ def deviation_tx(request):
     return render(request, 'charts/deviation_tx.html', context)
 
 def percentage(request):
+    '''Transaction Percentage (XMR's tx / BTC's tx)'''
     data = DailyData.objects.order_by('date')
 
     transactions = []
     dates = []
     now_transactions = 0
     maximum = 0
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_transacpercentage > 0.00001:
@@ -2599,7 +2640,7 @@ def percentage(request):
                 maximum = now_transactions
         else:
             transactions.append('')
-    
+
     now_transactions = locale._format('%.1f', now_transactions, grouping=True) + '%'
     maximum = locale._format('%.1f', maximum, grouping=True) + '%'
 
@@ -2607,6 +2648,8 @@ def percentage(request):
     return render(request, 'charts/percentage.html', context)
 
 def translog(request):
+    '''Monero Transaction Count (logarithmic scale) '''
+
     symbol = 'xmr'
     transactions = []
     pricexmr = []
@@ -2620,10 +2663,10 @@ def translog(request):
             transactions.append(coin.transactions)
             now_transactions = coin.transactions
             if now_transactions > maximum:
-                maximum = now_transactions            
+                maximum = now_transactions
         else:
             transactions.append('')
-        
+
         if coin.priceusd > 0.001:
             pricexmr.append(coin.priceusd)
         else:
@@ -2631,7 +2674,7 @@ def translog(request):
 
         coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
-    
+
     now_transactions = int(now_transactions)
     maximum = int(maximum)
 
@@ -2639,6 +2682,8 @@ def translog(request):
     return render(request, 'charts/translog.html', context)
 
 def hashrate(request):
+    '''Monero's Hashrate'''
+
     symbol = 'xmr'
     hashrate = []
     dates = []
@@ -2660,6 +2705,8 @@ def hashrate(request):
     return render(request, 'charts/hashrate.html', context)
 
 def hashprice(request):
+    '''Price in Dollars Per Hashrate'''
+
     symbol = 'xmr'
     hashrate = []
     dates = []
@@ -2686,13 +2733,15 @@ def hashprice(request):
             new_color = 30*coin.pricebtc/(count*delta + v0)
             color.append(new_color)
         count += 1
-    
+
     now_hashrate = locale._format('%.8f', now_hashrate, grouping=True)
 
     context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'buy': buy, 'sell': sell}
     return render(request, 'charts/hashprice.html', context)
 
 def hashvsprice(request):
+    ''' Price Versus Hashrate (Dollars)'''
+
     symbol = 'xmr'
     hashrate = []
     prices = []
@@ -2722,7 +2771,7 @@ def hashvsprice(request):
             new_color = 30*coin.pricebtc/(count*delta + v0)
             color.append(new_color)
         count += 1
-    
+
     now_hashrate = locale._format('%.0f', now_hashrate, grouping=True)
     now_priceusd = '$' + locale._format('%.2f', now_priceusd, grouping=True)
     now_pricebtc = locale._format('%.5f', now_pricebtc, grouping=True) + ' BTC'
@@ -2731,8 +2780,10 @@ def hashvsprice(request):
     return render(request, 'charts/hashvsprice.html', context)
 
 def metcalfesats(request):
+    '''Metcalfe's Law (BTC)'''
+
     data = DailyData.objects.order_by('date')
-    
+
     color = []
     metcalfe = []
     prices = []
@@ -2759,7 +2810,7 @@ def metcalfesats(request):
             color.append(30*item.xmr_pricebtc/(count*delta + v0))
             prices.append(now_price)
             count += 1
-    
+
     now_price = locale._format('%.4f', now_price, grouping=True) + ' BTC'
     now_metcalfe = locale._format('%.4f', now_metcalfe, grouping=True) + ' BTC'
     maximum = locale._format('%.4f', maximum, grouping=True) + ' BTC'
@@ -2768,8 +2819,10 @@ def metcalfesats(request):
     return render(request, 'charts/metcalfesats.html', context)
 
 def metcalfesats_deviation(request):
+    '''Metcalfe's Model Deviation (linear chart, percentage and BTC)'''
+
     data = DailyData.objects.order_by('date')
-    
+
     metcalfe_percentage = []
     metcalfe = []
     dates = []
@@ -2786,16 +2839,18 @@ def metcalfesats_deviation(request):
             now_metcalfe_percentage = 100*((item.xmr_metcalfebtc/item.xmr_pricebtc) - 1)
             metcalfe.append(now_metcalfe)
             metcalfe_percentage.append(now_metcalfe_percentage)
-    
-    now_metcalfe = locale._format('%.4f', now_metcalfe, grouping=True) 
-    now_metcalfe_percentage = locale._format('%.0f', now_metcalfe_percentage, grouping=True) 
+
+    now_metcalfe = locale._format('%.4f', now_metcalfe, grouping=True)
+    now_metcalfe_percentage = locale._format('%.0f', now_metcalfe_percentage, grouping=True)
 
     context = {'metcalfe': metcalfe, 'dates': dates, 'now_metcalfe': now_metcalfe, 'now_metcalfe_percentage': now_metcalfe_percentage, 'metcalfe_percentage': metcalfe_percentage}
     return render(request, 'charts/metcalfesats_deviation.html', context)
 
 def metcalfe_deviation(request):
+    '''Metcalfe's Model Deviation (linear chart, percentage and dollars)'''
+
     data = DailyData.objects.order_by('date')
-    
+
     metcalfe_percentage = []
     metcalfe = []
     dates = []
@@ -2812,16 +2867,18 @@ def metcalfe_deviation(request):
             now_metcalfe_percentage = 100*((item.xmr_metcalfeusd/item.xmr_priceusd) - 1)
             metcalfe.append(now_metcalfe)
             metcalfe_percentage.append(now_metcalfe_percentage)
-    
-    now_metcalfe = locale._format('%.0f', now_metcalfe, grouping=True) 
-    now_metcalfe_percentage = locale._format('%.0f', now_metcalfe_percentage, grouping=True) 
+
+    now_metcalfe = locale._format('%.0f', now_metcalfe, grouping=True)
+    now_metcalfe_percentage = locale._format('%.0f', now_metcalfe_percentage, grouping=True)
 
     context = {'metcalfe': metcalfe, 'dates': dates, 'now_metcalfe': now_metcalfe, 'now_metcalfe_percentage': now_metcalfe_percentage, 'metcalfe_percentage': metcalfe_percentage}
     return render(request, 'charts/metcalfe_deviation.html', context)
 
 def metcalfeusd(request):
+    '''Metcalfe's Law (USD)'''
+
     data = DailyData.objects.order_by('date')
-    
+
     color = []
     metcalfe = []
     prices = []
@@ -2857,6 +2914,8 @@ def metcalfeusd(request):
     return render(request, 'charts/metcalfeusd.html', context)
 
 def coins(request):
+    '''Coins in circulation'''
+
     data = DailyData.objects.order_by('date')
 
     supplyxmr = []
@@ -2941,7 +3000,7 @@ def coins(request):
             supplybitcoin = 21000000
         supplyxmr.append('')
         supplybtc.append('')
-        
+
     now_btc = locale._format('%.0f', now_btc, grouping=True)
     now_xmr = locale._format('%.0f', now_xmr, grouping=True)
 
@@ -2949,6 +3008,8 @@ def coins(request):
     return render(request, 'charts/coins.html', context)
 
 def dailyemission(request):
+    '''Daily Emission (USD)'''
+
     data = DailyData.objects.order_by('date')
 
     emissionbtc = []
@@ -2967,7 +3028,7 @@ def dailyemission(request):
             now_btc = item.btc_emissionusd
             if item.btc_emissionusd > high_btc:
                 high_btc = item.btc_emissionusd
-        
+
         if item.xmr_emissionusd == 0:
             emissionxmr.append('')
         else:
@@ -2982,7 +3043,7 @@ def dailyemission(request):
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
         emissionxmr.append('')
         emissionbtc.append('')
-        
+
     now_btc = "$" + locale._format('%.0f', now_btc, grouping=True)
     now_xmr = "$" + locale._format('%.0f', now_xmr, grouping=True)
     high_btc = "$" + locale._format('%.0f', high_btc, grouping=True)
@@ -2992,13 +3053,15 @@ def dailyemission(request):
     return render(request, 'charts/dailyemission.html', context)
 
 def extracoins(request):
+    '''Supply Difference'''
+
     data = DailyData.objects.order_by('date')
 
     nsupply = []
     fsupply = []
     dates = []
     now_diff = 0
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -3063,13 +3126,15 @@ def extracoins(request):
             rewardbtc = 0
             supplybitcoin = 21000000
         nsupply.append('')
-        
+
     now_diff = locale._format('%.0f', now_diff, grouping=True)
 
     context = {'nsupply': nsupply, 'fsupply': fsupply, 'dates': dates, 'now_diff': now_diff}
     return render(request, 'charts/extracoins.html', context)
 
 def inflation(request):
+    '''Annualized Inflation for both Monero and Bitcoin'''
+
     data = DailyData.objects.order_by('date')
 
     inflationxmr = []
@@ -3079,7 +3144,7 @@ def inflation(request):
     dates = []
     now_xmr = 999999
     now_btc = 999999
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -3094,7 +3159,7 @@ def inflation(request):
             now_xmr = item.xmr_inflation
         else:
             inflationxmr.append('')
-        
+
         finflationxmr.append('')
         finflationbtc.append('')
 
@@ -3115,7 +3180,7 @@ def inflation(request):
             inflationbitcoin = 0.65
         inflationxmr.append('')
         inflationbtc.append('')
-        
+
     now_btc = locale._format('%.2f', now_btc, grouping=True) + '%'
     now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
 
@@ -3123,6 +3188,8 @@ def inflation(request):
     return render(request, 'charts/inflation.html', context)
 
 def blocksize(request):
+    '''Average Block Size for both Monero and Bitcoin (KB)'''
+
     data = DailyData.objects.order_by('date')
 
     xmr_blocksize = []
@@ -3130,7 +3197,7 @@ def blocksize(request):
     dates = []
     now_xmr = 0
     now_btc = 0
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_blocksize > 0.001:
@@ -3144,7 +3211,7 @@ def blocksize(request):
             now_xmr = item.xmr_blocksize
         else:
             xmr_blocksize.append('')
-        
+
     now_btc = locale._format('%.2f', now_btc, grouping=True) + ' bytes'
     now_xmr = locale._format('%.2f', now_xmr, grouping=True) + ' bytes'
 
@@ -3152,6 +3219,8 @@ def blocksize(request):
     return render(request, 'charts/blocksize.html', context)
 
 def transactionsize(request):
+    '''Average Transaction Size for both Monero and Bitcoin (KB)'''
+
     data = DailyData.objects.order_by('date')
 
     xmr_blocksize = []
@@ -3159,7 +3228,7 @@ def transactionsize(request):
     dates = []
     now_xmr = 0
     now_btc = 0
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -3174,21 +3243,23 @@ def transactionsize(request):
             xmr_blocksize.append(720*item.xmr_blocksize/(1024*item.xmr_transactions))
         else:
             xmr_blocksize.append('')
-        
+
     now_btc = locale._format('%.2f', now_btc, grouping=True) + ' bytes'
     now_xmr = locale._format('%.2f', now_xmr, grouping=True) + ' bytes'
 
     context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/transactionsize.html', context)
 
-def transactiondominance(request): 
+def transactiondominance(request):
+    '''Monero's Dominance Over the Number of Transactions on the Privacy Market (%)'''
+
     data = DailyData.objects.order_by('date')
 
     xmr_dominance = []
     dates = []
     now_xmr = 0
     maximum = 0
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_transactions > 0:
@@ -3198,7 +3269,7 @@ def transactiondominance(request):
         if now_xmr > maximum:
             maximum = now_xmr
         xmr_dominance.append(now_xmr)
-        
+
     now_xmr = locale._format('%.1f', now_xmr, grouping=True) + '%'
     maximum = locale._format('%.1f', maximum, grouping=True) + '%'
 
@@ -3206,6 +3277,7 @@ def transactiondominance(request):
     return render(request, 'charts/transactiondominance.html', context)
 
 def difficulty(request):
+    '''Mining Difficulty'''
     data = DailyData.objects.order_by('date')
 
     xmr_difficulty = []
@@ -3213,7 +3285,7 @@ def difficulty(request):
     dates = []
     now_xmr = 0
     now_btc = 0
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -3228,7 +3300,7 @@ def difficulty(request):
             xmr_difficulty.append(now_xmr)
         else:
             xmr_difficulty.append('')
-        
+
     now_btc = locale._format('%.0f', now_btc, grouping=True)
     now_xmr = locale._format('%.0f', now_xmr, grouping=True)
 
@@ -3236,6 +3308,7 @@ def difficulty(request):
     return render(request, 'charts/difficulty.html', context)
 
 def blockchainsize(request):
+    '''Total Blockchain Size for Monero and Bitcoin (KB)'''
     data = DailyData.objects.order_by('date')
 
     xmr_blocksize = []
@@ -3259,8 +3332,8 @@ def blockchainsize(request):
         else:
             btc_blocksize.append('')
 
-        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:            
-            if date < hardfork: 
+        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:
+            if date < hardfork:
                 now_xmr += 1440*item.xmr_blocksize/1024
             else:
                 now_xmr += 720*item.xmr_blocksize/1024
@@ -3271,7 +3344,7 @@ def blockchainsize(request):
                 xmr_blocksize.append(now_xmr)
         else:
             xmr_blocksize.append('')
-        
+
     now_btc = locale._format('%.2f', now_btc/(1024*1024), grouping=True) + ' Gb'
     now_xmr = locale._format('%.2f', now_xmr/(1024*1024), grouping=True) + ' Gb'
 
@@ -3279,6 +3352,7 @@ def blockchainsize(request):
     return render(request, 'charts/blockchainsize.html', context)
 
 def securitybudget(request):
+    '''Security Budget for Monero and Bitcoin (Dollars/second)'''
     data = DailyData.objects.order_by('date')
 
     xmr_security = []
@@ -3296,19 +3370,20 @@ def securitybudget(request):
         else:
             btc_security.append('')
 
-        if item.xmr_minerrevusd > 0.001:            
+        if item.xmr_minerrevusd > 0.001:
             now_xmr = item.xmr_minerrevusd/86400
             xmr_security.append(now_xmr)
         else:
             xmr_security.append('')
-        
-    now_btc = '$' + locale._format('%.2f', now_btc, grouping=True) 
+
+    now_btc = '$' + locale._format('%.2f', now_btc, grouping=True)
     now_xmr = '$' + locale._format('%.2f', now_xmr, grouping=True)
 
     context = {'xmr_security': xmr_security, 'btc_security': btc_security, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/securitybudget.html', context)
 
 def efficiency(request):
+    '''Breakeven efficiency required for mining profitability for Monero and Bitcoin (at $0.10/KWh, Hashes/Watt*second)'''
     data = DailyData.objects.order_by('date')
 
     xmr_efficiency = []
@@ -3320,7 +3395,7 @@ def efficiency(request):
     for item in data:
         date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
         dates.append(date)
-        if item.btc_minerrevusd != 0 and item.btc_inflation > 0:        
+        if item.btc_minerrevusd != 0 and item.btc_inflation > 0:
             if (2**32)*item.btc_difficulty*0.10/(item.btc_minerrevusd*24000) > 10:
                 now_btc = (2**32)*item.btc_difficulty*0.10/(item.btc_minerrevusd*24000)
             if now_btc > 0.01:
@@ -3330,7 +3405,7 @@ def efficiency(request):
         else:
             btc_efficiency.append('')
 
-        if item.xmr_minerrevusd != 0 and item.xmr_inflation > 0:            
+        if item.xmr_minerrevusd != 0 and item.xmr_inflation > 0:
             if item.xmr_difficulty*0.10/(item.xmr_minerrevusd*5000) > 0.01:
                 now_xmr = item.xmr_difficulty*0.10/(item.xmr_minerrevusd*5000)
             if now_xmr > 0.01:
@@ -3339,14 +3414,16 @@ def efficiency(request):
                 xmr_efficiency.append('')
         else:
             xmr_efficiency.append('')
-        
-    now_btc = locale._format('%.0f', now_btc, grouping=True) 
+
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
     now_xmr = locale._format('%.0f', now_xmr, grouping=True)
 
     context = {'xmr_efficiency': xmr_efficiency, 'btc_efficiency': btc_efficiency, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/efficiency.html', context)
 
 def compinflation(request):
+    '''Annualized Inflation for Monero and its competitors (Bitcoin and privacy-oriented Dash, Zcash and Grin)'''
+
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -3360,7 +3437,7 @@ def compinflation(request):
     now_grin = 999999
     now_zcash = 999999
     now_btc = 999999
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -3393,7 +3470,7 @@ def compinflation(request):
             now_grin = item.grin_inflation
         else:
             inflationgrin.append('')
-            
+
     now_dash = locale._format('%.2f', now_dash, grouping=True) + '%'
     now_grin = locale._format('%.2f', now_grin, grouping=True) + '%'
     now_zcash = locale._format('%.2f', now_zcash, grouping=True) + '%'
@@ -3404,7 +3481,8 @@ def compinflation(request):
     'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/compinflation.html', context)
 
-def comptransactions(request): 
+def comptransactions(request):
+    '''Daily Transactions for Monero and its competitors (Bitcoin and privacy-oriented Dash, Zcash and Grin)'''
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -3418,7 +3496,7 @@ def comptransactions(request):
     now_grin = 999999
     now_zcash = 999999
     now_btc = 999999
-    
+
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
@@ -3451,17 +3529,18 @@ def comptransactions(request):
             now_grin = item.grin_transactions
         else:
             grin.append('')
-            
+
     now_dash = locale._format('%.0f', now_dash, grouping=True)
     now_grin = locale._format('%.0f', now_grin, grouping=True)
     now_zcash = locale._format('%.0f', now_zcash, grouping=True)
     now_xmr = locale._format('%.0f', now_xmr, grouping=True)
-    now_btc = locale._format('%.0f', now_btc, grouping=True) 
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
 
     context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'btc': btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/comptransactions.html', context)
 
 def sfmodel(request):
+    '''Stock-to-flow Model (logarithmic)'''
     dates = []
     stock_to_flow = []
     projection = []
@@ -3516,6 +3595,7 @@ def sfmodel(request):
     return render(request, 'charts/sfmodel.html', context)
 
 def sfmodellin(request):
+    '''Stock-to-flow Model (linear)'''
     dates = []
     stock_to_flow = []
     projection = []
@@ -3559,7 +3639,7 @@ def sfmodellin(request):
         else:
             values.append('')
         count_aux += 1
-    
+
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
     now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
@@ -3570,6 +3650,8 @@ def sfmodellin(request):
     return render(request, 'charts/sfmodellin.html', context)
 
 def sfmultiple(request):
+    '''Stock-to-flow Multiple (Price / SF Model)'''
+
     symbol = 'xmr'
     now_sf = 0
     maximum = 0
@@ -3581,7 +3663,7 @@ def sfmultiple(request):
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
     count = 0
-    sf_aux = 0 
+    sf_aux = 0
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
         dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
@@ -3601,7 +3683,7 @@ def sfmultiple(request):
             maximum = now_sf
         new_color = 30*coin.pricebtc/(count*delta + v0)
         color.append(new_color)
-        count += 1  
+        count += 1
 
     now_sf = locale._format('%.2f', now_sf, grouping=True)
     maximum = locale._format('%.2f', maximum, grouping=True)
@@ -3610,6 +3692,8 @@ def sfmultiple(request):
     return render(request, 'charts/sfmultiple.html', context)
 
 def marketcycle(request):
+    '''Market Cycle'''
+
     dates = []
     color = []
     sell = []
@@ -3631,6 +3715,8 @@ def marketcycle(request):
     return render(request, 'charts/marketcycle.html', context)
 
 def shielded(request):
+    '''Shielded Transactions'''
+
     dates = []
     values = []
     values2 = []
@@ -3645,7 +3731,7 @@ def shielded(request):
             date = values_mat[k][0]
             value = values_mat[k][3]
             value3 = values_mat[k][4]
-            if not(value) or not(value):
+            if not value or not value:
                 break
             else:
                 dates.append(date.strftime("%Y-%m-%d"))
@@ -3678,6 +3764,8 @@ def shielded(request):
     return render(request, 'charts/shielded.html', context)
 
 def thermocap(request):
+    '''Thermocap Multiple'''
+
     symbol = 'xmr'
     dates = []
     values = []
@@ -3686,7 +3774,7 @@ def thermocap(request):
     v0 = 0.002
     delta = (0.015 - 0.002)/(6*365)
     count = 0
-    sf_aux = 0 
+    sf_aux = 0
     supply = 0
     calorie = 1
     calories = []
@@ -3723,7 +3811,7 @@ def thermocap(request):
             temperature = 0.000004
         thermocap.append(temperature)
         supply = coin.supply
-        count += 1  
+        count += 1
 
     temperature = locale._format('%.2f', temperature, grouping=True)
 
@@ -3732,6 +3820,8 @@ def thermocap(request):
     return render(request, 'charts/thermocap.html', context)
 
 def sharpe(request):
+    '''Sharpe Ratio'''
+
     symbol = 'xmr'
     dates = []
     values = []
@@ -3745,7 +3835,7 @@ def sharpe(request):
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
         new_color = 30*coin.pricebtc/(count*delta + v0)
-        count += 1  
+        count += 1
         if count % 7 == 0:
             if price == 0:
                 if coin.priceusd > 0:
@@ -3760,7 +3850,7 @@ def sharpe(request):
             dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
             values.append(coin.priceusd)
             color.append(new_color)
-    
+
     n = 52
     median = pd.Series(rocs).rolling(window=n).mean().iloc[n-1:].values
     std = pd.Series(rocs).rolling(window=n).std().iloc[n-1:].values
@@ -3775,10 +3865,12 @@ def sharpe(request):
     return render(request, 'charts/sharpe.html', context)
 
 def about(request):
+    '''The about page'''
     context = {}
     return render(request, 'charts/about.html', context)
 
 def transcost(request):
+    '''Average Transaction Cost'''
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -3806,6 +3898,8 @@ def transcost(request):
     return render(request, 'charts/transcost.html', context)
 
 def transcostntv(request):
+    '''Average Transaction Cost (Native Units)'''
+
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -3825,7 +3919,7 @@ def transcostntv(request):
         else:
             costbtc.append(item.btc_transcostntv)
             now_btc = item.btc_transcostntv
-        
+
     now_btc = locale._format('%.6f', now_btc, grouping=True)
     now_xmr = locale._format('%.6f', now_xmr, grouping=True)
 
@@ -3833,6 +3927,8 @@ def transcostntv(request):
     return render(request, 'charts/transcostntv.html', context)
 
 def minerrevcap(request):
+    '''Annualized Miner Revenue / Marketcap (Fees plus new coins, percentage)'''
+
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -3852,14 +3948,16 @@ def minerrevcap(request):
         else:
             costbtc.append(item.btc_minerrevcap)
             now_btc = item.btc_minerrevcap
-        
+
     now_btc = locale._format('%.2f', now_btc, grouping=True) + "%"
     now_xmr = locale._format('%.2f', now_xmr, grouping=True) + "%"
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevcap.html', context)
 
-def minerrev(request): 
+def minerrev(request):
+    '''Miner Revenue (Dollars / day)'''
+
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -3887,6 +3985,8 @@ def minerrev(request):
     return render(request, 'charts/minerrev.html', context)
 
 def minerrevntv(request):
+    '''Daily Miner Revenue (Fees plus new coins, Native Units / day)'''
+
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -3905,14 +4005,16 @@ def minerrevntv(request):
         else:
             costxmr.append(item.xmr_minerrevntv)
             now_xmr = item.xmr_minerrevntv
-        
+
     now_btc = locale._format('%.2f', now_btc, grouping=True)
     now_xmr = locale._format('%.2f', now_xmr, grouping=True)
-    
+
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevntv.html', context)
 
 def minerfeesntv(request):
+    '''Miner Fees (Fees excluded new coins, Native Units)'''
+
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -3931,7 +4033,7 @@ def minerfeesntv(request):
         else:
             costxmr.append(item.xmr_minerfeesntv)
             now_xmr = item.xmr_minerfeesntv
-        
+
     now_btc = locale._format('%.2f', now_btc, grouping=True)
     now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
@@ -3939,6 +4041,8 @@ def minerfeesntv(request):
     return render(request, 'charts/minerfeesntv.html', context)
 
 def minerfees(request):
+    '''Miner Fees (Fees excluded new coins, Dollars)'''
+
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -3957,7 +4061,7 @@ def minerfees(request):
         else:
             costxmr.append(item.xmr_minerfeesusd)
             now_xmr = item.xmr_minerfeesusd
-        
+
     now_btc = locale._format('%.2f', now_btc, grouping=True)
     now_xmr = locale._format('%.2f', now_xmr, grouping=True)
 
@@ -3965,6 +4069,8 @@ def minerfees(request):
     return render(request, 'charts/minerfees.html', context)
 
 def dailyemissionntv(request):
+    '''Daily Emission (Native Units)'''
+
     data = DailyData.objects.order_by('date')
     emissionbtc = []
     emissionxmr = []
@@ -3977,7 +4083,7 @@ def dailyemissionntv(request):
         else:
             emissionbtc.append(item.btc_emissionntv)
             now_btc = item.btc_emissionntv
-        
+
         if item.xmr_emissionntv == 0:
             emissionxmr.append('')
         else:
@@ -3990,7 +4096,7 @@ def dailyemissionntv(request):
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
         emissionxmr.append('')
         emissionbtc.append('')
-        
+
     now_btc = locale._format('%.0f', now_btc, grouping=True)
     now_xmr = locale._format('%.0f', now_xmr, grouping=True)
 
@@ -3998,6 +4104,7 @@ def dailyemissionntv(request):
     return render(request, 'charts/dailyemissionntv.html', context)
 
 def commit(request):
+    '''Miner Commitment (Hashrate divided by revenue, hashs/dollar) - WARNING: DON'T COMPARE DIRECTLY BOTH COINS'''
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -4017,7 +4124,7 @@ def commit(request):
         else:
             costxmr.append(item.xmr_commitusd)
             now_xmr = item.xmr_commitusd
-        
+
     now_btc = locale._format('%.2f', now_btc, grouping=True) + " hashs / dollar"
     now_xmr = locale._format('%.2f', now_xmr, grouping=True) + " hashs / dollar"
 
@@ -4025,6 +4132,7 @@ def commit(request):
     return render(request, 'charts/commit.html', context)
 
 def commitntv(request):
+    '''Miner Commitment (Hashrate divided by revenue, hashs/coin) - WARNING: DON'T COMPARE DIRECTLY BOTH COINS'''
     data = DailyData.objects.order_by('date')
     costbtc = []
     costxmr = []
@@ -4044,7 +4152,7 @@ def commitntv(request):
         else:
             costxmr.append(item.xmr_commitntv)
             now_xmr = item.xmr_commitntv
-        
+
     now_btc = locale._format('%.0f', now_btc, grouping=True) + " hashs / btc"
     now_xmr = locale._format('%.0f', now_xmr, grouping=True) + " hashs / xmr"
 
@@ -4052,6 +4160,7 @@ def commitntv(request):
     return render(request, 'charts/commitntv.html', context)
 
 def competitorssats(request):
+    '''Competitor Performance (logarithmic)'''
     dates = []
     xmr = []
     dash = []
@@ -4115,16 +4224,17 @@ def competitorssats(request):
             zcash.append('')
         dates.append(count)
 
-    now_dash = locale._format('%.3f', now_dash, grouping=True) 
+    now_dash = locale._format('%.3f', now_dash, grouping=True)
     now_grin = locale._format('%.3f', now_grin, grouping=True)
     now_zcash = locale._format('%.3f', now_zcash, grouping=True)
     now_xmr = locale._format('%.3f', now_xmr, grouping=True)
 
-    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
+    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr,
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/competitorssats.html', context)
 
 def competitorssatslin(request):
+    '''Competitor Performance (linear)'''
     dates = []
     xmr = []
     dash = []
@@ -4188,16 +4298,18 @@ def competitorssatslin(request):
             zcash.append('')
         dates.append(count)
 
-    now_dash = locale._format('%.3f', now_dash, grouping=True) 
+    now_dash = locale._format('%.3f', now_dash, grouping=True)
     now_grin = locale._format('%.3f', now_grin, grouping=True)
     now_zcash = locale._format('%.3f', now_zcash, grouping=True)
     now_xmr = locale._format('%.3f', now_xmr, grouping=True)
 
-    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr, 
+    context = {'xmr': xmr, 'dash': dash, 'grin': grin, 'zcash': zcash, 'now_xmr': now_xmr,
     'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'dates': dates}
     return render(request, 'charts/competitorssatslin.html', context)
 
 def dread_subscribers(request):
+    '''Dread Subscribes (Darknet forum)'''
+
     dates = []
     data1 = []
     data2 = []
@@ -4210,7 +4322,7 @@ def dread_subscribers(request):
             date = values_mat[k][0]
             value1 = values_mat[k][1]
             value2 = values_mat[k][2]
-            if not(value1) or not(value2):
+            if not value1 or not value2:
                 break
             else:
                 print(date, flush=True)
@@ -4232,6 +4344,8 @@ def dread_subscribers(request):
     return render(request, 'charts/dread_subscribers.html', context)
 
 def coincards(request):
+    '''Coincards Usage (%)'''
+
     dates = []
     data1 = []
     data2 = []
@@ -4249,7 +4363,7 @@ def coincards(request):
             value2 = values_mat[k][2]
             value3 = values_mat[k][3]
             value4 = values_mat[k][4]
-            if not(value1) or not(value2) or not(value3) or not(value4):
+            if not value1 or not value2 or not value3 or not value4:
                 break
             else:
                 dates.append(date.strftime("%Y-%m-%d"))
@@ -4273,6 +4387,8 @@ def coincards(request):
     return render(request, 'charts/coincards.html', context)
 
 def merchants(request):
+    ''' Merchants accepting cryptocurrency (absolute numbers)'''
+
     dates = []
     data1 = []
     data2 = []
@@ -4297,7 +4413,7 @@ def merchants(request):
             value5 = values_mat[k][5]
             value6 = values_mat[k][6]
             value7 = values_mat[k][7]
-            if not(value1) or not(value2) or not(value3) or not(value4) or not(value5) or not(value6) or not(value7):
+            if not value1 or not value2 or not value3 or not value4 or not value5 or not value6 or not value7:
                 break
             else:
                 dates.append(date.strftime("%Y-%m-%d"))
@@ -4322,6 +4438,7 @@ def merchants(request):
     return render(request, 'charts/merchants.html', context)
 
 def merchants_increase(request):
+    '''Monthly increase in number of merchants accepting cryptocurrency (absolute numbers)'''
     dates = []
     data1 = []
     data2 = []
@@ -4367,6 +4484,7 @@ def merchants_increase(request):
     return render(request, 'charts/merchants_increase.html', context)
 
 def merchants_percentage(request):
+    '''Increase in number of merchants accepting cryptocurrency (percentage)'''
     dates = []
     data1 = []
     data2 = []
@@ -4412,6 +4530,7 @@ def merchants_percentage(request):
     return render(request, 'charts/merchants_percentage.html', context)
 
 def dominance(request):
+    '''Monero's Marketcap Dominance (%)'''
     symbol = 'xmr'
     values = []
     pricexmr = []
@@ -4464,6 +4583,8 @@ def dominance(request):
     return render(request, 'charts/dominance.html', context)
 
 def rank(request):
+    '''Monero's Coinmarketcap Rank'''
+
     symbol = 'xmr'
     values = []
     pricexmr = []
@@ -4501,11 +4622,11 @@ def rank(request):
         try:
             rank = list(Rank.objects.order_by('-date'))[0]
             if str(rank.date) == str(today):
-                now_value = rank.rank 
+                now_value = rank.rank
                 dates.append(today)
                 values.append(now_value)
                 if now_value < maximum:
-                    maximum = now_value  
+                    maximum = now_value
         except:
             pass
 
@@ -4529,7 +4650,8 @@ def rank(request):
     context = {'values': values, 'dates': dates, 'maximum': maximum, 'now_value': now_value, 'pricexmr': pricexmr}
     return render(request, 'charts/rank.html', context)
 
-def p2pool_hashrate(request): 
+def p2pool_hashrate(request):
+    '''P2Pool and P2Pool_mini Hashrate (MH/s)'''
     hashrate = []
     hashrate_mini = []
     combined = []
@@ -4542,19 +4664,19 @@ def p2pool_hashrate(request):
     for p2pool_stat in p2pool_stats:
         now_combined = 0
         if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
-            now_hashrate = p2pool_stat.hashrate/1000000    
+            now_hashrate = p2pool_stat.hashrate/1000000
             now_combined = p2pool_stat.hashrate/1000000
         hashrate.append(now_hashrate)
-        
+
         try:
             p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
             if p2pool_stat_mini.hashrate and p2pool_stat_mini.percentage > 0:
-                now_hashrate_mini = p2pool_stat_mini.hashrate/1000000     
-                now_combined += p2pool_stat_mini.hashrate/1000000    
+                now_hashrate_mini = p2pool_stat_mini.hashrate/1000000
+                now_combined += p2pool_stat_mini.hashrate/1000000
         except:
             pass
-        hashrate_mini.append(now_hashrate_mini) 
-        combined.append(now_combined) 
+        hashrate_mini.append(now_hashrate_mini)
+        combined.append(now_combined)
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
@@ -4562,6 +4684,7 @@ def p2pool_hashrate(request):
     return render(request, 'charts/p2pool_hashrate.html', context)
 
 def p2pool_dominance(request):
+    '''P2Pool and P2Pool_mini Market Share (%)'''
     dominance = []
     dominance_mini = []
     dates = []
@@ -4573,19 +4696,19 @@ def p2pool_dominance(request):
     for p2pool_stat in p2pool_stats:
         now_combined = 0
         if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
-            now_dominance = p2pool_stat.percentage       
-            now_combined += p2pool_stat.percentage      
+            now_dominance = p2pool_stat.percentage
+            now_combined += p2pool_stat.percentage
         dominance.append(now_dominance)
-        
+
         try:
             p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
-            if p2pool_stat_mini.hashrate and p2pool_stat_mini.percentage > 0: 
-                now_dominance_mini = p2pool_stat_mini.percentage    
-                now_combined += p2pool_stat_mini.percentage      
+            if p2pool_stat_mini.hashrate and p2pool_stat_mini.percentage > 0:
+                now_dominance_mini = p2pool_stat_mini.percentage
+                now_combined += p2pool_stat_mini.percentage
         except:
             pass
-        dominance_mini.append(now_dominance_mini) 
-        combined.append(now_combined) 
+        dominance_mini.append(now_dominance_mini)
+        combined.append(now_combined)
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
@@ -4593,6 +4716,7 @@ def p2pool_dominance(request):
     return render(request, 'charts/p2pool_dominance.html', context)
 
 def p2pool_totalblocks(request):
+    '''P2Pool Blocks Found'''
     dates = []
     totalblocks = []
     totalblocks_mini = []
@@ -4605,20 +4729,20 @@ def p2pool_totalblocks(request):
     for p2pool_stat in p2pool_stats:
         now_combined = 0
         if p2pool_stat.totalblocksfound > now_totalblocks:
-            now_totalblocks = p2pool_stat.totalblocksfound  
-            now_combined += p2pool_stat.totalblocksfound          
+            now_totalblocks = p2pool_stat.totalblocksfound
+            now_combined += p2pool_stat.totalblocksfound
         totalblocks.append(now_totalblocks)
 
         p2pool_stats_mini = P2Pool.objects.filter(mini=True).filter(date=p2pool_stat.date)
         for p2pool_stat_mini in p2pool_stats_mini:
-            if p2pool_stat_mini.totalblocksfound >= now_totalblocks_mini: 
-                now_totalblocks_mini = p2pool_stat_mini.totalblocksfound    
-                now_combined += p2pool_stat_mini.totalblocksfound    
+            if p2pool_stat_mini.totalblocksfound >= now_totalblocks_mini:
+                now_totalblocks_mini = p2pool_stat_mini.totalblocksfound
+                now_combined += p2pool_stat_mini.totalblocksfound
                 break
-                
 
-        totalblocks_mini.append(now_totalblocks_mini) 
-        combined.append(now_combined) 
+
+        totalblocks_mini.append(now_totalblocks_mini)
+        combined.append(now_combined)
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
@@ -4626,6 +4750,7 @@ def p2pool_totalblocks(request):
     return render(request, 'charts/p2pool_totalblocks.html', context)
 
 def p2pool_totalhashes(request):
+    '''P2Pool Total Hashes (Tera Hashes) Found'''
     dates = []
     totalblocks = []
     totalblocks_mini = []
@@ -4644,13 +4769,13 @@ def p2pool_totalhashes(request):
 
         try:
             p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
-            if p2pool_stat_mini.totalhashes >= now_totalblocks_mini: 
+            if p2pool_stat_mini.totalhashes >= now_totalblocks_mini:
                 now_totalblocks_mini = p2pool_stat_mini.totalhashes/1000000000000
                 now_combined += p2pool_stat_mini.totalhashes/1000000000000
         except:
             pass
-        totalblocks_mini.append(now_totalblocks_mini) 
-        combined.append(now_combined) 
+        totalblocks_mini.append(now_totalblocks_mini)
+        combined.append(now_combined)
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
@@ -4658,6 +4783,8 @@ def p2pool_totalhashes(request):
     return render(request, 'charts/p2pool_totalhashes.html', context)
 
 def p2pool_miners(request):
+    '''P2Pool and P2Pool_mini Miners'''
+
     miners = []
     miners_mini = []
     dates = []
@@ -4669,26 +4796,28 @@ def p2pool_miners(request):
     for p2pool_stat in p2pool_stats:
         now_combined = 0
         if p2pool_stat.miners > 0:
-            now_miners = p2pool_stat.miners       
-            now_combined += p2pool_stat.miners      
+            now_miners = p2pool_stat.miners
+            now_combined += p2pool_stat.miners
         miners.append(now_miners)
-        
+
         try:
             p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
-            if p2pool_stat_mini.miners > 0: 
-                now_miners_mini = p2pool_stat_mini.miners    
-                now_combined += p2pool_stat_mini.miners    
+            if p2pool_stat_mini.miners > 0:
+                now_miners_mini = p2pool_stat_mini.miners
+                now_combined += p2pool_stat_mini.miners
         except:
             pass
-        miners_mini.append(now_miners_mini) 
-        combined.append(now_combined) 
+        miners_mini.append(now_miners_mini)
+        combined.append(now_combined)
 
         dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
     context = {'miners': miners, 'dates': dates, 'miners_mini': miners_mini, 'combined': combined}
     return render(request, 'charts/p2pool_miners.html', context)
 
-def miningprofitability(request): 
+def miningprofitability(request):
+    '''Monero Mining Profitability (USD/day for 1 KHash/s)'''
+
     dates = []
     value = []
     now_value = 0
@@ -4697,19 +4826,21 @@ def miningprofitability(request):
     for coin in coins:
         if coin.hashrate > 0 and coin.priceusd > 0 and coin.revenue > 0:
             if 1000*coin.priceusd*coin.revenue/coin.hashrate < 5000:
-                now_value = 1000*coin.priceusd*coin.revenue/coin.hashrate     
-                dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))     
+                now_value = 1000*coin.priceusd*coin.revenue/coin.hashrate
+                dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
                 value.append(now_value)
 
     context = {'value': value, 'dates': dates}
     return render(request, 'charts/miningprofitability.html', context)
 
 def tail_emission(request):
+    '''Monero's Tail Emission'''
+
     inflationxmr = []
     finflationxmr = []
     dates = []
     now_xmr = 999999
-    
+
     coins = Coin.objects.order_by('date').filter(name='xmr')
     for coin in coins:
         now_xmr = float(coin.inflation)
@@ -4724,13 +4855,14 @@ def tail_emission(request):
         finflationxmr.append(100*reward*720*365/supply)
         date_aux = coin.date + timedelta(i)
         dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
-        
+
     now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
 
     context = {'inflationxmr': inflationxmr, 'finflationxmr': finflationxmr, 'now_xmr': now_xmr, 'dates': dates}
     return render(request, 'charts/tail_emission.html', context)
 
 def privacymarketcap(request):
+    '''Total Marketcap of Privacy Coins (USD)'''
     data = DailyData.objects.order_by('date')
 
     dates = []
@@ -4740,7 +4872,7 @@ def privacymarketcap(request):
     now_dominance = 0
     top_marketcap = 0
     top_dominance = 0
-    
+
     for item in data:
         marketcap = 0
         dominance = 0
@@ -4779,15 +4911,16 @@ def privacymarketcap(request):
         else:
             marketcaps.append('')
 
-    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True) 
+    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True)
     now_dominance = locale._format('%.2f', now_dominance, grouping=True) + '%'
-    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True) 
+    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True)
     top_dominance = locale._format('%.2f', top_dominance, grouping=True) + '%'
 
     context = {'marketcaps': marketcaps, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates, 'xmr_marketcaps': xmr_marketcaps}
     return render(request, 'charts/privacymarketcap.html', context)
 
 def privacydominance(request):
+    '''Total Dominance of Privacy Coins Over the Cryptocurrency Market (%)'''
     data = DailyData.objects.order_by('date')
     dates = []
     marketcaps = []
@@ -4845,6 +4978,7 @@ def privacydominance(request):
     return render(request, 'charts/privacydominance.html', context)
 
 def monerodominance(request):
+    '''Monero's Dominance Over Other 'Privacy' Coins (%)'''
     data = DailyData.objects.order_by('date')
     dates = []
     marketcaps = []
@@ -4856,7 +4990,7 @@ def monerodominance(request):
     zec_cap = 0
     dash_cap = 0
     grin_cap = 0
-    
+
     for item in data:
         marketcap = 0
         dominance = 0
@@ -4901,15 +5035,16 @@ def monerodominance(request):
         else:
             xmr_dominance.append('')
 
-    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True) 
+    now_marketcap = '$'+locale._format('%.0f', now_marketcap, grouping=True)
     now_dominance = locale._format('%.2f', now_dominance, grouping=True) + '%'
-    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True) 
+    top_marketcap = '$'+locale._format('%.0f', top_marketcap, grouping=True)
     top_dominance = locale._format('%.2f', top_dominance, grouping=True) + '%'
 
     context = {'marketcaps': marketcaps, 'xmr_dominance': xmr_dominance, 'now_marketcap': now_marketcap, 'now_dominance': now_dominance, 'top_marketcap': top_marketcap, 'top_dominance': top_dominance, 'dates': dates}
     return render(request, 'charts/monerodominance.html', context)
 
 def withdrawals(request):
+    '''Binance withdrawal state for Monero (1 = Enabled, 0 = Disabled)'''
     states = []
     dates = []
 
@@ -4920,11 +5055,12 @@ def withdrawals(request):
             states.append(1)
         else:
             states.append(0)
-    
+
     context = {'states': states, 'dates': dates}
     return render(request, 'charts/withdrawals.html', context)
 
 def reddit_data(request):
+    '''TEST: download reddit data'''
 
     asynchronous.get_social_data("XMR")
 
