@@ -20,4 +20,7 @@ class SocialAdmin(admin.ModelAdmin):
 
 @admin.register(DailyData)
 class DailyDataAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["date","xmr_priceusd","btc_priceusd"]
+    list_filter = ["date","xmr_priceusd","btc_priceusd"]
+    list_per_page = 10
+    ordering = ["date"]

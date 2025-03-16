@@ -12,7 +12,7 @@ from .forms import *
 import datetime
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+from requests.exceptions import Timeout, TooManyRedirects
 import math
 import locale
 import pandas as pd
@@ -87,10 +87,10 @@ def add_coin(request):
 
             context = {'form': form, 'message': message}
             return render(request, 'charts/add_coin.html', context)
-        else:
-            message = 'An error has happened. Try again.'
-            context = {'form': form, 'message': message}
-            return render(request, 'charts/add_coin.html', context)
+
+        message = 'An error has happened. Try again.'
+        context = {'form': form, 'message': message}
+        return render(request, 'charts/add_coin.html', context)
 
     context = {'form': form}
     return render(request, 'charts/add_coin.html', context)
@@ -4501,26 +4501,26 @@ def merchants_percentage(request):
 
     for k in range(0,len(values_mat)):
 
-       date = values_mat[k][0]
-       value1 = values_mat[k][1]
-       value2 = values_mat[k][2]
-       value3 = values_mat[k][3]
-       value4 = values_mat[k][4]
-       value5 = values_mat[k][5]
-       value6 = values_mat[k][6]
-       value7 = values_mat[k][7]
+        date = values_mat[k][0]
+        value1 = values_mat[k][1]
+        value2 = values_mat[k][2]
+        value3 = values_mat[k][3]
+        value4 = values_mat[k][4]
+        value5 = values_mat[k][5]
+        value6 = values_mat[k][6]
+        value7 = values_mat[k][7]
 
-       dates.append(date.strftime("%Y-%m-%d"))
-       data1.append(value1)
-       data2.append(value2)
-       data3.append(value3)
-       data4.append(value4)
-       data5.append(value5)
-       data6.append(value6)
-       data7.append(value7)
-       now_btc = value1
-       now_xmr = value2
-       now_eth = value3
+        dates.append(date.strftime("%Y-%m-%d"))
+        data1.append(value1)
+        data2.append(value2)
+        data3.append(value3)
+        data4.append(value4)
+        data5.append(value5)
+        data6.append(value6)
+        data7.append(value7)
+        now_btc = value1
+        now_xmr = value2
+        now_eth = value3
 
     now_btc = locale._format('%.1f', now_btc, grouping=True)
     now_xmr = locale._format('%.1f', now_xmr, grouping=True)
