@@ -13,11 +13,7 @@ from tasks.data_sync import check_daily_objects_for_updates
 from tasks.data_sync import xmr_updates
 from tasks.data_sync import competitors_updates
 from tasks.data_sync import daily_objects_updates
-
-from charts.views import populate_database
-#from charts.views import load_rank
-#from charts.views import load_dominance
-#from charts.views import load_p2pool
+from tasks.data_sync import populate_database
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
 
