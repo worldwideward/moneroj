@@ -14,6 +14,11 @@ from tasks.data_sync import xmr_updates
 from tasks.data_sync import competitors_updates
 from tasks.data_sync import daily_objects_updates
 
+from charts.views import populate_database
+#from charts.views import load_rank
+#from charts.views import load_dominance
+#from charts.views import load_p2pool
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
 
 class TaskWorker():
@@ -61,6 +66,10 @@ def work():
         if result is True:
             print("Executing daily updates..")
             daily_objects_updates(yesterday)
+
+        ### Populate the database
+        populate_database()
+
 
         print('Executed all jobs', flush=True)
         return None
