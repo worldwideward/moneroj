@@ -157,6 +157,11 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 16px;
   font-family: "Poppins", sans-serif;
 }
+
+.navbar .charts-link {
+  color: #fff !important;
+}
+
 .navbar .navbar-brand {
   font-size: 30px;
   font-weight: bold;
