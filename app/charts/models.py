@@ -155,8 +155,20 @@ class P2Pool(models.Model):
     totalhashes = models.IntegerField()
     totalblocksfound = models.IntegerField()
 
+
 class Withdrawal(models.Model):
     '''Model for withdrawal data'''
 
     date = models.DateTimeField(auto_now_add=True)
     state = models.BooleanField()
+
+
+class Usage(models.Model):
+    '''Model for Cryptocurrency usage'''
+
+    date = models.DateTimeField()
+    bitcoin_pct = models.FloatField(default=0)
+    monero_pct = models.FloatField(default=0)
+    ethereum_pct = models.FloatField(default=0)
+    others_pct = models.FloatField(default=0)
+    data_source = models.CharField(max_length=32, default="coincards")

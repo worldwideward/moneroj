@@ -3,6 +3,9 @@
 from django import forms
 from .models import Coin
 
+class CsvImportForm(forms.Form):
+
+    csv_file = forms.FileField()
 
 class CoinForm(forms.ModelForm):
     '''Form to add cryptocurrency coins to the database'''
