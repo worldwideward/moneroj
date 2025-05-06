@@ -34,7 +34,7 @@ def work():
         '''Tasks the worker should perform each run'''
 
         message = check_monero_available()
-        print(message)
+        print(message, flush=True)
 
         ## Calculate time for this session
         date = datetime.date
@@ -44,30 +44,30 @@ def work():
         date_aux = datetime.datetime.strftime(date.today() - timedelta(2), '%Y-%m-%d')
 
         ### check monero updates
-        result = check_for_updates(yesterday)
+        result = check_for_updates(yesterday, "xmr")
 
         if result is True:
-            print("Executing XMR updates..")
+            print("[INFO] Executing XMR updates..", flush=True)
             await xmr_updates(yesterday, date_aux)
 
         ### check competitor updates
         result = check_competitors_for_updates(yesterday)
 
         if result is True:
-            print("Executing Competitor updates..")
+            print("[INFO] Executing Competitor updates..", flush=True)
             await competitors_updates(yesterday)
 
         result = check_daily_objects_for_updates(yesterday)
 
         if result is True:
-            print("Executing daily updates..")
+            print("[INFO] Executing daily updates..", flush=True)
             daily_objects_updates(yesterday)
 
         ### Populate the database
         populate_database()
 
 
-        print('Executed all jobs', flush=True)
+        print('[INFO] Executed all jobs', flush=True)
         return None
 
     asyncio.run(todo_list())
