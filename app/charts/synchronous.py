@@ -762,9 +762,9 @@ def update_database(date_from=None, date_to=None):
             print(
                 str(coin_xmr.supply)
                 + " xmr "
-                + str(data.xmr_subscriberCount)
+                + str(data.xmr_subscriber_count)
                 + " - "
-                + str(social_xmr.subscriberCount)
+                + str(social_xmr.subscriber_count)
                 + " = "
                 + str(int(data.xmr_marketcap))
                 + " => "
@@ -926,3 +926,4 @@ def update_p2pool():
             return data
 
     return True
+
