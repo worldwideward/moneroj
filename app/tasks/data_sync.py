@@ -15,24 +15,25 @@ from charts.synchronous import update_database
 from charts.synchronous import get_history_function
 
 
-def check_for_updates(yesterday) -> bool:
+def check_for_updates(yesterday, coin) -> bool:
     '''Check if it is necessary to update XMR data'''
 
     try:
-        coin_xmr = Coin.objects.filter(name='xmr').get(date=yesterday)
-        if coin_xmr:
-            print('xmr found yesterday', flush=True)
-            if coin_xmr.priceusd > 1 and coin_xmr.transactions > 0 and coin_xmr.inflation > 0:
-                print('no need to update xmr', flush=True)
+        coin = Coin.objects.filter(name=coin).get(date=yesterday)
+
+        if coin:
+            print(f'[INFO] Data for {coin.name} found', flush=True)
+            if coin.priceusd > 1 and coin.transactions > 0 and coin.inflation > 0:
+                print(f'[INFO] Data up to date: {coin.priceusd} {coin.name}/USD', flush=True)
             else:
-                print('will update xmr')
-                coin_xmr.delete()
+                print(f'[INFO] Updating data for {coin.name}')
+                coin.delete()
                 return True
         else:
-            print('no xmr found yesterday - 1')
+            print(f'[WARN] No data for {coin.name}')
             return True
     except Exception as error:
-        print(f'Exception while trying to look for coin data - {error}')
+        print(f'[ERROR] Can not fetch coin data: {error}')
         return True
 
     return False
@@ -52,10 +53,10 @@ def check_monero_available() -> str:
 
     coin = list(Coin.objects.order_by('-date'))[0]
 
-    message = coin
+    message = f'[INFO] {coin.name} available'
 
     if not coin:
-        message = 'Monero unavailable'
+        message = f'[INFO ] {coin.name} unavailable'
 
     return message
 
@@ -75,31 +76,24 @@ async def xmr_updates(yesterday, date_aux):
 
 def check_competitors_for_updates(yesterday) -> bool:
     '''Check if it is necessary to update non-XMR coin data'''
-    try:
-        coin_btc = list(Coin.objects.filter(name='btc').filter(date=yesterday))[0]
-        coin_zec = list(Coin.objects.filter(name='zec').filter(date=yesterday))[0]
-        coin_dash = list(Coin.objects.filter(name='dash').filter(date=yesterday))[0]
-        coin_grin = list(Coin.objects.filter(name='grin').filter(date=yesterday))[0]
 
-        if coin_btc and coin_zec and coin_dash and coin_grin:
-            print('coins found yesterday', flush=True)
-            if coin_btc.transactions > 0 and coin_btc.inflation > 0 and coin_zec.supply > 0 and coin_dash.supply > 0 and coin_grin.supply > 0:
-                print('no need to update coins', flush=True)
-            else:
-                print('will update coins', flush=True)
-                coin_btc.delete()
-                coin_zec.delete()
-                coin_dash.delete()
-                coin_grin.delete()
-                return True
-        else:
-            print('no coins found yesterday - 1', flush=True)
-            return True
-    except Exception as error:
-        print(f'no coins found yesterday: {error}', flush=True)
-        return True
+    competitors = ["btc", "zec", "dash", "grin"]
 
-    return False
+    result = False
+
+    for coin in competitors:
+
+        result = check_for_updates(yesterday, coin)
+
+        if result is True:
+            print(f'[INFO] Updates available for {coin} - {yesterday}', flush=True)
+            result = True
+
+        if result is False:
+            print(f'[INFO] Data up to date of {coin} - {yesterday}', flush=True)
+
+    return result
+
 
 async def competitors_updates(yesterday):
     '''Update data from non-XMR coins'''
@@ -112,12 +106,12 @@ def check_daily_objects_for_updates(yesterday) -> bool:
     try:
         data = list(DailyData.objects.filter(date=yesterday))[0]
         if data:
-            print('data found yesterday', flush=True)
+            print(f'[INFO] Data objects up to date. Latest data point at {yesterday}', flush=True)
         else:
-            print('no data found yesterday - 1', flush=True)
+            print(f'[WARN] Data objects not found for {yesterday}', flush=True)
             return True
-    except:
-        print('no data found yesterday - 2', flush=True)
+    except Exception as error:
+        print('[ERROR] No data found: {error}', flush=True)
         return True
 
     return False
@@ -135,7 +129,11 @@ def populate_database():
     ###################################################################
     # SF model charts
     ###################################################################
-    print('Populating database for sfmodel.html, sfmodelin.html and pricesats.html, wait a moment...', flush=True)
+    print('[INFO] Populating database for graphs', flush=True) 
+    print('[INFO] - sfmodel.html', flush=True)
+    print('[INFO] - sfmodelin.html', flush=True)
+    print('[INFO] - pricesats.html', flush=True)
+    print('[INFO] wait a moment...', flush=True)
     Sfmodel.objects.all().delete()
     timevar = 1283
     v0 = 0.002
@@ -145,7 +143,7 @@ def populate_database():
     sf_aux = 0
     count_aux = 0
 
-    print('Populating XMR coin', flush=True)
+    print('[INFO] Populating XMR coin', flush=True)
 
     coins = Coin.objects.order_by('date').filter(name='xmr')
     for coin in coins:
@@ -231,7 +229,10 @@ def populate_database():
     ###################################################################
     # Daily Emissions, inflation charts and coins against bitcoin
     ###################################################################
-    print('Populating database for dailyemission.html and dailyemissionntv.html, wait a moment...')
+    print('[INFO] Populating database for graphs', flush=True)
+    print('[INFO] - dailyemission.html', flush=True)
+    print('[INFO] - dailyemissionntv.html', flush=True)
+    print('[INFO] wait a moment...', flush=True)
     DailyData.objects.all().delete()
     supply_btc = 0
     supply_xmr = 0
@@ -573,5 +574,5 @@ def populate_database():
         data.save()
         count += 1
 
-    message = 'Total of ' + str(count) + ' data generated'
+    message = f'Total of {str(count)} data generated'
     context = {'message': message}
