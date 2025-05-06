@@ -519,17 +519,17 @@ def update_database(date_from=None, date_to=None):
             try:
                 coin_dash = Coin.objects.filter(name='dash').get(date=date_aux)
             except Exception as error:
-                print(f'Something went wrong {error}', flush=True)
+                print(f'[ERROR] Something went wrong {error}', flush=True)
                 coin_dash = Coin()
             try:
                 coin_zcash = Coin.objects.filter(name='zec').get(date=date_aux)
             except Exception as error:
-                print(f'Something went wrong {error}', flush=True)
+                print(f'[ERROR] Something went wrong {error}', flush=True)
                 coin_zcash = Coin()
             try:
                 coin_grin = Coin.objects.filter(name='grin').get(date=date_aux)
             except Exception as error:
-                print(f'Something went wrong {error}', flush=True)
+                print(f'[ERROR] Something went wrong {error}', flush=True)
                 coin_grin = Coin()
 
             if coin_btc.inflation == 0 or coin_xmr.inflation == 0:
@@ -545,7 +545,7 @@ def update_database(date_from=None, date_to=None):
                     social_crypto = Social.objects.filter(name='Cryptocurrency').get(date=date_aux3)
                     found = True
                 except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
+                    print(f'[ERROR] Something went wrong {error}', flush=True)
                     found = False
                 count_aux += 1
         except:
