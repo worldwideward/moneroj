@@ -101,7 +101,7 @@ urlpatterns = [
     path("social6/", social.social6, name="social6"),
     path("social7/", social.social7, name="social7"),
     # Subscribers
-    path("dread_subscribers/", main.dread_subscribers, name="dread_subscribers"),
+    path("dread_subscribers/", subscribers.dread_subscribers, name="dread_subscribers"),
     # Adoption
     path("coincards/", adoption.coincards, name="coincards"),
     path("merchants/", adoption.merchants, name="merchants"),

@@ -231,6 +231,60 @@ def percentage(request):
     context = {'transactions': transactions, 'dates': dates, 'now_transactions': now_transactions, 'maximum': maximum}
     return render(request, 'charts/percentage.html', context)
 
+def percentmonth(request):
+    '''Monthly Percentage (XMR's tx / BTC's tx)'''
+    symbol = 'xmr'
+    transactions = []
+    pricexmr = []
+    dates = []
+    now_transactions = 0
+    maximum = 0
+
+    month_previous = '2014-01'
+    month = 0
+    total = 0
+    total_btc = 0
+    total_xmr = 0
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        aux = str(coin.date)
+        month = aux.split("-")[0] + '-' + aux.split("-")[1]
+        try:
+            coin_btc = Coin.objects.filter(name='btc').get(date=coin.date)
+        except Coin.DoesNotExist as error:
+
+            class coin_btc:
+                transactions = 0
+
+        if month != month_previous:
+            dates.append(month_previous)
+            if total_btc > 0:
+                total = 100*total_xmr/total_btc
+            else:
+                total = 0
+            transactions.append(total)
+            if total > maximum:
+                maximum = total
+            total_xmr = 0
+            total_btc = 0
+            month_previous = month
+
+        if coin.transactions > 0:
+            total_xmr += coin.transactions
+        if coin_btc.transactions > 0:
+            total_btc += coin_btc.transactions
+
+    if total_btc > 0:
+        total = 100*total_xmr/total_btc
+    else:
+        total = 0
+
+    now_transactions = locale._format('%.1f', total, grouping=True) + ' %'
+    maximum = locale._format('%.1f', maximum, grouping=True) + ' %'
+
+    context = {'transactions': transactions, 'dates': dates, 'maximum': maximum, 'now_transactions': now_transactions, 'pricexmr': pricexmr}
+    return render(request, 'charts/percentmonth.html', context)
+
 def shielded(request):
     '''Shielded Transactions'''
 
