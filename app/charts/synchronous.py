@@ -359,77 +359,39 @@ def get_latest_price(symbol):
         file.close()
     return data
 
-def update_dominance(data):
+def update_dominance(symbol, dominance):
     '''Get latest dominance value and update'''
 
-    if not data:
-        print('error updating dominance', flush=True)
-        return False
+    try:
+        model = Dominance()
+        model.name = symbol
+        model.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        model.dominance = dominance
+        model.save()
 
-    dominance = Dominance()
-    dominance.name = 'xmr'
-    dominance.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-    dominance.dominance = float(data['data']['XMR']['quote']['USD']['market_cap_dominance'])
-    dominance.save()
+    except Exception as error:
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet7", start=(2, 0), end=(9999, 2))
+        print(f'[ERROR] Something went wrong while updating the dominance of {symbol}: {error}')
+        return 1
 
-    k = len(values_mat)
-    date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-    date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-    date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+    return 0
 
-    if date_aux < date_aux2:
-
-        values_mat[k][1] = dominance.dominance
-        values_mat[k][0] = dominance.date
-
-        #TODO: Figure out where undefined vars came from
-        df.iloc[start_row:end_row, start_col:end_col] = values_mat
-        df.to_excel(DATA_FILE, sheet_name="Sheet7", index=False)
-
-        print("spreadsheet updated", flush=True)
-    else:
-        print('spreadsheet already with the latest data', flush=True)
-        return False
-
-    return data
-
-def update_rank(data=None):
+def update_rank(symbol, rank):
     '''Get latest rank value and update'''
 
-    if not data:
-        data = get_latest_price('xmr')
-    if not data:
-        print('error updating rank', flush=True)
-        return False
+    try:
+        model = Rank()
+        model.name = symbol
+        model.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
+        model.rank = rank
+        model.save()
 
-    rank = Rank()
-    rank.name = 'xmr'
-    rank.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-    rank.rank = int(data['data']['XMR']['cmc_rank'])
-    rank.save()
+    except Exception as error:
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet8", start=(2, 0), end=(9999, 2))
-    k = len(values_mat)
-    date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-    date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-    date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        print(f'[ERROR] Something went wrong while updating the rank of {symbol}: {error}')
+        return 1
 
-    if date_aux < date_aux2:
-
-        values_mat[k][1] = rank.rank
-        values_mat[k][0] = rank.date
-
-        #TODO: Figure out where undefined vars came from
-        df.iloc[start_row:end_row, start_col:end_col] = values_mat
-        df.to_excel(DATA_FILE, sheet_name="Sheet8", index=False)
-
-        print("spreadsheet updated", flush=True)
-    else:
-        print('spreadsheet already with the latest data', flush=True)
-
-    return data
+    return 0
 
 def check_new_social(symbol):
     '''Load Reddit api to check if there are new followers'''
