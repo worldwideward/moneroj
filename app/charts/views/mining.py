@@ -300,6 +300,34 @@ def minerrevcap(request):
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevcap.html', context)
 
+def commit(request):
+    '''Miner Commitment (Hashrate divided by revenue, hashs/dollar) - WARNING: DON'T COMPARE DIRECTLY BOTH COINS'''
+    data = DailyData.objects.order_by('date')
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_commitusd < 0.000001:
+            costbtc.append('')
+        else:
+            costbtc.append(item.btc_commitusd)
+            now_btc = item.btc_commitusd
+        if item.xmr_commitusd < 0.000001:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_commitusd)
+            now_xmr = item.xmr_commitusd
+
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + " hashs / dollar"
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + " hashs / dollar"
+
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/commit.html', context)
+
 def commitntv(request):
     '''Miner Commitment (Hashrate divided by revenue, hashs/coin) - WARNING: DON'T COMPARE DIRECTLY BOTH COINS'''
     data = DailyData.objects.order_by('date')
