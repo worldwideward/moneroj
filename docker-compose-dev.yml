@@ -1,0 +1,27 @@
+## Django with Static files by NGINX
+
+name: moneroj
+
+services:
+  django:
+    build:
+      context: .
+    volumes:
+      - ./data:/opt
+      - ./app:/src/app
+#    entrypoint:
+#      - "/bin/sh"
+#      - "-c"
+#      - "sleep infinity"
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - "python manage.py runserver 0.0.0.0:8000"
+    environment:
+    - TOR_SOCKS_HOST=tor-socks
+    ports:
+      - 8000:8000
+  tor-socks:
+    image: oci.300ks.net/experiments/tor:0.4.8.14
+    volumes:
+      - ./tor/torrc:/etc/tor/torrc:ro
