@@ -1,0 +1,702 @@
+'''Views module'''
+
+import requests
+import json
+import datetime
+import aiohttp
+import asyncio
+import math
+import locale
+import pandas as pd
+
+from datetime import date, timedelta
+from datetime import timezone
+from dateutil.relativedelta import relativedelta
+from requests.exceptions import Timeout, TooManyRedirects
+from requests import Session
+from operator import truediv
+from ctypes import sizeof
+from os import readlink
+
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.contrib.staticfiles.storage import staticfiles_storage
+
+from charts.models import *
+from charts.forms import *
+from charts import asynchronous
+from charts import synchronous
+from charts.synchronous import get_history_function
+from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
+
+####################################################################################
+#   Set some parameters
+####################################################################################
+locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+
+sheets = PandasSpreadSheetManager()
+
+####################################################################################
+#   Mining Charts
+####################################################################################
+
+def hashrate(request):
+    '''Monero's Hashrate'''
+
+    symbol = 'xmr'
+    hashrate = []
+    dates = []
+    now_hashrate = 0
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        dates.append(coin.date)
+        if coin.hashrate > 0:
+            now_hashrate = coin.hashrate
+            hashrate.append(coin.hashrate)
+        else:
+            hashrate.append('')
+
+    now_hashrate = locale._format('%.0f', now_hashrate, grouping=True)
+
+    context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate}
+    return render(request, 'charts/hashrate.html', context)
+
+def hashprice(request):
+    '''Price in Dollars Per Hashrate'''
+
+    symbol = 'xmr'
+    hashrate = []
+    dates = []
+    buy = []
+    sell = []
+    now_hashrate = 0
+    color = []
+    v0 = 0.002
+    delta = (0.015 - 0.002)/(6*365)
+    count = 0
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        if count > 50:
+            buy.append(0.00000003)
+            sell.append(0.00000100)
+            coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+            dates.append(coin.date)
+            if coin.hashrate > 0 and coin.priceusd > 0:
+                now_hashrate = coin.priceusd/coin.hashrate
+                hashrate.append(now_hashrate)
+            else:
+                hashrate.append('')
+            new_color = 30*coin.pricebtc/(count*delta + v0)
+            color.append(new_color)
+        count += 1
+
+    now_hashrate = locale._format('%.8f', now_hashrate, grouping=True)
+
+    context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'buy': buy, 'sell': sell}
+    return render(request, 'charts/hashprice.html', context)
+
+def hashvsprice(request):
+    ''' Price Versus Hashrate (Dollars)'''
+
+    symbol = 'xmr'
+    hashrate = []
+    prices = []
+    dates = []
+    now_hashrate = 0
+    now_priceusd = 0
+    now_pricebtc = 0
+    color = []
+    v0 = 0.002
+    delta = (0.015 - 0.002)/(6*365)
+    count = 0
+
+    coins = Coin.objects.order_by('date').filter(name=symbol)
+    for coin in coins:
+        if count > 55:
+            coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+            dates.append(coin.date)
+            if coin.priceusd > 0 and coin.hashrate:
+                now_hashrate = coin.hashrate
+                now_priceusd = coin.priceusd
+                now_pricebtc = coin.pricebtc
+                hashrate.append(now_hashrate)
+                prices.append(now_priceusd)
+            else:
+                hashrate.append('')
+                prices.append('')
+            new_color = 30*coin.pricebtc/(count*delta + v0)
+            color.append(new_color)
+        count += 1
+
+    now_hashrate = locale._format('%.0f', now_hashrate, grouping=True)
+    now_priceusd = '$' + locale._format('%.2f', now_priceusd, grouping=True)
+    now_pricebtc = locale._format('%.5f', now_pricebtc, grouping=True) + ' BTC'
+
+    context = {'hashrate': hashrate, 'dates': dates, 'now_hashrate': now_hashrate, 'color': color, 'prices': prices, 'now_pricebtc': now_pricebtc, 'now_priceusd': now_priceusd}
+    return render(request, 'charts/hashvsprice.html', context)
+
+def minerrev(request):
+    '''Miner Revenue (Dollars / day)'''
+
+    data = DailyData.objects.order_by('date')
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_minerrevusd < 0.0001:
+            costbtc.append('')
+        else:
+            costbtc.append(item.btc_minerrevusd)
+            now_btc = item.btc_minerrevusd
+        if item.xmr_minerrevusd < 0.0001:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerrevusd)
+            now_xmr = item.xmr_minerrevusd
+
+    now_btc = "$" + locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = "$" + locale._format('%.2f', now_xmr, grouping=True)
+
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/minerrev.html', context)
+
+def minerrevntv(request):
+    '''Daily Miner Revenue (Fees plus new coins, Native Units / day)'''
+
+    data = DailyData.objects.order_by('date')
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_minerrevntv < 0.0001:
+            costbtc.append('')
+        else:
+            costbtc.append(item.btc_minerrevntv)
+            now_btc = item.btc_minerrevntv
+        if item.xmr_minerrevntv < 0.0001:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerrevntv)
+            now_xmr = item.xmr_minerrevntv
+
+    now_btc = locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
+
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/minerrevntv.html', context)
+
+def minerfees(request):
+    '''Miner Fees (Fees excluded new coins, Dollars)'''
+
+    data = DailyData.objects.order_by('date')
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_minerfeesusd < 1:
+            costbtc.append('')
+        else:
+            costbtc.append(item.btc_minerfeesusd)
+            now_btc = item.btc_minerfeesusd
+        if item.xmr_minerfeesusd < 1:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerfeesusd)
+            now_xmr = item.xmr_minerfeesusd
+
+    now_btc = locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
+
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/minerfees.html', context)
+
+def minerfeesntv(request):
+    '''Miner Fees (Fees excluded new coins, Native Units)'''
+
+    data = DailyData.objects.order_by('date')
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_minerfeesntv < 0.1:
+            costbtc.append('')
+        else:
+            costbtc.append(item.btc_minerfeesntv)
+            now_btc = item.btc_minerfeesntv
+        if item.xmr_minerfeesntv < 0.1:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerfeesntv)
+            now_xmr = item.xmr_minerfeesntv
+
+    now_btc = locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
+
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/minerfeesntv.html', context)
+
+def miningprofitability(request):
+    '''Monero Mining Profitability (USD/day for 1 KHash/s)'''
+
+    dates = []
+    value = []
+    now_value = 0
+
+    coins = Coin.objects.order_by('date').filter(name='xmr')
+    for coin in coins:
+        if coin.hashrate > 0 and coin.priceusd > 0 and coin.revenue > 0:
+            if 1000*coin.priceusd*coin.revenue/coin.hashrate < 5000:
+                now_value = 1000*coin.priceusd*coin.revenue/coin.hashrate
+                dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+                value.append(now_value)
+
+    context = {'value': value, 'dates': dates}
+    return render(request, 'charts/miningprofitability.html', context)
+
+def minerrevcap(request):
+    '''Annualized Miner Revenue / Marketcap (Fees plus new coins, percentage)'''
+
+    data = DailyData.objects.order_by('date')
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.xmr_minerrevcap == 0:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_minerrevcap)
+            now_xmr = item.xmr_minerrevcap
+        if item.btc_minerrevcap == 0:
+            costbtc.append('')
+        else:
+            costbtc.append(item.btc_minerrevcap)
+            now_btc = item.btc_minerrevcap
+
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + "%"
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + "%"
+
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/minerrevcap.html', context)
+
+def commitntv(request):
+    '''Miner Commitment (Hashrate divided by revenue, hashs/coin) - WARNING: DON'T COMPARE DIRECTLY BOTH COINS'''
+    data = DailyData.objects.order_by('date')
+    costbtc = []
+    costxmr = []
+    dates = []
+    now_btc = 0
+    now_xmr = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_commitntv < 0.00001:
+            costbtc.append('')
+        else:
+            costbtc.append(item.btc_commitntv)
+            now_btc = item.btc_commitntv
+        if item.xmr_commitntv < 0.00001:
+            costxmr.append('')
+        else:
+            costxmr.append(item.xmr_commitntv)
+            now_xmr = item.xmr_commitntv
+
+    now_btc = locale._format('%.0f', now_btc, grouping=True) + " hashs / btc"
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True) + " hashs / xmr"
+
+    context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/commitntv.html', context)
+
+def blocksize(request):
+    '''Average Block Size for both Monero and Bitcoin (KB)'''
+
+    data = DailyData.objects.order_by('date')
+
+    xmr_blocksize = []
+    btc_blocksize = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        if item.btc_blocksize > 0.001:
+            btc_blocksize.append(item.btc_blocksize/1024)
+            now_btc = item.btc_blocksize
+        else:
+            btc_blocksize.append('')
+
+        if item.xmr_blocksize > 0.001:
+            xmr_blocksize.append(item.xmr_blocksize/1024)
+            now_xmr = item.xmr_blocksize
+        else:
+            xmr_blocksize.append('')
+
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + ' bytes'
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + ' bytes'
+
+    context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/blocksize.html', context)
+
+def blockchainsize(request):
+    '''Total Blockchain Size for Monero and Bitcoin (KB)'''
+    data = DailyData.objects.order_by('date')
+
+    xmr_blocksize = []
+    btc_blocksize = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+    hardfork = datetime.datetime.strptime('2016-03-23', '%Y-%m-%d') #block time changed here
+
+    for item in data:
+        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        dates.append(date)
+        date = datetime.datetime.strptime(date, '%Y-%m-%d')
+
+        if item.btc_blocksize > 0.001 and item.btc_transactions > 0:
+            now_btc += 144*item.btc_blocksize/1024
+            if now_btc < 200:
+                btc_blocksize.append('')
+            else:
+                btc_blocksize.append(now_btc)
+        else:
+            btc_blocksize.append('')
+
+        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:
+            if date < hardfork:
+                now_xmr += 1440*item.xmr_blocksize/1024
+            else:
+                now_xmr += 720*item.xmr_blocksize/1024
+
+            if now_xmr < 200:
+                xmr_blocksize.append('')
+            else:
+                xmr_blocksize.append(now_xmr)
+        else:
+            xmr_blocksize.append('')
+
+    now_btc = locale._format('%.2f', now_btc/(1024*1024), grouping=True) + ' Gb'
+    now_xmr = locale._format('%.2f', now_xmr/(1024*1024), grouping=True) + ' Gb'
+
+    context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/blockchainsize.html', context)
+
+def transactionsize(request):
+    '''Average Transaction Size for both Monero and Bitcoin (KB)'''
+
+    data = DailyData.objects.order_by('date')
+
+    xmr_blocksize = []
+    btc_blocksize = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_blocksize > 0.001 and item.btc_transactions > 0:
+            now_btc = 144*item.btc_blocksize/(1024*item.btc_transactions)
+            btc_blocksize.append(144*item.btc_blocksize/(1024*item.btc_transactions))
+        else:
+            btc_blocksize.append('')
+
+        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:
+            now_xmr = 720*item.xmr_blocksize/(1024*item.xmr_transactions)
+            xmr_blocksize.append(720*item.xmr_blocksize/(1024*item.xmr_transactions))
+        else:
+            xmr_blocksize.append('')
+
+    now_btc = locale._format('%.2f', now_btc, grouping=True) + ' bytes'
+    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + ' bytes'
+
+    context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/transactionsize.html', context)
+
+def difficulty(request):
+    '''Mining Difficulty'''
+    data = DailyData.objects.order_by('date')
+
+    xmr_difficulty = []
+    btc_difficulty = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+
+    for item in data:
+        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+
+        if item.btc_difficulty > 0.001:
+            now_btc = item.btc_difficulty
+            btc_difficulty.append(now_btc)
+        else:
+            btc_difficulty.append('')
+
+        if item.xmr_difficulty > 0.001:
+            now_xmr = item.xmr_difficulty
+            xmr_difficulty.append(now_xmr)
+        else:
+            xmr_difficulty.append('')
+
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
+
+    context = {'xmr_difficulty': xmr_difficulty, 'btc_difficulty': btc_difficulty, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/difficulty.html', context)
+
+def securitybudget(request):
+    '''Security Budget for Monero and Bitcoin (Dollars/second)'''
+    data = DailyData.objects.order_by('date')
+
+    xmr_security = []
+    btc_security = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+
+    for item in data:
+        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        dates.append(date)
+        if item.btc_minerrevusd > 0.001:
+            now_btc = item.btc_minerrevusd/86400
+            btc_security.append(now_btc)
+        else:
+            btc_security.append('')
+
+        if item.xmr_minerrevusd > 0.001:
+            now_xmr = item.xmr_minerrevusd/86400
+            xmr_security.append(now_xmr)
+        else:
+            xmr_security.append('')
+
+    now_btc = '$' + locale._format('%.2f', now_btc, grouping=True)
+    now_xmr = '$' + locale._format('%.2f', now_xmr, grouping=True)
+
+    context = {'xmr_security': xmr_security, 'btc_security': btc_security, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/securitybudget.html', context)
+
+def efficiency(request):
+    '''Breakeven efficiency required for mining profitability for Monero and Bitcoin (at $0.10/KWh, Hashes/Watt*second)'''
+    data = DailyData.objects.order_by('date')
+
+    xmr_efficiency = []
+    btc_efficiency = []
+    dates = []
+    now_xmr = 0
+    now_btc = 0
+
+    for item in data:
+        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        dates.append(date)
+        if item.btc_minerrevusd != 0 and item.btc_inflation > 0:
+            if (2**32)*item.btc_difficulty*0.10/(item.btc_minerrevusd*24000) > 10:
+                now_btc = (2**32)*item.btc_difficulty*0.10/(item.btc_minerrevusd*24000)
+            if now_btc > 0.01:
+                btc_efficiency.append(now_btc)
+            else:
+                btc_efficiency.append('')
+        else:
+            btc_efficiency.append('')
+
+        if item.xmr_minerrevusd != 0 and item.xmr_inflation > 0:
+            if item.xmr_difficulty*0.10/(item.xmr_minerrevusd*5000) > 0.01:
+                now_xmr = item.xmr_difficulty*0.10/(item.xmr_minerrevusd*5000)
+            if now_xmr > 0.01:
+                xmr_efficiency.append(now_xmr)
+            else:
+                xmr_efficiency.append('')
+        else:
+            xmr_efficiency.append('')
+
+    now_btc = locale._format('%.0f', now_btc, grouping=True)
+    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
+
+    context = {'xmr_efficiency': xmr_efficiency, 'btc_efficiency': btc_efficiency, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    return render(request, 'charts/efficiency.html', context)
+
+def p2pool_hashrate(request):
+    '''P2Pool and P2Pool_mini Hashrate (MH/s)'''
+    hashrate = []
+    hashrate_mini = []
+    combined = []
+    dates = []
+    now_hashrate = 0
+    now_hashrate_mini = 0
+    now_combined = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
+    for p2pool_stat in p2pool_stats:
+        now_combined = 0
+        if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
+            now_hashrate = p2pool_stat.hashrate/1000000
+            now_combined = p2pool_stat.hashrate/1000000
+        hashrate.append(now_hashrate)
+
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.hashrate and p2pool_stat_mini.percentage > 0:
+                now_hashrate_mini = p2pool_stat_mini.hashrate/1000000
+                now_combined += p2pool_stat_mini.hashrate/1000000
+        except:
+            pass
+        hashrate_mini.append(now_hashrate_mini)
+        combined.append(now_combined)
+
+        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+
+    context = {'hashrate': hashrate, 'dates': dates, 'hashrate_mini': hashrate_mini, 'combined': combined}
+    return render(request, 'charts/p2pool_hashrate.html', context)
+
+def p2pool_dominance(request):
+    '''P2Pool and P2Pool_mini Market Share (%)'''
+    dominance = []
+    dominance_mini = []
+    dates = []
+    combined = []
+    now_dominance = 0
+    now_dominance_mini = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
+    for p2pool_stat in p2pool_stats:
+        now_combined = 0
+        if p2pool_stat.hashrate and p2pool_stat.percentage > 0:
+            now_dominance = p2pool_stat.percentage
+            now_combined += p2pool_stat.percentage
+        dominance.append(now_dominance)
+
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.hashrate and p2pool_stat_mini.percentage > 0:
+                now_dominance_mini = p2pool_stat_mini.percentage
+                now_combined += p2pool_stat_mini.percentage
+        except:
+            pass
+        dominance_mini.append(now_dominance_mini)
+        combined.append(now_combined)
+
+        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+
+    context = {'dominance': dominance, 'dates': dates, 'dominance_mini': dominance_mini,'combined': combined}
+    return render(request, 'charts/p2pool_dominance.html', context)
+
+def p2pool_miners(request):
+    '''P2Pool and P2Pool_mini Miners'''
+
+    miners = []
+    miners_mini = []
+    dates = []
+    combined = []
+    now_miners = 0
+    now_miners_mini = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
+    for p2pool_stat in p2pool_stats:
+        now_combined = 0
+        if p2pool_stat.miners > 0:
+            now_miners = p2pool_stat.miners
+            now_combined += p2pool_stat.miners
+        miners.append(now_miners)
+
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.miners > 0:
+                now_miners_mini = p2pool_stat_mini.miners
+                now_combined += p2pool_stat_mini.miners
+        except:
+            pass
+        miners_mini.append(now_miners_mini)
+        combined.append(now_combined)
+
+        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+
+    context = {'miners': miners, 'dates': dates, 'miners_mini': miners_mini, 'combined': combined}
+    return render(request, 'charts/p2pool_miners.html', context)
+
+def p2pool_totalblocks(request):
+    '''P2Pool Blocks Found'''
+    dates = []
+    totalblocks = []
+    totalblocks_mini = []
+    combined = []
+    now_totalblocks = 0
+    now_totalblocks_mini = 0
+    now_combined = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
+    for p2pool_stat in p2pool_stats:
+        now_combined = 0
+        if p2pool_stat.totalblocksfound > now_totalblocks:
+            now_totalblocks = p2pool_stat.totalblocksfound
+            now_combined += p2pool_stat.totalblocksfound
+        totalblocks.append(now_totalblocks)
+
+        p2pool_stats_mini = P2Pool.objects.filter(mini=True).filter(date=p2pool_stat.date)
+        for p2pool_stat_mini in p2pool_stats_mini:
+            if p2pool_stat_mini.totalblocksfound >= now_totalblocks_mini:
+                now_totalblocks_mini = p2pool_stat_mini.totalblocksfound
+                now_combined += p2pool_stat_mini.totalblocksfound
+                break
+
+
+        totalblocks_mini.append(now_totalblocks_mini)
+        combined.append(now_combined)
+
+        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+
+    context = {'totalblocks': totalblocks, 'totalblocks_mini': totalblocks_mini, 'dates': dates, 'combined': combined}
+    return render(request, 'charts/p2pool_totalblocks.html', context)
+
+def p2pool_totalhashes(request):
+    '''P2Pool Total Hashes (Tera Hashes) Found'''
+    dates = []
+    totalblocks = []
+    totalblocks_mini = []
+    combined = []
+    now_totalblocks = 0
+    now_totalblocks_mini = 0
+    now_combined = 0
+
+    p2pool_stats = P2Pool.objects.order_by('date').filter(mini=False)
+    for p2pool_stat in p2pool_stats:
+        now_combined = 0
+        if p2pool_stat.totalhashes > now_totalblocks:
+            now_totalblocks = p2pool_stat.totalhashes/1000000000000
+            now_combined += p2pool_stat.totalhashes/1000000000000
+        totalblocks.append(now_totalblocks)
+
+        try:
+            p2pool_stat_mini = P2Pool.objects.filter(mini=True).get(date=p2pool_stat.date)
+            if p2pool_stat_mini.totalhashes >= now_totalblocks_mini:
+                now_totalblocks_mini = p2pool_stat_mini.totalhashes/1000000000000
+                now_combined += p2pool_stat_mini.totalhashes/1000000000000
+        except:
+            pass
+        totalblocks_mini.append(now_totalblocks_mini)
+        combined.append(now_combined)
+
+        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+
+    context = {'totalblocks': totalblocks, 'totalblocks_mini': totalblocks_mini, 'dates': dates, 'combined': combined}
+    return render(request, 'charts/p2pool_totalhashes.html', context)
