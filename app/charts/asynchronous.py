@@ -2,23 +2,65 @@ import os
 import aiohttp
 import asyncio
 import json
-from .synchronous import *
 import datetime
-from datetime import date, timedelta
-from .models import Coin, Social, P2Pool
 import requests
+from datetime import date, timedelta
 from django.conf import settings
+
+from .models import Coin, Social, P2Pool
+from .synchronous import *
+from .synchronous import update_rank
+from .synchronous import update_dominance
 from .spreadsheets import PandasSpreadSheetManager
+from .utils import get_today, get_yesterday
+from .utils import get_socks_proxy
 
 BASE_DIR = settings.BASE_DIR
 
 sheets = PandasSpreadSheetManager()
 
+LOCAL_MONERO_API = "https://localmonero.co/blocks/api"
+XMR_BLOCKCHAIN_EXPLORER_API = settings.XMR_BLOCKCHAIN_EXPLORER_API
+METRICS_API = settings.METRICS_API
+
+MARKET_DATA_API = settings.MARKET_DATA_API
+MARKET_DATA_API_KEY = settings.MARKET_DATA_API_KEY
+
+# Async client configuration
+ASYNC_TIMEOUT = aiohttp.ClientTimeout(
+    total=10,
+    sock_connect=10,
+    sock_read=10
+    )
+
+ASYNC_CLIENT_ARGS = dict(
+    trust_env=True,
+    timeout=ASYNC_TIMEOUT
+    )
+
+def get_coin_id(symbol: str):
+
+    if symbol == 'xmr':
+        coin_id = "monero"
+    elif symbol == 'btc':
+        coin_id = "bitcoin"
+    elif symbol == 'zec':
+        coin_id = "zcash"
+    elif symbol == 'dash':
+        coin_id = 'dash'
+    elif symbol == 'grin':
+        coin_id = 'grin'
+    else:
+        return None
+
+    return coin_id
+
 ####################################################################################
 #   Asynchronous get block data from xmrchain
 #################################################################################### 
 async def get_block_data(session, block: str):
-    url = 'https://localmonero.co/blocks/api/get_block_data/' + block
+    url = f'{LOCAL_MONERO_API}/get_block_data/{block}'
+
     async with session.get(url) as res:
         data = await res.read()
         data = json.loads(data)
@@ -33,7 +75,7 @@ async def get_block_data(session, block: str):
 #   Asynchronous get network data from xmrchain
 #################################################################################### 
 async def get_network_data(session, block: str):
-    url = 'https://xmrchain.net/api/networkinfo'
+    url = f'{XMR_BLOCKCHAIN_EXPLORER_API}/networkinfo'
     async with session.get(url) as res:
         data = await res.read()
         data = json.loads(data)
@@ -47,30 +89,88 @@ async def get_network_data(session, block: str):
 ####################################################################################
 #   Asynchronous get coinmarketcap data for price USD and BTC
 #################################################################################### 
-async def get_coinmarketcap_data(session, symbol: str, convert: str):
-    with open(BASE_DIR / "settings.json") as file:
-        data = json.load(file)
-        file.close()
+async def get_coin_rank_data(session, symbol: str):
+    '''Get the current rank of a cryptocurrency coin'''
 
-    url = data["metrics_provider"][0]["price_url_old"] + symbol
-    parameters = {'convert': convert,}
-    headers = {'Accepts': 'application/json', data["metrics_provider"][0]["api_key_name"]: data["metrics_provider"][0]["api_key_value"],}
+    coin_id = get_coin_id(symbol)
 
-    async with session.get(url, headers=headers, params=parameters) as res:
-        data = await res.read()
-        data = json.loads(data)
-        data['provider'] = 'coinmarketcap'
-        if res.status < 299:
-            try:
-                if data['data'][symbol.upper()]['cmc_rank']:
-                    data['success'] = True
-                else:
-                    data['success'] = False
-            except:
-                data['success'] = False
-        else:
-            data['success'] = False
-        return data
+    url = f'{MARKET_DATA_API}/coins/{coin_id}'
+
+    headers = {
+            "Content-Type": "application/json",
+            "x-cg-demo-api-key": MARKET_DATA_API_KEY
+            }
+
+    params = {
+            "localization": "false",
+            "ticker": "false",
+            "market_data": "false",
+            "community_data": "false",
+            "developer_data": "false",
+            "sparkline": "false"
+            }
+
+    async with session.get(url, headers=headers, params=params) as response:
+
+        data = await response.read()
+        json_data = json.loads(data)
+
+        if response.status == 200:
+            rank = json_data["market_cap_rank"]
+
+        if response.status != 200:
+            return None
+
+    return rank
+
+async def get_coin_dominance_data(session, symbol: str):
+    '''Get the current dominance of a cryptocurrency coin'''
+
+    coin_id = get_coin_id(symbol)
+
+    url = f'{MARKET_DATA_API}/coins/{coin_id}'
+
+    headers = {
+            "Content-Type": "application/json",
+            "x-cg-demo-api-key": MARKET_DATA_API_KEY
+            }
+
+    params = {
+            "localization": "false",
+            "ticker": "false",
+            "market_data": "true",
+            "community_data": "false",
+            "developer_data": "false",
+            "sparkline": "false"
+            }
+
+    async with session.get(url, headers=headers, params=params) as response:
+
+        data = await response.read()
+        json_data = json.loads(data)
+
+        if response.status == 200:
+            coin_market_cap = json_data["market_data"]["market_cap"]["usd"]
+
+        if response.status != 200:
+            return None
+
+    url = f'{MARKET_DATA_API}/global'
+
+    async with session.get(url, headers=headers) as response:
+
+        data = await response.read()
+        json_data = json.loads(data)
+
+        if response.status == 200:
+            total_market_cap = json_data["data"]["total_market_cap"]["usd"]
+
+        if response.status != 200:
+            return None
+
+    dominance = round(( coin_market_cap / total_market_cap ) * 100, 2)
+
+    return dominance
 
 ####################################################################################
 #   Asynchronous get coinmetrics data for any coin inside URL
@@ -79,7 +179,7 @@ async def get_coin_data(session, symbol, url):
     update = True
     count = 0
 
-    while update: 
+    while update:
         async with session.get(url) as res:
             data = await res.read()
             data = json.loads(data)
@@ -145,25 +245,19 @@ async def get_coin_data(session, symbol, url):
 ####################################################################################
 #   Asynchronous get social metrics from reddit
 #################################################################################### 
-#async def get_social_data(session, symbol):
-#async def get_social_data(symbol):
 def get_social_data(symbol):
-    yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
+    yesterday = yesterday()
     try:
         social = Social.objects.filter(name=symbol).get(date=yesterday)
     except:
 
         session = requests.session()
 
-        tor_host = os.environ["TOR_SOCKS_HOST"]
+        url = f'{settings.REDDIT_API_URL}/r/{symbol}/about.json'
 
-        #url = 'https://www.reddit.com/r/'+ symbol +'/about.json'
-        url = 'https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion/r/'+ symbol +'/about.json'
+        if settings.SOCKS_PROXY_ENABLED is True:
 
-        session.proxies = {
-                'http': f'socks5h://{tor_host}:9050',
-                'https': f'socks5h://{tor_host}:9050'
-        }
+            session.proxies = get_socks_proxy()
 
         with session.get(url, headers={'User-agent': 'Checking new social data'}) as res:
             data = res.content
@@ -189,167 +283,47 @@ def get_social_data(symbol):
 ####################################################################################
 #   Asynchronous get whole xmr data calling coinmarketcap and xmrchain
 #################################################################################### 
-async def update_xmr_data(yesterday, coin):
-    name = coin.name
-    #Coin.objects.filter(name=coin.name).filter(date=yesterday).delete()
+async def update_xmr_data():
 
-    url = 'https://localmonero.co/blocks/api/get_stats'
-    response = requests.get(url)
-    data = json.loads(response.text)
-    height = int(data['height'])
-    difficulty = int(data['difficulty'])
-    hashrate = int(data['hashrate'])
-    supply = int(data['total_emission'])
-    blocksize = 0        
-    actions = []
+    symbol = 'xmr'
 
-    my_timeout = aiohttp.ClientTimeout(
-        total=10,
-        sock_connect=10, 
-        sock_read=10 
-    )
-    client_args = dict(
-        trust_env=True,
-        timeout=my_timeout
-    )
+    async with aiohttp.ClientSession(**ASYNC_CLIENT_ARGS) as session:
 
-    async with aiohttp.ClientSession(**client_args) as session:  
-        #for count in range(1, 1400):
-        #    block = str(height - count)
-        #    actions.append(asyncio.ensure_future(get_block_data(session, block)))
-        actions.append(asyncio.ensure_future(get_coinmarketcap_data(session, 'xmr', 'USD')))
-        actions.append(asyncio.ensure_future(get_coinmarketcap_data(session, 'xmr', 'BTC')))
+        rank = await get_coin_rank_data(session, symbol)
 
-        try:
-            responses = await asyncio.gather(*actions, return_exceptions=True)
-        except asyncio.exceptions.TimeoutError:
-            print('Timeout!')
+    result = update_rank(symbol, rank)
 
-        errors = 0
-        success = 0
-        txs = 0
-        revenue = 0
-        fees = 0
-        priceusd = 0
-        pricebtc = 0
-        for response in responses:
-            if response:
-                try:
-                    # if response['provider'] == 'localmonero':
-                    #     date_aux = response['block_header']['timestamp']
-                    #     if date_aux == yesterday:
-                    #         try:
-                    #             blocksize += int(response['block_header']['size'])
-                    #             for tx in response['block_header']['txs']:
-                    #                 if tx['coinbase']:
-                    #                     revenue += int(tx['xmr_outputs'])
-                    #                 else:
-                    #                     txs += 1
-                    #                     fees += int(tx['tx_fee'])
-                    #                     revenue += int(tx['tx_fee'])
-                    #             success += 1
-                    #         except:
-                    #             errors += 1
+    if result != 0:
+        return False
 
-                    if response['provider'] == 'coinmarketcap':
-                        try:
-                            #priceusd = float(response['data']['XMR']['quote']['USD']['price'])
-                            update_rank(response)    
-                            update_dominance(response)
-                        except:
-                            try:
-                                pricebtc = float(response['data']['XMR']['quote']['BTC']['price'])
-                            except:
-                                errors += 1
-                except:
-                    errors += 1
-            else:
-                errors += 1
+    async with aiohttp.ClientSession(**ASYNC_CLIENT_ARGS) as session:
 
-        # blocksize = blocksize/success
-        # revenue = float(revenue)/10**12
-        # fees = float(fees)/10**12
-        # inflation = 100*365*(revenue)/float(coin.supply)
-        # stocktoflow = (100/inflation)**1.65 
-        # supply = coin.supply + revenue
+        dominance = await get_coin_dominance_data(session, symbol)
 
-        # try:        
-        #     coin = Coin.objects.filter(name='xmr').get(date=yesterday)
-        #     coin.name = name
-        #     coin.date = datetime.datetime.strptime(yesterday, '%Y-%m-%d')
-        #     coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
-        #     #coin.blocksize = blocksize
-        #     #coin.transactions = txs
-        #     #coin.revenue = revenue
-        #     #coin.fee = fees
-        #     #coin.inflation = inflation
-        #     #coin.hashrate = hashrate
-        #     #coin.difficulty = difficulty
-        #     #coin.stocktoflow = stocktoflow
-        #     coin.priceusd = priceusd
-        #     coin.pricebtc = pricebtc
-        #     #coin.supply = supply
-        #     coin.save()
+    result = update_dominance(symbol, dominance)
 
-        #     # print('Success: ' + str(success))
-        #     # print('Errors: ' + str(errors))
-        #     # print('Name: ' + coin.name)
-        #     # print('Date: ' + str(coin.date))
-        #     # print('Blocksize: ' + str(coin.blocksize))
-        #     # print('Transactions: ' + str(coin.transactions))
-        #     # print('Revenue: ' + str(coin.revenue))
-        #     # print('Fees: ' + str(coin.fee))
-        #     # print('Inflation: ' + str(coin.inflation))
-        #     # print('Hashrate: ' + str(coin.hashrate))
-        #     # print('Stocktoflow: ' + str(coin.stocktoflow))
-        #     # print('Priceusd: ' + str(coin.priceusd))
-        #     # print('Pricebtc: ' + str(coin.pricebtc))
-        #     # print('Supply: ' + str(coin.supply))
-        # except:
-        #     return False
+    if result != 0:
+        return False
+
+    print('[INFO] Updated XMR')
+    print(f'[INFO] XMR rank: {rank}')
+    print(f'[INFO] XMR dominance: {dominance}')
+
     return True
 
 ####################################################################################
 #   Asynchronous get social and coins data
 #################################################################################### 
-async def update_others_data(date):
-    with open(BASE_DIR / "settings.json") as file:
-        data = json.load(file)
-        file.close()
+async def update_coin_data(coin, date):
 
-    url_btc = data["metrics_provider"][0]["metrics_url_new"] + 'btc/' + date 
-    url_dash = data["metrics_provider"][0]["metrics_url_new"] + 'dash/' + date
-    url_grin = data["metrics_provider"][0]["metrics_url_new"] + 'grin/' + date 
-    url_zec = data["metrics_provider"][0]["metrics_url_new"] + 'zec/' + date
-    actions = []
+    url = f'http://162.210.173.181/coinmetrics/{coin}/{date}'
 
-    my_timeout = aiohttp.ClientTimeout(
-        total=10,
-        sock_connect=10, 
-        sock_read=10 
-    )
-    client_args = dict(
-        trust_env=True,
-        timeout=my_timeout
-    )
+    async with aiohttp.ClientSession(**ASYNC_CLIENT_ARGS) as session:
 
-    async with aiohttp.ClientSession(**client_args) as session:  
-        # reddit data
-        #actions.append(asyncio.ensure_future(get_social_data(session, 'Monero')))
-        #actions.append(asyncio.ensure_future(get_social_data(session, 'Bitcoin')))
-        #actions.append(asyncio.ensure_future(get_social_data(session, 'Cryptocurrency')))
-        # coinmetrics data
-        actions.append(asyncio.ensure_future(get_coin_data(session, 'btc', url_btc)))
-        actions.append(asyncio.ensure_future(get_coin_data(session, 'dash', url_dash)))
-        actions.append(asyncio.ensure_future(get_coin_data(session, 'grin', url_grin)))
-        actions.append(asyncio.ensure_future(get_coin_data(session, 'zec', url_zec)))
-        actions.append(asyncio.ensure_future(get_p2pool_data(session, mini=False)))
-        actions.append(asyncio.ensure_future(get_p2pool_data(session, mini=True)))
+        asyncio.ensure_future(get_coin_data(session, coin, url))
 
-        try:
-            await asyncio.gather(*actions, return_exceptions=True)
-        except asyncio.exceptions.TimeoutError:
-            print('Timeout!')
+        #actions.append(asyncio.ensure_future(get_p2pool_data(session, mini=False)))
+        #actions.append(asyncio.ensure_future(get_p2pool_data(session, mini=True)))
 
     return True
 
@@ -359,17 +333,8 @@ async def update_others_data(date):
 async def update_social_data(symbol):
 
     actions = []
-    my_timeout = aiohttp.ClientTimeout(
-        total=10,
-        sock_connect=10, 
-        sock_read=10 
-    )
-    client_args = dict(
-        trust_env=True,
-        timeout=my_timeout
-    )
 
-    async with aiohttp.ClientSession(**client_args) as session:
+    async with aiohttp.ClientSession(**ASYNC_CLIENT_ARGS) as session:
         # reddit data
         actions.append(asyncio.ensure_future(get_social_data(session, 'Monero')))
         actions.append(asyncio.ensure_future(get_social_data(session, 'Bitcoin')))
