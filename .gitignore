@@ -4,3 +4,8 @@ venv/
 *.sqlite3-journal
 data/
 .vscode/
+*.key
+*.json
+*dev.sh
+coingecko.sh
+app/static
