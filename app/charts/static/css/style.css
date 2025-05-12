@@ -422,6 +422,9 @@ section {
   text-justify: inter-word;
 }
 
+.why-us .icon-boxes .icon-box p a {
+  color: #ff4d21;
+}
 
 /*--------------------------------------------------------------
 # Articles
