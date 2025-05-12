@@ -11,7 +11,7 @@ from tasks.data_sync import check_monero_available
 from tasks.data_sync import check_competitors_for_updates
 from tasks.data_sync import check_daily_objects_for_updates
 from tasks.data_sync import xmr_updates
-from tasks.data_sync import competitors_updates
+#from tasks.data_sync import competitors_updates
 from tasks.data_sync import daily_objects_updates
 from tasks.data_sync import populate_database
 
@@ -53,9 +53,9 @@ def work():
         ### check competitor updates
         result = check_competitors_for_updates(yesterday)
 
-        if result is True:
-            print("[INFO] Executing Competitor updates..", flush=True)
-            await competitors_updates(yesterday)
+#        if result is True:
+#            print("[INFO] Executing Competitor updates..", flush=True)
+#            await competitors_updates(yesterday)
 
         result = check_daily_objects_for_updates(yesterday)
 
@@ -65,6 +65,9 @@ def work():
 
         ### Populate the database
         populate_database()
+
+        ### Load marketcap and dominance
+        #load_dominance()
 
 
         print('[INFO] Executed all jobs', flush=True)

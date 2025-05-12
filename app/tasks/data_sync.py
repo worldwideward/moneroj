@@ -10,7 +10,7 @@ from charts.models import Sfmodel
 from charts.models import Social
 from charts.models import DailyData
 from charts.asynchronous import update_xmr_data
-from charts.asynchronous import update_others_data
+#from charts.asynchronous import update_others_data
 from charts.synchronous import update_database
 from charts.synchronous import get_history_function
 
@@ -61,16 +61,9 @@ def check_monero_available() -> str:
     return message
 
 async def xmr_updates(yesterday, date_aux):
-    '''Update XMR data from the last day'''
+    '''Update XMR dominance & rank from the last day'''
 
-    try:
-        coin_xmr = list(Coin.objects.filter(name='xmr').order_by('-date'))[0]
-    except Exception as error:
-        coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
-        print(f'Error during XMR updates: {error}', flush=True)
-
-    get_history_function('xmr', yesterday, yesterday)
-    await update_xmr_data(yesterday, coin_xmr)
+    await update_xmr_data()
 
     return None
 
@@ -95,10 +88,10 @@ def check_competitors_for_updates(yesterday) -> bool:
     return result
 
 
-async def competitors_updates(yesterday):
-    '''Update data from non-XMR coins'''
-
-    await update_others_data(yesterday)
+#async def competitors_updates(yesterday):
+#    '''Update data from non-XMR coins'''
+#
+#    await update_others_data(yesterday)
 
 def check_daily_objects_for_updates(yesterday) -> bool:
     '''Check if recent data in the database is present'''
