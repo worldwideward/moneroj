@@ -10,6 +10,8 @@ from .models import Coin
 from .models import Social
 from .models import DailyData
 from .models import Usage
+from .models import Dominance
+from .models import Rank
 from .forms import CsvImportForm
 
 @admin.register(Coin)
@@ -75,6 +77,22 @@ class UsageAdmin(admin.ModelAdmin):
 @admin.register(Social)
 class SocialAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(Dominance)
+class DominanceAdmin(admin.ModelAdmin):
+    list_display = ["name", "date"]
+    list_filter = ["name", "date"]
+    list_per_page = 10
+    search_fields = ["name"]
+    ordering = ["date"]
+
+@admin.register(Rank)
+class RankAdmin(admin.ModelAdmin):
+    list_display = ["name", "date"]
+    list_filter = ["name", "date"]
+    list_per_page = 10
+    search_fields = ["name"]
+    ordering = ["date"]
 
 @admin.register(DailyData)
 class DailyDataAdmin(admin.ModelAdmin):
