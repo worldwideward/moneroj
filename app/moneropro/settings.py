@@ -29,11 +29,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 CELERYD_CHDIR=BASE_DIR
 CELERY_BIN="/usr/local/bin/celery"
 
+SOCKS_PROXY_ENABLED = True
+SOCKS_PROXY_HOST = "10.10.10.1"
+SOCKS_PROXY_PORT = "1080"
+
+MARKET_DATA_API = "https://api.coingecko.com/api/v3"
+MARKET_DATA_API_KEY = os.getenv("COINGECKO_API_KEY")
+
+XMR_BLOCKCHAIN_EXPLORER_API = "https://xmrchain.net/api"
+REDDIT_API_URI = "https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion"
+
+METRICS_API = "https://api.coinmetrics.io/v4"
+
 # TODO: Handle the following settings dynamically.
 DEBUG = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATIC_URL = "/static"
+STATIC_URL = "/static/"
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 
 # SECURITY WARNING: keep the secret key used in production secret!
