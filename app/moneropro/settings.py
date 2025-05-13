@@ -39,8 +39,6 @@ MARKET_DATA_API_KEY = os.getenv("COINGECKO_API_KEY")
 XMR_BLOCKCHAIN_EXPLORER_API = "https://xmrchain.net/api"
 REDDIT_API_URI = "https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion"
 
-METRICS_API = "https://api.coinmetrics.io/v4"
-
 # TODO: Handle the following settings dynamically.
 DEBUG = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
