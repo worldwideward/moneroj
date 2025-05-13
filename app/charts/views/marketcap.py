@@ -70,7 +70,6 @@ def dominance(request):
                 values.append('')
 
         except Exception as error:
-            #print(f'[ERRPR] Error loading Dominance: {error}')
             values.append('')
 
         if data_point.priceusd > 0.001:
