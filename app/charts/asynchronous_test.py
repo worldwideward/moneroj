@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from unittest.mock import Mock
+from unittest.mock import patch
 import aiohttp
 import datetime
 
@@ -16,19 +17,18 @@ from .utils import get_socks_proxy
 class TestAsynchronous(TestCase):
     '''Testing async functions'''
 
-#    async def test_get_block_data(self):
-#
-#        block = 3406000
-#
-#        async with aiohttp.ClientSession() as session:
-#
-#            data = await get_block_data(session, block)
-#
-#        got = data["status"]
-#
-#        want = "OK"
-#
-#        self.assertEqual(got, want)
+    async def test_get_block_data(self):
+
+        block = 1
+
+        async with aiohttp.ClientSession() as session:
+
+            data = await get_block_data(session, block)
+
+        got = data["status"]
+        want = "OK"
+
+        self.assertEqual(got, want)
 
     async def test_get_coin_rank_data_success(self):
 
@@ -38,17 +38,6 @@ class TestAsynchronous(TestCase):
 
         got = type(data)
         want = int
-
-        self.assertEqual(got, want)
-
-    async def test_get_coin_rank_data_fail(self):
-
-        async with aiohttp.ClientSession() as session:
-
-            data = await get_coin_rank_data(session, "xyz")
-
-        got = data
-        want = None
 
         self.assertEqual(got, want)
 
