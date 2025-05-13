@@ -15,16 +15,16 @@ from .spreadsheets import PandasSpreadSheetManager
 from .utils import get_today, get_yesterday
 from .utils import get_socks_proxy
 
+from .api.coinmetrics import CoinmetricsAPI
+from .api.localmonero import LocalMoneroAPI
+from .api.coingecko import CoingeckoAPI
+
 BASE_DIR = settings.BASE_DIR
 
 sheets = PandasSpreadSheetManager()
 
-LOCAL_MONERO_API = "https://localmonero.co/blocks/api"
-XMR_BLOCKCHAIN_EXPLORER_API = settings.XMR_BLOCKCHAIN_EXPLORER_API
-METRICS_API = settings.METRICS_API
-
-MARKET_DATA_API = settings.MARKET_DATA_API
-MARKET_DATA_API_KEY = settings.MARKET_DATA_API_KEY
+LOCAL_MONERO_API = LocalMoneroAPI()
+MARKET_DATA_API = CoingeckoAPI()
 
 # Async client configuration
 ASYNC_TIMEOUT = aiohttp.ClientTimeout(
@@ -38,53 +38,29 @@ ASYNC_CLIENT_ARGS = dict(
     timeout=ASYNC_TIMEOUT
     )
 
-def get_coin_id(symbol: str):
-
-    if symbol == 'xmr':
-        coin_id = "monero"
-    elif symbol == 'btc':
-        coin_id = "bitcoin"
-    elif symbol == 'zec':
-        coin_id = "zcash"
-    elif symbol == 'dash':
-        coin_id = 'dash'
-    elif symbol == 'grin':
-        coin_id = 'grin'
-    else:
-        return None
-
-    return coin_id
-
 ####################################################################################
-#   Asynchronous get block data from xmrchain
+#   Get block data from localmonero.co
 #################################################################################### 
 async def get_block_data(session, block: str):
-    url = f'{LOCAL_MONERO_API}/get_block_data/{block}'
 
-    async with session.get(url) as res:
-        data = await res.read()
-        data = json.loads(data)
-        data['provider'] = 'localmonero'
-        if res.status < 299:
-            data['success'] = True
-        else:
-            data['success'] = False
-        return data
+    data = LOCAL_MONERO_API.get_block_data(block)
+    return data
 
 ####################################################################################
-#   Asynchronous get network data from xmrchain
+#   Get network data from xmrchain
 #################################################################################### 
 async def get_network_data(session, block: str):
-    url = f'{XMR_BLOCKCHAIN_EXPLORER_API}/networkinfo'
-    async with session.get(url) as res:
-        data = await res.read()
-        data = json.loads(data)
-        data['provider'] = 'xmrchain'
-        if res.status < 299:
-            data['success'] = True
-        else:
-            data['success'] = False
-        return data
+    url = f'https://xmrchain.net/api/networkinfo'
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+
+        json_data = json.loads(response.text)
+        return json_data
+
+    else:
+        raise Exception(f'[ERROR] API returned status: {response.status_code}')
 
 ####################################################################################
 #   Asynchronous get coinmarketcap data for price USD and BTC
@@ -92,81 +68,20 @@ async def get_network_data(session, block: str):
 async def get_coin_rank_data(session, symbol: str):
     '''Get the current rank of a cryptocurrency coin'''
 
-    coin_id = get_coin_id(symbol)
+    data = MARKET_DATA_API.get_coin_realtime_data(symbol)
 
-    url = f'{MARKET_DATA_API}/coins/{coin_id}'
-
-    headers = {
-            "Content-Type": "application/json",
-            "x-cg-demo-api-key": MARKET_DATA_API_KEY
-            }
-
-    params = {
-            "localization": "false",
-            "ticker": "false",
-            "market_data": "false",
-            "community_data": "false",
-            "developer_data": "false",
-            "sparkline": "false"
-            }
-
-    async with session.get(url, headers=headers, params=params) as response:
-
-        data = await response.read()
-        json_data = json.loads(data)
-
-        if response.status == 200:
-            rank = json_data["market_cap_rank"]
-
-        if response.status != 200:
-            return None
+    rank = data["market_cap_rank"]
 
     return rank
 
 async def get_coin_dominance_data(session, symbol: str):
     '''Get the current dominance of a cryptocurrency coin'''
 
-    coin_id = get_coin_id(symbol)
+    coin_market_cap_data = MARKET_DATA_API.get_coin_realtime_data(symbol)
+    coin_market_cap = coin_market_cap_data["market_data"]["market_cap"]["usd"]
 
-    url = f'{MARKET_DATA_API}/coins/{coin_id}'
-
-    headers = {
-            "Content-Type": "application/json",
-            "x-cg-demo-api-key": MARKET_DATA_API_KEY
-            }
-
-    params = {
-            "localization": "false",
-            "ticker": "false",
-            "market_data": "true",
-            "community_data": "false",
-            "developer_data": "false",
-            "sparkline": "false"
-            }
-
-    async with session.get(url, headers=headers, params=params) as response:
-
-        data = await response.read()
-        json_data = json.loads(data)
-
-        if response.status == 200:
-            coin_market_cap = json_data["market_data"]["market_cap"]["usd"]
-
-        if response.status != 200:
-            return None
-
-    url = f'{MARKET_DATA_API}/global'
-
-    async with session.get(url, headers=headers) as response:
-
-        data = await response.read()
-        json_data = json.loads(data)
-
-        if response.status == 200:
-            total_market_cap = json_data["data"]["total_market_cap"]["usd"]
-
-        if response.status != 200:
-            return None
+    global_data = MARKET_DATA_API.get_global_realtime_data()
+    total_market_cap = global_data["data"]["total_market_cap"]["usd"]
 
     dominance = round(( coin_market_cap / total_market_cap ) * 100, 2)
 
