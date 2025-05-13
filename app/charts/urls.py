@@ -133,5 +133,4 @@ urlpatterns = [
         authenticated.update_database_admin,
         name="update",
     ),
-    path("add_coin/", authenticated.add_coin, name="add_coin"),
 ]

@@ -43,62 +43,6 @@ sheets = PandasSpreadSheetManager()
 ####################################################################################
 
 @login_required
-def add_coin(request):
-    '''Add a new cryptocurrency coin to the database'''
-
-    if not request.user.is_superuser:
-        return render(request, 'users/error.html')
-
-    if request.method != 'POST':
-        # create new page with blank form
-        form = CoinForm()
-    else:
-        #process data and submit article
-        form = CoinForm(data=request.POST)
-        if form.is_valid():
-            add_coin = form.save(commit=False)
-            coin = Coin.objects.filter(name=add_coin.name).filter(date=add_coin.date)
-            if coin:
-                for item in coin:
-                    item.delete()
-                print('coin found and deleted')
-            else:
-                print('coin not found')
-
-            add_coin.stocktoflow = (100/add_coin.inflation)**1.65
-            print(add_coin.name)
-            print(add_coin.date)
-            print(add_coin.priceusd)
-            print(add_coin.pricebtc)
-            print(add_coin.inflation)
-            print(add_coin.transactions)
-            print(add_coin.hashrate)
-            print(add_coin.stocktoflow)
-            print(add_coin.supply)
-            print(add_coin.fee)
-            print(add_coin.revenue)
-            print(add_coin.blocksize)
-            print(add_coin.difficulty)
-            add_coin.save()
-            print('coin saved')
-            message = 'Coin added to the database!'
-            coin = Coin.objects.filter(name=add_coin.name).get(date=add_coin.date)
-            print('GET: ' + str(coin.name) + ' ' +str(coin.date) + ' ' +str(coin.priceusd) + ' ' +str(coin.pricebtc) + ' ' +str(coin.inflation) + ' ' +str(coin.transactions) + ' ' +str(coin.hashrate) + ' ' +str(coin.stocktoflow) + ' ' +str(coin.supply) + ' ' + ' ' +str(coin.fee) + ' ' + ' ' +str(coin.revenue))
-
-            print('updating p2pool')
-            synchronous.update_p2pool()
-
-            context = {'form': form, 'message': message}
-            return render(request, 'charts/add_coin.html', context)
-
-        message = 'An error has happened. Try again.'
-        context = {'form': form, 'message': message}
-        return render(request, 'charts/add_coin.html', context)
-
-    context = {'form': form}
-    return render(request, 'charts/add_coin.html', context)
-
-@login_required
 def get_history(request, symbol, start_time=None, end_time=None):
     '''Get all history for metrics of a certain coin named as 'symbol'''
 
