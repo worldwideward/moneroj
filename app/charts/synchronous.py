@@ -11,8 +11,13 @@ from requests import Session
 from requests.exceptions import Timeout, TooManyRedirects
 from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, Withdrawal
 from .spreadsheets import PandasSpreadSheetManager
+from .api.coinmetrics import CoinmetricsAPI
+
+from django.conf import settings
 
 sheets = PandasSpreadSheetManager()
+
+METRICS_API = CoinmetricsAPI()
 
 ####################################################################################
 #   Reddit api
@@ -51,7 +56,7 @@ def data_prep_comments(term, start_time, end_time, filters, limit):
 
 def get_history_function(symbol, start_time=None, end_time=None):
     '''Get historic data from a cryptocurrency coin'''
-    update = True
+
     count = 0
     priceusd = 0
     inflation = 0
@@ -64,17 +69,6 @@ def get_history_function(symbol, start_time=None, end_time=None):
     transactions = 0
     blocksize = 0
     difficulty = 0
-
-    with open("settings.json", 'r', encoding="utf8") as file:
-        data = json.load(file)
-        file.close()
-
-    if not(start_time and end_time):
-        start_time = '2000-01-01'
-        end_time = '2100-01-01'
-
-    url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time
-    print(url, flush=True)
 
     coins = Coin.objects.filter(name=symbol).order_by('-date')
     for coin in coins:
@@ -98,103 +92,96 @@ def get_history_function(symbol, start_time=None, end_time=None):
             priceusd = coin.priceusd
             break
 
-    while update:
-        response = requests.get(url, timeout=60)
-        data_aux = json.loads(response.text)
-        data_aux2 = data_aux['data']
-        for item in data_aux2:
-            time_array = str(item['time']).split('T')
-            day = datetime.datetime.strptime(time_array[0], '%Y-%m-%d')
-            day = datetime.datetime.strftime(day, '%Y-%m-%d')
-            coin = Coin.objects.filter(name=symbol).filter(date=day)
-            if coin:
-                coin.delete()
+    metrics = METRICS_API.get_asset_metrics(symbol, start_time, end_time)
+
+    for item in metrics:
+
+        time_array = str(item['time']).split('T')
+        day = datetime.datetime.strptime(time_array[0], '%Y-%m-%d')
+        day = datetime.datetime.strftime(day, '%Y-%m-%d')
+        coin = Coin.objects.filter(name=symbol).filter(date=day)
+        if coin:
+            coin.delete()
+        try:
+            coin = Coin()
+            coin.name = symbol
+            coin.date = day
             try:
-                coin = Coin()
-                coin.name = symbol
-                coin.date = day
-                try:
-                    coin.priceusd = float(item['PriceUSD'])
-                    priceusd = coin.priceusd
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.priceusd = priceusd
-                try:
-                    coin.pricebtc = float(item['PriceBTC'])
-                    pricebtc = coin.pricebtc
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.pricebtc = pricebtc
-                try:
-                    coin.inflation = float(item['IssContPctAnn'])
-                    coin.stocktoflow = (100/coin.inflation)**1.65
-                    inflation = coin.inflation
-                    stocktoflow = coin.stocktoflow
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.inflation = inflation
-                    coin.stocktoflow = stocktoflow
-                try:
-                    if symbol == 'xmr':
-                        if float(item['SplyCur']) < 18000000:
-                            coin.supply = float(item['SplyCur']) + 497108
-                        else:
-                            coin.supply = float(item['SplyCur'])
-                        supply = coin.supply
+                coin.priceusd = float(item['PriceUSD'])
+                priceusd = coin.priceusd
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.priceusd = priceusd
+            try:
+                coin.pricebtc = float(item['PriceBTC'])
+                pricebtc = coin.pricebtc
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.pricebtc = pricebtc
+            try:
+                coin.inflation = float(item['IssContPctAnn'])
+                coin.stocktoflow = (100/coin.inflation)**1.65
+                inflation = coin.inflation
+                stocktoflow = coin.stocktoflow
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.inflation = inflation
+                coin.stocktoflow = stocktoflow
+            try:
+                if symbol == 'xmr':
+                    if float(item['SplyCur']) < 18000000:
+                        coin.supply = float(item['SplyCur']) + 497108
                     else:
                         coin.supply = float(item['SplyCur'])
-                        supply = coin.supply
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.supply = supply
-                try:
-                    coin.fee = float(item['FeeTotNtv'])
-                    fee = coin.fee
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.fee = fee
-                try:
-                    coin.revenue = float(item['RevNtv'])
-                    revenue = coin.revenue
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.revenue = revenue
-                try:
-                    coin.hashrate = float(item['HashRate'])
-                    hashrate = coin.hashrate
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.hashrate = hashrate
-                try:
-                    coin.transactions = float(item['TxCnt'])
-                    transactions = coin.transactions
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.transactions = transactions
-                try:
-                    coin.blocksize = float(item['BlkSizeMeanByte'])
-                    blocksize = coin.blocksize
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.blocksize = blocksize
-                try:
-                    coin.difficulty = float(item['DiffLast'])
-                    difficulty = coin.difficulty
-                except Exception as error:
-                    print(f'Something went wrong {error}', flush=True)
-                    coin.difficulty = difficulty
-                coin.save()
-                count += 1
-                print(coin.name + ' ' + str(coin.date) + ' ' + str(item['SplyCur']), flush=True)
-
+                    supply = coin.supply
+                else:
+                    coin.supply = float(item['SplyCur'])
+                    supply = coin.supply
             except Exception as error:
-                print(f'Something went wrong: {error}', flush=True)
-        try:
-            url = data["metrics_provider"][0]["metrics_url_new"] + symbol + '/' + start_time + '/' + end_time + '/' + data_aux['next_page_token']
+                print(f'Something went wrong {error}', flush=True)
+                coin.supply = supply
+            try:
+                coin.fee = float(item['FeeTotNtv'])
+                fee = coin.fee
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.fee = fee
+            try:
+                coin.revenue = float(item['RevNtv'])
+                revenue = coin.revenue
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.revenue = revenue
+            try:
+                coin.hashrate = float(item['HashRate'])
+                hashrate = coin.hashrate
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.hashrate = hashrate
+            try:
+                coin.transactions = float(item['TxCnt'])
+                transactions = coin.transactions
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.transactions = transactions
+            try:
+                coin.blocksize = float(item['BlkSizeMeanByte'])
+                blocksize = coin.blocksize
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.blocksize = blocksize
+            try:
+                coin.difficulty = float(item['DiffLast'])
+                difficulty = coin.difficulty
+            except Exception as error:
+                print(f'Something went wrong {error}', flush=True)
+                coin.difficulty = difficulty
+            coin.save()
+            count += 1
+
         except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
-            update = False
-            break
+            print(f'Something went wrong: {error}', flush=True)
+
     return count
 
 def get_latest_metrics(symbol, url):
