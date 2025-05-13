@@ -33,10 +33,6 @@ SOCKS_PROXY_ENABLED = True
 SOCKS_PROXY_HOST = "10.10.10.1"
 SOCKS_PROXY_PORT = "1080"
 
-MARKET_DATA_API = "https://api.coingecko.com/api/v3"
-MARKET_DATA_API_KEY = os.getenv("COINGECKO_API_KEY")
-
-XMR_BLOCKCHAIN_EXPLORER_API = "https://xmrchain.net/api"
 REDDIT_API_URI = "https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion"
 
 # TODO: Handle the following settings dynamically.
