@@ -265,48 +265,6 @@ def get_latest_metrics(symbol, url):
             break
     return count
 
-def get_binance_withdrawal(symbol):
-    '''Get binance withdrawal state'''
-
-    url = 'https://www.binance.com/en/network'
-
-    withdrawals = Withdrawal.objects.order_by('-date')
-    if len(withdrawals) > 0:
-        for withdrawal in withdrawals:
-            break
-    else:
-        withdrawal = Withdrawal()
-        withdrawal.state = True
-        withdrawal.save()
-        return True
-
-    current_date = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
-    response = requests.get(url, timeout=60)
-    result = response.text
-    position = result.find(symbol)
-    result = result[position:position+400]
-    position = result.find('withdrawEnable')
-    result = result[position:position+25]
-    try:
-        result.index('true')
-        if (current_date - withdrawal.date).seconds > 3600:
-            new_withdrawal = Withdrawal()
-            new_withdrawal.state = True
-            new_withdrawal.save()
-        return True
-    except Exception as error:
-        print(f'Something went wrong {error}', flush=True)
-        try:
-            result.index('false')
-            if ((current_date - withdrawal.date).seconds > 3600) or withdrawal.state:
-                new_withdrawal = Withdrawal()
-                new_withdrawal.state = False
-                new_withdrawal.save()
-            return False
-        except Exception as inner_error:
-            print(f'Something went wrong {inner_error}', flush=True)
-            return None
-
 def get_latest_price(symbol):
     '''Get latest price data for Monero'''
 
