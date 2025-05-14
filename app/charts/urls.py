@@ -126,7 +126,6 @@ urlpatterns = [
     path("load_rank/<str:symbol>/", authenticated.load_rank, name="load_rank"),
     path("load_p2pool/", authenticated.load_p2pool, name="load_p2pool"),
     path("populate_database/", authenticated.populate_database, name="populate_database"),
-    path("importer/", authenticated.importer, name="importer"),
     path("reset/<str:symbol>/", authenticated.reset, name="reset"),
     path(
         "update/<str:date_from>/<str:date_to>/",
