@@ -3,20 +3,11 @@
 import requests
 import json
 import datetime
-import aiohttp
-import asyncio
 import math
 import locale
-import pandas as pd
 
 from datetime import date, timedelta
 from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
-from operator import truediv
-from ctypes import sizeof
-from os import readlink
 
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
@@ -25,7 +16,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-#from charts.forms import *
 #from charts import asynchronous
 #from charts import synchronous
 from charts.models import Coin
@@ -179,6 +169,7 @@ def populate_database(request):
 
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
+
     count = 0
 
     ###################################################################
