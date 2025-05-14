@@ -12,6 +12,8 @@ from .models import DailyData
 from .models import Usage
 from .models import Dominance
 from .models import Rank
+from .models import P2Pool
+
 from .forms import CsvImportForm
 
 @admin.register(Coin)
@@ -92,6 +94,14 @@ class RankAdmin(admin.ModelAdmin):
     list_filter = ["name", "date"]
     list_per_page = 10
     search_fields = ["name"]
+    ordering = ["date"]
+
+@admin.register(P2Pool)
+class P2PoolAdmin(admin.ModelAdmin):
+    list_display = ["mini", "date", "hashrate", "percentage", "miners", "totalhashes", "totalblocksfound"]
+    list_filter = ["mini", "date"]
+    list_per_page = 10
+    search_fields = ["mini"]
     ordering = ["date"]
 
 @admin.register(DailyData)
