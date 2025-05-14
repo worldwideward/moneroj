@@ -40,7 +40,7 @@ class Dominance(models.Model):
     dominance = models.FloatField()
 
     def __str__(self):
-        return self.dominance
+        return self.name
 
 
 class Rank(models.Model):
@@ -51,7 +51,7 @@ class Rank(models.Model):
     rank = models.IntegerField()
 
     def __str__(self):
-        return self.rank
+        return self.name
 
 
 class Sfmodel(models.Model):
