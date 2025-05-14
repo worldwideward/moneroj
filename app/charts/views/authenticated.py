@@ -21,13 +21,20 @@ from os import readlink
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
+#from charts.forms import *
+#from charts import asynchronous
+#from charts import synchronous
+from charts.models import Coin
+from charts.models import Rank
+from charts.models import Dominance
+from charts.models import P2Pool
+from charts.models import Sfmodel
+from charts.models import DailyData
+
 from charts.synchronous import get_history_function
 from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
@@ -36,7 +43,8 @@ from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-sheets = PandasSpreadSheetManager()
+SHEETS = PandasSpreadSheetManager()
+CSV_DATA_SHEET = settings.CSV_DATA_SHEET
 
 ####################################################################################
 #   Useful functions for admins
@@ -62,80 +70,29 @@ def get_history(request, symbol, start_time=None, end_time=None):
 
 @login_required
 def load_rank(request, symbol):
-    '''Populate database with rank history'''
+    '''Populate database with rank history from spreadsheet'''
 
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
-    count = 0
+    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "rank", start=(2, 0), end=(9999, 2))
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet8", start=(2, 0), end=(9999, 2))
     Rank.objects.all().delete()
+    print('[DEBUG] Deleted all Rank database entries')
 
-    for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][1]:
-            rank = Rank()
-            rank.name = symbol
-            rank.date = values_mat[k][0]
-            rank.rank = values_mat[k][1]
-            if not rank.rank and not rank.date:
-                break
-            else:
-                rank.save()
-                count += 1
-        else:
+    for row in csv_data:
+
+        model = Rank()
+        model.name = symbol
+        model.date = row[0]
+        model.rank = row[1]
+
+        if not model.rank and not rank.date:
             break
-
-    message = 'Total of ' + str(count) + ' data imported'
-    context = {'message': message}
-    return render(request, 'charts/maintenance.html', context)
-
-@login_required
-def load_p2pool(request):
-    '''Populate database with p2pool history'''
-
-    if not request.user.is_superuser:
-        return render(request, 'users/error.html')
-
-    count = 0
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "p2pool", start=(2, 0), end=(9999, 6))
-    P2Pool.objects.all().delete()
-
-    for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][1]:
-            p2pool_stat = P2Pool()
-            p2pool_stat.date = values_mat[k][0]
-            p2pool_stat.miners = values_mat[k][1]
-            p2pool_stat.hashrate = values_mat[k][2]
-            p2pool_stat.percentage = values_mat[k][3]
-            p2pool_stat.totalhashes = values_mat[k][4]
-            p2pool_stat.totalblocksfound = values_mat[k][5]
-            p2pool_stat.mini = False
-            p2pool_stat.save()
-            count += 1
-            #print('p2poolmini data saved - ' + str(p2pool_stat.date) + ' - ' + str(p2pool_stat.percentage) + ' - ' + str(p2pool_stat.miners))
         else:
-            break
+            model.save()
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "p2poolmini", start=(2,0), end=(994,6), returnas='matrix')
-
-    for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][1]:
-            p2pool_stat = P2Pool()
-            p2pool_stat.date = values_mat[k][0]
-            p2pool_stat.miners = values_mat[k][1]
-            p2pool_stat.hashrate = values_mat[k][2]
-            p2pool_stat.percentage = values_mat[k][3]
-            p2pool_stat.totalhashes = values_mat[k][4]
-            p2pool_stat.totalblocksfound = values_mat[k][5]
-            p2pool_stat.mini = True
-            p2pool_stat.save()
-            count += 1
-            #print('p2poolmini data saved - ' + str(p2pool_stat.date) + ' - ' + str(p2pool_stat.percentage) + ' - ' + str(p2pool_stat.miners))
-        else:
-            break
-
-    message = 'Total of ' + str(count) + ' data imported'
+    message = 'Total of ' + str(len(csv_data)) + ' rows imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
@@ -146,90 +103,70 @@ def load_dominance(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
-    count = 0
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet7", start=(2, 0), end=(9999, 2))
+    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "dominance", start=(2, 0), end=(9999, 2))
+
     Dominance.objects.all().delete()
 
-    for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][1]:
-            dominance = Dominance()
-            dominance.name = symbol
-            dominance.date = values_mat[k][0]
-            dominance.dominance = values_mat[k][1]
-            if not dominance.dominance and not dominance.date:
-                break
-            else:
-                dominance.save()
-                count += 1
-        else:
-            break
+    for row in csv_data:
 
-    message = 'Total of ' + str(count) + ' data imported'
+        model = Dominance()
+        model.name = symbol
+        model.date = row[0]
+        model.dominance = row[1]
+        model.save()
+
+    message = 'Total of ' + str(len(csv_data)) + ' data imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
 @login_required
-def importer(request):
-    '''Import Reddit history from file on static folder'''
+def load_p2pool(request):
+    '''Populate database with p2pool history from spreadsheet'''
 
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
-    count = 0
-    Social.objects.all().delete()
-    filename = staticfiles_storage.path('import.txt')
-    with open(filename) as f:
-        content = f.readlines()
-        for line in content:
-            data = json.loads(line)
-            symbol = data['name']
-            item = data['subscriberCountTimeSeries']
-            dates = []
-            subscriber_count = []
-            comments_per_hour = []
-            posts_per_hour = []
-            for unit in item:
-                date_now = datetime.datetime.strptime('1970-01-01', '%Y-%m-%d')
-                date_now += timedelta(int(unit['utcDay']))
-                dates.append(datetime.datetime.strftime(date_now, '%Y-%m-%d'))
-                value = float(unit['count'])
-                subscriber_count.append(value)
-            item = data['commentsPerHourTimeSeries']
-            for unit in item:
-                value = float(unit['commentsPerHour'])
-                comments_per_hour.append(value)
-            item = data['postsPerHourTimeSeries']
-            for unit in item:
-                value = float(unit['postsPerHour'])
-                posts_per_hour.append(value)
 
-            for i in range(len(dates)-1):
-                social = Social()
-                social.name = symbol
-                social.date = dates[i]
-                if i >= len(dates) - len(subscriber_count):
-                    social.subscriber_count = subscriber_count[i-len(subscriber_count)]
-                else:
-                    social.subscriber_count = 0
-                if i >= len(dates) - len(comments_per_hour):
-                    social.comments_per_hour = comments_per_hour[i-(len(dates) - len(comments_per_hour))]
-                else:
-                    social.comments_per_hour = 0
-                if i >= len(dates) - len(posts_per_hour):
-                    social.posts_per_hour = posts_per_hour[i-(len(dates) - len(posts_per_hour))]
-                else:
-                    social.posts_per_hour = 0
-                social.save()
-                count += 1
+    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "p2pool", start=(2, 0), end=(9999, 6))
 
-    message = 'Total of ' + str(count) + ' data imported'
+    P2Pool.objects.all().delete()
+
+    for row in csv_data:
+
+        model = P2Pool()
+        model.date = row[0]
+        model.miners = row[1]
+        model.hashrate = row[2]
+        model.percentage = row[3]
+        model.totalhashes = row[4]
+        model.totalblocksfound = row[5]
+        model.mini = False
+        model.save()
+
+    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "p2poolmini", start=(2,0), end=(994,6), returnas='matrix')
+
+    for row in csv_data:
+
+        model = P2Pool()
+        model.date = row[0]
+        model.miners = row[1]
+        model.hashrate = row[2]
+        model.percentage = row[3]
+        model.totalhashes = row[4]
+        model.totalblocksfound = row[5]
+        model.mini = True
+        model.save()
+
+    message = 'Total of ' + str(len(csv_data)) + ' data imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
 @login_required
 def reset(request, symbol):
     '''Erase all data for a certain coin'''
+
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
+
     Coin.objects.filter(name=symbol).all().delete()
 
     message = 'All data for ' + str(symbol) + ' erased'
