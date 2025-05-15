@@ -16,25 +16,18 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-#from charts import asynchronous
-#from charts import synchronous
-from charts.models import Coin
-from charts.models import Rank
-from charts.models import Dominance
-from charts.models import P2Pool
 from charts.models import Sfmodel
 from charts.models import DailyData
 
 from charts.synchronous import get_history_function
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
+from charts.import_history import import_rank_history
+from charts.import_history import import_dominance_history
+from charts.import_history import import_p2pool_history
 
 ####################################################################################
 #   Set some parameters
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-
-SHEETS = PandasSpreadSheetManager()
-CSV_DATA_SHEET = settings.CSV_DATA_SHEET
 
 ####################################################################################
 #   Useful functions for admins
@@ -65,24 +58,9 @@ def load_rank(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
-    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "rank", start=(2, 0), end=(9999, 2))
+    result = import_rank_history(symbol)
 
-    Rank.objects.all().delete()
-    print('[DEBUG] Deleted all Rank database entries')
-
-    for row in csv_data:
-
-        model = Rank()
-        model.name = symbol
-        model.date = row[0]
-        model.rank = row[1]
-
-        if not model.rank and not rank.date:
-            break
-        else:
-            model.save()
-
-    message = 'Total of ' + str(len(csv_data)) + ' rows imported'
+    message = 'Total of ' + str(result) + ' rows imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
@@ -93,19 +71,9 @@ def load_dominance(request, symbol):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
-    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "dominance", start=(2, 0), end=(9999, 2))
+    result = import_dominance_history(symbol)
 
-    Dominance.objects.all().delete()
-
-    for row in csv_data:
-
-        model = Dominance()
-        model.name = symbol
-        model.date = row[0]
-        model.dominance = row[1]
-        model.save()
-
-    message = 'Total of ' + str(len(csv_data)) + ' data imported'
+    message = 'Total of ' + str(result) + ' data imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 
@@ -116,37 +84,9 @@ def load_p2pool(request):
     if not request.user.is_superuser:
         return render(request, 'users/error.html')
 
-    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "p2pool", start=(2, 0), end=(9999, 6))
+    result = import_p2pool_history()
 
-    P2Pool.objects.all().delete()
-
-    for row in csv_data:
-
-        model = P2Pool()
-        model.date = row[0]
-        model.miners = row[1]
-        model.hashrate = row[2]
-        model.percentage = row[3]
-        model.totalhashes = row[4]
-        model.totalblocksfound = row[5]
-        model.mini = False
-        model.save()
-
-    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "p2poolmini", start=(2,0), end=(994,6), returnas='matrix')
-
-    for row in csv_data:
-
-        model = P2Pool()
-        model.date = row[0]
-        model.miners = row[1]
-        model.hashrate = row[2]
-        model.percentage = row[3]
-        model.totalhashes = row[4]
-        model.totalblocksfound = row[5]
-        model.mini = True
-        model.save()
-
-    message = 'Total of ' + str(len(csv_data)) + ' data imported'
+    message = 'Total of ' + str(result) + ' data imported'
     context = {'message': message}
     return render(request, 'charts/maintenance.html', context)
 

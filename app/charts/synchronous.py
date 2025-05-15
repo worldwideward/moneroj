@@ -9,15 +9,24 @@ import pandas as pd
 from psaw import PushshiftAPI
 from requests import Session
 from requests.exceptions import Timeout, TooManyRedirects
-from .models import Coin, Social, P2Pool, Dominance, Rank, Sfmodel, DailyData, Withdrawal
-from .spreadsheets import PandasSpreadSheetManager
-from .api.coinmetrics import CoinmetricsAPI
 
 from django.conf import settings
 
-sheets = PandasSpreadSheetManager()
+from charts.models import Coin
+from charts.models import Rank
+from charts.models import Dominance
+from charts.models import P2Pool
+from charts.models import Sfmodel
+from charts.models import DailyData
+from charts.models import Withdrawal
 
+from .spreadsheets import PandasSpreadSheetManager
+from .api.coinmetrics import CoinmetricsAPI
+
+SHEETS = PandasSpreadSheetManager()
 METRICS_API = CoinmetricsAPI()
+
+CSV_DATA_SHEET = settings.CSV_DATA_SHEET
 
 ####################################################################################
 #   Reddit api
@@ -833,4 +842,3 @@ def update_p2pool():
             return data
 
     return True
-
