@@ -127,6 +127,8 @@ urlpatterns = [
     path("load_p2pool/", authenticated.load_p2pool, name="load_p2pool"),
     path("populate_database/", authenticated.populate_database, name="populate_database"),
     path("reset/<str:symbol>/", authenticated.reset, name="reset"),
+    path("reset_sf_model/", authenticated.reset_sf_model, name="reset_sf_model"),
+    path("reset_daily_data/", authenticated.reset_daily_data, name="reset_daily_data"),
     path(
         "update/<str:date_from>/<str:date_to>/",
         authenticated.update_database_admin,

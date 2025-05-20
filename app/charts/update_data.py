@@ -8,7 +8,9 @@ from datetime import timedelta
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Coin
+from .models import Social
 from .models import Sfmodel
+from .models import DailyData
 
 def erase_coin_data(symbol):
     '''Erase all data for a certain coin'''
@@ -17,6 +19,28 @@ def erase_coin_data(symbol):
         Coin.objects.filter(name=symbol).all().delete()
     except Exception as error:
         print(f'[ERROR] Failed to erase data for {symbol}: {error}')
+        return False
+
+    return True
+
+def erase_sf_model_data():
+    '''Erase all data for the sf model object'''
+
+    try:
+        Sfmodel.objects.all().delete()
+    except Exception as error:
+        print(f'[ERROR] Failed to erase Sfmodel data: {error}')
+        return False
+
+    return True
+
+def erase_daily_data_data():
+    '''Erase all data for the daily data object'''
+
+    try:
+        DailyData.objects.all().delete()
+    except Exception as error:
+        print(f'[ERROR] Failed to erase Sfmodel data: {error}')
         return False
 
     return True
@@ -73,21 +97,22 @@ def calculate_block_reward(base_reward, block_weight=None, median_block_weight=N
 
     return int(block_reward)
 
-def reset_sf_model():
+def calculate_sf_model():
     '''Reset and recalculate the Stock-to-Flow model'''
-    
-    Sfmodel.objects.all().delete()
 
-    timevar = 1283
-    v0 = 0.002
-    delta = (0.015 - 0.002)/(6*365)
+    objects = Sfmodel.objects.count()
+
+    if objects > 0:
+        print(f'[ERROR] Sf Model data already present, erase all data before proceeding.')
+        return False
+
     previous_supply = 0
     current_supply = 0
     calculate_days_in_the_future = 90
+    previous_stocktoflow_ratio = 0
 
-    sf_aux = 0
     count = 0
-    count_aux = 0
+    greyline_count = 0
 
     coin_data = Coin.objects.order_by('date').filter(name='xmr')
 
@@ -101,132 +126,477 @@ def reset_sf_model():
 
     for data_point in coin_data:
 
-        print(f'[DEBUG] Processing Data Point {data_point.name} at {data_point.date}')
+        # Determine the current supply
+
+        if data_point.supply > 0:
+            current_supply = int(data_point.supply) * 10 ** 12
+            previous_supply = current_supply
+        else:
+            current_supply = previous_supply
+
+        # Initialize XMR Price
 
         if data_point.priceusd < 0.1:
             data_point.priceusd = 0.1
             data_point.pricebtc = 0.000001
 
-        sf_calculation = sf_aux * 1.3 + 100
+        sf_calculation = previous_stocktoflow_ratio * 1.3 + 100
+
         if data_point.stocktoflow > sf_calculation:
-            data_point.stocktoflow = sf_aux
+            data_point.stocktoflow = previous_stocktoflow_ratio
 
-        sf_aux = data_point.stocktoflow
-
-        # Calculate current supply
-        if data_point.supply > 0:
-            current_supply = int(data_point.supply) * 10 * 12
-        else:
-            current_supply = previous_supply
-
-        print(f'[DEBUG] Current XMR supply: {current_supply} at {data_point.date}')
+        previous_stocktoflow_ratio = data_point.stocktoflow
 
         count += 1
-        count_aux += 1
+        greyline_count += 1
 
-        date_aux1 = datetime.strptime('2017-12-29', '%Y-%m-%d')
-        print(f'[DEBUG] DATE AUX1: {date_aux1}')
-        date_aux2 = datetime.strptime(str(data_point.date), '%Y-%m-%d')
-        print(f'[DEBUG] DATE AUX2: {date_aux2}')
+        # Calculate annual stock flow
 
-        if date_aux2 < date_aux1:
+        significant_date = '2017-12-29'
 
-            #print(f'[DEBUG] Date {date_aux2} is less than {date_aux1}')
+        reference_date = datetime.strptime(significant_date, '%Y-%m-%d')
+        data_point_date = datetime.strptime(str(data_point.date), '%Y-%m-%d')
+
+        if data_point_date < reference_date:
+
             lastprice = data_point.priceusd
             current_inflation = data_point.inflation
             greyline = 0
-            count_aux = 0
+            greyline_count = 0
         else:
-            #print(f'[DEBUG] Date {date_aux2} is larger than {date_aux1}')
-            day = date_aux2 - timedelta(timevar)
-            print(f'[DEBUG] Day: {day}')
-            coin_aux1 = Coin.objects.filter(name='xmr').get(date=day)
-            print(f'[DEBUG] Timevar: {timevar}')
-            day = date_aux2 - timedelta(timevar+1)
-            print(f'[DEBUG] Next Day: {day}')
+            time_interval_days = 1283
+
+            # Format date
+            base_date = data_point_date - timedelta(time_interval_days)
+            coin_date = Coin.objects.filter(name='xmr').get(date=base_date)
+
+            base_date_plus_one = data_point_date - timedelta(time_interval_days+1)
 
             try:
-                coin_aux2 = Coin.objects.filter(name='xmr').get(date=day)
+                coin_date_plus_one = Coin.objects.filter(name='xmr').get(date=base_date_plus_one)
             except ObjectDoesNotExist as error:
-                coin_aux2 = False
-                print(f'[ERROR] No data for date {day}: {error}')
-            date_aux3 = datetime.strptime('2017-12-29', '%Y-%m-%d')
+                coin_date_plus_one = False
+                print(f'[ERROR] No data for date {base_date_plus_one}: {error}')
 
-            if date_aux3 + timedelta(int(count_aux*2)) < datetime.strptime('2021-07-03', '%Y-%m-%d'):
+            significant_date = datetime.strptime(significant_date, '%Y-%m-%d')
 
-                day = date_aux3 + timedelta(int(count_aux*2))
-                print(f'[DEBUG] Next Next Day: {day}')
+            if significant_date + timedelta(int(greyline_count*2)) < datetime.strptime('2021-07-03', '%Y-%m-%d'):
+
+                significant_base_date = significant_date + timedelta(int(greyline_count*2))
                 try:
-                    coin_aux3 = Coin.objects.filter(name='xmr').get(date=day)
+                    significant_coin_date = Coin.objects.filter(name='xmr').get(date=significant_base_date)
                 except ObjectDoesNotExist as error:
-                    coin_aux3 = False
-                    print(f'[ERROR] No data for date {day}: {error}')
+                    significant_coin_date = False
+                    print(f'[ERROR] No data for date {significant_base_date}: {error}')
 
-                if coin_aux3:
-                    if (coin_aux3.inflation/current_inflation) > 1.2 or (coin_aux3.inflation/current_inflation) < 0.8:
-                        coin_aux3.inflation = current_inflation
+                if significant_coin_date:
+                    if (significant_coin_date.inflation/current_inflation) > 1.2 or (significant_coin_date.inflation/current_inflation) < 0.8:
+                        significant_coin_date.inflation = current_inflation
                     else:
-                        current_inflation = coin_aux3.inflation
-                        supply2 = current_supply
+                        current_inflation = significant_coin_date.inflation
+                        coins_in_circulation = current_supply
+
+                    coins_in_circulation = current_supply
                 else:
-                    supply2 = current_supply
-                    reward2 = calculate_base_reward(supply2)
+                    block_reward = calculate_base_reward(current_supply)
+                    coins_in_circulation = int(720*block_reward)
+                    current_inflation = 100*block_reward*720*365/coins_in_circulation
 
-                supply2 += int(720*reward2)
-                current_inflation = 100*reward2*720*365/supply2
-
-            if coin_aux1 and coin_aux2:
-                lastprice += (coin_aux1.priceusd/coin_aux2.priceusd-1)*lastprice
-                actualprice = lastprice*(math.sqrt(coin.inflation/current_inflation))
+            if coin_date and coin_date_plus_one:
+                lastprice += (coin_date.priceusd/coin_date_plus_one.priceusd-1)*lastprice
+                actualprice = lastprice*(math.sqrt(data_point.inflation/current_inflation))
                 greyline = actualprice
             else:
                 greyline = 0
 
-            previous_supply = current_supply
-
         # Create the entry in the database
+
+        velocity_delta = (0.015 - 0.002)/(6*365)
+        initial_velocity = 0.002
+
         model = Sfmodel()
         model.date = data_point.date
         model.priceusd = data_point.priceusd
         model.pricebtc = data_point.pricebtc
         model.stocktoflow = data_point.stocktoflow
         model.greyline = greyline
-        model.color = 30 * data_point.pricebtc / (count * delta + v0)
+        model.color = 30 * data_point.pricebtc / (count * velocity_delta + initial_velocity)
         model.save()
-        print(f'[DEBUG] Succesfully saved {model}')
-        print('[DEBUG]--------------------------')
 
+    # Calculate Stocktoflow X days in the future
 
-        # Calculate Stocktoflow X days in the future
+    greyline_count = 0
+    for greyline_count in range(calculate_days_in_the_future):
 
-        count_aux = 0
-        for count_aux in range(calculate_days_in_the_future):
+        future_date = date.today() + timedelta(greyline_count)
+        block_reward = calculate_base_reward(current_supply)
+        current_supply += int(720*block_reward)
 
-            print(f'[DEBUG] Calculate Sfmodel {count_aux + 1} days in the future')
-            future_date = date.today() + timedelta(count_aux)
+        # Create the entry in the database
+        model = Sfmodel()
+        model.date = datetime.strftime(future_date, '%Y-%m-%d')
+        model.stocktoflow = (100/(100*block_reward*720*365/current_supply))**1.65
+        model.priceusd = 0
+        model.pricebtc = 0
+        model.greyline = 0
+        model.color = 0
+        model.priceusd = 0
+        model.greyline = 0
+        model.save()
 
-            block_reward = calculate_base_reward(current_supply)
-            print(f'[DEBUG] Block reward: {block_reward}')
+        count += 1
 
-            current_supply += int(720*block_reward)
-            print(f'[DEBUG] Total Supply: {current_supply}')
+    return True
 
-            # Create the entry in the database
-            model = Sfmodel()
-            model.date = datetime.strftime(future_date, '%Y-%m-%d')
-            print(f'[INFO] {model.date}')
-            model.stocktoflow = (100/(100*block_reward*720*365/current_supply))**1.65
-            print(f'[INFO] {model.stocktoflow}')
-            model.priceusd = 0
-            model.pricebtc = 0
-            model.greyline = 0
-            model.color = 0
-            model.priceusd = 0
-            model.greyline = 0
-            model.save()
-            print(f'[DEBUG] Succesfully saved {model}')
-            print('[DEBUG]--------------------------')
+def calculate_daily_data():
+    '''Reset and recalculate the Daily Data model'''
 
-            count += 1
+    objects = DailyData.objects.count()
+
+    if objects > 0:
+        print(f'[ERROR] Daily data already present, erase all data before proceeding.')
+        return False
+
+    supply_btc = 0
+    supply_xmr = 0
+    count = 0
+    count_aux = 0
+    coins_btc = Coin.objects.order_by('date').filter(name='btc')
+
+    for coin_btc in coins_btc:
+        count_aux += 1
+        data = DailyData()
+        data.date = datetime.strftime(coin_btc.date, '%Y-%m-%d')
+
+        if coin_btc.blocksize > 0:
+            data.btc_blocksize = coin_btc.blocksize
+            data.btc_transactions = coin_btc.transactions
+        else:
+            data.btc_blocksize = 0
+            data.btc_transactions = 0
+
+        if coin_btc.difficulty > 0:
+            data.btc_difficulty = coin_btc.difficulty
+        else:
+            data.btc_difficulty = 0
+
+        if coin_btc.transactions == 0:
+            data.btc_transcostusd = 0
+            data.btc_transcostntv = 0
+        else:
+            if coin_btc.fee*coin_btc.priceusd/coin_btc.transactions < 0.0001:
+                data.btc_transcostusd = 0
+                data.btc_transcostntv = 0
+            else:
+                data.btc_transcostusd = coin_btc.fee*coin_btc.priceusd/coin_btc.transactions
+                data.btc_transcostntv = coin_btc.fee/coin_btc.transactions
+
+        if coin_btc.revenue < 0.000001 or coin_btc.priceusd < 0.001:
+            data.btc_minerrevntv = 0
+            data.btc_minerrevusd = 0
+            data.btc_commitntv = 0
+            data.btc_commitusd = 0
+            data.btc_priceusd = 0
+            data.btc_marketcap = 0
+        else:
+            data.btc_minerrevntv = coin_btc.revenue
+            data.btc_minerrevusd = coin_btc.revenue*coin_btc.priceusd
+            data.btc_commitntv = coin_btc.hashrate/(coin_btc.revenue)
+            data.btc_commitusd = coin_btc.hashrate/(coin_btc.revenue*coin_btc.priceusd)
+            data.btc_priceusd = coin_btc.priceusd
+            data.btc_marketcap = coin_btc.priceusd*coin_btc.supply
+
+        if coin_btc.supply == 0:
+            data.btc_minerrevcap = 0
+        else:
+            data.btc_minerrevcap = 365*100*coin_btc.revenue/coin_btc.supply
+
+        if coin_btc.priceusd:
+            if coin_btc.priceusd/30 > 0.02:
+                data.btc_return = coin_btc.priceusd/30
+            else:
+                data.btc_return = 0
+        else:
+            data.btc_return = 0
+
+        if coin_btc.inflation > 0:
+            data.btc_inflation = coin_btc.inflation
+        else:
+            data.btc_inflation = 0
+        if coin_btc.supply > 0:
+            data.btc_supply = coin_btc.supply
+        else:
+            data.btc_supply = 0
+
+        if coin_btc.supply - supply_btc < 0.000001:
+            data.btc_minerfeesntv = 0
+            data.btc_minerfeesusd = 0
+            data.btc_emissionntv = 0
+        else:
+            data.btc_minerfeesntv = coin_btc.revenue - coin_btc.supply + supply_btc
+            data.btc_minerfeesusd = (coin_btc.revenue - coin_btc.supply + supply_btc)*coin_btc.priceusd
+            data.btc_emissionntv = coin_btc.supply -  supply_btc
+
+        if (coin_btc.supply - supply_btc)*coin_btc.priceusd < 1000:
+            data.btc_emissionusd = 0
+        else:
+            data.btc_emissionusd = (coin_btc.supply - supply_btc)*coin_btc.priceusd
+        supply_btc = coin_btc.supply
+
+        if count_aux > 1750:
+            coins_xmr = Coin.objects.filter(name='xmr').filter(date=coin_btc.date)
+            if coins_xmr:
+                for coin_xmr in coins_xmr:
+                    if coin_xmr.blocksize > 0:
+                        data.xmr_blocksize = coin_xmr.blocksize
+                    else:
+                        data.xmr_blocksize = 0
+
+                    if coin_xmr.difficulty > 0:
+                        data.xmr_difficulty = coin_xmr.difficulty
+                    else:
+                        data.xmr_difficulty = 0
+
+                    if coin_xmr.priceusd < 0.001:
+                        data.xmr_pricebtc = 0
+                        data.xmr_priceusd = 0
+                        data.xmr_marketcap = 0
+                    else:
+                        data.xmr_pricebtc = coin_xmr.pricebtc
+                        data.xmr_priceusd = coin_xmr.priceusd
+                        data.xmr_marketcap = coin_xmr.priceusd*coin_xmr.supply
+
+                    if coin_btc.supply > 0 and coin_btc.transactions > 0:
+                        data.xmr_transactions = coin_xmr.transactions
+                        data.xmr_metcalfeusd = coin_btc.priceusd*coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
+                        data.xmr_metcalfebtc = coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
+                    else:
+                        data.xmr_metcalfeusd = 0
+                        data.xmr_metcalfebtc = 0
+                        data.xmr_transactions = 0
+                    if data.xmr_metcalfeusd < 0.23:
+                        data.xmr_metcalfeusd = 0
+                        data.xmr_metcalfebtc = 0
+
+                    if coin_xmr.transactions == 0:
+                        data.xmr_transacpercentage = 0
+                        data.xmr_transcostusd = 0
+                        data.xmr_transcostntv = 0
+                    else:
+                        if coin_xmr.fee*coin_xmr.priceusd/coin_xmr.transactions < 0.0001:
+                            data.xmr_transcostusd = 0
+                            data.xmr_transcostntv = 0
+                        else:
+                            data.xmr_transcostusd = coin_xmr.fee*coin_xmr.priceusd/coin_xmr.transactions
+                            data.xmr_transcostntv = coin_xmr.fee/coin_xmr.transactions
+                        if coin_btc.transactions == 0:
+                            data.xmr_transacpercentage = 0
+                        else:
+                            data.xmr_transacpercentage = coin_xmr.transactions/coin_btc.transactions
+
+                    if coin_xmr.revenue < 0.000001 or coin_xmr.priceusd < 0.001:
+                        data.xmr_minerrevntv = 0
+                        data.xmr_minerrevusd = 0
+                        data.xmr_commitntv = 0
+                        data.xmr_commitusd = 0
+                    else:
+                        data.xmr_minerrevntv = coin_xmr.revenue
+                        data.xmr_minerrevusd = coin_xmr.revenue*coin_xmr.priceusd
+                        data.xmr_commitntv = coin_xmr.hashrate/(coin_xmr.revenue)
+                        data.xmr_commitusd = coin_xmr.hashrate/(coin_xmr.revenue*coin_xmr.priceusd)
+
+                    if coin_xmr.supply == 0:
+                        data.xmr_minerrevcap = 0
+                    else:
+                        data.xmr_minerrevcap = 365*100*coin_xmr.revenue/coin_xmr.supply
+
+                    if coin_xmr.priceusd/5.01 > 0.02:
+                        data.xmr_return = coin_xmr.priceusd/5.01
+                    else:
+                        data.xmr_return = 0
+                    if coin_xmr.inflation > 0:
+                        data.xmr_inflation = coin_xmr.inflation
+                    else:
+                        data.xmr_inflation = 0
+
+                    if coin_xmr.supply > 0:
+                        data.xmr_supply = coin_xmr.supply
+                    else:
+                        data.xmr_supply = 0
+
+                    if coin_xmr.supply - supply_xmr < 0.000001:
+                        data.xmr_minerfeesntv = 0
+                        data.xmr_minerfeesusd = 0
+                        data.xmr_emissionntv = 0
+                    else:
+                        data.xmr_minerfeesntv = coin_xmr.revenue - coin_xmr.supply + supply_xmr
+                        data.xmr_minerfeesusd = (coin_xmr.revenue - coin_xmr.supply + supply_xmr)*coin_xmr.priceusd
+                        data.xmr_emissionntv = coin_xmr.supply - supply_xmr
+
+                    if (coin_xmr.supply - supply_xmr)*coin_xmr.priceusd < 1000:
+                        data.xmr_emissionusd = 0
+                    else:
+                        data.xmr_emissionusd = (coin_xmr.supply - supply_xmr)*coin_xmr.priceusd
+                    supply_xmr = coin_xmr.supply
+            else:
+                data.xmr_emissionntv = 0
+                data.xmr_emissionusd = 0
+                data.xmr_inflation = 0
+                data.xmr_supply = 0
+                data.xmr_return = 0
+                data.xmr_minerrevntv = 0
+                data.xmr_minerrevusd = 0
+                data.xmr_minerfeesntv = 0
+                data.xmr_minerfeesusd = 0
+                data.xmr_transcostntv = 0
+                data.xmr_transcostusd = 0
+                data.xmr_commitntv = 0
+                data.xmr_commitusd = 0
+                data.xmr_metcalfeusd = 0
+                data.xmr_metcalfebtc = 0
+                data.xmr_pricebtc = 0
+                data.xmr_priceusd = 0
+                data.xmr_transacpercentage = 0
+                data.xmr_marketcap = 0
+                data.xmr_minerrevcap = 0
+                data.xmr_transactions = 0
+                data.xmr_blocksize = 0
+                data.xmr_difficulty = 0
+
+            coins_dash = Coin.objects.filter(name='dash').filter(date=coin_btc.date)
+            if coins_dash:
+                for coin_dash in coins_dash:
+                    if coin_dash.transactions > 0:
+                        data.dash_transactions = coin_dash.transactions
+                    else:
+                        data.dash_transactions = 0
+                    if coin_dash.inflation > 0:
+                        data.dash_inflation = coin_dash.inflation
+                    else:
+                        data.dash_inflation = 0
+
+                    if coin_dash.priceusd > 0:
+                        data.dash_marketcap = coin_dash.priceusd*coin_dash.supply
+                    else:
+                        data.dash_marketcap = 0
+            else:
+                data.dash_inflation = 0
+                data.dash_marketcap = 0
+                data.dash_transactions = 0
+        else:
+            data.xmr_emissionntv = 0
+            data.xmr_emissionusd = 0
+            data.xmr_inflation = 0
+            data.xmr_supply = 0
+            data.xmr_return = 0
+            data.dash_inflation = 0
+            data.dash_marketcap = 0
+            data.dash_transactions = 0
+            data.xmr_marketcap = 0
+            data.xmr_minerrevntv = 0
+            data.xmr_minerrevusd = 0
+            data.xmr_minerfeesntv = 0
+            data.xmr_minerfeesusd = 0
+            data.xmr_transcostntv = 0
+            data.xmr_transcostusd = 0
+            data.xmr_commitntv = 0
+            data.xmr_commitusd = 0
+            data.xmr_metcalfeusd = 0
+            data.xmr_metcalfebtc = 0
+            data.xmr_pricebtc = 0
+            data.xmr_priceusd = 0
+            data.xmr_transacpercentage = 0
+            data.xmr_minerrevcap = 0
+            data.xmr_transactions = 0
+            data.xmr_blocksize = 0
+            data.xmr_difficulty = 0
+
+        if count_aux > 2800:
+            coins_zcash = Coin.objects.filter(name='zec').filter(date=coin_btc.date)
+            if coins_zcash:
+                for coin_zcash in coins_zcash:
+                    if coin_zcash.transactions > 0:
+                        data.zcash_transactions = coin_zcash.transactions
+                    else:
+                        data.zcash_transactions = 0
+                    if coin_zcash.inflation > 0:
+                        data.zcash_inflation = coin_zcash.inflation
+                    else:
+                        data.zcash_inflation = 0
+
+                    if coin_zcash.priceusd > 0:
+                        data.zcash_marketcap = coin_zcash.priceusd*coin_zcash.supply
+                    else:
+                        data.zcash_marketcap = 0
+            else:
+                data.zcash_inflation = 0
+                data.zcash_marketcap = 0
+                data.zcash_transactions = 0
+        else:
+            data.zcash_inflation = 0
+            data.zcash_marketcap = 0
+            data.zcash_transactions = 0
+
+        if count_aux > 3600:
+            coins_grin = Coin.objects.filter(name='grin').filter(date=coin_btc.date)
+            if coins_grin:
+                for coin_grin in coins_grin:
+                    if coin_grin.transactions > 0:
+                        data.grin_transactions = coin_grin.transactions
+                    else:
+                        data.grin_transactions = 0
+                    if coin_grin.inflation > 0:
+                        data.grin_inflation = coin_grin.inflation
+                    else:
+                        data.grin_inflation = 0
+
+                    if coin_grin.priceusd > 0:
+                        data.grin_marketcap = coin_grin.priceusd*coin_grin.supply
+                    else:
+                        data.grin_marketcap = 0
+            else:
+                data.grin_inflation = 0
+                data.grin_marketcap = 0
+                data.grin_transactions = 0
+        else:
+            data.grin_inflation = 0
+            data.grin_marketcap = 0
+            data.grin_transactions = 0
+
+        socials = Social.objects.filter(name='Bitcoin').filter(date=coin_btc.date)
+        if socials:
+            for social in socials:
+                data.btc_subscriber_count = social.subscriber_count
+                data.btc_comments_per_hour = social.comments_per_hour
+                data.btc_posts_per_hour = social.posts_per_hour
+        else:
+            data.btc_subscriber_count = 0
+            data.btc_comments_per_hour = 0
+            data.btc_posts_per_hour = 0
+
+        socials = Social.objects.filter(name='Monero').filter(date=coin_btc.date)
+        if socials:
+            for social in socials:
+                data.xmr_subscriber_count = social.subscriber_count
+                data.xmr_comments_per_hour = social.comments_per_hour
+                data.xmr_posts_per_hour = social.posts_per_hour
+        else:
+            data.xmr_subscriber_count = 0
+            data.xmr_comments_per_hour = 0
+            data.xmr_posts_per_hour = 0
+
+        socials = Social.objects.filter(name='CryptoCurrency').filter(date=coin_btc.date)
+        if socials:
+            for social in socials:
+                data.crypto_subscriber_count = social.subscriber_count
+                data.crypto_comments_per_hour = social.comments_per_hour
+                data.crypto_posts_per_hour = social.posts_per_hour
+        else:
+            data.crypto_subscriber_count = 0
+            data.crypto_comments_per_hour = 0
+            data.crypto_posts_per_hour = 0
+
+        data.save()
+        count += 1
 
     return True
