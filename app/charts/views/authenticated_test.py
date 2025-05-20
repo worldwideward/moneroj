@@ -8,6 +8,7 @@ from .authenticated import load_dominance
 from .authenticated import load_p2pool
 from .authenticated import reset
 from .authenticated import populate_database
+from .authenticated import update_database_admin
 
 class TestAuthenticatedViews(TestCase):
     '''Testing Authenticated views'''
@@ -84,6 +85,19 @@ class TestAuthenticatedViews(TestCase):
         request.user.is_superuser.return_value = True
 
         view = populate_database(request)
+
+        got = view.status_code
+        want = 200
+
+        self.assertEqual(got, want)
+
+    def test_update_database_admin(self):
+        '''Test populating database with data'''
+
+        request = Mock()
+        request.user.is_superuser.return_value = True
+
+        view = update_database_admin(request, "2024-01-01", "2024-01-01")
 
         got = view.status_code
         want = 200

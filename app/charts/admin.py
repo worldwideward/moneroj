@@ -7,6 +7,7 @@ from django.urls import path
 from django.shortcuts import render, redirect
 
 from .models import Coin
+from .models import Sfmodel
 from .models import Social
 from .models import DailyData
 from .models import Usage
@@ -22,6 +23,14 @@ class CoinAdmin(admin.ModelAdmin):
     list_filter = ["name", "date"]
     list_per_page = 10
     search_fields = ["name"]
+    ordering = ["date"]
+
+@admin.register(Sfmodel)
+class SfmodelAdmin(admin.ModelAdmin):
+    list_display = ["date", "priceusd", "pricebtc", "color", "greyline"]
+    list_filter = ["date", "stocktoflow", "color"]
+    list_per_page = 10
+    search_fields = ["stocktoflow", "color", "greyline"]
     ordering = ["date"]
 
 @admin.register(Usage)
