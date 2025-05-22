@@ -11,6 +11,7 @@ from .asynchronous import get_coin_rank_data
 from .asynchronous import get_coin_dominance_data
 from .asynchronous import get_block_data
 from .asynchronous import get_coin_data
+from .asynchronous import get_social_data
 from .utils import get_yesterday
 from .utils import get_socks_proxy
 
@@ -52,6 +53,17 @@ class TestAsynchronous(TestCase):
 
         self.assertEqual(got_type, want_type)
         self.assertLess(data, 100)
+
+#    async def test_get_coin_data(self):
+#        async with aiohttp.ClientSession() as session:
+#        got await get_coin_data(
+
+    def test_get_social_data(self):
+
+        got = get_social_data('xmr')
+        want = True
+
+        self.assertEqual(got, want)
 
     async def test_update_xmr_data(self):
 
