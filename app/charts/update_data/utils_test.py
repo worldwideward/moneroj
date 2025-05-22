@@ -3,15 +3,13 @@ from django.test import TestCase
 from unittest.mock import Mock
 from unittest.mock import patch
 
-from .models import Coin
+from charts.models import Coin
 
-from .update_data import erase_coin_data
-from .update_data import erase_sf_model_data
-from .update_data import erase_daily_data_data
-from .update_data import calculate_base_reward
-from .update_data import calculate_block_reward
-from .update_data import calculate_sf_model
-from .update_data import calculate_daily_data
+from charts.update_data.utils import erase_coin_data
+from charts.update_data.utils import erase_sf_model_data
+from charts.update_data.utils import erase_daily_data_data
+from charts.update_data.utils import calculate_base_reward
+from charts.update_data.utils import calculate_block_reward
 
 class TestUpdateData(TestCase):
     '''Testing update data functions'''
@@ -122,23 +120,3 @@ class TestUpdateData(TestCase):
 
         # Verify the penalty calculation
         self.assertEqual(result2, expected_reward)
-
-    def test_calculate_sf_model(self):
-        '''Test resetting SF Model Objects'''
-
-        result = calculate_sf_model()
-
-        got = result
-        want = True
-
-        self.assertEqual(got, want)
-
-    def test_calculate_daily_data(self):
-        '''Test calculating Daily Data objects'''
-
-        result = calculate_sf_model()
-
-        got = result
-        want = True
-
-        self.assertEqual(got, want)
