@@ -32,6 +32,7 @@ odfpy==1.4.1
 pandas==2.2.3
 protobuf==3.20.1
 psaw==0.1.0
+praw
 psycopg2-binary
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
