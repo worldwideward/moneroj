@@ -59,21 +59,21 @@ def social(request):
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-        if item.btc_subscriberCount > last_btc:
-            social_btc.append(item.btc_subscriberCount)
-            last_btc = item.btc_subscriberCount
+        if item.btc_subscriber_count > last_btc:
+            social_btc.append(item.btc_subscriber_count)
+            last_btc = item.btc_subscriber_count
         else:
             social_btc.append(last_btc)
 
-        if item.xmr_subscriberCount > last_xmr:
-            social_xmr.append(item.xmr_subscriberCount)
-            last_xmr = item.xmr_subscriberCount
+        if item.xmr_subscriber_count > last_xmr:
+            social_xmr.append(item.xmr_subscriber_count)
+            last_xmr = item.xmr_subscriber_count
         else:
             social_xmr.append(last_xmr)
 
-        if item.crypto_subscriberCount > last_crypto:
-            social_crypto.append(item.crypto_subscriberCount)
-            last_crypto = item.crypto_subscriberCount
+        if item.crypto_subscriber_count > last_crypto:
+            social_crypto.append(item.crypto_subscriber_count)
+            last_crypto = item.crypto_subscriber_count
         else:
             social_crypto.append(last_crypto)
 
@@ -99,22 +99,21 @@ def social2(request):
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-        if item.btc_subscriberCount > 0:
+        if item.btc_subscriber_count > 0:
             if item.btc_marketcap > 10000:
-                last_btc = ((item.btc_marketcap)**N)/item.btc_subscriberCount
+                last_btc = ((item.btc_marketcap)**N)/item.btc_subscriber_count
                 social_btc.append(last_btc)
             else:
                 social_btc.append('')
         else:
             social_btc.append(last_btc)
 
-        if item.xmr_subscriberCount > 0:
+        if item.xmr_subscriber_count > 0:
             if item.xmr_marketcap > 10000:
-                last_xmr = ((item.xmr_marketcap)**N)/item.xmr_subscriberCount
+                last_xmr = ((item.xmr_marketcap)**N)/item.xmr_subscriber_count
                 social_xmr.append(last_xmr)
             else:
                 social_xmr.append('')
-
         else:
             social_xmr.append(last_xmr)
 
@@ -137,14 +136,14 @@ def social3(request):
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-        if item.btc_subscriberCount > 0 and item.xmr_subscriberCount > 0:
-            last_xmr = 100*(item.xmr_subscriberCount/item.btc_subscriberCount)
+        if item.btc_subscriber_count > 0 and item.xmr_subscriber_count > 0:
+            last_xmr = 100*(item.xmr_subscriber_count/item.btc_subscriber_count)
             social_xmr.append(last_xmr)
         else:
             social_xmr.append(last_xmr)
 
-        if item.btc_subscriberCount > 0 and item.crypto_subscriberCount > 0:
-            last_crypto = 100*(item.crypto_subscriberCount/item.btc_subscriberCount)
+        if item.btc_subscriber_count > 0 and item.crypto_subscriber_count > 0:
+            last_crypto = 100*(item.crypto_subscriber_count/item.btc_subscriber_count)
             social_crypto.append(last_crypto)
         else:
             social_crypto.append(last_crypto)
@@ -171,21 +170,21 @@ def social4(request):
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
         dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-        if item.btc_subscriberCount > last_btc:
-            social_btc.append(item.btc_subscriberCount)
-            last_btc = item.btc_subscriberCount
+        if item.btc_subscriber_count > last_btc:
+            social_btc.append(item.btc_subscriber_count)
+            last_btc = item.btc_subscriber_count
         else:
             social_btc.append(last_btc)
 
-        if item.xmr_subscriberCount > last_xmr:
-            social_xmr.append(item.xmr_subscriberCount)
-            last_xmr = item.xmr_subscriberCount
+        if item.xmr_subscriber_count > last_xmr:
+            social_xmr.append(item.xmr_subscriber_count)
+            last_xmr = item.xmr_subscriber_count
         else:
             social_xmr.append(last_xmr)
 
-        if item.crypto_subscriberCount > last_crypto:
-            social_crypto.append(item.crypto_subscriberCount)
-            last_crypto = item.crypto_subscriberCount
+        if item.crypto_subscriber_count > last_crypto:
+            social_crypto.append(item.crypto_subscriber_count)
+            last_crypto = item.crypto_subscriber_count
         else:
             social_crypto.append(last_crypto)
 
@@ -296,9 +295,9 @@ def social5(request):
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-        if item.xmr_subscriberCount > last_xmr:
-            social_xmr.append(item.xmr_subscriberCount)
-            last_xmr = item.xmr_subscriberCount
+        if item.xmr_subscriber_count > last_xmr:
+            social_xmr.append(item.xmr_subscriber_count)
+            last_xmr = item.xmr_subscriber_count
         else:
             social_xmr.append(last_xmr)
 
@@ -328,22 +327,22 @@ def social6(request):
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
 
-        if item.btc_commentsPerHour*24 < last_btc/4:
+        if item.btc_comments_per_hour*24 < last_btc/4:
             social_btc.append(last_btc)
         else:
-            last_btc = item.btc_commentsPerHour*24
+            last_btc = item.btc_comments_per_hour*24
             social_btc.append(last_btc)
 
-        if item.xmr_commentsPerHour*24 < last_xmr/4:
+        if item.xmr_comments_per_hour*24 < last_xmr/4:
             social_xmr.append(last_xmr)
         else:
-            last_xmr = item.xmr_commentsPerHour*24
+            last_xmr = item.xmr_comments_per_hour*24
             social_xmr.append(last_xmr)
 
-        if item.crypto_commentsPerHour*24 < last_crypto/4:
+        if item.crypto_comments_per_hour*24 < last_crypto/4:
             social_crypto.append(last_crypto)
         else:
-            last_crypto = item.crypto_commentsPerHour*24
+            last_crypto = item.crypto_comments_per_hour*24
             social_crypto.append(last_crypto)
 
     last_xmr = locale._format('%.0f', last_xmr, grouping=True)
@@ -366,20 +365,20 @@ def social7(request):
 
     for item in data:
         dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_postsPerHour > 0:
-            last_btc = item.btc_postsPerHour*24
+        if item.btc_posts_per_hour > 0:
+            last_btc = item.btc_posts_per_hour*24
             social_btc.append(last_btc)
         else:
             social_btc.append(last_btc)
 
-        if item.xmr_postsPerHour > 0:
-            last_xmr = item.xmr_postsPerHour*24
+        if item.xmr_posts_per_hour > 0:
+            last_xmr = item.xmr_posts_per_hour*24
             social_xmr.append(last_xmr)
         else:
             social_xmr.append(last_xmr)
 
-        if item.crypto_postsPerHour > 0:
-            last_crypto = item.crypto_postsPerHour*24
+        if item.crypto_posts_per_hour > 0:
+            last_crypto = item.crypto_posts_per_hour*24
             social_crypto.append(last_crypto)
         else:
             social_crypto.append(last_crypto)
