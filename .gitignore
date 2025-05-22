@@ -9,3 +9,4 @@ data/
 *dev.sh
 coingecko.sh
 app/static
+.env
