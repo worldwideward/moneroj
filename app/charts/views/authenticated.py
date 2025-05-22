@@ -28,11 +28,11 @@ from charts.import_history import import_rank_history
 from charts.import_history import import_dominance_history
 from charts.import_history import import_p2pool_history
 
-from charts.update_data import erase_coin_data
-from charts.update_data import erase_sf_model_data
-from charts.update_data import erase_daily_data_data
-from charts.update_data import calculate_sf_model
-from charts.update_data import calculate_daily_data
+from charts.update_data.utils import erase_coin_data
+from charts.update_data.utils import erase_sf_model_data
+from charts.update_data.utils import erase_daily_data_data
+from charts.update_data.stock_to_flow import calculate_sf_model
+from charts.update_data.daily_data import calculate_daily_data
 
 ####################################################################################
 #   Set some parameters
