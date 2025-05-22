@@ -11,6 +11,154 @@ from charts.models import Coin
 from charts.models import Social
 from charts.models import DailyData
 
+def update_daily_data_price_information(xmr_data_point, btc_data_point):
+
+    try:
+        model = DailyData.objects.get(date=xmr_data_point.date)
+
+        model.xmr_priceusd = xmr_data_point.priceusd
+        model.xmr_pricebtc = xmr_data_point.pricebtc
+        model.btc_priceusd = btc_data_point.priceusd
+
+        model.save()
+    except Exception as error:
+        print(f'[ERROR] Something went wrong updating price information: {error}')
+        return None
+    return model
+
+def update_daily_data_marketcap(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point):
+
+    try:
+        model = DailyData.objects.get(date=xmr_data_point.date)
+
+        model.xmr_marketcap = float(xmr_data_point.priceusd)*float(xmr_data_point.supply)
+        model.btc_marketcap = float(btc_data_point.priceusd)*float(btc_data_point.supply)
+        model.dash_marketcap = float(dash_data_point.priceusd)*float(dash_data_point.supply)
+        model.zcash_marketcap = float(zcash_data_point.priceusd)*float(zcash_data_point.supply)
+        model.grin_marketcap = float(grin_data_point.priceusd)*float(grin_data_point.supply)
+
+        model.save()
+    except Exception as error:
+        print(f'[ERROR] Something went wrong updating marketcap information: {error}')
+        return None
+    return model
+
+def update_daily_data_transactions(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point):
+
+    try:
+        model = DailyData.objects.get(date=data_point.date)
+
+        model.xmr_transacpercentage = xmr_data_point.transactions / btc_data_point.transactions
+
+        model.xmr_transactions = xmr_data_point.transactions
+        model.btc_transactions = btc_data_point.transactions
+        model.dash_transactions = dash_data_point.transactions
+        model.zcash_transactions = zcash_data_point.transactions
+        model.grin_transactions = grin_data_point.transactions
+
+        model.save()
+    except Exception as error:
+        print(f'[ERROR] Something went wrong updating transaction information: {error}')
+        return None
+    return model
+
+def update_daily_data_issuance(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point):
+
+    try:
+        model = DailyData.objects.get(date=data_point.date)
+
+        model.xmr_inflation = xmr_data_point.inflation
+        model.btc_inflation = btc_data_point.inflation
+        model.dash_inflation = dash_data_point.inflation
+        model.zcash_inflation = zcash_data_point.inflation
+        model.grin_inflation = grin_data_point.inflation
+
+        model.xmr_metcalfebtc = xmr_data_point.transactions * xmr_data_point.supply / ( btc_data_point.transactions * btc_data_point.supply )
+        model.xmr_metcalfeusd = btc_data_point.priceusd * xmr_data_point.transactions * xmr_data_point.supply / ( btc_data_point.transactions * btc_data_point.supply )
+
+        model.xmr_return = xmr_data_point.priceusd / 30
+        model.btc_return = btc_data_point.priceusd / 5.01
+
+        model.save()
+    except Exception as error:
+        print(f'[ERROR] Something went wrong updating issuance information: {error}')
+        return None
+    return model
+
+def update_daily_data_emission(xmr_data_point, xmr_previous_data_point, btc_data_point, btc_previous_data_point):
+
+    try:
+        model = DailyData.objects.get(date=data_point.date)
+
+        model.xmr_emissionusd = ( xmr_data_point.supply - xmr_previous_data_point.supply ) * xmr_data_point.priceusd
+        model.xmr_emissionntv = xmr_data_point.supply - xmr_previous_data_point.supply
+
+        model.btc_emissionusd = ( btc_data_point.supply - btc_previous_data_point.supply ) * btc_data_point.priceusd
+        model.btc_emissionntv = btc_data_point.supply - btc_previous_data_point.supply
+
+        model.save()
+    except Exception as error:
+        print(f'[ERROR] Something went wrong updating mining information: {error}')
+        return None
+    return model
+
+def update_daily_data_mining(xmr_data_point, xmr_previous_data_point, btc_data_point, btc_previous_data_point):
+
+    try:
+        model = DailyData.objects.get(date=data_point.date)
+
+        model.xmr_minerrevusd = xmr_data_point.revenue * xmr_data_point.priceusd
+        model.xmr_minerrevntv = xmr_data_point.revenue
+        model.xmr_minerfeesusd = ( xmr_data_point.revenue - xmr_data_point.supply + xmr_previous_data_point.supply ) * xmr_data_point.priceusd
+        model.xmr_minerfeesntv = xmr_data_point.revenue - xmr_data_point.supply + xmr_previous_data_point.supply
+        model.xmr_transcostusd = xmr_data_point.priceusd * xmr_data_point.fee / xmr_data_point.transactions
+        model.xmr_transcostntv = xmr_data_point.fee / xmr_data_point.transactions
+        model.xmr_minerrevcap = 365 * 100 * xmr_data_point.revenue / xmr_data_point.supply
+        model.xmr_commitusd = xmr_data_point.hashrate / ( xmr_data_point.revenue * xmr_data_point.priceusd )
+        model.xmr_commitntv = xmr_data_point.hashrate / xmr_data_point.revenue
+        model.xmr_blocksize = xmr_data_point.blocksize
+        model.xmr_difficulty = xmr_data_point.difficulty
+
+        model.btc_minerrevusd = btc_data_point.revenue * btc_data_point.priceusd
+        model.btc_minerrevntv = btc_data_point.revenue
+        model.btc_minerfeesusd = ( btc_data_point.revenue - btc_data_point.supply + btc_previous_data_point.supply ) * btc_data_point.priceusd
+        model.btc_minerfeesntv = btc_data_point.revenue - btc_data_point.supply + btc_previous_data_point.supply
+        model.btc_transcostusd = btc_data_point.priceusd * btc_data_point.fee / btc_data_point.transactions
+        model.btc_transcostntv = btc_data_point.fee / btc_data_point.transactions
+        model.btc_minerrevcap = 365 * 100 * btc_data_point.revenue / btc_data_point.supply
+        model.btc_commitusd = btc_data_point.hashrate / ( btc_data_point.revenue * btc_data_point.priceusd )
+        model.btc_commitntv = btc_data_point.hashrate / btc_data_point.revenue
+        model.btc_blocksize = btc_data_point.blocksize
+        model.btc_difficulty = btc_data_point.difficulty
+
+        model.save()
+    except Exception as error:
+        print(f'[ERROR] Something went wrong updating mining information: {error}')
+        return None
+    return model
+
+def update_daily_data_social(social_xmr, social_btc, social_crypto):
+
+    try:
+        model = DailyData.objects.get(date=data_point.date)
+
+        model.xmr_subscriber_count = social_xmr.subscriber_count
+        model.xmr_comments_per_hour = social_xmr.comments_per_hour
+        model.xmr_posts_per_hour = social_xmr_posts_per_hour
+
+        model.btc_subscriber_count = social_btc.subscriber_count
+        model.btc_comments_per_hour = social_btc.comments_per_hour
+        model.btc_posts_per_hour = social_btc_posts_per_hour
+
+        model.crypto_subscriber_count = social_crypto.subscriber_count
+        model.crypto_comments_per_hour = social_crypto.comments_per_hour
+        model.crypto_posts_per_hour = social_crypto_posts_per_hour
+
+        model.save()
+    except Exception as error:
+        print(f'[ERROR] Something went wrong updating social information: {error}')
+        return None
+    return model
 
 def calculate_daily_data():
     '''Reset and recalculate the Daily Data model'''

@@ -17,8 +17,20 @@ from charts.models import Rank
 from charts.models import Dominance
 from charts.models import P2Pool
 from charts.models import Sfmodel
+from charts.models import Social
 from charts.models import DailyData
 from charts.models import Withdrawal
+
+from charts.update_data.utils import calculate_base_reward
+from charts.update_data.stock_to_flow import add_stock_to_flow_entry
+
+from charts.update_data.daily_data import update_daily_data_price_information
+from charts.update_data.daily_data import update_daily_data_marketcap
+from charts.update_data.daily_data import update_daily_data_transactions
+from charts.update_data.daily_data import update_daily_data_issuance
+from charts.update_data.daily_data import update_daily_data_emission
+from charts.update_data.daily_data import update_daily_data_mining
+from charts.update_data.daily_data import update_daily_data_social
 
 from .spreadsheets import PandasSpreadSheetManager
 from .api.coinmetrics import CoinmetricsAPI
@@ -314,7 +326,7 @@ def get_latest_price(symbol):
     return data
 
 def update_dominance(symbol, dominance):
-    '''Get latest dominance value and update'''
+    '''Add new dominance value to database'''
 
     try:
         model = Dominance()
@@ -331,7 +343,7 @@ def update_dominance(symbol, dominance):
     return 0
 
 def update_rank(symbol, rank):
-    '''Get latest rank value and update'''
+    '''Add new rank value to database'''
 
     try:
         model = Rank()
@@ -416,275 +428,120 @@ def update_database(date_from=None, date_to=None):
         date_to = date.today()
         date_from = date_to - timedelta(5)
         amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d").date()
+        print(f'[INFO] Updating from {str(date_from)} to {str(date_to)}', flush=True)
+        print(f'[INFO] There are {str(amount)} passed since {date_zero}', flush=True)
     else:
-        print(str(date_from) + " to " + str(date_to), flush=True)
         date_from = datetime.datetime.strptime(date_from, "%Y-%m-%d")
         date_to = datetime.datetime.strptime(date_to, "%Y-%m-%d")
         amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d")
+        print(f'[INFO] Updating from {str(date_from)} to {str(date_to)}', flush=True)
+        print(f'[INFO] There are {str(amount)} passed since {date_zero}', flush=True)
 
     count = 0
-    date_aux = date_from
-    while date_aux <= date_to:
-        date_aux = date_from + timedelta(count)
-        date_aux2 = date_aux - timedelta(1)
-        try:
-            coin_xmr = Coin.objects.filter(name='xmr').get(date=date_aux)
-            coin_xmr2 = Coin.objects.filter(name='xmr').get(date=date_aux2)
-            coin_btc = Coin.objects.filter(name='btc').get(date=date_aux)
-            coin_btc2 = Coin.objects.filter(name='btc').get(date=date_aux2)
-            try:
-                coin_dash = Coin.objects.filter(name='dash').get(date=date_aux)
-            except Exception as error:
-                print(f'[ERROR] Something went wrong {error}', flush=True)
-                coin_dash = Coin()
-            try:
-                coin_zcash = Coin.objects.filter(name='zec').get(date=date_aux)
-            except Exception as error:
-                print(f'[ERROR] Something went wrong {error}', flush=True)
-                coin_zcash = Coin()
-            try:
-                coin_grin = Coin.objects.filter(name='grin').get(date=date_aux)
-            except Exception as error:
-                print(f'[ERROR] Something went wrong {error}', flush=True)
-                coin_grin = Coin()
+    day_to_process = date_from
+    while day_to_process <= date_to:
 
-            if coin_btc.inflation == 0 or coin_xmr.inflation == 0:
+        print(f'[INFO] Processing {str(day_to_process)}', flush=True)
+        day_to_process = date_from + timedelta(count)
+        day_before = day_to_process - timedelta(1)
+        print(f'[INFO] Day before {str(day_to_process)} is {str(day_before)}', flush=True)
+
+        # Retrieve data points for cryptocurrencies
+
+        try:
+            try:
+                xmr_data_point = Coin.objects.filter(name='xmr').get(date=day_to_process)
+            except Exception as error:
+                print(f'[ERROR] Something went wrong getting XMR data: {error}', flush=True)
+                return False
+            try:
+                xmr_previous_data_point = Coin.objects.filter(name='xmr').get(date=day_before)
+            except Exception as error:
+                print(f'[ERROR] Something went wrong getting previous XMR data: {error}', flush=True)
+                return False
+            try:
+                btc_data_point = Coin.objects.filter(name='btc').get(date=day_to_process)
+            except Exception as error:
+                print(f'[ERROR] Something went wrong getting BTC data: {error}', flush=True)
+                return False
+            try:
+                btc_previous_data_point = Coin.objects.filter(name='btc').get(date=day_before)
+            except Exception as error:
+                print(f'[ERROR] Something went wrong getting previous BTC data: {error}', flush=True)
+                return False
+            try:
+                dash_data_point = Coin.objects.filter(name='dash').get(date=day_to_process)
+            except Exception as error:
+                print(f'[ERROR] Something went wrong getting DASH data: {error}', flush=True)
+                dash_data_point = Coin()
+            try:
+                zcash_data_point = Coin.objects.filter(name='zec').get(date=day_to_process)
+            except Exception as error:
+                print(f'[ERROR] Something went wrong getting ZEC data: {error}', flush=True)
+                zcash_data_point = Coin()
+            try:
+                grin_data_point = Coin.objects.filter(name='grin').get(date=day_to_process)
+            except Exception as error:
+                print(f'[ERROR] Something went wrong getting GRIN data: {error}', flush=True)
+                grin_data_point = Coin()
+
+            if btc_data_point.inflation == 0 or xmr_data_point.inflation == 0:
+
+                print(f'[INFO] BTC inflation: {btc_data_point.inflation} , XMR inflation: {xmr_data_point.inflation}')
+                print(f'[INFO] Returning {count}')
                 return count
 
-            count_aux = 0
+            # Retrieve social data points for cryptocurrencies
+
+            social_count = 0
             found = False
-            while count_aux < 100 and not found:
+            while social_count < 100 and not found:
+                print(f'[INFO] Processing social data, {social_count}')
                 try:
-                    date_aux3 = date_aux - timedelta(count_aux)
-                    social_btc = Social.objects.filter(name='Bitcoin').get(date=date_aux3)
-                    social_xmr = Social.objects.filter(name='Monero').get(date=date_aux3)
-                    social_crypto = Social.objects.filter(name='Cryptocurrency').get(date=date_aux3)
+                    day_to_process_social_data = day_to_process - timedelta(social_count)
+                    social_btc = Social.objects.filter(name='Bitcoin').get(date=day_to_process_social_data)
+                    social_xmr = Social.objects.filter(name='Monero').get(date=day_to_process_social_data)
+                    social_crypto = Social.objects.filter(name='Cryptocurrency').get(date=day_to_process_social_data)
                     found = True
+                    print('[INFO] Found Social Data', flush=True)
                 except Exception as error:
-                    print(f'[ERROR] Something went wrong {error}', flush=True)
+                    print(f'[ERROR] Something went wrong retrieving Social Data: {error}', flush=True)
                     found = False
-                count_aux += 1
-        except:
+                social_count += 1
+        except Exception as error:
+            print(f'[INFO] Processing failed, returning {count}. Error: {error}')
             return count
 
-        try:
-            data = Sfmodel.objects.get(date=coin_xmr.date)
+        # Create stock to flow entry for XMR
 
-        except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
-            data = Sfmodel()
-            data.priceusd = 0
-            data.pricebtc = 0
-            data.stocktoflow = 0
-            data.greyline = 0
-            data.color = 0
-            data.date = coin_xmr.date
-        data.pricebtc = coin_xmr.pricebtc
-        data.priceusd = coin_xmr.priceusd
-        if data.stocktoflow == 0 and coin_xmr.supply > 0:
-            supply = int(coin_xmr.supply)*10**12
-            reward = (2**64 -1 - supply) >> 19
-            reward = max(0.6*(10**12))
-            inflation = 100*reward*720*365/supply
-            data.stocktoflow = (100/(inflation))**1.65
-        v0 = 0.002
-        delta = (0.015 - 0.002)/(6*365)
-        data.color = 30*coin_xmr.pricebtc/((amount.days)*delta + v0)
+        add_stock_to_flow_entry(xmr_data_point, amount)
         amount += timedelta(1)
-        data.save()
 
-        try:
-            data = DailyData.objects.get(date=coin_xmr.date)
-        except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
-            data = DailyData()
-            # Date field
-            data.date = coin_xmr.date
-            # Basic information
-            data.btc_priceusd = 0
-            data.xmr_priceusd = 0
-            data.xmr_pricebtc = 0
-            # Marketcap charts
-            data.btc_marketcap = 0
-            data.xmr_marketcap = 0
-            data.dash_marketcap = 0
-            data.grin_marketcap = 0
-            data.zcash_marketcap = 0
-            # Transactions charts
-            data.xmr_transacpercentage = 0
-            data.btc_transactions = 0
-            data.zcash_transactions = 0
-            data.dash_transactions = 0
-            data.grin_transactions = 0
-            data.xmr_transactions = 0
-            data.btc_supply = 0
-            data.xmr_supply = 0
-            # Issuance charts
-            data.btc_inflation = 0
-            data.xmr_inflation = 0
-            data.dash_inflation = 0
-            data.grin_inflation = 0
-            data.zcash_inflation = 0
-            data.xmr_metcalfebtc = 0
-            data.xmr_metcalfeusd = 0
-            data.btc_return = 0
-            data.xmr_return = 0
-            data.btc_emissionusd = 0
-            data.btc_emissionntv = 0
-            data.xmr_emissionusd = 0
-            data.xmr_emissionntv = 0
-            # Mining charts
-            data.btc_minerrevntv = 0
-            data.xmr_minerrevntv = 0
-            data.btc_minerrevusd = 0
-            data.xmr_minerrevusd = 0
-            data.btc_minerfeesntv = 0
-            data.xmr_minerfeesntv = 0
-            data.btc_minerfeesusd = 0
-            data.xmr_minerfeesusd = 0
-            data.btc_transcostntv = 0
-            data.xmr_transcostntv = 0
-            data.btc_transcostusd = 0
-            data.xmr_transcostusd = 0
-            data.xmr_minerrevcap = 0
-            data.btc_minerrevcap = 0
-            data.btc_commitntv = 0
-            data.xmr_commitntv = 0
-            data.btc_commitusd = 0
-            data.xmr_commitusd = 0
-            data.btc_blocksize = 0
-            data.xmr_blocksize = 0
-            data.btc_difficulty = 0
-            data.xmr_difficulty = 0
-            # Reddit charts
-            data.btc_subscriber_count = 0
-            data.btc_comments_per_hour = 0
-            data.btc_posts_per_hour = 0
-            data.xmr_subscriber_count = 0
-            data.xmr_comments_per_hour = 0
-            data.xmr_posts_per_hour = 0
-            data.crypto_subscriber_count = 0
-            data.crypto_comments_per_hour = 0
-            data.crypto_posts_per_hour = 0
+        # Create daily data entry for XMR
 
-        # Date field
-        data.date = coin_xmr.date
-        # Basic information
-        data.btc_priceusd = coin_btc.priceusd
-        data.xmr_priceusd = coin_xmr.priceusd
-        data.xmr_pricebtc = coin_xmr.pricebtc
-        # Marketcap charts
-        data.btc_marketcap = float(coin_btc.priceusd)*float(coin_btc.supply)
-        data.xmr_marketcap = float(coin_xmr.priceusd)*float(coin_xmr.supply)
-        data.dash_marketcap = float(coin_dash.priceusd)*float(coin_dash.supply)
-        data.grin_marketcap = float(coin_grin.priceusd)*float(coin_grin.supply)
-        data.zcash_marketcap = float(coin_zcash.priceusd)*float(coin_zcash.supply)
+        entry = update_daily_data_price_information(xmr_data_point, btc_data_point)
 
-        # Transactions charts
-        try:
-            data.xmr_transacpercentage = coin_xmr.transactions/coin_btc.transactions
-        except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
+        entry = update_daily_data_marketcap(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point)
 
-        data.xmr_transactions = coin_xmr.transactions
-        data.btc_transactions = coin_btc.transactions
-        data.zcash_transactions = coin_zcash.transactions
-        data.dash_transactions = coin_dash.transactions
-        data.grin_transactions = coin_grin.transactions
-        data.btc_supply = coin_btc.supply
-        data.xmr_supply = coin_xmr.supply
-        # Issuance charts
-        data.btc_inflation = coin_btc.inflation
-        data.xmr_inflation = coin_xmr.inflation
-        data.dash_inflation = coin_dash.inflation
-        data.grin_inflation = coin_grin.inflation
-        data.zcash_inflation = coin_zcash.inflation
-        try:
-            data.xmr_metcalfebtc = coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
-            data.xmr_metcalfeusd = coin_btc.priceusd*coin_xmr.transactions*coin_xmr.supply/(coin_btc.supply*coin_btc.transactions)
-        except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
+        entry = update_daily_data_transactions(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point)
 
-        data.btc_return = coin_btc.priceusd/30
-        data.xmr_return = coin_xmr.priceusd/5.01
-        data.btc_emissionusd = (coin_btc.supply - coin_btc2.supply)*coin_btc.priceusd
-        data.btc_emissionntv = coin_btc.supply - coin_btc2.supply
-        data.xmr_emissionusd = (coin_xmr.supply - coin_xmr2.supply)*coin_xmr.priceusd
-        data.xmr_emissionntv = coin_xmr.supply - coin_xmr2.supply
-        # Mining charts
-        data.btc_minerrevntv = coin_btc.revenue
-        data.xmr_minerrevntv = coin_xmr.revenue
-        data.btc_minerrevusd = coin_btc.revenue*coin_btc.priceusd
-        data.xmr_minerrevusd = coin_xmr.revenue*coin_xmr.priceusd
-        data.btc_minerfeesntv = coin_btc.revenue - coin_btc.supply + coin_btc2.supply
-        data.xmr_minerfeesntv = coin_xmr.revenue - coin_xmr.supply + coin_xmr2.supply
-        data.btc_minerfeesusd = (coin_btc.revenue - coin_btc.supply + coin_btc2.supply)*coin_btc.priceusd
-        data.xmr_minerfeesusd = (coin_xmr.revenue - coin_xmr.supply + coin_xmr2.supply)*coin_xmr.priceusd
-        try:
-            data.btc_transcostntv = coin_btc.fee/coin_btc.transactions
-            data.xmr_transcostntv = coin_xmr.fee/coin_xmr.transactions
-            data.btc_transcostusd = coin_btc.priceusd*coin_btc.fee/coin_btc.transactions
-            data.xmr_transcostusd = coin_xmr.priceusd*coin_xmr.fee/coin_xmr.transactions
-        except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
+        entry = update_daily_data_issuance(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point)
 
-        try:
-            data.xmr_minerrevcap = 365*100*coin_xmr.revenue/coin_xmr.supply
-            data.btc_minerrevcap = 365*100*coin_btc.revenue/coin_btc.supply
-        except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
+        entry = update_daily_data_emission(xmr_data_point, xmr_previous_data_point, btc_data_point, btc_previous_data_point)
 
-        try:
-            data.btc_commitntv = coin_btc.hashrate/(coin_btc.revenue)
-            data.xmr_commitntv = coin_xmr.hashrate/(coin_xmr.revenue)
-            data.btc_commitusd = coin_btc.hashrate/(coin_btc.revenue*coin_btc.priceusd)
-            data.xmr_commitusd = coin_xmr.hashrate/(coin_xmr.revenue*coin_xmr.priceusd)
-        except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
-
-        try:
-            data.btc_blocksize = coin_btc.blocksize
-            data.xmr_blocksize = coin_xmr.blocksize
-            data.btc_difficulty = coin_btc.difficulty
-            data.xmr_difficulty = coin_xmr.difficulty
-        except Exception as error:
-            print(f'Something went wrong {error}', flush=True)
-
-        # Reddit charts
-        try:
-            data.btc_subscriber_count = social_btc.subscriber_count
-            data.btc_comments_per_hour = social_btc.comments_per_hour
-            data.btc_posts_per_hour = social_btc.posts_per_hour
-            data.xmr_subscriber_count = social_xmr.subscriber_count
-            data.xmr_comments_per_hour = social_xmr.comments_per_hour
-            data.xmr_posts_per_hour = social_xmr.posts_per_hour
-            data.crypto_subscriber_count = social_crypto.subscriber_count
-            data.crypto_comments_per_hour = social_crypto.comments_per_hour
-            data.crypto_posts_per_hour = social_crypto.posts_per_hour
-        except (Social.DoesNotExist, UnboundLocalError):
-            data.btc_subscriber_count = 0
-            data.btc_comments_per_hour = 0
-            data.btc_posts_per_hour = 0
-            data.xmr_subscriber_count = 0
-            data.xmr_comments_per_hour = 0
-            data.xmr_posts_per_hour = 0
-            data.crypto_subscriber_count = 0
-            data.crypto_comments_per_hour = 0
-            data.crypto_posts_per_hour = 0
-
-        data.save()
+        entry = update_daily_data_social(social_xmr, social_btc, social_crypto)
 
         try:
             print(
-                str(coin_xmr.supply)
+                str(xmr_data_point.supply)
                 + " xmr "
-                + str(data.xmr_subscriber_count)
+                + str(entry.xmr_subscriber_count)
                 + " - "
                 + str(social_xmr.subscriber_count)
                 + " = "
-                + str(int(data.xmr_marketcap))
+                + str(int(entry.xmr_marketcap))
                 + " => "
-                + str(coin_xmr.inflation)
+                + str(xmr_data_point.inflation)
             , flush=True)
         except (Social.DoesNotExist, UnboundLocalError) as error:
             print(f'Something went wrong {error}', flush=True)
