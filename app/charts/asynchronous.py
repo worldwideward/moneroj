@@ -8,9 +8,10 @@ from datetime import date, timedelta
 from django.conf import settings
 
 from .models import Coin, Social, P2Pool
-from .synchronous import *
+
 from .synchronous import update_rank
 from .synchronous import update_dominance
+
 from .spreadsheets import PandasSpreadSheetManager
 from .utils import get_today, get_yesterday
 from .utils import get_socks_proxy
@@ -18,6 +19,7 @@ from .utils import get_socks_proxy
 from .api.coinmetrics import CoinmetricsAPI
 from .api.localmonero import LocalMoneroAPI
 from .api.coingecko import CoingeckoAPI
+from .api.reddit import RedditAPI
 
 BASE_DIR = settings.BASE_DIR
 
@@ -25,6 +27,7 @@ sheets = PandasSpreadSheetManager()
 
 LOCAL_MONERO_API = LocalMoneroAPI()
 MARKET_DATA_API = CoingeckoAPI()
+REDDIT_API = RedditAPI()
 
 # Async client configuration
 ASYNC_TIMEOUT = aiohttp.ClientTimeout(
@@ -120,8 +123,8 @@ async def get_coin_data(session, symbol, url):
                     except:
                         coin.pricebtc = 0
                     try:
-                        coin.inflation = float(item['IssContPctAnn'])  
-                        coin.stocktoflow = (100/coin.inflation)**1.65 
+                        coin.inflation = float(item['IssContPctAnn'])
+                        coin.stocktoflow = (100/coin.inflation)**1.65
                     except:
                         coin.inflation = 0
                         coin.stocktoflow = 0
@@ -160,39 +163,38 @@ async def get_coin_data(session, symbol, url):
 ####################################################################################
 #   Asynchronous get social metrics from reddit
 #################################################################################### 
+
 def get_social_data(symbol):
-    yesterday = yesterday()
+    yesterday = get_yesterday()
+
     try:
         social = Social.objects.filter(name=symbol).get(date=yesterday)
+        print(f'[INFO] Social data already present in database: {social}')
     except:
 
-        session = requests.session()
+        data = REDDIT_API.get_subreddit_metadata(symbol)
 
-        url = f'{settings.REDDIT_API_URL}/r/{symbol}/about.json'
+        # calculate comments and posts / hour
+        end_time = int(datetime.datetime.timestamp(datetime.datetime.strptime(yesterday, '%Y-%m-%d')))
+        start_time = int(end_time - 7200)
+        limit = 1000
+        filters = []
 
-        if settings.SOCKS_PROXY_ENABLED is True:
+        posts = REDDIT_API.get_subreddit_posts(symbol)
+        comments = REDDIT_API.get_subreddit_comments(symbol)
 
-            session.proxies = get_socks_proxy()
+        #posts = data_prep_posts(symbol, start_time, end_time, filters, limit)
+        #comments = data_prep_comments(symbol, start_time, end_time, filters, limit)
 
-        with session.get(url, headers={'User-agent': 'Checking new social data'}) as res:
-            data = res.content
-            data = json.loads(data)
-            data = data['data']
+        model = Social()
+        model.name = symbol
+        model.date = yesterday
+        model.subscriber_count = data['subscribers']
+        model.posts_per_hour = len(posts)/2
+        model.comments_per_hour = len(comments)/2
 
-            social = Social()
-            social.name = symbol
-            social.date = yesterday
-            social.subscriber_count = data['subscribers']
-
-            timestamp1 = int(datetime.datetime.timestamp(datetime.datetime.strptime(yesterday, '%Y-%m-%d')))
-            timestamp2 = int(timestamp1 - 7200)
-            limit = 1000
-            filters = []
-            data = data_prep_posts(symbol, timestamp2, timestamp1, filters, limit)
-            social.posts_per_hour = len(data)/2
-            data = data_prep_comments(symbol, timestamp2, timestamp1, filters, limit)
-            social.comments_per_hour = len(data)/2
-            social.save()
+        model.save()
+        print(f'[INFO] Added Social data to database: {model}')
     return True
 
 ####################################################################################

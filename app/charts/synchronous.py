@@ -6,7 +6,7 @@ from datetime import date, timedelta
 import pytz
 import requests
 import pandas as pd
-from psaw import PushshiftAPI
+
 from requests import Session
 from requests.exceptions import Timeout, TooManyRedirects
 
@@ -40,36 +40,6 @@ METRICS_API = CoinmetricsAPI()
 
 CSV_DATA_SHEET = settings.CSV_DATA_SHEET
 
-####################################################################################
-#   Reddit api
-####################################################################################
-
-def data_prep_posts(subreddit, start_time, end_time, filters, limit):
-    '''Get daily posts in a certain subreddit '''
-
-    if len(filters) == 0:
-        filters = ['id', 'author', 'created_utc', 'domain', 'url', 'title', 'num_comments']
-
-    try:
-        api = PushshiftAPI()
-        posts = list(api.search_submissions(subreddit=subreddit, after=start_time, before=end_time, filter=filters, limit=limit))
-        return pd.DataFrame(posts)
-    except Exception as error:
-        print(f'Something went wrong: {error}', flush=True)
-        return None
-
-def data_prep_comments(term, start_time, end_time, filters, limit):
-    '''Get daily comments in a certain subreddit'''
-    if len(filters) == 0:
-        filters = ['id', 'author', 'created_utc','body', 'permalink', 'subreddit']
-
-    try:
-        api = PushshiftAPI()
-        comments = list(api.search_comments(q=term, after=start_time, before=end_time, filter=filters, limit=limit))
-        return pd.DataFrame(comments)
-    except Exception as error:
-        print(f'Something went wrong: {error}', flush=True)
-        return None
 
 ####################################################################################
 #   Other useful functions
