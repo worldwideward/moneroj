@@ -13,7 +13,8 @@ from tasks.data_sync import check_daily_objects_for_updates
 from tasks.data_sync import xmr_updates
 #from tasks.data_sync import competitors_updates
 from tasks.data_sync import daily_objects_updates
-from tasks.data_sync import populate_database
+from tasks.data_sync import recalculate_sf_model
+from tasks.data_sync import recalculate_daily_data
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
 
@@ -60,11 +61,12 @@ def work():
         result = check_daily_objects_for_updates(yesterday)
 
         if result is True:
-            print("[INFO] Executing daily updates..", flush=True)
+            print(f'[INFO] Executing daily updates for {yesterday}', flush=True)
             daily_objects_updates(yesterday)
 
-        ### Populate the database
-        populate_database()
+        recalculate_sf_model()
+
+        recalculate_daily_data()
 
         ### Load marketcap and dominance
         #load_dominance()

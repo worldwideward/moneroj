@@ -14,6 +14,35 @@ from charts.models import DailyData
 
 from charts.update_data.utils import calculate_base_reward
 
+def add_stock_to_flow_entry(data_point, amount):
+
+    try:
+        model = Sfmodel.objects.get(date=data_point.date)
+
+    except Exception as error:
+        print(f'Something went wrong while retrieving Stock to flow entry for {data_point.date}: {error}', flush=True)
+        model = Sfmodel()
+        model.priceusd = 0
+        model.pricebtc = 0
+        model.stocktoflow = 0
+        model.greyline = 0
+        model.color = 0
+        model.date = data_point.date
+
+    model.pricebtc = data_point.pricebtc
+    model.priceusd = data_point.priceusd
+
+    if model.stocktoflow == 0 and int(data_point.supply) > 0:
+        supply = int(data_point.supply)*10**12
+        reward = calculate_base_reward(supply)
+        inflation = 100*reward*720*365/supply
+        model.stocktoflow = (100/(inflation))**1.65
+
+    initial_velocity = 0.002
+    velocity_delta = (0.015 - 0.002)/(6*365)
+
+    model.color = 30*int(data_point.pricebtc)/((amount.days)*velocity_delta + initial_velocity)
+    model.save()
 
 def calculate_sf_model():
     '''Reset and recalculate the Stock-to-Flow model'''
