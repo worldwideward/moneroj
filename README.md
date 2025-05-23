@@ -34,7 +34,14 @@ We use [django's testsframework](https://docs.djangoproject.com/en/3.1/topics/te
 Run tests like
 
 ```bash
+# Run subset of tests
 python manage.py test --failfast charts.asynchronous_test
+
+
+# Run all tests in module
+python manage.py test --pattern="*test.py" charts/
+python manage.py test --pattern="*test.py" charts/update_data
+python manage.py test --pattern="*test.py" charts/api
 ```
 
 # Data updates
