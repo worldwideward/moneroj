@@ -3,7 +3,7 @@ from django.test import TestCase
 from unittest.mock import Mock
 from unittest.mock import patch
 
-from .reddit import RedditAPI
+from charts.api.reddit import RedditAPI
 
 class TestRedditAPI(TestCase):
     '''Testing Reddit API class'''
