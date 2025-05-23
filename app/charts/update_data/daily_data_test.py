@@ -7,7 +7,7 @@ from charts.models import Coin
 
 from charts.update_data.daily_data import calculate_daily_data
 
-class TestUpdateData(TestCase):
+class TestDailyData(TestCase):
     '''Testing update data functions'''
 
     def setUp(self):

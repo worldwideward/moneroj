@@ -3,7 +3,6 @@ from django.test import TestCase
 from unittest.mock import Mock
 from unittest.mock import patch
 
-from charts.models import Coin
 from charts.models import Rank
 from charts.models import Dominance
 
@@ -14,7 +13,7 @@ from charts.update_data.marketcap import add_dominance_entry
 from charts.update_data.marketcap import update_rank
 from charts.update_data.marketcap import update_dominance
 
-class TestUpdateData(TestCase):
+class TestMarketcap(TestCase):
     '''Testing update data functions'''
 
     def setUp(self):

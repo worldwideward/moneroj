@@ -7,7 +7,7 @@ from charts.models import Coin
 
 from charts.update_data.stock_to_flow import calculate_sf_model
 
-class TestUpdateData(TestCase):
+class TestStocktoFlow(TestCase):
     '''Testing update data functions'''
 
     def setUp(self):
