@@ -99,7 +99,7 @@ class DominanceAdmin(admin.ModelAdmin):
 
 @admin.register(Rank)
 class RankAdmin(admin.ModelAdmin):
-    list_display = ["name", "date"]
+    list_display = ["name", "rank", "date"]
     list_filter = ["name", "date"]
     list_per_page = 10
     search_fields = ["name"]

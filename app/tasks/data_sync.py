@@ -9,7 +9,6 @@ from charts.models import Coin
 from charts.models import Sfmodel
 from charts.models import Social
 from charts.models import DailyData
-from charts.asynchronous import update_xmr_data
 #from charts.asynchronous import update_others_data
 from charts.synchronous import update_database
 from charts.synchronous import get_history_function
@@ -18,6 +17,8 @@ from charts.update_data.utils import erase_sf_model_data
 from charts.update_data.utils import erase_daily_data_data
 from charts.update_data.stock_to_flow import calculate_sf_model
 from charts.update_data.daily_data import calculate_daily_data
+from charts.update_data.marketcap import update_rank
+from charts.update_data.marketcap import update_dominance
 
 
 def check_for_updates(yesterday, coin) -> bool:
@@ -65,11 +66,11 @@ def check_monero_available() -> str:
 
     return message
 
-async def xmr_updates(yesterday, date_aux):
+def update_xmr_marketcap():
     '''Update XMR dominance & rank from the last day'''
 
-    await update_xmr_data()
-
+    update_rank('xmr')
+    update_dominance('xmr')
     return None
 
 def check_competitors_for_updates(yesterday) -> bool:

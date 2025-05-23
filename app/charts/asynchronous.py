@@ -9,9 +9,6 @@ from django.conf import settings
 
 from .models import Coin, Social, P2Pool
 
-from .synchronous import update_rank
-from .synchronous import update_dominance
-
 from .spreadsheets import PandasSpreadSheetManager
 from .utils import get_today, get_yesterday
 from .utils import get_socks_proxy
@@ -195,37 +192,6 @@ def get_social_data(symbol):
 
         model.save()
         print(f'[INFO] Added Social data to database: {model}')
-    return True
-
-####################################################################################
-#   Asynchronous get whole xmr data calling coinmarketcap and xmrchain
-#################################################################################### 
-async def update_xmr_data():
-
-    symbol = 'xmr'
-
-    async with aiohttp.ClientSession(**ASYNC_CLIENT_ARGS) as session:
-
-        rank = await get_coin_rank_data(session, symbol)
-
-    result = update_rank(symbol, rank)
-
-    if result != 0:
-        return False
-
-    async with aiohttp.ClientSession(**ASYNC_CLIENT_ARGS) as session:
-
-        dominance = await get_coin_dominance_data(session, symbol)
-
-    result = update_dominance(symbol, dominance)
-
-    if result != 0:
-        return False
-
-    print('[INFO] Updated XMR')
-    print(f'[INFO] XMR rank: {rank}')
-    print(f'[INFO] XMR dominance: {dominance}')
-
     return True
 
 ####################################################################################
