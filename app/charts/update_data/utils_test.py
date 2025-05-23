@@ -11,7 +11,7 @@ from charts.update_data.utils import erase_daily_data_data
 from charts.update_data.utils import calculate_base_reward
 from charts.update_data.utils import calculate_block_reward
 
-class TestUpdateData(TestCase):
+class TestUtils(TestCase):
     '''Testing update data functions'''
 
     def setUp(self):
