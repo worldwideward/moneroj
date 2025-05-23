@@ -13,8 +13,6 @@ from requests.exceptions import Timeout, TooManyRedirects
 from django.conf import settings
 
 from charts.models import Coin
-from charts.models import Rank
-from charts.models import Dominance
 from charts.models import P2Pool
 from charts.models import Sfmodel
 from charts.models import Social
@@ -294,40 +292,6 @@ def get_latest_price(symbol):
 
         file.close()
     return data
-
-def update_dominance(symbol, dominance):
-    '''Add new dominance value to database'''
-
-    try:
-        model = Dominance()
-        model.name = symbol
-        model.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        model.dominance = dominance
-        model.save()
-
-    except Exception as error:
-
-        print(f'[ERROR] Something went wrong while updating the dominance of {symbol}: {error}')
-        return 1
-
-    return 0
-
-def update_rank(symbol, rank):
-    '''Add new rank value to database'''
-
-    try:
-        model = Rank()
-        model.name = symbol
-        model.date = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        model.rank = rank
-        model.save()
-
-    except Exception as error:
-
-        print(f'[ERROR] Something went wrong while updating the rank of {symbol}: {error}')
-        return 1
-
-    return 0
 
 def check_new_social(symbol):
     '''Load Reddit api to check if there are new followers'''

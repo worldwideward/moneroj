@@ -7,8 +7,6 @@ import datetime
 
 from .asynchronous import update_xmr_data
 from .asynchronous import update_coin_data
-from .asynchronous import get_coin_rank_data
-from .asynchronous import get_coin_dominance_data
 from .asynchronous import get_block_data
 from .asynchronous import get_coin_data
 from .asynchronous import get_social_data
@@ -30,29 +28,6 @@ class TestAsynchronous(TestCase):
         want = "OK"
 
         self.assertEqual(got, want)
-
-    async def test_get_coin_rank_data_success(self):
-
-        async with aiohttp.ClientSession() as session:
-
-            data = await get_coin_rank_data(session, "xmr")
-
-        got = type(data)
-        want = int
-
-        self.assertEqual(got, want)
-
-    async def test_get_coin_dominance_success(self):
-
-        async with aiohttp.ClientSession() as session:
-
-            data = await get_coin_dominance_data(session, "xmr")
-
-        got_type = type(data)
-        want_type = float
-
-        self.assertEqual(got_type, want_type)
-        self.assertLess(data, 100)
 
 #    async def test_get_coin_data(self):
 #        async with aiohttp.ClientSession() as session:

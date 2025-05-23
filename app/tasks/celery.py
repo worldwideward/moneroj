@@ -10,7 +10,7 @@ from tasks.data_sync import check_for_updates
 from tasks.data_sync import check_monero_available
 from tasks.data_sync import check_competitors_for_updates
 from tasks.data_sync import check_daily_objects_for_updates
-from tasks.data_sync import xmr_updates
+from tasks.data_sync import update_xmr_marketcap
 #from tasks.data_sync import competitors_updates
 from tasks.data_sync import daily_objects_updates
 from tasks.data_sync import recalculate_sf_model
@@ -47,9 +47,7 @@ def work():
         ### check monero updates
         result = check_for_updates(yesterday, "xmr")
 
-        if result is True:
-            print("[INFO] Executing XMR updates..", flush=True)
-            await xmr_updates(yesterday, date_aux)
+        update_xmr_marketcap()
 
         ### check competitor updates
         result = check_competitors_for_updates(yesterday)
@@ -65,12 +63,7 @@ def work():
             daily_objects_updates(yesterday)
 
         recalculate_sf_model()
-
         recalculate_daily_data()
-
-        ### Load marketcap and dominance
-        #load_dominance()
-
 
         print('[INFO] Executed all jobs', flush=True)
         return None
