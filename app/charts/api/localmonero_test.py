@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import datetime
 
-from .localmonero import LocalMoneroAPI
+from charts.api.localmonero import LocalMoneroAPI
 
 class TestLocalMoneroAPI(TestCase):
     '''Testing Coin Metrics API class'''

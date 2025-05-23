@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import datetime
 
-from .coinmetrics import CoinmetricsAPI
+from charts.api.coinmetrics import CoinmetricsAPI
 
 class TestCoinmetricsAPI(TestCase):
     '''Testing Coin Metrics API class'''
