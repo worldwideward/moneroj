@@ -1,46 +1,14 @@
 '''Views module'''
 
-import requests
-import json
-import datetime
-import aiohttp
-import asyncio
-import math
 import locale
-import pandas as pd
-
-from datetime import date, timedelta
-from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
-from operator import truediv
-from ctypes import sizeof
-from os import readlink
-
+from datetime import date
+from datetime import timedelta
+from datetime import datetime
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
+from charts.models import DailyData
 
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
-from charts.synchronous import get_history_function
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
-
-####################################################################################
-#   Set some parameters
-####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-sheets = PandasSpreadSheetManager()
-
-####################################################################################
-#   Social Media charts
-####################################################################################
 
 def social(request):
     '''Total Reddit subscribers chart'''
@@ -56,8 +24,8 @@ def social(request):
     last_crypto = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
-        dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+        dates2.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_subscriber_count > last_btc:
             social_btc.append(item.btc_subscriber_count)
@@ -96,8 +64,8 @@ def social2(request):
     N = 1
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
-        dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+        dates2.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_subscriber_count > 0:
             if item.btc_marketcap > 10000:
@@ -134,7 +102,7 @@ def social3(request):
     last_crypto = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_subscriber_count > 0 and item.xmr_subscriber_count > 0:
             last_xmr = 100*(item.xmr_subscriber_count/item.btc_subscriber_count)
@@ -167,8 +135,8 @@ def social4(request):
     last_crypto = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
-        dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+        dates2.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_subscriber_count > last_btc:
             social_btc.append(item.btc_subscriber_count)
@@ -293,7 +261,7 @@ def social5(request):
     last_xmr = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.xmr_subscriber_count > last_xmr:
             social_xmr.append(item.xmr_subscriber_count)
@@ -325,7 +293,7 @@ def social6(request):
     last_crypto = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_comments_per_hour*24 < last_btc/4:
             social_btc.append(last_btc)
@@ -364,7 +332,7 @@ def social7(request):
     last_crypto = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_posts_per_hour > 0:
             last_btc = item.btc_posts_per_hour*24
             social_btc.append(last_btc)
