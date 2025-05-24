@@ -3,9 +3,7 @@
 import json
 import datetime
 from datetime import date, timedelta
-import pytz
 import requests
-import pandas as pd
 
 from requests import Session
 from requests.exceptions import Timeout, TooManyRedirects
@@ -14,12 +12,8 @@ from django.conf import settings
 
 from charts.models import Coin
 from charts.models import P2Pool
-from charts.models import Sfmodel
 from charts.models import Social
-from charts.models import DailyData
-from charts.models import Withdrawal
 
-from charts.update_data.utils import calculate_base_reward
 from charts.update_data.stock_to_flow import add_stock_to_flow_entry
 
 from charts.update_data.daily_data import update_daily_data_price_information
@@ -27,7 +21,7 @@ from charts.update_data.daily_data import update_daily_data_marketcap
 from charts.update_data.daily_data import update_daily_data_transactions
 from charts.update_data.daily_data import update_daily_data_issuance
 from charts.update_data.daily_data import update_daily_data_emission
-from charts.update_data.daily_data import update_daily_data_mining
+#from charts.update_data.daily_data import update_daily_data_mining
 from charts.update_data.daily_data import update_daily_data_social
 
 from .spreadsheets import PandasSpreadSheetManager
@@ -535,7 +529,7 @@ def update_p2pool():
         p2pool_stat.save()
         print('p2pool saved!', flush=True)
 
-        values_mat = sheets.get_values("zcash_bitcoin.ods", "p2pool", start=(2, 0), end=(9999, 3))
+        values_mat = SHEETS.get_values(CSV_DATA_SHEET, "p2pool", start=(2, 0), end=(9999, 3))
 
         k = len(values_mat)
         date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
@@ -608,7 +602,7 @@ def update_p2pool():
         p2pool_stat.save()
         print('p2pool_mini saved!', flush=True)
 
-        values_mat = sheets.get_values("zcash_bitcoin.ods", "p2poolmini", start=(2, 0), end=(9999, 3))
+        values_mat = SHEETS.get_values(CSV_DATA_SHEET, "p2poolmini", start=(2, 0), end=(9999, 3))
 
         k = len(values_mat)
         date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
