@@ -1,7 +1,6 @@
-from django.test import TestCase
+'''Tests for import history module'''
 
-from unittest.mock import Mock
-from unittest.mock import patch
+from django.test import TestCase
 
 from .import_history import import_rank_history
 from .import_history import import_dominance_history

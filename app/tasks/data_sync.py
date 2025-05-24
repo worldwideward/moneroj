@@ -1,13 +1,6 @@
 '''Tasks to perform with Celery for updating chart data'''
 
-import datetime
-import math
-from datetime import date
-from datetime import timedelta
-
 from charts.models import Coin
-from charts.models import Sfmodel
-from charts.models import Social
 from charts.models import DailyData
 from charts.synchronous import update_database
 from charts.synchronous import get_history_function
@@ -48,7 +41,6 @@ def update_xmr_marketcap():
 
     update_rank('xmr')
     update_dominance('xmr')
-    return None
 
 def update_coin_data(symbol, start_time, end_time):
     '''Update coin data from the last day'''
@@ -82,7 +74,7 @@ def recalculate_sf_model():
     erase_sf_model_data()
     result = calculate_sf_model()
 
-    if result == True:
+    if result is True:
         print('[INFO] Recreated Sfmodel database entries')
     else:
         print('[ERROR] Something went wrong during calculation')
@@ -93,7 +85,7 @@ def recalculate_daily_data():
     erase_daily_data_data()
     result = calculate_daily_data()
 
-    if result == True:
+    if result is True:
         print('[INFO] Recreated Daily data database entries')
     else:
         print('[ERROR] Something went wrong during calculation')
