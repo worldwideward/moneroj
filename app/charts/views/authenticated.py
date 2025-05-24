@@ -1,20 +1,10 @@
 '''Views module'''
 
-import requests
-import json
-import datetime
-import math
 import locale
 
-from datetime import date, timedelta
-from datetime import timezone
-
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
 
 from charts.models import Coin
 from charts.models import Social
