@@ -18,6 +18,7 @@ from charts.import_history import import_rank_history
 from charts.import_history import import_dominance_history
 from charts.import_history import import_p2pool_history
 from charts.import_history import import_dread_subscribers
+from charts.import_history import import_private_transactions
 
 from charts.update_data.utils import erase_coin_data
 from charts.update_data.utils import erase_sf_model_data
@@ -86,6 +87,19 @@ def load_dread_subscribers(request):
         return render(request, 'users/error.html')
 
     result = import_dread_subscribers()
+
+    message = 'Total of ' + str(result) + ' data imported'
+    context = {'message': message}
+    return render(request, 'charts/maintenance.html', context)
+
+@login_required
+def load_private_transactions(request):
+    '''Populate database with Private Transaction history from spreadsheet'''
+
+    if not request.user.is_superuser:
+        return render(request, 'users/error.html')
+
+    result = import_private_transactions()
 
     message = 'Total of ' + str(result) + ' data imported'
     context = {'message': message}

@@ -11,12 +11,10 @@ from django.conf import settings
 
 from charts.models import Coin
 from charts.models import DailyData
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
+from charts.models import Transaction
 
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-SHEETS = PandasSpreadSheetManager()
-CSV_DATA_SHEET = settings.CSV_DATA_SHEET
 
 def translin(request):
     '''Monero Transaction Count (linear)'''
@@ -265,49 +263,29 @@ def shielded(request):
     '''Shielded Transactions'''
 
     dates = []
-    values = []
-    values2 = []
-    values3 = []
-    dominance = 0
-    monthly = 0
+    zcash_transactions = []
+    monero_transactions = []
+    bitcoin_transactions = []
 
-    values_mat = SHEETS.get_values(CSV_DATA_SHEET, "shielded_transactions", start=(1, 0), end=(999, 5))
+    transactions = Transaction.objects.order_by('date')
 
-    for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][3]:
-            date = values_mat[k][0]
-            value = values_mat[k][3]
-            value3 = values_mat[k][4]
-            if not value or not value:
-                break
-            else:
-                dates.append(date.strftime("%Y-%m-%d"))
-                values.append(int(value))
-                values3.append(int(value3))
-        else:
-            break
+    for item in transactions:
 
-    previous_date = 0
-    coins = Coin.objects.order_by('date').filter(name='xmr')
-    for date in dates:
-        value2 = 0
-        for coin in coins:
-            aux = str(coin.date)
-            month = aux.split("-")[0] + '-' + aux.split("-")[1]
-            if month == date:
-                if previous_date != coin.date:
-                    value2 += coin.transactions
-                    previous_date = coin.date
+        dates.append(datetime.strftime(item.date, "%Y-%m-%d"))
+        zcash_transactions.append(item.zcash_shielded_transactions)
+        bitcoin_transactions.append(item.bitcoin_whirpool_transactions)
 
-        values2.append(int(value2))
+        monero_data = Coin.objects.filter(name='xmr').get(date=item.date)
 
-    dominance = 100*int(value2)/(int(value2)+int(value)+int(value3))
-    monthly = int(value2)
+        monero_transactions.append(monero_data.transactions)
 
-    monthly = format(int(monthly),',')
-    dominance = locale._format('%.2f', dominance, grouping=True)
+    context = {
+            'dates': dates,
+            'values': zcash_transactions,
+            'values2': monero_transactions,
+            'values3': bitcoin_transactions,
+            }
 
-    context = {'dates': dates, 'values': values, 'values2': values2, 'values3': values3, "monthly": monthly, "dominance": dominance}
     return render(request, 'charts/shielded.html', context)
 
 def comptransactions(request):
