@@ -172,3 +172,16 @@ class Usage(models.Model):
     ethereum_pct = models.FloatField(default=0)
     others_pct = models.FloatField(default=0)
     data_source = models.CharField(max_length=32, default="coincards")
+
+class Adoption(models.Model):
+    '''Model for Merchant Adoption data'''
+
+    date = models.DateTimeField()
+    merchants_accepting_bitcoin = models.IntegerField(default=0)
+    merchants_accepting_ethereum = models.IntegerField(default=0)
+    merchants_accepting_bitcoincash = models.IntegerField(default=0)
+    merchants_accepting_litecoin = models.IntegerField(default=0)
+    merchants_accepting_ripple = models.IntegerField(default=0)
+    merchants_accepting_dash = models.IntegerField(default=0)
+    merchants_accepting_monero = models.IntegerField(default=0)
+    data_source = models.CharField(max_length=32, default="acceptedhere")
