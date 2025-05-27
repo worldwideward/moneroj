@@ -14,6 +14,7 @@ from .models import Usage
 from .models import Dominance
 from .models import Rank
 from .models import P2Pool
+from .models import Adoption
 
 from .forms import CsvImportForm
 
@@ -76,6 +77,61 @@ class UsageAdmin(admin.ModelAdmin):
                     insert.monero_pct = row[2]
                     insert.ethereum_pct = row[3]
                     insert.others_pct = row[4]
+                    insert.save()
+
+            self.message_user(request, "CSV imported successfully")
+
+            return redirect("..")
+        form = CsvImportForm()
+        payload = {"form": form}
+        return render(request, "admin/csv_form.html", payload)
+
+@admin.register(Adoption)
+class AdoptionAdmin(admin.ModelAdmin):
+
+    list_display = ["data_source", "date", "merchants_accepting_bitcoin", "merchants_accepting_monero", "merchants_accepting_ethereum"]
+    list_filter = ["data_source", "date"]
+    list_per_page = 10
+    ordering = ["date"]
+
+    change_list_template = "charts/adoption_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+                path('import-csv/', self.import_csv)
+                ]
+        return my_urls+ urls
+
+    def import_csv(self, request):
+        if request.method == "POST":
+
+            upload_csv_file = request.FILES["csv_file"]
+
+            csv_file_bytes = upload_csv_file.read()
+            csv_file_string = csv_file_bytes.decode('utf_7')
+            csv_file = io.StringIO(csv_file_string)
+
+            reader = csv.reader(csv_file, delimiter=',')
+
+            for row in reader:
+
+                if row[0] == 'Acceptedhere':
+                    pass
+                elif row[0] == 'Date':
+                    pass
+                else:
+                    string_to_date = datetime.datetime.strptime(row[0], "%Y-%m").date()
+                    insert = Adoption()
+                    insert.data_source = "acceptedhere"
+                    insert.date = string_to_date
+                    insert.merchants_accepting_bitcoin = row[1]
+                    insert.merchants_accepting_monero = row[2]
+                    insert.merchants_accepting_ethereum = row[3]
+                    insert.merchants_accepting_bitcoincash = row[4]
+                    insert.merchants_accepting_litecoin = row[5]
+                    insert.merchants_accepting_ripple = row[6]
+                    insert.merchants_accepting_dash = row[7]
                     insert.save()
 
             self.message_user(request, "CSV imported successfully")
