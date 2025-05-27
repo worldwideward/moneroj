@@ -62,30 +62,6 @@ async def get_network_data(session, block: str):
     else:
         raise Exception(f'[ERROR] API returned status: {response.status_code}')
 
-####################################################################################
-#   Asynchronous get coinmarketcap data for price USD and BTC
-#################################################################################### 
-async def get_coin_rank_data(session, symbol: str):
-    '''Get the current rank of a cryptocurrency coin'''
-
-    data = MARKET_DATA_API.get_coin_realtime_data(symbol)
-
-    rank = data["market_cap_rank"]
-
-    return rank
-
-async def get_coin_dominance_data(session, symbol: str):
-    '''Get the current dominance of a cryptocurrency coin'''
-
-    coin_market_cap_data = MARKET_DATA_API.get_coin_realtime_data(symbol)
-    coin_market_cap = coin_market_cap_data["market_data"]["market_cap"]["usd"]
-
-    global_data = MARKET_DATA_API.get_global_realtime_data()
-    total_market_cap = global_data["data"]["total_market_cap"]["usd"]
-
-    dominance = round(( coin_market_cap / total_market_cap ) * 100, 2)
-
-    return dominance
 
 ####################################################################################
 #   Asynchronous get coinmetrics data for any coin inside URL
