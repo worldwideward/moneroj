@@ -8,15 +8,11 @@ from django.conf import settings
 
 from charts.models import Usage
 from charts.models import Adoption
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
 ####################################################################################
 #   Set some parameters
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-
-sheets = PandasSpreadSheetManager()
-CSV_DATA_SHEET = settings.CSV_DATA_SHEET
 
 ####################################################################################
 #   Adoption Charts

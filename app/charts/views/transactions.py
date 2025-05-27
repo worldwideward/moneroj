@@ -13,17 +13,10 @@ from charts.models import Coin
 from charts.models import DailyData
 from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
-####################################################################################
-#   Set some parameters
-####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
 SHEETS = PandasSpreadSheetManager()
 CSV_DATA_SHEET = settings.CSV_DATA_SHEET
-
-####################################################################################
-#   Transactions Charts
-####################################################################################
 
 def translin(request):
     '''Monero Transaction Count (linear)'''

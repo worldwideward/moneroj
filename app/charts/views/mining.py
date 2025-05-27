@@ -1,46 +1,18 @@
 '''Views module'''
 
-import requests
-import json
-import datetime
-import aiohttp
-import asyncio
-import math
 import locale
-import pandas as pd
 
-from datetime import date, timedelta
-from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
-from operator import truediv
-from ctypes import sizeof
-from os import readlink
+from datetime import date
+from datetime import datetime
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
 
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
-from charts.synchronous import get_history_function
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
+from charts.models import Coin
+from charts.models import DailyData
+from charts.models import P2Pool
 
-####################################################################################
-#   Set some parameters
-####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-sheets = PandasSpreadSheetManager()
-
-####################################################################################
-#   Mining Charts
-####################################################################################
 
 def hashrate(request):
     '''Monero's Hashrate'''
@@ -52,7 +24,7 @@ def hashrate(request):
 
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        coin.date = datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
         if coin.hashrate > 0:
             now_hashrate = coin.hashrate
@@ -84,7 +56,7 @@ def hashprice(request):
         if count > 50:
             buy.append(0.00000003)
             sell.append(0.00000100)
-            coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+            coin.date = datetime.strftime(coin.date, '%Y-%m-%d')
             dates.append(coin.date)
             if coin.hashrate > 0 and coin.priceusd > 0:
                 now_hashrate = coin.priceusd/coin.hashrate
@@ -118,7 +90,7 @@ def hashvsprice(request):
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
         if count > 55:
-            coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+            coin.date = datetime.strftime(coin.date, '%Y-%m-%d')
             dates.append(coin.date)
             if coin.priceusd > 0 and coin.hashrate:
                 now_hashrate = coin.hashrate
@@ -151,7 +123,7 @@ def minerrev(request):
     now_xmr = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_minerrevusd < 0.0001:
             costbtc.append('')
         else:
@@ -179,7 +151,7 @@ def minerrevntv(request):
     now_btc = 0
     now_xmr = 0
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_minerrevntv < 0.0001:
             costbtc.append('')
         else:
@@ -207,7 +179,7 @@ def minerfees(request):
     now_btc = 0
     now_xmr = 0
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_minerfeesusd < 1:
             costbtc.append('')
         else:
@@ -235,7 +207,7 @@ def minerfeesntv(request):
     now_btc = 0
     now_xmr = 0
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_minerfeesntv < 0.1:
             costbtc.append('')
         else:
@@ -265,7 +237,7 @@ def miningprofitability(request):
         if coin.hashrate > 0 and coin.priceusd > 0 and coin.revenue > 0:
             if 1000*coin.priceusd*coin.revenue/coin.hashrate < 5000:
                 now_value = 1000*coin.priceusd*coin.revenue/coin.hashrate
-                dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+                dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
                 value.append(now_value)
 
     context = {'value': value, 'dates': dates}
@@ -282,7 +254,7 @@ def minerrevcap(request):
     now_xmr = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_minerrevcap == 0:
             costxmr.append('')
         else:
@@ -310,7 +282,7 @@ def commit(request):
     now_xmr = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_commitusd < 0.000001:
             costbtc.append('')
         else:
@@ -338,7 +310,7 @@ def commitntv(request):
     now_xmr = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_commitntv < 0.00001:
             costbtc.append('')
         else:
@@ -368,7 +340,7 @@ def blocksize(request):
     now_btc = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.btc_blocksize > 0.001:
             btc_blocksize.append(item.btc_blocksize/1024)
             now_btc = item.btc_blocksize
@@ -396,12 +368,12 @@ def blockchainsize(request):
     dates = []
     now_xmr = 0
     now_btc = 0
-    hardfork = datetime.datetime.strptime('2016-03-23', '%Y-%m-%d') #block time changed here
+    hardfork = datetime.strptime('2016-03-23', '%Y-%m-%d') #block time changed here
 
     for item in data:
-        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        date = datetime.strftime(item.date, '%Y-%m-%d')
         dates.append(date)
-        date = datetime.datetime.strptime(date, '%Y-%m-%d')
+        date = datetime.strptime(date, '%Y-%m-%d')
 
         if item.btc_blocksize > 0.001 and item.btc_transactions > 0:
             now_btc += 144*item.btc_blocksize/1024
@@ -443,7 +415,7 @@ def transactionsize(request):
     now_btc = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_blocksize > 0.001 and item.btc_transactions > 0:
             now_btc = 144*item.btc_blocksize/(1024*item.btc_transactions)
@@ -474,7 +446,7 @@ def difficulty(request):
     now_btc = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_difficulty > 0.001:
             now_btc = item.btc_difficulty
@@ -505,7 +477,7 @@ def securitybudget(request):
     now_btc = 0
 
     for item in data:
-        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        date = datetime.strftime(item.date, '%Y-%m-%d')
         dates.append(date)
         if item.btc_minerrevusd > 0.001:
             now_btc = item.btc_minerrevusd/86400
@@ -536,7 +508,7 @@ def efficiency(request):
     now_btc = 0
 
     for item in data:
-        date = datetime.datetime.strftime(item.date, '%Y-%m-%d')
+        date = datetime.strftime(item.date, '%Y-%m-%d')
         dates.append(date)
         if item.btc_minerrevusd != 0 and item.btc_inflation > 0:
             if (2**32)*item.btc_difficulty*0.10/(item.btc_minerrevusd*24000) > 10:
@@ -592,7 +564,7 @@ def p2pool_hashrate(request):
         hashrate_mini.append(now_hashrate_mini)
         combined.append(now_combined)
 
-        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
     context = {'hashrate': hashrate, 'dates': dates, 'hashrate_mini': hashrate_mini, 'combined': combined}
     return render(request, 'charts/p2pool_hashrate.html', context)
@@ -624,7 +596,7 @@ def p2pool_dominance(request):
         dominance_mini.append(now_dominance_mini)
         combined.append(now_combined)
 
-        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
     context = {'dominance': dominance, 'dates': dates, 'dominance_mini': dominance_mini,'combined': combined}
     return render(request, 'charts/p2pool_dominance.html', context)
@@ -657,7 +629,7 @@ def p2pool_miners(request):
         miners_mini.append(now_miners_mini)
         combined.append(now_combined)
 
-        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
     context = {'miners': miners, 'dates': dates, 'miners_mini': miners_mini, 'combined': combined}
     return render(request, 'charts/p2pool_miners.html', context)
@@ -691,7 +663,7 @@ def p2pool_totalblocks(request):
         totalblocks_mini.append(now_totalblocks_mini)
         combined.append(now_combined)
 
-        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
     context = {'totalblocks': totalblocks, 'totalblocks_mini': totalblocks_mini, 'dates': dates, 'combined': combined}
     return render(request, 'charts/p2pool_totalblocks.html', context)
@@ -724,7 +696,7 @@ def p2pool_totalhashes(request):
         totalblocks_mini.append(now_totalblocks_mini)
         combined.append(now_combined)
 
-        dates.append(datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
 
     context = {'totalblocks': totalblocks, 'totalblocks_mini': totalblocks_mini, 'dates': dates, 'combined': combined}
     return render(request, 'charts/p2pool_totalhashes.html', context)
