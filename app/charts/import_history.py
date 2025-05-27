@@ -5,6 +5,7 @@ from django.conf import settings
 from charts.models import Rank
 from charts.models import Dominance
 from charts.models import P2Pool
+from charts.models import Dread
 from charts.spreadsheets import PandasSpreadSheetManager
 
 SHEETS = PandasSpreadSheetManager()
@@ -81,5 +82,23 @@ def import_p2pool_history():
         model.totalblocksfound = row[5]
         model.mini = True
         model.save()
+
+    return len(csv_data)
+
+def import_dread_subscribers():
+    '''Import Dread subscriber data from a spreadsheet'''
+
+    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "dread", start=(1, 0), end=(99, 4))
+
+    Dread.objects.all().delete()
+
+    for row in csv_data:
+
+        model = Dread()
+        model.date = row[0]
+        model.bitcoin_subscriber_count = row[1]
+        model.monero_subscriber_count = row[2]
+        model.save()
+
 
     return len(csv_data)

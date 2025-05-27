@@ -17,6 +17,7 @@ from charts.synchronous import update_database
 from charts.import_history import import_rank_history
 from charts.import_history import import_dominance_history
 from charts.import_history import import_p2pool_history
+from charts.import_history import import_dread_subscribers
 
 from charts.update_data.utils import erase_coin_data
 from charts.update_data.utils import erase_sf_model_data
@@ -72,6 +73,19 @@ def load_dominance(request, symbol):
         return render(request, 'users/error.html')
 
     result = import_dominance_history(symbol)
+
+    message = 'Total of ' + str(result) + ' data imported'
+    context = {'message': message}
+    return render(request, 'charts/maintenance.html', context)
+
+@login_required
+def load_dread_subscribers(request):
+    '''Populate database with Dread subscriber history from spreadsheet'''
+
+    if not request.user.is_superuser:
+        return render(request, 'users/error.html')
+
+    result = import_dread_subscribers()
 
     message = 'Total of ' + str(result) + ' data imported'
     context = {'message': message}

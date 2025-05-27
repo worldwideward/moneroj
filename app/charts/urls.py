@@ -124,6 +124,7 @@ urlpatterns = [
     ),
     path("load_dominance/<str:symbol>/", authenticated.load_dominance, name="load_dominance"),
     path("load_rank/<str:symbol>/", authenticated.load_rank, name="load_rank"),
+    path("load_dread_subscribers/", authenticated.load_dread_subscribers, name="load_dread_subscribers"),
     path("load_p2pool/", authenticated.load_p2pool, name="load_p2pool"),
     path("populate_database/", authenticated.populate_database, name="populate_database"),
     path("reset/<str:symbol>/", authenticated.reset, name="reset"),

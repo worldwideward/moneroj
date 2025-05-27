@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 from .models import Coin
 from .models import Sfmodel
 from .models import Social
+from .models import Dread
 from .models import DailyData
 from .models import Usage
 from .models import Dominance
@@ -144,6 +145,13 @@ class AdoptionAdmin(admin.ModelAdmin):
 @admin.register(Social)
 class SocialAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(Dread)
+class DreadAdmin(admin.ModelAdmin):
+    list_display = ["date", "monero_subscriber_count", "bitcoin_subscriber_count"]
+    list_filter = ["date"]
+    list_per_page = 10
+    ordering = ["date"]
 
 @admin.register(Dominance)
 class DominanceAdmin(admin.ModelAdmin):
