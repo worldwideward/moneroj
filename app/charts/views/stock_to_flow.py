@@ -1,42 +1,20 @@
 '''Views module'''
 
-import requests
-import json
-import datetime
-import aiohttp
-import asyncio
-import math
 import locale
-import pandas as pd
 
-from datetime import date, timedelta
-from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
-from operator import truediv
-from ctypes import sizeof
-from os import readlink
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
 
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
-from charts.synchronous import get_history_function
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
+from charts.models import Coin
+from charts.models import Sfmodel
 
 ####################################################################################
 #   Set some parameters
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-
-sheets = PandasSpreadSheetManager()
 
 ####################################################################################
 #   Views
@@ -88,7 +66,7 @@ def sfmodel(request):
             values.append('')
         count_aux += 1
 
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
     now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
     now_sf = "$"+ locale._format('%.2f', now_sf, grouping=True)
@@ -143,7 +121,7 @@ def sfmodellin(request):
             values.append('')
         count_aux += 1
 
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
     now_price = "$"+ locale._format('%.2f', now_price, grouping=True)
     now_sf = "$"+ locale._format('%.2f', now_sf, grouping=True)
@@ -169,7 +147,7 @@ def sfmultiple(request):
     sf_aux = 0
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
         buy.append(1)
         sell.append(100)
         if coin.stocktoflow > sf_aux*2+250:
