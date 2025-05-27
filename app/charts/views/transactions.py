@@ -1,34 +1,16 @@
 '''Views module'''
 
-import requests
-import json
-import datetime
-import aiohttp
-import asyncio
-import math
 import locale
 import pandas as pd
 
-from datetime import date, timedelta
-from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
-from operator import truediv
-from ctypes import sizeof
-from os import readlink
+from datetime import date
+from datetime import datetime
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
+from django.conf import settings
 
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
-from charts.synchronous import get_history_function
+from charts.models import Coin
+from charts.models import DailyData
 from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
 ####################################################################################
@@ -36,7 +18,8 @@ from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-sheets = PandasSpreadSheetManager()
+SHEETS = PandasSpreadSheetManager()
+CSV_DATA_SHEET = settings.CSV_DATA_SHEET
 
 ####################################################################################
 #   Transactions Charts
@@ -70,7 +53,7 @@ def translin(request):
         else:
             pricexmr.append('')
 
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        coin.date = datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
 
     now_transactions = int(now_transactions)
@@ -104,7 +87,7 @@ def translog(request):
         else:
             pricexmr.append('')
 
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        coin.date = datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
 
     now_transactions = int(now_transactions)
@@ -159,7 +142,7 @@ def transcost(request):
     now_xmr = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_transcostusd == 0:
             costxmr.append('')
         else:
@@ -188,7 +171,7 @@ def transcostntv(request):
     now_xmr = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_transcostntv == 0:
             costxmr.append('')
         else:
@@ -216,7 +199,7 @@ def percentage(request):
     maximum = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_transacpercentage > 0.00001:
             transactions.append(100*item.xmr_transacpercentage)
             now_transactions = 100*item.xmr_transacpercentage
@@ -295,7 +278,7 @@ def shielded(request):
     dominance = 0
     monthly = 0
 
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet1", start=(1, 0), end=(999, 5))
+    values_mat = SHEETS.get_values(CSV_DATA_SHEET, "shielded_transactions", start=(1, 0), end=(999, 5))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][3]:
@@ -351,7 +334,7 @@ def comptransactions(request):
     now_btc = 999999
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_transactions > 10:
             btc.append(item.btc_transactions)
@@ -409,7 +392,7 @@ def metcalfesats(request):
     count = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_metcalfebtc < 0.0007:
             metcalfe.append('')
             color.append('')
@@ -448,7 +431,7 @@ def metcalfeusd(request):
     count = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_metcalfeusd < 0.001:
             metcalfe.append('')
             color.append('')
@@ -482,7 +465,7 @@ def metcalfesats_deviation(request):
     now_metcalfe_percentage = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_metcalfebtc < 0.0007 and item.xmr_pricebtc <= 0:
             metcalfe.append('')
             metcalfe_percentage.append('')
@@ -510,7 +493,7 @@ def metcalfe_deviation(request):
     now_metcalfe_percentage = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_metcalfeusd < 0.0007 and item.xmr_priceusd <= 0:
             metcalfe.append('')
             metcalfe_percentage.append('')
@@ -542,7 +525,7 @@ def deviation_tx(request):
         else:
             pricexmr.append(0.20)
 
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        coin.date = datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
 
     n = 180
@@ -603,7 +586,7 @@ def transactiondominance(request):
     maximum = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.xmr_transactions > 0:
             now_xmr = 100*item.xmr_transactions/(item.xmr_transactions+item.dash_transactions+item.zcash_transactions+item.grin_transactions)
         else:
