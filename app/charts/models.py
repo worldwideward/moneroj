@@ -23,13 +23,21 @@ class Coin(models.Model):
 
 
 class Social(models.Model):
-    '''Model for Social Platforms (Reddit, ...)'''
+    '''Model for Social Platform Reddit'''
 
     name = models.CharField(max_length=4)
     date = models.DateField()
     subscriber_count = models.IntegerField()
     comments_per_hour = models.FloatField()
     posts_per_hour = models.FloatField()
+
+
+class Dread(models.Model):
+    '''Model for Dread data (Darknet Reddit Clone)'''
+
+    date = models.DateField()
+    bitcoin_subscriber_count = models.IntegerField()
+    monero_subscriber_count = models.IntegerField()
 
 
 class Dominance(models.Model):
@@ -172,6 +180,7 @@ class Usage(models.Model):
     ethereum_pct = models.FloatField(default=0)
     others_pct = models.FloatField(default=0)
     data_source = models.CharField(max_length=32, default="coincards")
+
 
 class Adoption(models.Model):
     '''Model for Merchant Adoption data'''
