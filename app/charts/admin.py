@@ -16,6 +16,7 @@ from .models import Dominance
 from .models import Rank
 from .models import P2Pool
 from .models import Adoption
+from .models import Transaction
 
 from .forms import CsvImportForm
 
@@ -180,6 +181,13 @@ class P2PoolAdmin(admin.ModelAdmin):
 @admin.register(DailyData)
 class DailyDataAdmin(admin.ModelAdmin):
     list_display = ["date","xmr_priceusd","btc_priceusd"]
+    list_filter = ["date"]
+    list_per_page = 10
+    ordering = ["date"]
+
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ["date","zcash_shielded_transactions", "bitcoin_whirpool_transactions"]
     list_filter = ["date"]
     list_per_page = 10
     ordering = ["date"]

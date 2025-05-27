@@ -194,3 +194,11 @@ class Adoption(models.Model):
     merchants_accepting_dash = models.IntegerField(default=0)
     merchants_accepting_monero = models.IntegerField(default=0)
     data_source = models.CharField(max_length=32, default="acceptedhere")
+
+
+class Transaction(models.Model):
+    '''Model for Private Transactions data'''
+
+    date = models.DateTimeField()
+    zcash_shielded_transactions = models.IntegerField(default=0)
+    bitcoin_whirpool_transactions = models.IntegerField(default=0)

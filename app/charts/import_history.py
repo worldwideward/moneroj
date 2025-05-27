@@ -6,6 +6,7 @@ from charts.models import Rank
 from charts.models import Dominance
 from charts.models import P2Pool
 from charts.models import Dread
+from charts.models import Transaction
 from charts.spreadsheets import PandasSpreadSheetManager
 
 SHEETS = PandasSpreadSheetManager()
@@ -100,5 +101,21 @@ def import_dread_subscribers():
         model.monero_subscriber_count = row[2]
         model.save()
 
+    return len(csv_data)
+
+def import_private_transactions():
+    '''Import Private Transactions data from a spreadsheet'''
+
+    csv_data = SHEETS.get_values(CSV_DATA_SHEET, "shielded_transactions", start=(1, 0), end=(99, 5))
+
+    Transaction.objects.all().delete()
+
+    for row in csv_data:
+
+        model = Transaction()
+        model.date = row[0]
+        model.zcash_shielded_transactions = row[3]
+        model.bitcoin_whirpool_transactions = row[4]
+        model.save()
 
     return len(csv_data)
