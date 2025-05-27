@@ -1,34 +1,11 @@
 '''Views module'''
 
-import requests
-import json
 import datetime
-import aiohttp
-import asyncio
-import math
 import locale
-import pandas as pd
 
-from datetime import date, timedelta
-from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
-from operator import truediv
-from ctypes import sizeof
-from os import readlink
-
+from datetime import date
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
-
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
-from charts.synchronous import get_history_function
+from django.conf import settings
 from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
 ####################################################################################
@@ -36,7 +13,8 @@ from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-sheets = PandasSpreadSheetManager()
+SHEETS = PandasSpreadSheetManager()
+CSV_DATA_SHEET = settings.CSV_DATA_SHEET
 
 ####################################################################################
 #   Views
@@ -50,7 +28,7 @@ def dread_subscribers(request):
     data2 = []
     now_xmr = 0
     now_btc = 0
-    values_mat = sheets.get_values("zcash_bitcoin.ods", "Sheet6", start=(1, 0), end=(99, 4))
+    values_mat = SHEETS.get_values(CSV_DATA_SHEET, "dread", start=(1, 0), end=(99, 4))
 
     for k in range(0,len(values_mat)):
         if values_mat[k][0] and values_mat[k][2]:
