@@ -1,22 +1,20 @@
+'''Tests for asynchronous functions'''
 from django.test import TestCase
 
-from unittest.mock import Mock
-from unittest.mock import patch
 import aiohttp
-import datetime
 
 from .asynchronous import update_xmr_data
-from .asynchronous import update_coin_data
+#from .asynchronous import update_coin_data
 from .asynchronous import get_block_data
-from .asynchronous import get_coin_data
+#from .asynchronous import get_coin_data
 from .asynchronous import get_social_data
-from .utils import get_yesterday
-from .utils import get_socks_proxy
+
 
 class TestAsynchronous(TestCase):
     '''Testing async functions'''
 
     async def test_get_block_data(self):
+        '''Test get block data'''
 
         block = 1
 
@@ -34,6 +32,7 @@ class TestAsynchronous(TestCase):
 #        got await get_coin_data(
 
     def test_get_social_data(self):
+        '''Test getting social data'''
 
         got = get_social_data('xmr')
         want = True
@@ -41,6 +40,7 @@ class TestAsynchronous(TestCase):
         self.assertEqual(got, want)
 
     async def test_update_xmr_data(self):
+        '''Test getting XMR data'''
 
         got = await update_xmr_data()
         want = True
