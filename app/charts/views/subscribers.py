@@ -6,17 +6,10 @@ from datetime import date
 from datetime import datetime
 from django.shortcuts import render
 from django.conf import settings
-
 from charts.models import Dread
 
-####################################################################################
-#   Set some parameters
-####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
-####################################################################################
-#   Views
-####################################################################################
 
 def dread_subscribers(request):
     '''Dread Subscribes (Darknet forum)'''
