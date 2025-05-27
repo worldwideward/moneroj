@@ -1025,7 +1025,7 @@ def sharpe(request):
     for count in range(51):
         sharpe.append('')
     for item in aux:
-        sharpe.append(item*math.sqrt(52))
+        sharpe.append(float(item*math.sqrt(52)))
 
     context = {'dates': dates, 'values': values, 'color': color, 'sharpe': sharpe}
     return render(request, 'charts/sharpe.html', context)
