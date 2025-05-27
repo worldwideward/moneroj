@@ -1,42 +1,22 @@
-'''Views module'''
+'''Price Chart views'''
 
-import requests
-import json
-import datetime
-import aiohttp
-import asyncio
 import math
 import locale
 import pandas as pd
 
-from datetime import date, timedelta
+from datetime import date
+from datetime import time
+from datetime import datetime
+from datetime import timedelta
 from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
 from operator import truediv
-from ctypes import sizeof
-from os import readlink
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
 
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
-from charts.synchronous import get_history_function
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
+from charts.models import Coin
+from charts.models import Sfmodel
 
-####################################################################################
-#   Set some parameters
-####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-
-sheets = PandasSpreadSheetManager()
 
 ####################################################################################
 # Price charts
@@ -60,7 +40,7 @@ def pricelog(request):
 
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
         values.append(coin.priceusd)
         if coin.priceusd < 0.01:
             coin.priceusd = 0.01
@@ -79,7 +59,7 @@ def pricelog(request):
     count = 0
     for count in range(650):
         date_now = date.today() + timedelta(count)
-        dates.append(datetime.datetime.strftime(date_now, '%Y-%m-%d'))
+        dates.append(datetime.strftime(date_now, '%Y-%m-%d'))
         reward = (2**64 -1 - supply) >> 19
         if reward < 0.6*(10**12):
             reward = 0.6*(  10**12)
@@ -111,7 +91,7 @@ def pricelin(request):
 
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
         values.append(coin.priceusd)
         if coin.priceusd < 0.01:
             coin.priceusd = 0.01
@@ -130,7 +110,7 @@ def pricelin(request):
     count = 0
     for count in range(650):
         date_now = date.today() + timedelta(count)
-        dates.append(datetime.datetime.strftime(date_now, '%Y-%m-%d'))
+        dates.append(datetime.strftime(date_now, '%Y-%m-%d'))
         reward = (2**64 -1 - supply) >> 19
         if reward < 0.6*(10**12):
             reward = 0.6*(  10**12)
@@ -156,7 +136,7 @@ def pricesats(request):
 
     data = Sfmodel.objects.order_by('date')
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.color != 0:
             color.append(item.color)
         else:
@@ -190,7 +170,7 @@ def pricesatslog(request):
 
     data = Sfmodel.objects.order_by('date')
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.color != 0:
             color.append(item.color)
         else:
@@ -226,11 +206,11 @@ def fractal(request):
 
     count1 = 1
     count2 = 1
-    date1_aux = datetime.datetime(2017, 12, 29)
-    date2_aux = datetime.datetime(2014, 6, 21)
+    date1_aux = datetime(2017, 12, 29)
+    date2_aux = datetime(2014, 6, 21)
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        date3_aux = datetime.datetime.combine(coin.date, datetime.time(0, 0))
+        date3_aux = datetime.combine(coin.date, time(0, 0))
         if date3_aux < date1_aux and date3_aux > date2_aux:
             cycle1.append(coin.priceusd/5)
             dates1.append(count1/12.7)
@@ -264,11 +244,11 @@ def inflationfractal(request):
     start_inflation = 0
     count1 = 1
     count2 = 1
-    date1_aux = datetime.datetime(2017, 12, 29)
-    date2_aux = datetime.datetime(2014, 6, 21)
+    date1_aux = datetime(2017, 12, 29)
+    date2_aux = datetime(2014, 6, 21)
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        date3_aux = datetime.datetime.combine(coin.date, datetime.time(0, 0))
+        date3_aux = datetime.combine(coin.date, time(0, 0))
         if date3_aux < date1_aux and date3_aux > date2_aux:
             start_inflation = coin.inflation
             current_inflation = start_inflation
@@ -310,7 +290,7 @@ def marketcycle(request):
 
         sell.append(100)
         buy.append(0)
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
     now_cycle = locale._format('%.2f', item.color, grouping=True)
 
@@ -331,11 +311,11 @@ def golden(request):
 
     day = firstdate - timedelta(350)
     for i in range(350):
-        dates.append(datetime.datetime.strftime(day, '%Y-%m-%d'))
+        dates.append(datetime.strftime(day, '%Y-%m-%d'))
         prices.append(0.2)
 
     for coin in coins:
-        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
         if coin.priceusd > 0.2:
             prices.append(coin.priceusd)
         else:
@@ -829,7 +809,7 @@ def bitcoin(request):
     btc2 = []
 
     for item in data:
-        dates2.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates2.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_return > 0.0001:
             btc2.append(item.btc_return)
@@ -948,7 +928,7 @@ def thermocap(request):
     calories3 = []
     coins = Coin.objects.order_by('date').filter(name=symbol)
     for coin in coins:
-        dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
         if coin.stocktoflow > sf_aux*2+250:
             coin.stocktoflow = sf_aux
         sf_aux = coin.stocktoflow
@@ -1013,7 +993,7 @@ def sharpe(request):
                 roc = (coin.priceusd - price)/price
                 price = coin.priceusd
             rocs.append(roc)
-            dates.append(datetime.datetime.strftime(coin.date, '%Y-%m-%d'))
+            dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
             values.append(coin.priceusd)
             color.append(new_color)
 
@@ -1044,7 +1024,7 @@ def deviation(request):
         else:
             pricexmr.append(0.20)
 
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        coin.date = datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
 
     n = 180
