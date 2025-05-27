@@ -1,42 +1,23 @@
 '''Views module'''
 
-import requests
-import json
-import datetime
-import aiohttp
-import asyncio
-import math
 import locale
-import pandas as pd
 
-from datetime import date, timedelta
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
 from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
-from operator import truediv
-from ctypes import sizeof
-from os import readlink
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
 
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
-from charts.synchronous import get_history_function
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
+from charts.models import Coin
+from charts.models import Rank
+from charts.models import Dominance
+from charts.models import DailyData
 
 ####################################################################################
 #   Set some parameters
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-
-sheets = PandasSpreadSheetManager()
 
 ####################################################################################
 #   Marketcap Charts
@@ -55,7 +36,7 @@ def dominance(request):
 
     for data_point in coin_data:
 
-        data_point_date = datetime.datetime.strftime(data_point.date, '%Y-%m-%d')
+        data_point_date = datetime.strftime(data_point.date, '%Y-%m-%d')
 
         try:
             dominance = Dominance.objects.get(date=data_point_date)
@@ -77,15 +58,15 @@ def dominance(request):
         else:
             pricexmr.append('')
 
-        data_point.date = datetime.datetime.strftime(data_point.date, '%Y-%m-%d')
+        data_point.date = datetime.strftime(data_point.date, '%Y-%m-%d')
         dates.append(data_point.date)
 
     yesterday = date.today() - timedelta(1)
-    yesterday = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
+    yesterday = datetime.strftime(yesterday, '%Y-%m-%d')
 
     if data_point.date == yesterday:
         today = date.today()
-        today = datetime.datetime.strftime(today, '%Y-%m-%d')
+        today = datetime.strftime(today, '%Y-%m-%d')
         try:
             dominance = list(Dominance.objects.order_by('-date'))[0]
             if str(dominance.date) == str(today):
@@ -120,7 +101,7 @@ def monerodominance(request):
     for item in data:
         marketcap = 0
         dominance = 0
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.zcash_marketcap > 1000000:
             zec_cap = item.zcash_marketcap
             marketcap += zec_cap
@@ -183,7 +164,7 @@ def privacydominance(request):
     for item in data:
         marketcap = 0
         dominance = 0
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.zcash_marketcap > 100000:
             marketcap += item.zcash_marketcap
 
@@ -256,14 +237,14 @@ def rank(request):
         else:
             pricexmr.append('')
 
-        coin.date = datetime.datetime.strftime(coin.date, '%Y-%m-%d')
+        coin.date = datetime.strftime(coin.date, '%Y-%m-%d')
         dates.append(coin.date)
 
     yesterday = date.today() - timedelta(1)
-    yesterday = datetime.datetime.strftime(yesterday, '%Y-%m-%d')
+    yesterday = datetime.strftime(yesterday, '%Y-%m-%d')
     if coin.date == yesterday:
         today = date.today()
-        today = datetime.datetime.strftime(today, '%Y-%m-%d')
+        today = datetime.strftime(today, '%Y-%m-%d')
         try:
             rank = list(Rank.objects.order_by('-date'))[0]
             if str(rank.date) == str(today):
@@ -310,7 +291,7 @@ def marketcap(request):
     now_zcash = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.zcash_marketcap > 1000000:
             zcash.append(item.zcash_marketcap)
@@ -360,7 +341,7 @@ def privacymarketcap(request):
     for item in data:
         marketcap = 0
         dominance = 0
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         if item.zcash_marketcap > 1000000:
             marketcap += item.zcash_marketcap
 
