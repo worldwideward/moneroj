@@ -1,42 +1,20 @@
 '''Views module'''
 
-import requests
-import json
-import datetime
-import aiohttp
-import asyncio
-import math
 import locale
-import pandas as pd
-
-from datetime import date, timedelta
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
 from datetime import timezone
-from dateutil.relativedelta import relativedelta
-from requests.exceptions import Timeout, TooManyRedirects
-from requests import Session
-from operator import truediv
-from ctypes import sizeof
-from os import readlink
 
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.staticfiles.storage import staticfiles_storage
 
-from charts.models import *
-from charts.forms import *
-from charts import asynchronous
-from charts import synchronous
-from charts.synchronous import get_history_function
-from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
+from charts.models import Coin
+from charts.models import DailyData
 
 ####################################################################################
 #   Set some parameters
 ####################################################################################
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
-
-sheets = PandasSpreadSheetManager()
 
 ####################################################################################
 #   Issuance Charts
@@ -56,7 +34,7 @@ def coins(request):
     now_btc = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_supply > 0.1:
             supplybtc.append(item.btc_supply)
@@ -84,12 +62,12 @@ def coins(request):
         supply += int(720*reward)
         fsupplyxmr.append(supply/(10**12))
         date_aux = item.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        dates.append(datetime.strftime(date_aux, '%Y-%m-%d'))
         supplybitcoin += rewardbtc
         if supplybitcoin > 21000000:
             supplybitcoin = 21000000
         fsupplybtc.append(supplybitcoin)
-        date_aux2 = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
+        date_aux2 = datetime.strftime(date_aux, '%Y-%m-%d')
         if date_aux2 == '2024-04-23':
             rewardbtc = rewardbtc/2
         if date_aux2 == '2028-05-05':
@@ -147,7 +125,7 @@ def extracoins(request):
     now_diff = 0
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_supply - item.xmr_supply > 0:
             nsupply.append(item.btc_supply - item.xmr_supply)
@@ -166,12 +144,12 @@ def extracoins(request):
             reward = 0.6*(10**12)
         supply += int(720*reward)
         date_aux = item.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        dates.append(datetime.strftime(date_aux, '%Y-%m-%d'))
         supplybitcoin += rewardbtc
         if supplybitcoin > 21000000:
             supplybitcoin = 21000000
         fsupply.append(-supply/(10**12) + supplybitcoin)
-        date_aux2 = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
+        date_aux2 = datetime.strftime(date_aux, '%Y-%m-%d')
         if date_aux2 == '2024-04-23':
             rewardbtc = rewardbtc/2
         if date_aux2 == '2028-05-05':
@@ -230,7 +208,7 @@ def inflation(request):
     now_btc = 999999
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_inflation > 0.1:
             inflationbtc.append(item.btc_inflation)
@@ -257,9 +235,9 @@ def inflation(request):
         supply += int(720*reward)
         finflationxmr.append(100*reward*720*365/supply)
         date_aux = item.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        dates.append(datetime.strftime(date_aux, '%Y-%m-%d'))
         finflationbtc.append(inflationbitcoin)
-        date_aux2 = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
+        date_aux2 = datetime.strftime(date_aux, '%Y-%m-%d')
         if date_aux2 == '2024-04-23':
             inflationbitcoin = 0.65
         inflationxmr.append('')
@@ -292,7 +270,7 @@ def tail_emission(request):
         supply += int(720*reward)
         finflationxmr.append(100*reward*720*365/supply)
         date_aux = coin.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        dates.append(datetime.strftime(date_aux, '%Y-%m-%d'))
 
     now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
 
@@ -317,7 +295,7 @@ def compinflation(request):
     now_btc = 999999
 
     for item in data:
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
         if item.btc_inflation > 0.1:
             inflationbtc.append(item.btc_inflation)
@@ -388,11 +366,11 @@ def dailyemission(request):
             now_xmr = item.xmr_emissionusd
             if item.xmr_emissionusd > high_xmr:
                 high_xmr = item.xmr_emissionusd
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
     for i in range(500):
         date_aux = item.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        dates.append(datetime.strftime(date_aux, '%Y-%m-%d'))
         emissionxmr.append('')
         emissionbtc.append('')
 
@@ -425,11 +403,11 @@ def dailyemissionntv(request):
         else:
             emissionxmr.append(item.xmr_emissionntv)
             now_xmr = item.xmr_emissionntv
-        dates.append(datetime.datetime.strftime(item.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
 
     for i in range(500):
         date_aux = item.date + timedelta(i)
-        dates.append(datetime.datetime.strftime(date_aux, '%Y-%m-%d'))
+        dates.append(datetime.strftime(date_aux, '%Y-%m-%d'))
         emissionxmr.append('')
         emissionbtc.append('')
 
