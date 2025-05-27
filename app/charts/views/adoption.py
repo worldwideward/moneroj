@@ -112,92 +112,108 @@ def merchants(request):
 
 def merchants_increase(request):
     '''Monthly increase in number of merchants accepting cryptocurrency (absolute numbers)'''
+
     dates = []
-    data1 = []
-    data2 = []
-    data3 = []
-    data4 = []
-    data5 = []
-    data6 = []
-    data7 = []
-    now_xmr = 0
-    now_btc = 0
-    now_eth = 0
+    new_merchants_accepting_bitcoin = []
+    new_merchants_accepting_ethereum = []
+    new_merchants_accepting_bitcoincash = []
+    new_merchants_accepting_litecoin = []
+    new_merchants_accepting_ripple = []
+    new_merchants_accepting_dash = []
+    new_merchants_accepting_monero = []
 
-    values_mat = sheets.get_values(CSV_DATA_SHEET, "Sheet4", start=(1, 0), end=(99, 8))
+    adoption_data = list(Adoption.objects.all())
 
-    for k in range(0,len(values_mat)):
+    for item in adoption_data:
 
-        date = values_mat[k][0]
-        value1 = values_mat[k][1]
-        value2 = values_mat[k][2]
-        value3 = values_mat[k][3]
-        value4 = values_mat[k][4]
-        value5 = values_mat[k][5]
-        value6 = values_mat[k][6]
-        value7 = values_mat[k][7]
+        previous_item_key = adoption_data.index(item) - 1
 
-        dates.append(date.strftime("%Y-%m-%d"))
-        data1.append(int(value1))
-        data2.append(int(value2))
-        data3.append(int(value3))
-        data4.append(int(value4))
-        data5.append(int(value5))
-        data6.append(int(value6))
-        data7.append(int(value7))
-        now_btc = int(value1)
-        now_xmr = int(value2)
-        now_eth = int(value3)
+        if previous_item_key != -1:
 
-    now_btc = locale._format('%.0f', now_btc, grouping=True)
-    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
-    now_eth = locale._format('%.0f', now_eth, grouping=True)
+            dates.append(item.date.strftime("%Y-%m-%d"))
 
-    context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
+            previous_item = adoption_data[previous_item_key]
+
+            new_merchants_bitcoin = item.merchants_accepting_bitcoin - previous_item.merchants_accepting_bitcoin
+            new_merchants_ethereum = item.merchants_accepting_ethereum - previous_item.merchants_accepting_ethereum
+            new_merchants_bitcoincash = item.merchants_accepting_bitcoincash - previous_item.merchants_accepting_bitcoincash
+            new_merchants_litecoin = item.merchants_accepting_litecoin - previous_item.merchants_accepting_litecoin
+            new_merchants_ripple = item.merchants_accepting_ripple - previous_item.merchants_accepting_ripple
+            new_merchants_dash = item.merchants_accepting_dash - previous_item.merchants_accepting_dash
+            new_merchants_monero = item.merchants_accepting_monero - previous_item.merchants_accepting_monero
+
+            new_merchants_accepting_bitcoin.append(new_merchants_bitcoin)
+            new_merchants_accepting_ethereum.append(new_merchants_ethereum)
+            new_merchants_accepting_bitcoincash.append(new_merchants_bitcoincash)
+            new_merchants_accepting_litecoin.append(new_merchants_litecoin)
+            new_merchants_accepting_ripple.append(new_merchants_ripple)
+            new_merchants_accepting_dash.append(new_merchants_dash)
+            new_merchants_accepting_monero.append(new_merchants_monero)
+        else:
+            print("[WARN] first item in list", flush=True)
+
+    context = {
+            'dates': dates,
+            'data1': new_merchants_accepting_bitcoin,
+            'data2': new_merchants_accepting_monero,
+            'data3': new_merchants_accepting_ethereum,
+            'data4': new_merchants_accepting_bitcoincash,
+            'data5': new_merchants_accepting_litecoin,
+            'data6': new_merchants_accepting_ripple,
+            'data7': new_merchants_accepting_dash
+            }
     return render(request, 'charts/merchants_increase.html', context)
 
 def merchants_percentage(request):
     '''Increase in number of merchants accepting cryptocurrency (percentage)'''
+
     dates = []
-    data1 = []
-    data2 = []
-    data3 = []
-    data4 = []
-    data5 = []
-    data6 = []
-    data7 = []
-    now_xmr = 0
-    now_btc = 0
-    now_eth = 0
+    new_merchants_accepting_bitcoin = []
+    new_merchants_accepting_ethereum = []
+    new_merchants_accepting_bitcoincash = []
+    new_merchants_accepting_litecoin = []
+    new_merchants_accepting_ripple = []
+    new_merchants_accepting_dash = []
+    new_merchants_accepting_monero = []
 
-    values_mat = sheets.get_values(CSV_DATA_SHEET, "Sheet2", start=(1, 0), end=(99, 8))
+    adoption_data = list(Adoption.objects.all())
 
-    for k in range(0,len(values_mat)):
+    for item in adoption_data:
 
-        date = values_mat[k][0]
-        value1 = values_mat[k][1]
-        value2 = values_mat[k][2]
-        value3 = values_mat[k][3]
-        value4 = values_mat[k][4]
-        value5 = values_mat[k][5]
-        value6 = values_mat[k][6]
-        value7 = values_mat[k][7]
+        previous_item_key = adoption_data.index(item) - 1
 
-        dates.append(date.strftime("%Y-%m-%d"))
-        data1.append(value1)
-        data2.append(value2)
-        data3.append(value3)
-        data4.append(value4)
-        data5.append(value5)
-        data6.append(value6)
-        data7.append(value7)
-        now_btc = value1
-        now_xmr = value2
-        now_eth = value3
+        if previous_item_key != -1:
 
-    now_btc = locale._format('%.1f', now_btc, grouping=True)
-    now_xmr = locale._format('%.1f', now_xmr, grouping=True)
-    now_eth = locale._format('%.1f', now_eth, grouping=True)
+            dates.append(item.date.strftime("%Y-%m-%d"))
 
-    context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
+            previous_item = adoption_data[previous_item_key]
+
+            new_merchants_bitcoin = (( item.merchants_accepting_bitcoin - previous_item.merchants_accepting_bitcoin) / item.merchants_accepting_bitcoin ) * 100
+            new_merchants_ethereum = (( item.merchants_accepting_ethereum - previous_item.merchants_accepting_ethereum) / item.merchants_accepting_ethereum ) * 100
+            new_merchants_bitcoincash = (( item.merchants_accepting_bitcoincash - previous_item.merchants_accepting_bitcoincash) / item.merchants_accepting_bitcoincash ) * 100
+            new_merchants_litecoin = (( item.merchants_accepting_litecoin - previous_item.merchants_accepting_litecoin) / item.merchants_accepting_litecoin ) * 100
+            new_merchants_ripple = (( item.merchants_accepting_ripple - previous_item.merchants_accepting_ripple) / item.merchants_accepting_ripple ) * 100
+            new_merchants_dash = (( item.merchants_accepting_dash - previous_item.merchants_accepting_dash) / item.merchants_accepting_dash ) * 100
+            new_merchants_monero = (( item.merchants_accepting_monero - previous_item.merchants_accepting_monero) / item.merchants_accepting_monero ) * 100
+
+            new_merchants_accepting_bitcoin.append(new_merchants_bitcoin)
+            new_merchants_accepting_ethereum.append(new_merchants_ethereum)
+            new_merchants_accepting_bitcoincash.append(new_merchants_bitcoincash)
+            new_merchants_accepting_litecoin.append(new_merchants_litecoin)
+            new_merchants_accepting_ripple.append(new_merchants_ripple)
+            new_merchants_accepting_dash.append(new_merchants_dash)
+            new_merchants_accepting_monero.append(new_merchants_monero)
+        else:
+            print("[WARN] first item in list", flush=True)
+
+    context = {
+            'dates': dates,
+            'data1': new_merchants_accepting_bitcoin,
+            'data2': new_merchants_accepting_monero,
+            'data3': new_merchants_accepting_ethereum,
+            'data4': new_merchants_accepting_bitcoincash,
+            'data5': new_merchants_accepting_litecoin,
+            'data6': new_merchants_accepting_ripple,
+            'data7': new_merchants_accepting_dash
+            }
     return render(request, 'charts/merchants_percentage.html', context)
