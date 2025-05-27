@@ -5,7 +5,9 @@ import locale
 from datetime import date
 from django.shortcuts import render
 from django.conf import settings
+
 from charts.models import Usage
+from charts.models import Adoption
 from charts.spreadsheets import SpreadSheetManager, PandasSpreadSheetManager
 
 ####################################################################################
@@ -74,51 +76,38 @@ def merchants(request):
     ''' Merchants accepting cryptocurrency (absolute numbers)'''
 
     dates = []
-    data1 = []
-    data2 = []
-    data3 = []
-    data4 = []
-    data5 = []
-    data6 = []
-    data7 = []
-    now_xmr = 0
-    now_btc = 0
-    now_eth = 0
+    merchants_accepting_bitcoin = []
+    merchants_accepting_ethereum = []
+    merchants_accepting_bitcoincash = []
+    merchants_accepting_litecoin = []
+    merchants_accepting_ripple = []
+    merchants_accepting_dash = []
+    merchants_accepting_monero = []
 
-    values_mat = sheets.get_values(CSV_DATA_SHEET, "Sheet3", start=(1, 0), end=(99, 8))
+    adoption_data = list(Adoption.objects.all())
 
-    for k in range(0,len(values_mat)):
-        if values_mat[k][0] and values_mat[k][2]:
-            date = values_mat[k][0]
-            value1 = values_mat[k][1]
-            value2 = values_mat[k][2]
-            value3 = values_mat[k][3]
-            value4 = values_mat[k][4]
-            value5 = values_mat[k][5]
-            value6 = values_mat[k][6]
-            value7 = values_mat[k][7]
-            if not value1 or not value2 or not value3 or not value4 or not value5 or not value6 or not value7:
-                break
-            else:
-                dates.append(date.strftime("%Y-%m-%d"))
-                data1.append(int(value1))
-                data2.append(int(value2))
-                data3.append(int(value3))
-                data4.append(int(value4))
-                data5.append(int(value5))
-                data6.append(int(value6))
-                data7.append(int(value7))
-                now_btc = int(value1)
-                now_xmr = int(value2)
-                now_eth = int(value3)
-        else:
-            break
+    for item in adoption_data:
 
-    now_btc = locale._format('%.0f', now_btc, grouping=True)
-    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
-    now_eth = locale._format('%.0f', now_eth, grouping=True)
+        dates.append(item.date.strftime("%Y-%m-%d"))
 
-    context = {'dates': dates, 'now_btc': now_btc, 'now_xmr': now_xmr,  'now_eth': now_eth, 'data1': data1, "data2": data2, "data3": data3, "data4": data4, "data5": data5, "data6": data6, "data7": data7}
+        merchants_accepting_bitcoin.append(item.merchants_accepting_bitcoin)
+        merchants_accepting_ethereum.append(item.merchants_accepting_ethereum)
+        merchants_accepting_bitcoincash.append(item.merchants_accepting_bitcoincash)
+        merchants_accepting_litecoin.append(item.merchants_accepting_litecoin)
+        merchants_accepting_ripple.append(item.merchants_accepting_ripple)
+        merchants_accepting_dash.append(item.merchants_accepting_dash)
+        merchants_accepting_monero.append(item.merchants_accepting_monero)
+
+    context = {
+            'dates': dates,
+            'data1': merchants_accepting_bitcoin,
+            'data2': merchants_accepting_monero,
+            'data3': merchants_accepting_ethereum,
+            'data4': merchants_accepting_bitcoincash,
+            'data5': merchants_accepting_litecoin,
+            'data6': merchants_accepting_ripple,
+            'data7': merchants_accepting_dash
+            }
     return render(request, 'charts/merchants.html', context)
 
 def merchants_increase(request):
