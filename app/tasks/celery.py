@@ -17,6 +17,7 @@ from tasks.data_sync import update_coin_data
 from tasks.data_sync import daily_objects_updates
 from tasks.data_sync import recalculate_sf_model
 from tasks.data_sync import recalculate_daily_data
+from tasks.data_sync import update_dread_subscriber_count
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
 
@@ -112,6 +113,10 @@ def work():
         print('[INFO] Perform marketcap updates')
         recalculate_sf_model()
         recalculate_daily_data()
+
+
+        print('[INFO] Perform dread updates')
+        update_dread_subscriber_count(today)
 
         print('[INFO] Executed all jobs', flush=True)
         return None

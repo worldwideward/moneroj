@@ -2,9 +2,11 @@
 
 from charts.models import Coin
 from charts.models import DailyData
+from charts.models import Dread
 from charts.synchronous import update_database
 from charts.synchronous import get_history_function
 
+from charts.api.tor import DreadSession
 from charts.update_data.utils import erase_sf_model_data
 from charts.update_data.utils import erase_daily_data_data
 from charts.update_data.stock_to_flow import calculate_sf_model
@@ -89,3 +91,26 @@ def recalculate_daily_data():
         print('[INFO] Recreated Daily data database entries')
     else:
         print('[ERROR] Something went wrong during calculation')
+
+def update_dread_subscriber_count(today):
+
+    session = DreadSession()
+
+    btc_subscribers = session.get_dread_subscriber_count("btc")
+
+    if btc_subscribers is None:
+        btc_subscribers = 0
+
+    xmr_subscribers = session.get_dread_subscriber_count("xmr")
+
+    if xmr_subscribers is None:
+        xmr_subscribers = 0
+
+    entry = Dread()
+
+    entry.date = today
+    entry.bitcoin_subscriber_count = btc_subscribers
+    entry.monero_subscriber_count = xmr_subscribers
+    entry.save()
+
+    return True
