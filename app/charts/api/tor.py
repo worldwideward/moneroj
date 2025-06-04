@@ -72,6 +72,7 @@ class DreadSession():
             except Exception as error:
                 response_text = None
                 print(f'[DEBUG] {error}', flush=True)
+                time.sleep(60)
 
         response = session.get(url, headers=self.headers, proxies=self.proxy, timeout=TIMEOUT)
 
