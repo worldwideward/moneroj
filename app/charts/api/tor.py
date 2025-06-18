@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 TOR_HOST = settings.TOR_HOST
 TOR_PORT = settings.TOR_PORT
 TIMEOUT = 180
+RETRY_COUNT = 3
 
 class DreadSession():
 
@@ -54,8 +55,9 @@ class DreadSession():
         url = f'{self.endpoint}/d/{coin_id}'
 
         session = requests.Session()
+        retries = 0
 
-        while True:
+        while retries < RETRY_COUNT:
 
             try:
                 response = session.get(url, headers=self.headers, proxies=self.proxy, timeout=TIMEOUT)
@@ -72,7 +74,13 @@ class DreadSession():
             except Exception as error:
                 response_text = None
                 print(f'[DEBUG] {error}', flush=True)
-                time.sleep(60)
+                retries += 1
+                time.sleep(10)
+
+        if retries == RETRY_COUNT:
+
+            print(f'[DEBUG] Too many retries ({retries}). Aborting lookup.')
+            return None
 
         response = session.get(url, headers=self.headers, proxies=self.proxy, timeout=TIMEOUT)
 
@@ -89,8 +97,11 @@ class DreadSession():
 
             if len(search) > 0:
                 text = search.contents[0]
-                number_in_text = re.findall(r'\d+', text)
-                subscriber_count = int(number_in_text[0])
+                number_in_text = re.findall(r'\d+[,|.]?\d+', text)
+
+                formatted_number = number_in_text[0].replace(',', '')
+
+                subscriber_count = int(formatted_number)
             else:
                 print(f'[ERROR] Subscriber count not found on this page, search returned {len(search)} results')
                 return None
