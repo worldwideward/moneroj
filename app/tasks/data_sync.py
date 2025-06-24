@@ -13,6 +13,7 @@ from charts.update_data.stock_to_flow import calculate_sf_model
 from charts.update_data.daily_data import calculate_daily_data
 from charts.update_data.marketcap import update_rank
 from charts.update_data.marketcap import update_dominance
+from charts.update_data.social import add_socials_entry
 
 
 def check_for_updates(yesterday, coin) -> bool:
@@ -91,6 +92,12 @@ def recalculate_daily_data():
         print('[INFO] Recreated Daily data database entries')
     else:
         print('[ERROR] Something went wrong during calculation')
+
+def update_reddit_data():
+
+    add_socials_entry("Monero")
+    add_socials_entry("Bitcoin")
+    add_socials_entry("CryptoCurrency")
 
 def update_dread_subscriber_count(today):
 

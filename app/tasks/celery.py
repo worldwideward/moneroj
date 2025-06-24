@@ -18,8 +18,10 @@ from tasks.data_sync import daily_objects_updates
 from tasks.data_sync import recalculate_sf_model
 from tasks.data_sync import recalculate_daily_data
 from tasks.data_sync import update_dread_subscriber_count
+from tasks.data_sync import update_reddit_data
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
+
 
 class TaskWorker():
     '''Celery worker configuration'''
@@ -114,9 +116,11 @@ def work():
         recalculate_sf_model()
         recalculate_daily_data()
 
-
-        print('[INFO] Perform dread updates')
+        print('[info] perform dread updates')
         update_dread_subscriber_count(today)
+
+        print('[info] perform reddit updates')
+        update_reddit_data()
 
         print('[INFO] Executed all jobs', flush=True)
         return None
