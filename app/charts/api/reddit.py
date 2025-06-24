@@ -1,13 +1,15 @@
+'''A module to communicate with the Reddit API'''
+
 import os
-import requests
 import json
 import praw
 
 from django.conf import settings
 
-REDDIT_CLIENT_ID = settings.REDDIT_CLIENT_ID
+REDDIT_CLIENT_ID = os.getenv('REDDIT_CLIENT_ID')
 REDDIT_CLIENT_SECRET = os.getenv('REDDIT_CLIENT_SECRET')
-REDDIT_REDIRECT_URI = settings.REDDIT_REDIRECT_URI
+REDDIT_USERNAME = os.getenv('REDDIT_USERNAME')
+REDDIT_PASSWORD = os.getenv('REDDIT_PASSWORD')
 
 TOR_HOST = settings.TOR_HOST
 TOR_PORT = settings.TOR_PORT
@@ -15,86 +17,95 @@ TOR_PORT = settings.TOR_PORT
 class RedditAPI():
 
     def __init__(self):
+        '''Initialize a Reddit API client through a TOR proxy'''
 
-        self.endpoint = "https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion"
-        self.headers = {
-            "Content-Type": "application/json",
-            "User-Agent": "Moneroj.net"
-        }
+        #self.endpoint = "https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion"
+        self.user_agent = "Moneroj.net"
 
-        self.proxy = {
-                "http": f'socks5h://{TOR_HOST}:{TOR_PORT}',
-                "https": f'socks5h://{TOR_HOST}:{TOR_PORT}'
-        }
+        self.client_id=REDDIT_CLIENT_ID
+        self.client_secret=REDDIT_CLIENT_SECRET
+        self.reddit_username=REDDIT_USERNAME
+        self.reddit_password=REDDIT_PASSWORD
+
+        #os.environ["HTTP_PROXY"] = f'socks5h://{TOR_HOST}:{TOR_PORT}'
+        #os.environ["HTTPS_PROXY"] = f'socks5h://{TOR_HOST}:{TOR_PORT}'
 
         return None
 
     def connect(self):
+        '''Connect to the Reddit API using the password flow for Script Applications'''
 
-        client_id=REDDIT_CLIENT_ID
-        client_secret=REDDIT_CLIENT_SECRET
-        redirect_uri=REDDIT_REDIRECT_URI
+        client = praw.Reddit(
+                #reddit_url=self.endpoint,
+                client_id=self.client_id,
+                client_secret=self.client_secret,
+                username=self.reddit_username,
+                password=self.reddit_password,
+                user_agent=self.user_agent)
 
-        connect = praw.Reddit(client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri, user_agent=self.headers["User-Agent"])
+        authenticated_user = client.user.me()
 
-        implicit_flow = connect.auth.url(scopes=["identity"], implicit=True)
+        print(f'[DEBUG] Authenticated user: {authenticated_user}')
 
-        return implicit_flow
+        return client
 
-    def get_coin_id(self, symbol):
+    def get_subreddit_subscriber_count(self, client, subreddit_title):
+        '''Retrieve total subscriber count for a subreddit'''
 
-        coin_id = None
+        subreddit = client.subreddit(subreddit_title)
 
-        if symbol == 'xmr':
-            coin_id = "monero"
+        subscriber_count = subreddit.subscribers
 
-        if symbol == 'btc':
-            coin_id = "bitcoin"
+        return subscriber_count
 
-        if symbol == 'zec':
-            coin_id = "zcash"
+    def get_subreddit_daily_posts(self, client, subreddit_title):
+        '''Retrieve list of Reddit posts from the past day for a given subreddit'''
 
-        if symbol == 'dash':
-            coin_id = 'dash'
+        subreddit = client.subreddit(subreddit_title)
 
-        if symbol == 'grin':
-            coin_id = 'grin'
+        reddit_post_ids = []
 
-        return coin_id
+        for entry in subreddit.search(query="*", time_filter="day"):
 
+            reddit_post_ids.append(entry.id)
 
-    def get_subreddit_metadata(self, symbol):
+        print(f'[DEBUG] Found {len(reddit_post_ids)} Reddit posts')
 
-        coin_id = self.get_coin_id(symbol)
+        return reddit_post_ids
 
-        url = f'{self.endpoint}/r/{coin_id}/about.json'
+    def get_subreddit_daily_comments(self, client, subreddit_title):
+        '''Retrieve dictonary of comments on Reddit posts from the past day for a give subreddit'''
 
-        response = requests.get(url, headers=self.headers, proxies=self.proxy)
+        subreddit = client.subreddit(subreddit_title)
 
-        if response.status_code == 200:
+        reddit_comments_by_post = {}
 
-            data = json.loads(response.text)
-        else:
-            print(f'Request not succesful, returned HTTP status: {response.status_code}')
-            return None
+        reddit_post_ids = []
 
-        return data["data"]
+        for entry in subreddit.search(query="*", time_filter="day"):
 
-    def get_subreddit_posts(self, symbol):
+            reddit_post_ids.append(entry.id)
 
-        coin_id = self.get_coin_id(symbol)
+        print(f'[DEBUG] Found {len(reddit_post_ids)} Reddit posts')
 
-        print('[INFO] Not implemented')
-        list_of_posts = []
+        for post_id in reddit_post_ids:
 
-        return list_of_posts
+            post = client.submission(id=post_id)
 
-    def get_subreddit_comments(self, symbol):
+            print(f'[DEBUG] Parsing comments for post {post_id} with title: {post.title}')
 
-        coin_id = self.get_coin_id(symbol)
+            comments = post.comments.list()
 
-        print('[INFO] Not implemented')
+            comment_ids = []
 
-        list_of_comments = []
+            for comment in comments:
 
-        return list_of_comments
+                comment_ids.append(comment.id)
+
+                #print(f'[DEBUG] Parsing comment {comment.id} from {comment.author}')
+
+            print(f'[DEBUG] This post has yielded {len(comment_ids)} comments')
+
+            reddit_comments_by_post[post_id] = comment_ids
+
+        return reddit_comments_by_post

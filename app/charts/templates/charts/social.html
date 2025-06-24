@@ -14,7 +14,7 @@
         <div class="card" id="graph_2" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Total Number of Reddit Subscribers for Monero
+                    Total Number of Reddit Subscribers by Subreddit
                 </h6>
                 
                 <div class="dropdown no-arrow">
@@ -59,82 +59,56 @@
 <!-- Page level plugins -->
 <script> 
     
-    var data1 = {
-            type: "scatter",
-            mode: "lines",
-            name: '/Cryptocurrency',
-            x: {{ dates|safe }},
-            y: {{ social_crypto|safe }},
-            line: {
-                color: '#00ffff'
-                ,width: 3
-            }
-        };
-        
-        var data1_mobile = {
-            type: "scatter",
-            mode: "lines",
-            name: '/Cryptocurrency',
-            x: {{ dates|safe }},
-            y: {{ social_crypto|safe }},
-            line: {
-                color: '#00ffff'
-                ,width: 3
-            }
-        };
-
-        var data2 = {
-            type: "scatter",
-            mode: "lines",
-            name: '/Bitcoin',
-            x: {{ dates|safe }},
-            y: {{ social_btc|safe }},
-            line: {
-                color: '#ffff00'
-                ,width: 3
-            }
-        };
-        
-        var data2_mobile = {
-            type: "scatter",
-            mode: "lines",
-            name: '/Bitcoin',
-            x: {{ dates|safe }},
-            y: {{ social_btc|safe }},
-            line: {
-                color: '#ffff00'
-                ,width: 3
-            }
-        };
-
-        var data3 = {
+        var monero = {
             type: "scatter",
             mode: "lines",
             name: '/Monero',
-            x: {{ dates2|safe }},
-            y: {{ social_xmr|safe }},
+            x: {{ monero_dates|safe }},
+            y: {{ monero|safe }},
             line: {
                 color: '#dd1d1d'
                 ,width: 3
             }
         };
         
-        var data3_mobile = {
+        var monero_mobile = {
             type: "scatter",
             mode: "lines",
             name: '/Monero',
-            x: {{ dates2|safe }},
-            y: {{ social_xmr|safe }},
+            x: {{ monero_dates|safe }},
+            y: {{ monero|safe }},
             line: {
                 color: '#dd1d1d'
                 ,width: 3
             }
         };    
 
-        var data = [data1, data2];
-        var data_2 = [data3];
-        var data_mobile = [data1_mobile, data2_mobile];
-        var data_mobile_2 = [data3_mobile];
+        var bitcoin = {
+            type: "scatter",
+            mode: "lines",
+            name: '/Bitcoin',
+            x: {{ bitcoin_dates|safe }},
+            y: {{ bitcoin|safe }},
+            line: {
+                color: '#ffff00'
+                ,width: 3
+            }
+        };
+        
+        var bitcoin_mobile = {
+            type: "scatter",
+            mode: "lines",
+            name: '/Bitcoin',
+            x: {{ bitcoin_dates|safe }},
+            y: {{ bitcoin|safe }},
+            line: {
+                color: '#ffff00'
+                ,width: 3
+            }
+        };    
+
+        var data = [monero, bitcoin];
+        var data_mobile = [monero_mobile, bitcoin_mobile];
 
         var layout = {
             plot_bgcolor:"#252221",
@@ -291,10 +265,10 @@
         }
         env_size = findBootstrapEnvironment();
         if (env_size == "xs") {
-            Plotly.newPlot('graph2', data_mobile_2, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
+            Plotly.newPlot('graph2', data_mobile, layout_mobile, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
         }
         else {
-            Plotly.newPlot('graph2', data_2, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
+            Plotly.newPlot('graph2', data, layout, {responsive: true, modeBarButtonsToRemove: ['toImage', 'hoverCompareCartesian', 'hoverClosest2d', 'toggleSpikelines', 'lasso2d', 'select2d', 'hoverClosestCartesian'], displaylogo: false});
         }
     </script>
 
