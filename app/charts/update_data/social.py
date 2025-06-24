@@ -6,6 +6,7 @@ from charts.models import Social
 
 REDDIT_API = RedditAPI()
 
+
 def add_socials_entry(subreddit_title):
 
     client = REDDIT_API.connect()
@@ -32,4 +33,3 @@ def add_socials_entry(subreddit_title):
     entry.save()
 
     return None
-
