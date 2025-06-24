@@ -14,7 +14,7 @@ locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 def social(request):
     '''Total Reddit subscribers chart'''
 
-    monero_data = Social.objects.filter(name="monero").order_by('date')
+    monero_data = Social.objects.filter(name="Monero").order_by('date')
     monero_dates = []
     monero_subscriber_count = []
 
@@ -23,7 +23,7 @@ def social(request):
         monero_dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
         monero_subscriber_count.append(item.subscriber_count)
 
-    bitcoin_data = Social.objects.filter(name="bitcoin").order_by('date')
+    bitcoin_data = Social.objects.filter(name="Bitcoin").order_by('date')
     bitcoin_dates = []
     bitcoin_subscriber_count = []
 
@@ -42,6 +42,9 @@ def social(request):
 
 def social2(request):
     '''Marketcap Divided by Number of Reddit Subscribers'''
+
+    monero_data = Social.objects.filter(name="monero").order_by('date')
+    monero_dates = []
     data = DailyData.objects.order_by('date')
     dates = []
     social_btc = []
