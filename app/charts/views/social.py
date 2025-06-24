@@ -6,6 +6,7 @@ from datetime import timedelta
 from datetime import datetime
 from django.shortcuts import render
 from charts.models import DailyData
+from charts.models import Social
 
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
@@ -13,43 +14,30 @@ locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 def social(request):
     '''Total Reddit subscribers chart'''
 
-    data = DailyData.objects.order_by('date')
-    dates = []
-    dates2 = []
-    social_xmr = []
-    social_crypto = []
-    social_btc = []
-    last_xmr = 0
-    last_btc = 0
-    last_crypto = 0
+    monero_data = Social.objects.filter(name="monero").order_by('date')
+    monero_dates = []
+    monero_subscriber_count = []
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        dates2.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    for item in monero_data:
 
-        if item.btc_subscriber_count > last_btc:
-            social_btc.append(item.btc_subscriber_count)
-            last_btc = item.btc_subscriber_count
-        else:
-            social_btc.append(last_btc)
+        monero_dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+        monero_subscriber_count.append(item.subscriber_count)
 
-        if item.xmr_subscriber_count > last_xmr:
-            social_xmr.append(item.xmr_subscriber_count)
-            last_xmr = item.xmr_subscriber_count
-        else:
-            social_xmr.append(last_xmr)
+    bitcoin_data = Social.objects.filter(name="bitcoin").order_by('date')
+    bitcoin_dates = []
+    bitcoin_subscriber_count = []
 
-        if item.crypto_subscriber_count > last_crypto:
-            social_crypto.append(item.crypto_subscriber_count)
-            last_crypto = item.crypto_subscriber_count
-        else:
-            social_crypto.append(last_crypto)
+    for item in bitcoin_data:
 
-    last_xmr = locale._format('%.0f', last_xmr, grouping=True)
-    last_btc = locale._format('%.0f', last_btc, grouping=True)
-    last_crypto = locale._format('%.0f', last_crypto, grouping=True)
+        bitcoin_dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+        bitcoin_subscriber_count.append(item.subscriber_count)
 
-    context = {'dates': dates, 'dates2': dates2, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
+    context = {
+            'monero_dates': monero_dates,
+            'monero': monero_subscriber_count,
+            'bitcoin_dates': bitcoin_dates,
+            'bitcoin': bitcoin_subscriber_count }
+
     return render(request, 'charts/social.html', context)
 
 def social2(request):

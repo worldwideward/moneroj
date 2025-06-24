@@ -145,7 +145,10 @@ class AdoptionAdmin(admin.ModelAdmin):
 
 @admin.register(Social)
 class SocialAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["date", "name", "subscriber_count", "comments_per_hour", "posts_per_hour"]
+    list_filter = ["date"]
+    list_per_page = 10
+    ordering = ["date"]
 
 @admin.register(Dread)
 class DreadAdmin(admin.ModelAdmin):
