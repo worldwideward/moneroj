@@ -74,6 +74,7 @@ def social2(request):
     monero_dates = monero['dates']
     monero_dates.reverse()
     market_cap_data['monero'].reverse()
+    market_cap_data['bitcoin'].reverse()
 
     index = 0
     while index < monero_data_points:
@@ -88,16 +89,18 @@ def social2(request):
                     market_cap = market_cap_data['monero'][index]
                     division = market_cap / subscribers
 
-                    monero_market_cap_per_subscriber.append(division)
+                    monero_market_cap_per_subscriber.append(round(division, 2))
 
                     subscribers = bitcoin['subscribers'][index]
                     market_cap = market_cap_data['bitcoin'][index]
                     division = market_cap / subscribers
 
-                    bitcoin_market_cap_per_subscriber.append(division)
+                    bitcoin_market_cap_per_subscriber.append(round(division, 2))
 
         index =+ index + 1
 
+    monero_market_cap_per_subscriber.reverse()
+    bitcoin_market_cap_per_subscriber.reverse()
     print(monero_market_cap_per_subscriber, flush=True)
     print(bitcoin_market_cap_per_subscriber, flush=True)
 
