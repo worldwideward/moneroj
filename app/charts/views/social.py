@@ -10,76 +10,102 @@ from charts.models import Social
 
 locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 
+def get_subscriber_count(name):
+
+    query = Social.objects.filter(name=name).order_by('date')
+    dates = []
+    subscriber_count = []
+
+    for item in query:
+
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+        subscriber_count.append(item.subscriber_count)
+
+    data = { 'name': name, 'dates': dates, 'subscribers': subscriber_count }
+
+    return data
+
+def get_market_cap_data():
+
+    query = DailyData.objects.order_by('date')
+    dates = []
+    monero_marketcaps = []
+    bitcoin_marketcaps = []
+
+    for item in query:
+
+        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+        monero_marketcaps.append(item.xmr_marketcap)
+        bitcoin_marketcaps.append(item.btc_marketcap)
+
+    data = { 'monero' : monero_marketcaps, 'bitcoin': bitcoin_marketcaps, 'dates': dates }
+
+    return data
 
 def social(request):
     '''Total Reddit subscribers chart'''
 
-    monero_data = Social.objects.filter(name="Monero").order_by('date')
-    monero_dates = []
-    monero_subscriber_count = []
-
-    for item in monero_data:
-
-        monero_dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        monero_subscriber_count.append(item.subscriber_count)
-
-    bitcoin_data = Social.objects.filter(name="Bitcoin").order_by('date')
-    bitcoin_dates = []
-    bitcoin_subscriber_count = []
-
-    for item in bitcoin_data:
-
-        bitcoin_dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        bitcoin_subscriber_count.append(item.subscriber_count)
+    monero = get_subscriber_count("Monero")
+    bitcoin = get_subscriber_count("Bitcoin")
 
     context = {
-            'monero_dates': monero_dates,
-            'monero': monero_subscriber_count,
-            'bitcoin_dates': bitcoin_dates,
-            'bitcoin': bitcoin_subscriber_count }
+            'monero_dates': monero['dates'],
+            'monero': monero['subscribers'],
+            'bitcoin_dates': bitcoin['dates'],
+            'bitcoin': bitcoin['subscribers'] }
 
     return render(request, 'charts/social.html', context)
 
 def social2(request):
     '''Marketcap Divided by Number of Reddit Subscribers'''
 
-    monero_data = Social.objects.filter(name="monero").order_by('date')
-    monero_dates = []
-    data = DailyData.objects.order_by('date')
-    dates = []
-    social_btc = []
-    last_btc = 0
-    dates2 = []
-    social_xmr = []
-    last_xmr = 0
-    N = 1
+    monero = get_subscriber_count("Monero")
+    bitcoin = get_subscriber_count("Bitcoin")
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        dates2.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    market_cap_data = get_market_cap_data()
 
-        if item.btc_subscriber_count > 0:
-            if item.btc_marketcap > 10000:
-                last_btc = ((item.btc_marketcap)**N)/item.btc_subscriber_count
-                social_btc.append(last_btc)
-            else:
-                social_btc.append('')
-        else:
-            social_btc.append(last_btc)
+    dates = market_cap_data['dates']
+    monero_market_cap_per_subscriber = []
+    bitcoin_market_cap_per_subscriber = []
 
-        if item.xmr_subscriber_count > 0:
-            if item.xmr_marketcap > 10000:
-                last_xmr = ((item.xmr_marketcap)**N)/item.xmr_subscriber_count
-                social_xmr.append(last_xmr)
-            else:
-                social_xmr.append('')
-        else:
-            social_xmr.append(last_xmr)
+    monero_data_points = len(monero['dates'])
+    bitcoin_data_points = len(bitcoin['dates'])
 
-    last_xmr = '$' + locale._format('%.0f', last_xmr, grouping=True)
-    last_btc = '$' + locale._format('%.0f', last_btc, grouping=True)
+    monero_dates = monero['dates']
+    monero_dates.reverse()
+    market_cap_data['monero'].reverse()
 
-    context = {'dates': dates, 'dates2': dates2, 'social_btc': social_btc, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'last_btc': last_btc}
+    index = 0
+    while index < monero_data_points:
+
+        current_date = monero_dates[index]
+
+        for date in dates:
+
+            if current_date == date:
+
+                    subscribers = monero['subscribers'][index]
+                    market_cap = market_cap_data['monero'][index]
+                    division = market_cap / subscribers
+
+                    monero_market_cap_per_subscriber.append(division)
+
+                    subscribers = bitcoin['subscribers'][index]
+                    market_cap = market_cap_data['bitcoin'][index]
+                    division = market_cap / subscribers
+
+                    bitcoin_market_cap_per_subscriber.append(division)
+
+        index =+ index + 1
+
+    print(monero_market_cap_per_subscriber, flush=True)
+    print(bitcoin_market_cap_per_subscriber, flush=True)
+
+    context = {
+            'dates': dates,
+            'social_xmr': monero_market_cap_per_subscriber,
+            'social_btc': bitcoin_market_cap_per_subscriber,
+            }
     return render(request, 'charts/social2.html', context)
 
 def social3(request):
