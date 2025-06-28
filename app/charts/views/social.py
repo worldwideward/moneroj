@@ -84,10 +84,25 @@ def social_dividend(request):
 
     for x in monero_subscribers['data']:
 
-        xmr_subscribers = monero_subscribers['data'][x]
-        btc_subscribers = bitcoin_subscribers['data'][x]
-        xmr_marketcap = market_cap_data['data'][x]['monero']
-        btc_marketcap = market_cap_data['data'][x]['bitcoin']
+        try:
+            xmr_subscribers = monero_subscribers['data'][x]
+        except:
+            xmr_subscribers = 0
+
+        try:
+            btc_subscribers = bitcoin_subscribers['data'][x]
+        except KeyError as error:
+            btc_subscribers = 0
+
+        try:
+            xmr_marketcap = market_cap_data['data'][x]['monero']
+        except KeyError as error:
+            xmr_marketcap = 0
+
+        try:
+            btc_marketcap = market_cap_data['data'][x]['bitcoin']
+        except KeyError as error:
+            btc_marketcap = 0
 
         xmr_market_cap_per_subscriber = xmr_marketcap / xmr_subscribers
         btc_market_cap_per_subscriber = btc_marketcap / btc_subscribers
