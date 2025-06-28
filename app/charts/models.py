@@ -25,7 +25,7 @@ class Coin(models.Model):
 class Social(models.Model):
     '''Model for Social Platform Reddit'''
 
-    name = models.CharField(max_length=4)
+    name = models.CharField(max_length=16)
     date = models.DateField()
     subscriber_count = models.IntegerField()
     comments_per_hour = models.FloatField()
