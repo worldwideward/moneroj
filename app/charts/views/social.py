@@ -13,33 +13,32 @@ locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 def get_subscriber_count(name):
 
     query = Social.objects.filter(name=name).order_by('date')
-    dates = []
-    subscriber_count = []
+
+    data = {}
+    data['name'] = name
+    data['data'] = {}
 
     for item in query:
 
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        subscriber_count.append(item.subscriber_count)
+        item_date = datetime.strftime(item.date, '%Y-%m-%d')
+        data['data'][item_date] = item.subscriber_count
 
-    data = { 'name': name, 'dates': dates, 'subscribers': subscriber_count }
-
+    #print(f'[DEBUG] {data}', flush=True)
     return data
 
 def get_market_cap_data():
 
     query = DailyData.objects.order_by('date')
-    dates = []
-    monero_marketcaps = []
-    bitcoin_marketcaps = []
+
+    data = {}
+    data['data'] = {}
 
     for item in query:
 
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        monero_marketcaps.append(item.xmr_marketcap)
-        bitcoin_marketcaps.append(item.btc_marketcap)
+        item_date = datetime.strftime(item.date, '%Y-%m-%d')
+        data['data'][item_date] = { 'monero' : item.xmr_marketcap , 'bitcoin': item.btc_marketcap }
 
-    data = { 'monero' : monero_marketcaps, 'bitcoin': bitcoin_marketcaps, 'dates': dates }
-
+    #print(f'[DEBUG] {data}', flush=True)
     return data
 
 def social(request):
@@ -56,60 +55,38 @@ def social(request):
 
     return render(request, 'charts/social.html', context)
 
-def social2(request):
+def social_dividend(request):
     '''Marketcap Divided by Number of Reddit Subscribers'''
 
-    monero = get_subscriber_count("Monero")
-    bitcoin = get_subscriber_count("Bitcoin")
+    monero_subscribers = get_subscriber_count("Monero")
+    bitcoin_subscribers = get_subscriber_count("Bitcoin")
 
     market_cap_data = get_market_cap_data()
 
-    dates = market_cap_data['dates']
+    dates = []
     monero_market_cap_per_subscriber = []
     bitcoin_market_cap_per_subscriber = []
 
-    monero_data_points = len(monero['dates'])
-    bitcoin_data_points = len(bitcoin['dates'])
+    for x in monero_subscribers['data']:
 
-    monero_dates = monero['dates']
-    monero_dates.reverse()
-    market_cap_data['monero'].reverse()
-    market_cap_data['bitcoin'].reverse()
+        xmr_subscribers = monero_subscribers['data'][x]
+        btc_subscribers = bitcoin_subscribers['data'][x]
+        xmr_marketcap = market_cap_data['data'][x]['monero']
+        btc_marketcap = market_cap_data['data'][x]['bitcoin']
 
-    index = 0
-    while index < monero_data_points:
+        xmr_market_cap_per_subscriber = xmr_marketcap / xmr_subscribers
+        btc_market_cap_per_subscriber = btc_marketcap / btc_subscribers
 
-        current_date = monero_dates[index]
-
-        for date in dates:
-
-            if current_date == date:
-
-                    subscribers = monero['subscribers'][index]
-                    market_cap = market_cap_data['monero'][index]
-                    division = market_cap / subscribers
-
-                    monero_market_cap_per_subscriber.append(round(division, 2))
-
-                    subscribers = bitcoin['subscribers'][index]
-                    market_cap = market_cap_data['bitcoin'][index]
-                    division = market_cap / subscribers
-
-                    bitcoin_market_cap_per_subscriber.append(round(division, 2))
-
-        index =+ index + 1
-
-    monero_market_cap_per_subscriber.reverse()
-    bitcoin_market_cap_per_subscriber.reverse()
-    print(monero_market_cap_per_subscriber, flush=True)
-    print(bitcoin_market_cap_per_subscriber, flush=True)
+        dates.append(x)
+        monero_market_cap_per_subscriber.append(xmr_market_cap_per_subscriber)
+        bitcoin_market_cap_per_subscriber.append(btc_market_cap_per_subscriber)
 
     context = {
             'dates': dates,
             'social_xmr': monero_market_cap_per_subscriber,
             'social_btc': bitcoin_market_cap_per_subscriber,
             }
-    return render(request, 'charts/social2.html', context)
+    return render(request, 'charts/social_dividend.html', context)
 
 def social3(request):
     '''Reddit Subscribers of /Monero as a Percentage of /Bitcoin'''

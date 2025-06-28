@@ -94,7 +94,7 @@ urlpatterns = [
     path("p2pool_totalhashes/", mining.p2pool_totalhashes, name="p2pool_totalhashes"),
     # Social
     path("social/", social.social, name="social"),
-    path("social2/", social.social2, name="social2"),
+    path("social_dividend/", social.social_dividend, name="social_dividend"),
     path("social3/", social.social3, name="social3"),
     path("social4/", social.social4, name="social4"),
     path("social5/", social.social5, name="social5"),
