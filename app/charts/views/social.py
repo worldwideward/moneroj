@@ -87,12 +87,12 @@ def social_dividend(request):
         try:
             xmr_subscribers = monero_subscribers['data'][x]
         except:
-            xmr_subscribers = 0
+            xmr_subscribers = 1
 
         try:
             btc_subscribers = bitcoin_subscribers['data'][x]
         except KeyError as error:
-            btc_subscribers = 0
+            btc_subscribers = 1
 
         try:
             xmr_marketcap = market_cap_data['data'][x]['monero']
