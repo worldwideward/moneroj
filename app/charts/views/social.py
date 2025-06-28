@@ -177,7 +177,7 @@ def social_subscribers_percentage(request):
 
     return render(request, 'charts/social_subscribers_percentage.html', context)
 
-def social4(request):
+def social_monthly_increase(request):
     '''/Bitcoin, /CryptoCurrency and /Monero Monthly New Subscribers'''
     data = DailyData.objects.order_by('date')
     dates = []
@@ -303,8 +303,19 @@ def social4(request):
         last_btc = 0
         last_crypto = 0
 
-    context = {'dates': dates, 'speed_xmr': speed_xmr, 'speed_crypto': speed_crypto, 'speed_btc': speed_btc, 'newcomers_xmr': newcomers_xmr, 'newcomers_btc': newcomers_btc, 'newcomers_crypto': newcomers_crypto, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
-    return render(request, 'charts/social4.html', context)
+    context = {
+            'dates': dates,
+            'speed_xmr': speed_xmr,
+            'speed_crypto': speed_crypto,
+            'speed_btc': speed_btc,
+            'newcomers_xmr': newcomers_xmr,
+            'newcomers_btc': newcomers_btc,
+            'newcomers_crypto': newcomers_crypto,
+            'last_xmr': last_xmr,
+            'last_btc': last_btc,
+            'last_crypto': last_crypto
+            }
+    return render(request, 'charts/social_monthly_increase.html', context)
 
 def social5(request):
     '''Total Number of Reddit Subscribers for Monero and Number of Transactions'''
