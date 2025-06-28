@@ -118,36 +118,64 @@ def social_dividend(request):
             }
     return render(request, 'charts/social_dividend.html', context)
 
-def social3(request):
+def social_subscribers_percentage(request):
     '''Reddit Subscribers of /Monero as a Percentage of /Bitcoin'''
+
+    monero_subscribers = get_subscriber_count("Monero")
+    bitcoin_subscribers = get_subscriber_count("Bitcoin")
+    cryptocurrency_subscribers = get_subscriber_count("CryptoCurrency")
+
     data = DailyData.objects.order_by('date')
 
     dates = []
-    social_xmr = []
-    social_crypto = []
+    xmr_subscriber_percentage = []
+    crypto_subscriber_percentage = []
     last_xmr = 0
     last_crypto = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    for item in monero_subscribers['data']:
 
-        if item.btc_subscriber_count > 0 and item.xmr_subscriber_count > 0:
-            last_xmr = 100*(item.xmr_subscriber_count/item.btc_subscriber_count)
-            social_xmr.append(last_xmr)
-        else:
-            social_xmr.append(last_xmr)
+        dates.append(item)
 
-        if item.btc_subscriber_count > 0 and item.crypto_subscriber_count > 0:
-            last_crypto = 100*(item.crypto_subscriber_count/item.btc_subscriber_count)
-            social_crypto.append(last_crypto)
+        try:
+            xmr_subscribers = monero_subscribers['data'][item]
+        except KeyError as error:
+            xmr_subscribers = 0
+
+        try:
+            crypto_subscribers = cryptocurrency_subscribers['data'][item]
+        except KeyError as error:
+            crypto_subscribers = 0
+
+        try:
+            btc_subscribers = bitcoin_subscribers['data'][item]
+        except KeyError as error:
+            btc_subscribers = 1
+
+        if btc_subscribers > 0 and xmr_subscribers > 0:
+            last_xmr = 100*(xmr_subscribers/btc_subscribers)
+            xmr_subscriber_percentage.append(last_xmr)
         else:
-            social_crypto.append(last_crypto)
+            xmr_subscriber_percentage.append(last_xmr)
+
+        if btc_subscribers > 0 and crypto_subscribers > 0:
+            last_crypto = 100*(crypto_subscribers/btc_subscribers)
+            crypto_subscriber_percentage.append(last_crypto)
+        else:
+            crypto_subscriber_percentage.append(last_crypto)
 
     last_xmr = locale._format('%.1f', last_xmr, grouping=True)+ '%'
     last_crypto = locale._format('%.1f', last_crypto, grouping=True)+ '%'
 
-    context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'last_xmr': last_xmr, 'last_crypto': last_crypto}
-    return render(request, 'charts/social3.html', context)
+    context = {
+            'dates': dates,
+            'social_xmr': xmr_subscriber_percentage,
+            'social_crypto': crypto_subscriber_percentage,
+            'last_xmr': last_xmr,
+            'last_crypto': last_crypto
+            }
+
+    return render(request, 'charts/social_subscribers_percentage.html', context)
 
 def social4(request):
     '''/Bitcoin, /CryptoCurrency and /Monero Monthly New Subscribers'''
