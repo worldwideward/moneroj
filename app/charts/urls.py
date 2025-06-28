@@ -95,7 +95,7 @@ urlpatterns = [
     # Social
     path("social/", social.social, name="social"),
     path("social_dividend/", social.social_dividend, name="social_dividend"),
-    path("social3/", social.social3, name="social3"),
+    path("social_subscribers_percentage/", social.social_subscribers_percentage, name="social_subscribers_percentage"),
     path("social4/", social.social4, name="social4"),
     path("social5/", social.social5, name="social5"),
     path("social6/", social.social6, name="social6"),
