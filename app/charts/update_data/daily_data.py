@@ -15,15 +15,16 @@ def update_daily_data_price_information(xmr_data_point, btc_data_point):
 
     try:
         model = DailyData.objects.get(date=xmr_data_point.date)
-
         model.xmr_priceusd = xmr_data_point.priceusd
         model.xmr_pricebtc = xmr_data_point.pricebtc
         model.btc_priceusd = btc_data_point.priceusd
 
         model.save()
+
     except Exception as error:
-        print(f'[ERROR] Something went wrong updating price information: {error}')
+        print(f'[ERROR] Could not update price information: {error}')
         return None
+
     return model
 
 def update_daily_data_marketcap(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point):
@@ -46,7 +47,7 @@ def update_daily_data_marketcap(xmr_data_point, btc_data_point, dash_data_point,
 def update_daily_data_transactions(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point):
 
     try:
-        model = DailyData.objects.get(date=data_point.date)
+        model = DailyData.objects.get(date=xmr_data_point.date)
 
         model.xmr_transacpercentage = xmr_data_point.transactions / btc_data_point.transactions
 
@@ -65,7 +66,7 @@ def update_daily_data_transactions(xmr_data_point, btc_data_point, dash_data_poi
 def update_daily_data_issuance(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point):
 
     try:
-        model = DailyData.objects.get(date=data_point.date)
+        model = DailyData.objects.get(date=xmr_data_point.date)
 
         model.xmr_inflation = xmr_data_point.inflation
         model.btc_inflation = btc_data_point.inflation
@@ -88,7 +89,7 @@ def update_daily_data_issuance(xmr_data_point, btc_data_point, dash_data_point, 
 def update_daily_data_emission(xmr_data_point, xmr_previous_data_point, btc_data_point, btc_previous_data_point):
 
     try:
-        model = DailyData.objects.get(date=data_point.date)
+        model = DailyData.objects.get(date=xmr_data_point.date)
 
         model.xmr_emissionusd = ( xmr_data_point.supply - xmr_previous_data_point.supply ) * xmr_data_point.priceusd
         model.xmr_emissionntv = xmr_data_point.supply - xmr_previous_data_point.supply
@@ -105,7 +106,7 @@ def update_daily_data_emission(xmr_data_point, xmr_previous_data_point, btc_data
 def update_daily_data_mining(xmr_data_point, xmr_previous_data_point, btc_data_point, btc_previous_data_point):
 
     try:
-        model = DailyData.objects.get(date=data_point.date)
+        model = DailyData.objects.get(date=xmr_data_point.date)
 
         model.xmr_minerrevusd = xmr_data_point.revenue * xmr_data_point.priceusd
         model.xmr_minerrevntv = xmr_data_point.revenue
