@@ -1,10 +1,11 @@
 '''Synchronous functions'''
 
 import json
-import datetime
-from datetime import date, timedelta
-import requests
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
 
+import requests
 from requests import Session
 from requests.exceptions import Timeout, TooManyRedirects
 
@@ -80,8 +81,8 @@ def get_history_function(symbol, start_time=None, end_time=None):
     for item in metrics:
 
         time_array = str(item['time']).split('T')
-        day = datetime.datetime.strptime(time_array[0], '%Y-%m-%d')
-        day = datetime.datetime.strftime(day, '%Y-%m-%d')
+        day = datetime.strptime(time_array[0], '%Y-%m-%d')
+        day = datetime.strftime(day, '%Y-%m-%d')
         coin = Coin.objects.filter(name=symbol).filter(date=day)
         if coin:
             coin.delete()
@@ -179,8 +180,8 @@ def get_latest_metrics(symbol, url):
         data_aux = data['data']
         for item in data_aux:
             time_array = str(item['time']).split('T')
-            day = datetime.datetime.strptime(time_array[0], '%Y-%m-%d')
-            day = datetime.datetime.strftime(day, '%Y-%m-%d')
+            day = datetime.strptime(time_array[0], '%Y-%m-%d')
+            day = datetime.strftime(day, '%Y-%m-%d')
             try:
                 coin = Coin.objects.filter(name=symbol).get(date=day)
             except Exception as error:
@@ -290,7 +291,7 @@ def get_latest_price(symbol):
 def check_new_social(symbol):
     '''Load Reddit api to check if there are new followers'''
 
-    yesterday = datetime.datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
+    yesterday = datetime.strftime(date.today()-timedelta(1), '%Y-%m-%d')
     socials = Social.objects.filter(name=symbol).filter(date=yesterday)
     if symbol == 'Bitcoin':
         timeframe = 14400
@@ -323,9 +324,9 @@ def check_new_social(symbol):
         social.subscriber_count = subscribers
 
         date_aux = date.today()
-        date_aux = datetime.datetime.strftime(date_aux, '%Y-%m-%d')
-        date_aux = datetime.datetime.strptime(date_aux, '%Y-%m-%d')
-        timestamp1 = int(datetime.datetime.timestamp(date_aux))
+        date_aux = datetime.strftime(date_aux, '%Y-%m-%d')
+        date_aux = datetime.strptime(date_aux, '%Y-%m-%d')
+        timestamp1 = int(datetime.timestamp(date_aux))
 
         timestamp2 = int(timestamp1 - timeframe)
         limit = 1000
@@ -355,27 +356,28 @@ def update_database(date_from=None, date_to=None):
     if not date_from or not date_to:
         date_to = date.today()
         date_from = date_to - timedelta(5)
-        amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d").date()
+        amount = date_from - datetime.strptime(date_zero, "%Y-%m-%d").date()
         print(f'[INFO] Updating from {str(date_from)} to {str(date_to)}', flush=True)
         print(f'[INFO] There are {str(amount)} passed since {date_zero}', flush=True)
     else:
-        date_from = datetime.datetime.strptime(date_from, "%Y-%m-%d")
-        date_to = datetime.datetime.strptime(date_to, "%Y-%m-%d")
-        amount = date_from - datetime.datetime.strptime(date_zero, "%Y-%m-%d")
+        date_from = datetime.strptime(date_from, "%Y-%m-%d")
+        date_to = datetime.strptime(date_to, "%Y-%m-%d")
+        amount = date_from - datetime.strptime(date_zero, "%Y-%m-%d")
         print(f'[INFO] Updating from {str(date_from)} to {str(date_to)}', flush=True)
         print(f'[INFO] There are {str(amount)} passed since {date_zero}', flush=True)
 
     count = 0
     day_to_process = date_from
+
     while day_to_process <= date_to:
 
-        print(f'[INFO] Processing {str(day_to_process)}', flush=True)
         day_to_process = date_from + timedelta(count)
         day_before = day_to_process - timedelta(1)
-        print(f'[INFO] Day before {str(day_to_process)} is {str(day_before)}', flush=True)
+
+        if day_to_process == date_to:
+            break
 
         # Retrieve data points for cryptocurrencies
-
         try:
             try:
                 xmr_data_point = Coin.objects.filter(name='xmr').get(date=day_to_process)
@@ -419,62 +421,26 @@ def update_database(date_from=None, date_to=None):
                 print(f'[INFO] Returning {count}')
                 return count
 
-            # Retrieve social data points for cryptocurrencies
-
-            social_count = 0
-            found = False
-            while social_count < 100 and not found:
-                print(f'[INFO] Processing social data, {social_count}')
-                try:
-                    day_to_process_social_data = day_to_process - timedelta(social_count)
-                    social_btc = Social.objects.filter(name='Bitcoin').get(date=day_to_process_social_data)
-                    social_xmr = Social.objects.filter(name='Monero').get(date=day_to_process_social_data)
-                    social_crypto = Social.objects.filter(name='Cryptocurrency').get(date=day_to_process_social_data)
-                    found = True
-                    print('[INFO] Found Social Data', flush=True)
-                except Exception as error:
-                    print(f'[ERROR] Something went wrong retrieving Social Data: {error}', flush=True)
-                    found = False
-                social_count += 1
         except Exception as error:
             print(f'[INFO] Processing failed, returning {count}. Error: {error}')
             return count
 
-        # Create stock to flow entry for XMR
-
-        add_stock_to_flow_entry(xmr_data_point, amount)
-        amount += timedelta(1)
-
         # Create daily data entry for XMR
 
         entry = update_daily_data_price_information(xmr_data_point, btc_data_point)
-
         entry = update_daily_data_marketcap(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point)
-
         entry = update_daily_data_transactions(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point)
-
         entry = update_daily_data_issuance(xmr_data_point, btc_data_point, dash_data_point, zcash_data_point, grin_data_point)
-
         entry = update_daily_data_emission(xmr_data_point, xmr_previous_data_point, btc_data_point, btc_previous_data_point)
 
-        entry = update_daily_data_social(social_xmr, social_btc, social_crypto)
+        # Create stock to flow entry for XMR
+        add_stock_to_flow_entry(xmr_data_point, amount)
 
-        try:
-            print(
-                str(xmr_data_point.supply)
-                + " xmr "
-                + str(entry.xmr_subscriber_count)
-                + " - "
-                + str(social_xmr.subscriber_count)
-                + " = "
-                + str(int(entry.xmr_marketcap))
-                + " => "
-                + str(xmr_data_point.inflation)
-            , flush=True)
-        except (Social.DoesNotExist, UnboundLocalError) as error:
-            print(f'Something went wrong {error}', flush=True)
-
+        amount += timedelta(1)
         count += 1
+
+        print(f'[INFO] XMR: {xmr_data_point.date} - supply: {xmr_data_point.supply} - marketcap {entry.xmr_marketcap}')
+        print(f'[INFO] BTC: {btc_data_point.date} - supply: {btc_data_point.supply} - marketcap {entry.btc_marketcap}')
 
     return count
 
@@ -532,9 +498,9 @@ def update_p2pool():
         values_mat = SHEETS.get_values(CSV_DATA_SHEET, "p2pool", start=(2, 0), end=(9999, 3))
 
         k = len(values_mat)
-        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        date_aux = datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+        date_aux2 = datetime.strftime(date.today(), '%Y-%m-%d')
+        date_aux2 = datetime.strptime(date_aux2, '%Y-%m-%d')
         if date_aux < date_aux2:
             cell = 'F' + str(k + 3)
             wks.update_value(cell, p2pool_stat.totalblocksfound)
@@ -547,7 +513,7 @@ def update_p2pool():
             cell = 'B' + str(k + 3)
             wks.update_value(cell, p2pool_stat.miners)
             cell = 'A' + str(k + 3)
-            wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+            wks.update_value(cell, datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
             print('spreadsheet updated', flush=True)
         else:
             print('spreadsheet already with the latest data', flush=True)
@@ -605,9 +571,9 @@ def update_p2pool():
         values_mat = SHEETS.get_values(CSV_DATA_SHEET, "p2poolmini", start=(2, 0), end=(9999, 3))
 
         k = len(values_mat)
-        date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-        date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
+        date_aux = datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
+        date_aux2 = datetime.strftime(date.today(), '%Y-%m-%d')
+        date_aux2 = datetime.strptime(date_aux2, '%Y-%m-%d')
         if date_aux < date_aux2:
             cell = 'F' + str(k + 3)
             wks.update_value(cell, p2pool_stat.totalblocksfound)
@@ -620,7 +586,7 @@ def update_p2pool():
             cell = 'B' + str(k + 3)
             wks.update_value(cell, p2pool_stat.miners)
             cell = 'A' + str(k + 3)
-            wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
+            wks.update_value(cell, datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
             print('spreadsheet updated', flush=True)
         else:
             print('spreadsheet already with the latest data', flush=True)
