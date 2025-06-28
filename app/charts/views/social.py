@@ -44,14 +44,29 @@ def get_market_cap_data():
 def social(request):
     '''Total Reddit subscribers chart'''
 
-    monero = get_subscriber_count("Monero")
-    bitcoin = get_subscriber_count("Bitcoin")
+    monero_subscribers = get_subscriber_count("Monero")
+    bitcoin_subscribers = get_subscriber_count("Bitcoin")
+
+    xmr_dates = []
+    xmr_subscribers = []
+    btc_dates = []
+    btc_subscribers = []
+
+    for x in monero_subscribers['data']:
+
+        xmr_dates.append(x)
+        xmr_subscribers.append(monero_subscribers['data'][x])
+
+    for x in bitcoin_subscribers['data']:
+
+        btc_dates.append(x)
+        btc_subscribers.append(bitcoin_subscribers['data'][x])
 
     context = {
-            'monero_dates': monero['dates'],
-            'monero': monero['subscribers'],
-            'bitcoin_dates': bitcoin['dates'],
-            'bitcoin': bitcoin['subscribers'] }
+            'monero_dates': xmr_dates,
+            'monero': xmr_subscribers,
+            'bitcoin_dates': btc_dates,
+            'bitcoin': btc_subscribers }
 
     return render(request, 'charts/social.html', context)
 
