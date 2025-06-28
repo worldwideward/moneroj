@@ -86,11 +86,16 @@ def social_dividend(request):
 
         try:
             xmr_subscribers = monero_subscribers['data'][x]
-        except:
-            xmr_subscribers = 1
 
+            if xmr_subscribers == 0:
+                xmr_subscribers = 1
+        except KeyError as error:
+            xmr_subscribers = 1
         try:
             btc_subscribers = bitcoin_subscribers['data'][x]
+
+            if btc_subscribers == 0:
+                btc_subscribers = 1
         except KeyError as error:
             btc_subscribers = 1
 
@@ -125,8 +130,6 @@ def social_subscribers_percentage(request):
     bitcoin_subscribers = get_subscriber_count("Bitcoin")
     cryptocurrency_subscribers = get_subscriber_count("CryptoCurrency")
 
-    data = DailyData.objects.order_by('date')
-
     dates = []
     xmr_subscriber_percentage = []
     crypto_subscriber_percentage = []
@@ -153,13 +156,13 @@ def social_subscribers_percentage(request):
             btc_subscribers = 1
 
         if btc_subscribers > 0 and xmr_subscribers > 0:
-            last_xmr = 100*(xmr_subscribers/btc_subscribers)
+            last_xmr = xmr_subscribers/btc_subscribers
             xmr_subscriber_percentage.append(last_xmr)
         else:
             xmr_subscriber_percentage.append(last_xmr)
 
         if btc_subscribers > 0 and crypto_subscribers > 0:
-            last_crypto = 100*(crypto_subscribers/btc_subscribers)
+            last_crypto = crypto_subscribers/btc_subscribers
             crypto_subscriber_percentage.append(last_crypto)
         else:
             crypto_subscriber_percentage.append(last_crypto)
@@ -171,150 +174,62 @@ def social_subscribers_percentage(request):
             'dates': dates,
             'social_xmr': xmr_subscriber_percentage,
             'social_crypto': crypto_subscriber_percentage,
-            'last_xmr': last_xmr,
-            'last_crypto': last_crypto
             }
 
     return render(request, 'charts/social_subscribers_percentage.html', context)
 
 def social_monthly_increase(request):
     '''/Bitcoin, /CryptoCurrency and /Monero Monthly New Subscribers'''
-    data = DailyData.objects.order_by('date')
-    dates = []
-    dates2 = []
-    social_xmr = []
-    social_crypto = []
-    social_btc = []
-    last_xmr = 0
-    last_btc = 0
-    last_crypto = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        dates2.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    monero_subscribers = get_subscriber_count("Monero")
+    bitcoin_subscribers = get_subscriber_count("Bitcoin")
+    cryptocurrency_subscribers = get_subscriber_count("CryptoCurrency")
 
-        if item.btc_subscriber_count > last_btc:
-            social_btc.append(item.btc_subscriber_count)
-            last_btc = item.btc_subscriber_count
-        else:
-            social_btc.append(last_btc)
+    def monthly_increase_data(subscribers):
 
-        if item.xmr_subscriber_count > last_xmr:
-            social_xmr.append(item.xmr_subscriber_count)
-            last_xmr = item.xmr_subscriber_count
-        else:
-            social_xmr.append(last_xmr)
+        dates = []
+        previous_subscribers = 0
+        new_subscribers = []
+        increase = []
 
-        if item.crypto_subscriber_count > last_crypto:
-            social_crypto.append(item.crypto_subscriber_count)
-            last_crypto = item.crypto_subscriber_count
-        else:
-            social_crypto.append(last_crypto)
+        for item in subscribers['data']:
 
-    N = 30
-    last_btc = ''
-    speed_btc = []
-    for i in range(len(social_btc)):
-        if i < N:
-            speed_btc.append(last_btc)
-        else:
-            if social_btc[i-N] != 0 and social_btc[i] - social_btc[i-N] != 0:
-                last_btc = 100*(social_btc[i] - social_btc[i-N])/social_btc[i-N]
-                if last_btc < 0.2:
-                    last_btc = 0.2
-                if last_btc > 1000:
-                    last_btc = ''
-            else:
-                last_btc = ''
-            speed_btc.append(last_btc)
+            dates.append(item)
+            total_subscribers = subscribers['data'][item]
 
-    last_btc = ''
-    newcomers_btc = []
-    for i in range(len(social_btc)):
-        if i < N:
-            newcomers_btc.append(last_btc)
-        else:
-            last_btc = social_btc[i] - social_btc[i-N]
-            if last_btc < 10:
-                last_btc = ''
-            newcomers_btc.append(last_btc)
+            new_subscriber_amount = total_subscribers - previous_subscribers
 
-    last_crypto = ''
-    speed_crypto = []
-    for i in range(len(social_crypto)):
-        if i < N:
-            speed_crypto.append(last_crypto)
-        else:
-            if social_crypto[i-N] != 0 and social_crypto[i] - social_crypto[i-N] != 0:
-                last_crypto = 100*(social_crypto[i] - social_crypto[i-N])/social_crypto[i-N]
-                if last_crypto < 0.2:
-                    last_crypto = 0.2
-                if last_crypto > 1000:
-                    last_crypto = ''
-            else:
-                last_crypto = ''
-            speed_crypto.append(last_crypto)
+            if new_subscriber_amount < 0:
+                new_subscriber_amount = previous_subscribers
 
-    last_crypto = ''
-    newcomers_crypto = []
-    for i in range(len(social_crypto)):
-        if i < N:
-            newcomers_crypto.append(last_crypto)
-        else:
-            last_crypto = social_crypto[i] - social_crypto[i-N]
-            if last_crypto < 2:
-                last_crypto = ''
-            newcomers_crypto.append(last_crypto)
+            new_subscribers.append(new_subscriber_amount)
 
+            if total_subscribers > previous_subscribers:
+                increase_percentage = ( (total_subscribers - previous_subscribers) / total_subscribers ) * 100
+                increase.append(increase_percentage)
 
-    last_xmr = ''
-    speed_xmr = []
-    for i in range(len(social_xmr)):
-        if i < N:
-            speed_xmr.append(last_xmr)
-        else:
-            if social_xmr[i-N] != 0 and social_xmr[i] - social_xmr[i-N] != 0:
-                last_xmr = 100*(social_xmr[i] - social_xmr[i-N])/social_xmr[i-N]
-                if last_xmr < 0.2:
-                    last_xmr = 0.2
-                if last_xmr > 1000:
-                    last_xmr = ''
-            else:
-                last_xmr = ''
-            speed_xmr.append(last_xmr)
+            if total_subscribers < previous_subscribers:
+                increase_percentage = ( (previous_subscribers - total_subscribers) / previous_subscribers ) * 100
+                increase.append(increase_percentage)
 
-    last_xmr = ''
-    newcomers_xmr = []
-    for i in range(len(social_xmr)):
-        if i < N:
-            newcomers_xmr.append(last_xmr)
-        else:
-            last_xmr = social_xmr[i] - social_xmr[i-N]
-            if last_xmr < 0:
-                last_xmr = ''
-            newcomers_xmr.append(last_xmr)
+            previous_subscribers = subscribers['data'][item]
 
-    try:
-        last_xmr = locale._format('%.0f', last_xmr, grouping=True)
-        last_btc = locale._format('%.0f', last_btc, grouping=True)
-        last_crypto = locale._format('%.0f', last_crypto, grouping=True)
-    except:
-        last_xmr = 0
-        last_btc = 0
-        last_crypto = 0
+        return [dates, new_subscribers, increase]
+
+    xmr_data = monthly_increase_data(monero_subscribers)
+    btc_data = monthly_increase_data(bitcoin_subscribers)
+    crypto_data = monthly_increase_data(cryptocurrency_subscribers)
 
     context = {
-            'dates': dates,
-            'speed_xmr': speed_xmr,
-            'speed_crypto': speed_crypto,
-            'speed_btc': speed_btc,
-            'newcomers_xmr': newcomers_xmr,
-            'newcomers_btc': newcomers_btc,
-            'newcomers_crypto': newcomers_crypto,
-            'last_xmr': last_xmr,
-            'last_btc': last_btc,
-            'last_crypto': last_crypto
+            'dates': xmr_data[0],
+            'newcomers_xmr': xmr_data[1],
+            'newcomers_btc': btc_data[1],
+            'newcomers_crypto': crypto_data[1],
+            'speed_xmr': xmr_data[2],
+            'speed_btc': btc_data[2],
+            'speed_crypto': crypto_data[2]
             }
+    print(f'[DEBUG] {context}', flush=True)
     return render(request, 'charts/social_monthly_increase.html', context)
 
 def social5(request):
