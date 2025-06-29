@@ -15,8 +15,6 @@ def add_socials_entry(subreddit_title):
 
     reddit_comments_by_post = REDDIT_API.get_subreddit_daily_comments(client, subreddit_title)
 
-    posts_per_hour = round(len(reddit_comments_by_post) / 24, 2)
-
     comment_count = 0
 
     for post_id in reddit_comments_by_post:
@@ -24,11 +22,14 @@ def add_socials_entry(subreddit_title):
         comments = reddit_comments_by_post[post_id]
         comment_count += len(comments)
 
+    posts_per_hour = round(len(reddit_comments_by_post) / 24, 2)
+    comments_per_hour = round(comment_count / 24, 2)
+
     entry = Social()
     entry.name = subreddit_title
     entry.date = date.today()
     entry.subscriber_count = subscriber_count
-    entry.comments_per_hour = comment_count
+    entry.comments_per_hour = comments_per_hour
     entry.posts_per_hour = posts_per_hour
     entry.save()
 

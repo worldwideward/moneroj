@@ -26,6 +26,38 @@ def get_subscriber_count(name):
     #print(f'[DEBUG] {data}', flush=True)
     return data
 
+def get_comments_per_day(name):
+
+    query = Social.objects.filter(name=name).order_by('date')
+
+    data = {}
+    data['name'] = name
+    data['data'] = {}
+
+    for item in query:
+
+        item_date = datetime.strftime(item.date, '%Y-%m-%d')
+        data['data'][item_date] = ( item.comments_per_hour * 24 )
+
+    #print(f'[DEBUG] {data}', flush=True)
+    return data
+
+def get_posts_per_day(name):
+
+    query = Social.objects.filter(name=name).order_by('date')
+
+    data = {}
+    data['name'] = name
+    data['data'] = {}
+
+    for item in query:
+
+        item_date = datetime.strftime(item.date, '%Y-%m-%d')
+        data['data'][item_date] = ( item.posts_per_hour * 24 )
+
+    #print(f'[DEBUG] {data}', flush=True)
+    return data
+
 def get_market_cap_data():
 
     query = DailyData.objects.order_by('date')
@@ -296,44 +328,47 @@ def social_transactions_percentage(request):
             }
     return render(request, 'charts/social_transactions_percentage.html', context)
 
-def social6(request):
+def social_comments_per_day(request):
     '''Comments per day on Subreddits /Bitcoin and /CryptoCurrency'''
-    data = DailyData.objects.order_by('date')
-    dates = []
-    social_xmr = []
-    social_crypto = []
-    social_btc = []
-    last_xmr = 0
-    last_btc = 0
-    last_crypto = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    monero_comments = get_comments_per_day('Monero')
+    bitcoin_comments = get_comments_per_day('Bitcoin')
+    crypto_comments = get_comments_per_day('CryptoCurrency')
 
-        if item.btc_comments_per_hour*24 < last_btc/4:
-            social_btc.append(last_btc)
-        else:
-            last_btc = item.btc_comments_per_hour*24
-            social_btc.append(last_btc)
+    def comments_per_day_data(comments):
 
-        if item.xmr_comments_per_hour*24 < last_xmr/4:
-            social_xmr.append(last_xmr)
-        else:
-            last_xmr = item.xmr_comments_per_hour*24
-            social_xmr.append(last_xmr)
+        dates = []
+        comments_data = []
+        previous_comments = 0
 
-        if item.crypto_comments_per_hour*24 < last_crypto/4:
-            social_crypto.append(last_crypto)
-        else:
-            last_crypto = item.crypto_comments_per_hour*24
-            social_crypto.append(last_crypto)
+        for x in comments['data']:
 
-    last_xmr = locale._format('%.0f', last_xmr, grouping=True)
-    last_btc = locale._format('%.0f', last_btc, grouping=True)
-    last_crypto = locale._format('%.0f', last_crypto, grouping=True)
+            dates.append(x)
+            comments_per_day = comments['data'][x]
 
-    context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
-    return render(request, 'charts/social6.html', context)
+            if comments_per_day < previous_comments:
+
+                comments_data.append(previous_comments)
+            else:
+                comments_data.append(comments_per_day)
+                previous_comments = comments_per_day
+
+        return [dates, comments_data, previous_comments]
+
+    monero = comments_per_day_data(monero_comments)
+    bitcoin = comments_per_day_data(bitcoin_comments)
+    crypto = comments_per_day_data(crypto_comments)
+
+    context = {
+            'dates': monero[0],
+            'social_xmr': monero[1],
+            'social_btc': bitcoin[1],
+            'social_crypto': crypto[1],
+            'last_xmr': monero[2],
+            'last_btc': bitcoin[2],
+            'last_crypto': crypto[2]
+            }
+    return render(request, 'charts/social_comments_per_day.html', context)
 
 def social7(request):
     '''Posts per day on Subreddits /Bitcoin and /CryptoCurrency & Posts per day on Reddit /Monero'''
