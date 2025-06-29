@@ -98,7 +98,7 @@ urlpatterns = [
     path("social_subscribers_percentage/", social.social_subscribers_percentage, name="social_subscribers_percentage"),
     path("social_monthly_increase/", social.social_monthly_increase, name="social_monthly_increase"),
     path("social_transactions_percentage/", social.social_transactions_percentage, name="social_transactions_percentage"),
-    path("social6/", social.social6, name="social6"),
+    path("social_comments_per_day/", social.social_comments_per_day, name="social_comments_per_day"),
     path("social7/", social.social7, name="social7"),
     # Subscribers
     path("dread_subscribers/", subscribers.dread_subscribers, name="dread_subscribers"),
