@@ -92,14 +92,14 @@ urlpatterns = [
     path("p2pool_miners/", mining.p2pool_miners, name="p2pool_miners"),
     path("p2pool_totalblocks/", mining.p2pool_totalblocks, name="p2pool_totalblocks"),
     path("p2pool_totalhashes/", mining.p2pool_totalhashes, name="p2pool_totalhashes"),
-    # Social
+    # Reddit
     path("social/", social.social, name="social"),
     path("social_dividend/", social.social_dividend, name="social_dividend"),
     path("social_subscribers_percentage/", social.social_subscribers_percentage, name="social_subscribers_percentage"),
     path("social_monthly_increase/", social.social_monthly_increase, name="social_monthly_increase"),
     path("social_transactions_percentage/", social.social_transactions_percentage, name="social_transactions_percentage"),
     path("social_comments_per_day/", social.social_comments_per_day, name="social_comments_per_day"),
-    path("social7/", social.social7, name="social7"),
+    path("social_posts_per_day/", social.social_posts_per_day, name="social_posts_per_day"),
     # Subscribers
     path("dread_subscribers/", subscribers.dread_subscribers, name="dread_subscribers"),
     # Adoption
