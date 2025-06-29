@@ -370,40 +370,44 @@ def social_comments_per_day(request):
             }
     return render(request, 'charts/social_comments_per_day.html', context)
 
-def social7(request):
+def social_posts_per_day(request):
     '''Posts per day on Subreddits /Bitcoin and /CryptoCurrency & Posts per day on Reddit /Monero'''
-    data = DailyData.objects.order_by('date')
-    dates = []
-    social_xmr = []
-    social_crypto = []
-    social_btc = []
-    last_xmr = 0
-    last_btc = 0
-    last_crypto = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_posts_per_hour > 0:
-            last_btc = item.btc_posts_per_hour*24
-            social_btc.append(last_btc)
-        else:
-            social_btc.append(last_btc)
+    monero_posts = get_posts_per_day('Monero')
+    bitcoin_posts = get_posts_per_day('Bitcoin')
+    crypto_posts = get_posts_per_day('CryptoCurrency')
 
-        if item.xmr_posts_per_hour > 0:
-            last_xmr = item.xmr_posts_per_hour*24
-            social_xmr.append(last_xmr)
-        else:
-            social_xmr.append(last_xmr)
+    def posts_per_day_data(posts):
 
-        if item.crypto_posts_per_hour > 0:
-            last_crypto = item.crypto_posts_per_hour*24
-            social_crypto.append(last_crypto)
-        else:
-            social_crypto.append(last_crypto)
+        dates = []
+        posts_data = []
+        previous_posts = 0
 
-    last_xmr = locale._format('%.0f', last_xmr, grouping=True)
-    last_btc = locale._format('%.0f', last_btc, grouping=True)
-    last_crypto = locale._format('%.0f', last_crypto, grouping=True)
+        for x in posts['data']:
 
-    context = {'dates': dates, 'social_xmr': social_xmr, 'social_crypto': social_crypto, 'social_btc': social_btc, 'last_xmr': last_xmr, 'last_btc': last_btc, 'last_crypto': last_crypto}
-    return render(request, 'charts/social7.html', context)
+            dates.append(x)
+            posts_per_day = posts['data'][x]
+
+            if posts_per_day < previous_posts:
+
+                posts_data.append(previous_posts)
+            else:
+                posts_data.append(posts_per_day)
+                previous_posts = posts_per_day
+
+        return [dates, posts_data, previous_posts]
+
+    monero = posts_per_day_data(monero_posts)
+    bitcoin = posts_per_day_data(bitcoin_posts)
+    crypto = posts_per_day_data(crypto_posts)
+
+    context = {
+            'dates': monero[0],
+            'social_xmr': monero[1],
+            'social_btc': bitcoin[1],
+            'social_crypto': crypto[1],
+            'last_xmr': monero[2],
+            'last_btc': bitcoin[2],
+            'last_crypto': crypto[2]
+            }
+    return render(request, 'charts/social_posts_per_day.html', context)
