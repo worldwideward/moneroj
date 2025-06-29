@@ -212,6 +212,10 @@ def social_monthly_increase(request):
                 increase_percentage = ( (previous_subscribers - total_subscribers) / previous_subscribers ) * 100
                 increase.append(increase_percentage)
 
+            if total_subscribers == previous_subscribers:
+                increase_percentage = 0
+                increase.append(increase_percentage)
+
             previous_subscribers = subscribers['data'][item]
 
         return [dates, new_subscribers, increase]
