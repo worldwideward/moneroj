@@ -41,6 +41,21 @@ def get_market_cap_data():
     #print(f'[DEBUG] {data}', flush=True)
     return data
 
+def get_transactions_data():
+
+    query = DailyData.objects.order_by('date')
+
+    data = {}
+    data['data'] = {}
+
+    for item in query:
+
+        item_date = datetime.strftime(item.date, '%Y-%m-%d')
+        data['data'][item_date] = { 'monero' : item.xmr_transactions }
+
+    #print(f'[DEBUG] {data}', flush=True)
+    return data
+
 def social(request):
     '''Total Reddit subscribers chart'''
 
@@ -213,7 +228,7 @@ def social_monthly_increase(request):
                 increase.append(increase_percentage)
 
             if total_subscribers == previous_subscribers:
-                increase_percentage = 0
+                increase_percentage = ''
                 increase.append(increase_percentage)
 
             previous_subscribers = subscribers['data'][item]
@@ -236,35 +251,50 @@ def social_monthly_increase(request):
     print(f'[DEBUG] {context}', flush=True)
     return render(request, 'charts/social_monthly_increase.html', context)
 
-def social5(request):
+def social_transactions_percentage(request):
     '''Total Number of Reddit Subscribers for Monero and Number of Transactions'''
-    data = DailyData.objects.order_by('date')
-    transactions = []
-    dates = []
-    social_xmr = []
-    now_transactions = 0
-    last_xmr = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    monero_subscribers = get_subscriber_count("Monero")
 
-        if item.xmr_subscriber_count > last_xmr:
-            social_xmr.append(item.xmr_subscriber_count)
-            last_xmr = item.xmr_subscriber_count
+    monero_transactions = get_transactions_data()
+
+    previous_subscribers = 0
+
+    xmr_subscribers = []
+    xmr_transactions = []
+    xmr_dates = []
+
+    for x in monero_subscribers['data']:
+
+        subscribers = monero_subscribers['data'][x]
+        try:
+            transactions = monero_transactions['data'][x]['monero']
+        except KeyError as error:
+            transactions = 0
+
+        xmr_dates.append(x)
+
+        if subscribers > previous_subscribers:
+            xmr_subscribers.append(subscribers)
+            previous_subscribers = subscribers
         else:
-            social_xmr.append(last_xmr)
+            xmr_subscribers.append(previous_subscribers)
 
-        if item.xmr_transactions > 300:
-            now_transactions = item.xmr_transactions
-            transactions.append(now_transactions)
+        if transactions > 100:
+            xmr_transactions.append(transactions)
         else:
-            transactions.append('')
+            xmr_transactions.append('')
 
-    last_xmr = locale._format('%.0f', last_xmr, grouping=True)
-    now_transactions = locale._format('%.0f', now_transactions, grouping=True)
+    previous_subcribers = locale._format('%.0f', previous_subscribers, grouping=True)
 
-    context = {'dates': dates, 'social_xmr': social_xmr, 'last_xmr': last_xmr, 'now_transactions': now_transactions, 'transactions': transactions}
-    return render(request, 'charts/social5.html', context)
+    context = {
+            'dates': xmr_dates,
+            'social_xmr': xmr_subscribers,
+            'last_xmr': previous_subscribers,
+            'now_transactions': transactions,
+            'transactions': xmr_transactions
+            }
+    return render(request, 'charts/social_transactions_percentage.html', context)
 
 def social6(request):
     '''Comments per day on Subreddits /Bitcoin and /CryptoCurrency'''
