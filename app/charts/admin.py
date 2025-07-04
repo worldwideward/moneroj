@@ -175,8 +175,8 @@ class RankAdmin(admin.ModelAdmin):
 
 @admin.register(P2Pool)
 class P2PoolAdmin(admin.ModelAdmin):
-    list_display = ["mini", "date", "hashrate", "percentage", "miners", "totalhashes", "totalblocksfound"]
-    list_filter = ["mini", "date"]
+    list_display = ["date", "mini", "hashrate", "percentage", "miners", "totalhashes", "totalblocksfound"]
+    list_filter = ["date", "mini"]
     list_per_page = 10
     search_fields = ["mini"]
     ordering = ["date"]
