@@ -116,6 +116,9 @@ def work():
         recalculate_sf_model()
         recalculate_daily_data()
 
+        print('[info] perform P2Pool updates')
+        update_p2pool_data()
+
         print('[info] perform dread updates')
         update_dread_subscriber_count(today)
 

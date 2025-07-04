@@ -14,6 +14,7 @@ from charts.update_data.daily_data import calculate_daily_data
 from charts.update_data.marketcap import update_rank
 from charts.update_data.marketcap import update_dominance
 from charts.update_data.social import add_socials_entry
+from charts.update_data.p2pool import add_p2pool_entry
 
 
 def check_for_updates(yesterday, coin) -> bool:
@@ -92,6 +93,11 @@ def recalculate_daily_data():
         print('[INFO] Recreated Daily data database entries')
     else:
         print('[ERROR] Something went wrong during calculation')
+
+def update_p2pool_data():
+
+    add_p2pool_entry(mini=False)
+    add_p2pool_entry(mini=True)
 
 def update_reddit_data():
 
