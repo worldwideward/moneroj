@@ -275,7 +275,10 @@ def shielded(request):
         zcash_transactions.append(item.zcash_shielded_transactions)
         bitcoin_transactions.append(item.bitcoin_whirpool_transactions)
 
-        monero_data = Coin.objects.filter(name='xmr').get(date=item.date)
+        try:
+            monero_data = Coin.objects.filter(name='xmr').get(date=item.date)
+        except Coin.DoesNotExist:
+            monero_data.transactions = 0
 
         monero_transactions.append(monero_data.transactions)
 
