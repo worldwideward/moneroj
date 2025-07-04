@@ -7,7 +7,7 @@ import requests
 from datetime import date, timedelta
 from django.conf import settings
 
-from .models import Coin, Social, P2Pool
+from .models import Coin, Social
 
 from .spreadsheets import PandasSpreadSheetManager
 from .utils import get_today, get_yesterday
@@ -181,9 +181,6 @@ async def update_coin_data(coin, date):
 
         asyncio.ensure_future(get_coin_data(session, coin, url))
 
-        #actions.append(asyncio.ensure_future(get_p2pool_data(session, mini=False)))
-        #actions.append(asyncio.ensure_future(get_p2pool_data(session, mini=True)))
-
     return True
 
 ####################################################################################
@@ -204,110 +201,4 @@ async def update_social_data(symbol):
         except asyncio.exceptions.TimeoutError:
             print('Timeout!')
 
-    return True
-
-####################################################################################
-#   Asynchronous get p2pool and p2poolmini data and then save to google sheets
-#################################################################################### 
-async def get_p2pool_data(session, mini):
-    today = date.today()
-    yesterday = date.today() - timedelta(1)
-    try:
-        p2pool_stat = P2Pool.objects.filter(mini=mini).get(date=today)
-        if p2pool_stat.percentage > 0:
-            update  = False
-        else:
-            p2pool_stat.delete()
-            try:
-                coin = Coin.objects.filter(name='xmr').get(date=yesterday)
-                if coin.hashrate > 0:
-                    update = True
-                else:
-                    update  = False
-            except:
-                update  = False
-    except:
-        try:
-            coin = Coin.objects.filter(name='xmr').get(date=yesterday)
-            if coin.hashrate > 0:
-                update = True
-            else:
-                update  = False
-        except:
-            update  = False
-
-    if update:
-        p2pool_stat = P2Pool()
-        p2pool_stat.date = today
-
-        if not(mini):
-            async with session.get('https://p2pool.io/api/pool/stats') as res:
-                data = await res.read()
-                data = json.loads(data) 
-                p2pool_stat.hashrate = data['pool_statistics']['hashRate']
-                p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
-                p2pool_stat.miners = data['pool_statistics']['miners']
-                p2pool_stat.totalhashes = data['pool_statistics']['totalHashes']
-                p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
-                p2pool_stat.mini = False
-                p2pool_stat.save()
-                print('p2pool saved!')
-                values_mat = sheets.get_values("zcash_bitcoin.ods", "p2pool", start=(2,0), end=(9999,3))
-                k = len(values_mat)
-                date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-                date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-                date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-                if date_aux < date_aux2:
-                    cell = 'F' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.totalblocksfound)
-                    cell = 'E' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.totalhashes)
-                    cell = 'D' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.percentage)
-                    cell = 'C' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.hashrate)
-                    cell = 'B' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.miners)
-                    cell = 'A' + str(k + 3)
-                    wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
-                    print('spreadsheet updated')
-                else:   
-                    print('spreadsheet already with the latest data')
-                    return data
-        else:
-            async with session.get('https://p2pool.io/mini/api/pool/stats') as res:
-                data = await res.read()
-                data = json.loads(data) 
-                p2pool_stat.hashrate = data['pool_statistics']['hashRate']
-                p2pool_stat.percentage = 100*data['pool_statistics']['hashRate']/coin.hashrate
-                p2pool_stat.miners = data['pool_statistics']['miners']
-                p2pool_stat.totalhashes = data['pool_statistics']['totalHashes']
-                p2pool_stat.totalblocksfound = data['pool_statistics']['totalBlocksFound']
-                p2pool_stat.mini = True
-                p2pool_stat.save()
-                print('p2pool_mini saved!')
-                values_mat = sheets.get_values("zcash_bitcoin.ods", "p2poolmini", start=(2,0), end=(9999,3))
-                k = len(values_mat)
-                date_aux = datetime.datetime.strptime(values_mat[k-1][0], '%Y-%m-%d')
-                date_aux2 = datetime.datetime.strftime(date.today(), '%Y-%m-%d')
-                date_aux2 = datetime.datetime.strptime(date_aux2, '%Y-%m-%d')
-                if date_aux < date_aux2:
-                    cell = 'F' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.totalblocksfound)
-                    cell = 'E' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.totalhashes)
-                    cell = 'D' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.percentage)
-                    cell = 'C' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.hashrate)
-                    cell = 'B' + str(k + 3)
-                    wks.update_value(cell, p2pool_stat.miners)
-                    cell = 'A' + str(k + 3)
-                    wks.update_value(cell, datetime.datetime.strftime(p2pool_stat.date, '%Y-%m-%d'))
-                    print('spreadsheet updated')
-                else:
-                    print('spreadsheet already with the latest data')
-                    return data
-    else:
-        return False
     return True
