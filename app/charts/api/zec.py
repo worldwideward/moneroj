@@ -36,6 +36,8 @@ def extract_shielded_transactions(url):
         html = response.text
         soup = BeautifulSoup(html, 'html.parser')
 
+        ## Counting the shielded inputs to calculate the shielded_transactions_count. Debatable whether outputs should be used instead.
+        ##
         shielded_transactions = soup.findAll('dt')[5]
         inputs_outputs = shielded_transactions.next_element.next_element.next_element.string.strip()
         shielded_transactions_count = int(inputs_outputs.split('/')[0].strip())
