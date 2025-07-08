@@ -18,7 +18,11 @@ services:
       - "-c"
       - "python manage.py runserver 0.0.0.0:8000"
     environment:
-    - TOR_SOCKS_HOST=tor-socks
+    - COINGECKO_API_KEY=${COINGECKO_API_KEY}
+    - REDDIT_CLIENT_ID=${REDDIT_CLIENT_ID}
+    - REDDIT_CLIENT_SECRET=${REDDIT_CLIENT_SECRET}
+    - REDDIT_USERNAME=${REDDIT_USERNAME}
+    - REDDIT_PASSWORD=${REDDIT_PASSWORD}
     ports:
       - 8000:8000
   tor-socks:
