@@ -1,6 +1,7 @@
 '''Update Transactions data'''
 from datetime import date
 from charts.api.zec import ZecExplorer
+from charts.api.bitcoin import whirlpool_analysis
 from charts.models import Transaction
 
 ZEC_EXPLORER = ZecExplorer()
@@ -15,11 +16,17 @@ def add_transactions_entry():
         print(f'[ERROR] Something went wrong while getting shielded transactions: {error}')
         return False
 
+    try:
+        whirlpool_transactions = whirlpool_analysis()
+    except Exception as error:
+        print(f'[ERROR] Something went wrong while getting whirlpool transactions: {error}')
+        return False
+
     entry = Transaction()
 
     entry.date = today
     entry.zcash_shielded_transactions = shielded_transactions
-    entry.bitcoin_whirpool_transactions = 0
+    entry.bitcoin_whirpool_transactions = whirlpool_transactions
     entry.save()
 
     return True
