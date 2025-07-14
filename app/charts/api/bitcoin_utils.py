@@ -37,73 +37,66 @@ def get_latest_block_height():
 
     except Exception as error:
         print(f'[WARN] {BITCOIN_EXPLORER_API} unreachable: {error}')
-        return None
+        raise ValueError('[ERROR] Could not get blockchain tip')
 
 def get_block_timestamp(block_height):
 
     try:
-        response = get(f'{BITCOIN_EXPLORER_API}/block/{block_height}', timeout=60)
+        response = get(f'{BITCOIN_EXPLORER_API}/block/header/{block_height}', timeout=60)
         data = json.loads(response.text)
         epoch = data['time']
         timestamp = datetime.fromtimestamp(epoch, timezone.utc).strftime('%d-%m-%Y %H:%M')
+        print(f'[INFO] Block {block_height} was mined at {timestamp}')
         return timestamp
 
     except Exception as error:
         print(f'[WARN] {BITCOIN_EXPLORER_API} unreachable: {error}')
         return None
 
-def verify_first_block(block_timestamp, block_height):
-
-    time_object = datetime.strptime(block_timestamp, '%d-%m-%Y %H:%M')
-
-    if time_object.hour < 1:
-
-        if time_object.minute < 10:
-            return True
-    return False
-
 def first_block_of_the_day(time_object, latest_block):
 
-    blocks_mined = get_blocks_mined_today(time_object)
-    first_block_today = latest_block - blocks_mined
-    first_block_timestamp = get_block_timestamp(first_block_today)
-    today_time_object = datetime.strptime(first_block_timestamp, '%d-%m-%Y %H:%M')
-
     print(f'[INFO] Searching the first block at {time_object}')
-    print(f'[INFO] There are {blocks_mined} blocks mined this day')
-    print(f'[INFO] The last block this day has height {latest_block}')
-    print(f'[INFO] The first block this day has height {first_block_today} at {first_block_timestamp}')
 
-    if blocks_mined == 0:
-        return first_block_today
+    latest_block = get_latest_block_height()
 
+    latest_block_timestamp = get_block_timestamp(latest_block)
+    latest_block_time_object = datetime.strptime(latest_block_timestamp, '%d-%m-%Y %H:%M')
+
+    time_delta = latest_block_time_object - time_object
+    seconds = time_delta.total_seconds()
+    blocks_mined_since_time_object = int(seconds / 60 / 10)
+
+    print(f'[INFO] There are approximately {blocks_mined_since_time_object} blocks mined since time object')
+
+    first_block_today = latest_block - blocks_mined_since_time_object
+    first_block_timestamp = get_block_timestamp(first_block_today)
     first_block_time_object = datetime.strptime(first_block_timestamp, '%d-%m-%Y %H:%M')
-    check = time_object.day - first_block_time_object.day
 
-    if check != 0:
-        print('[ERROR] Going to far back')
+    print(f'[INFO] First block of day {time_object} seems to be {first_block_today} mined at {first_block_time_object}')
+
+    compare_day = time_object.day - first_block_time_object.day
+
+    while compare_day != 0:
+
         first_block_today = first_block_today + 1
         first_block_timestamp = get_block_timestamp(first_block_today)
-        print(f'[INFO] The first block today has height {first_block_today} at {first_block_timestamp}')
-        return first_block_today
+        first_block_time_object = datetime.strptime(first_block_timestamp, '%d-%m-%Y %H:%M')
+        print(f'[INFO] First block of day {time_object} seems to be {first_block_today} mined at {first_block_time_object}')
+        compare_day = time_object.day - first_block_time_object.day
 
-    verify = verify_first_block(first_block_timestamp, first_block_today)
+    while 0 < first_block_time_object.hour < 24:
 
-    while verify is False:
+        if first_block_time_object.hour > 12:
+            first_block_today = first_block_today - 60
+        if first_block_time_object.hour > 3:
+            first_block_today = first_block_today - 24
+        if first_block_time_object.hour > 0:
+            first_block_today = first_block_today - 1
 
-        first_block_today = first_block_today - 1
         first_block_timestamp = get_block_timestamp(first_block_today)
         first_block_time_object = datetime.strptime(first_block_timestamp, '%d-%m-%Y %H:%M')
-        check = today_time_object.day - first_block_time_object.day
-        print(f'[INFO] The first block today has height {first_block_today} at {first_block_timestamp}')
-        verify = verify_first_block(first_block_timestamp, first_block_today)
 
-        if check != 0:
-            print('[ERROR] Going to far back')
-            first_block_today = first_block_today + 1
-            print(f'[INFO] Will use {first_block_today} as the first block for this period')
-            break
-
+    print(f'[INFO] First block of day {time_object} seems to be {first_block_today} mined at {first_block_time_object}')
     return first_block_today
 
 def range_of_blocks_today():
