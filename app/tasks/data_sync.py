@@ -15,6 +15,7 @@ from charts.update_data.marketcap import update_rank
 from charts.update_data.marketcap import update_dominance
 from charts.update_data.social import add_socials_entry
 from charts.update_data.p2pool import add_p2pool_entry
+from charts.update_data.transactions import add_transactions_entry
 
 
 def check_for_updates(yesterday, coin) -> bool:
@@ -127,3 +128,7 @@ def update_dread_subscriber_count(today):
     entry.save()
 
     return True
+
+def update_shielded_transactions():
+
+    add_transactions_entry()
