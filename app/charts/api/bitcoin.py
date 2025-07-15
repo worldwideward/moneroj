@@ -118,6 +118,9 @@ def whirlpool_analysis():
 
     blocks = range_of_blocks_today()
 
+    if blocks is None:
+        return None
+
     first_block_today = blocks["end_block"]
     first_block_yesterday = blocks["start_block"]
     block_count = blocks["block_count"]
