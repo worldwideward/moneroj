@@ -7,7 +7,6 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import date
 
-import asyncio
 from django.conf import settings
 from celery import Celery
 from tasks.data_sync import check_for_updates
@@ -32,25 +31,25 @@ class TaskWorker():
         self.host = settings.MONEROJ_REDIS_HOST
         self.agent = Celery('tasks', broker=f'redis://{self.host}/0', backend=f'redis://{self.host}')
 
+def get_times():
+
+    today = date.today()
+    yesterday = datetime.strftime(today - timedelta(1), '%Y-%m-%d')
+    print(f'[INFO] Today: {today}')
+    print(f'[INFO] Yesterday: {yesterday}')
+
+    return today, yesterday
+
 def work():
     '''Celery worker logic'''
 
     agent = TaskWorker().agent
 
     @agent.task
-    async def todo_list():
-        '''Tasks the worker should perform each run'''
-
-        ## Calculate time for this session
-        today = date.today()
-        yesterday = datetime.strftime(today - timedelta(1), '%Y-%m-%d')
-        date_aux = datetime.strftime(today - timedelta(2), '%Y-%m-%d')
-
-        print(f'[INFO] Today: {today}')
-        print(f'[INFO] Yesterday: {yesterday}')
-        print(f'[INFO] Two days ago: {date_aux}')
+    def update_xmr_data():
 
         print('[INFO] Check for XMR updates')
+        today, yesterday = get_times()
         result = check_for_updates(yesterday, "xmr")
 
         if result is True:
@@ -62,10 +61,11 @@ def work():
         print('[INFO] Update XMR marketcap')
         update_xmr_marketcap()
 
-        print('[INFO] Check for competitor updates')
+    @agent.task
+    def update_btc_data():
 
         print('[INFO] Check for Bitcoin updates')
-
+        today, yesterday = get_times()
         result = check_for_updates(yesterday, "btc")
 
         if result is True:
@@ -74,8 +74,11 @@ def work():
         else:
             print('[WARN] Skipped updating Bitcoin coin data')
 
-        print('[INFO] Check for Dash updates')
+    @agent.task
+    def update_dash_data():
 
+        print('[INFO] Check for Dash updates')
+        today, yesterday = get_times()
         result = check_for_updates(yesterday, "dash")
 
         if result is True:
@@ -84,8 +87,11 @@ def work():
         else:
             print('[WARN] Skipped updating Dash coin data')
 
-        print('[INFO] Check for Zcash updates')
+    @agent.task
+    def update_zec_data():
 
+        print('[INFO] Check for Zcash updates')
+        today, yesterday = get_times()
         result = check_for_updates(yesterday, "zec")
 
         if result is True:
@@ -94,8 +100,11 @@ def work():
         else:
             print('[WARN] Skipped updating Zcash coin data')
 
-        print('[INFO] Check for Grin updates')
+    @agent.task
+    def update_grin_data():
 
+        print('[INFO] Check for Grin updates')
+        today, yesterday = get_times()
         result = check_for_updates(yesterday, "grin")
 
         if result is True:
@@ -104,8 +113,11 @@ def work():
         else:
             print('[WARN] Skipped updating Grin coin data')
 
-        print('[INFO] Check for Daily data updates')
+    @agent.task
+    def update_database():
 
+        print('[INFO] Check for Daily data updates')
+        today, yesterday = get_times()
         result = check_daily_objects_for_updates(yesterday)
 
         if result is True:
@@ -118,24 +130,35 @@ def work():
         recalculate_sf_model()
         recalculate_daily_data()
 
-        print('[info] perform P2Pool updates')
+    @agent.task
+    def mining_data_updates():
+        print('[INFO] perform P2Pool updates')
         update_p2pool_data()
 
-        print('[info] perform dread updates')
+    @agent.task
+    def social_data_updates():
+        print('[INFO] Perform Dread updates')
+        today, yesterday = get_times()
         update_dread_subscriber_count(today)
 
-        print('[info] perform reddit updates')
+        print('[INFO] Perform Reddit updates')
         update_reddit_data()
 
-        print('[INFO] Executed all jobs', flush=True)
-        return None
-
-    asyncio.run(todo_list())
-
     @agent.task
-    def shielded_transactions():
-        print('[info] perform transactions updates')
+    def transactions_data_updates():
+        print('[INFO] Perform transaction data updates')
         update_shielded_transactions()
+
+    ## Run all tasks
+    update_xmr_data()
+    update_btc_data()
+    update_dash_data()
+    update_zec_data()
+    update_grin_data()
+    update_database()
+    mining_data_updates()
+    social_data_updates()
+    transactions_data_updates()
 
     sys.exit(0)
 
