@@ -17,6 +17,7 @@ def add_transactions_entry():
 
     try:
         shielded_transactions = ZEC_EXPLORER.get_real_time_shielded_transactions_count()
+        print(f'[INFO] Found {shielded_transactions} shielded transactions)
     except Exception as error:
         print(f'[ERROR] Something went wrong while getting shielded transactions: {error}')
         return False

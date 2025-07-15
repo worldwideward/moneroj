@@ -63,14 +63,14 @@ def compare_days_of_time_objects(first_day, second_day):
     compare = first_day - second_day
 
     if compare > 0:
-        print(f'[INFO] First time object is more recent than second time object: {compare} - {first_day} > {second_day}')
+        # First time object is more recent than second time object
+        return False
     if compare < 0:
-        print(f'[INFO] First time object is less recent than second time object: {compare} - {first_day} < {second_day}')
+        # First time object is less recent than second time object
+        return False
     if compare == 0:
-        print(f'[INFO] First and second time object share the same day: {compare} - {first_day} == {second_day}')
+        # First and second time object share the same day
         return True
-
-    return False
 
 def evaluate_hour_of_time_object(hour):
     '''Check if the hour is between 0 and 1 am'''
@@ -157,7 +157,6 @@ def first_block_of_the_day(time_object):
         first_block_today = latest_block - blocks_mined_since_time_object
         first_block_timestamp = get_block_timestamp(first_block_today)
         first_block_time_object = datetime.strptime(first_block_timestamp, '%d-%m-%Y %H:%M')
-
         first_block_today, first_block_time_object = find_first_block(first_block_today, time_object, first_block_time_object)
         print(f'[INFO] First block of day {time_object} seems to be {first_block_today} mined at {first_block_time_object}')
 
@@ -173,8 +172,6 @@ def first_block_of_the_day(time_object):
         first_block_today = latest_block - blocks_mined_since_time_object
         first_block_timestamp = get_block_timestamp(first_block_today)
         first_block_time_object = datetime.strptime(first_block_timestamp, '%d-%m-%Y %H:%M')
-        print(f'[INFO] First block of day {time_object} seems to be {first_block_today} mined at {first_block_time_object}')
-
         first_block_today, first_block_time_object = find_first_block(first_block_today, time_object, first_block_time_object)
         print(f'[INFO] First block of day {time_object} seems to be {first_block_today} mined at {first_block_time_object}')
 
