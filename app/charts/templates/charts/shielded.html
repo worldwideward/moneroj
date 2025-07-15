@@ -47,7 +47,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows all private transactions from Bitcoin (the ones that go via Whirlpool), Zcash shielded transactions and Monero private transactions. Chart provided as courtesy from Cake Wallet and Monero.com. <a href="https://monero.com/charts/shielded" target="_blank">Link.</a><br><br>
+                This chart shows all private transactions from Bitcoin (the ones that go via Ashigaru Whirlpool), Zcash shielded transactions and Monero private transactions.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -148,7 +148,7 @@ var data1 = {
 
     var data3 = {
         type: "bar",
-        name: 'Bitcoin Whirlpool uxt0s',
+        name: 'Ashigaru Whirlpool Tx0s',
         x: {{ dates|safe }},
         y: {{ values3|safe }},
         hovertemplate: '%{y}',
@@ -169,7 +169,7 @@ var data1 = {
     
     var data3_mobile = {
         type: "bar",
-        name: 'Bitcoin Whirlpool uxt0s',
+        name: 'Ashigaru Whirlpool Tx0s',
         x: {{ dates|safe }},
         y: {{ values3|safe }},
         hovertemplate: '%{y}',
@@ -203,7 +203,7 @@ var data1 = {
                   xanchor: 'auto',
                   y: 0.98,
                   yanchor: 'auto',
-                  text: 'Moneroj<br>Chart provided as courtesy from Cake Wallet and Monero.com',
+                  text: 'Moneroj',
                   showarrow: false,
                   borderwidth: 1,
                   bordercolor: '#5f5f5f',
