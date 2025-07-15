@@ -15,6 +15,7 @@ from charts.update_data.social import add_socials_entry
 from charts.update_data.subscribers import add_dread_entry
 from charts.update_data.p2pool import add_p2pool_entry
 from charts.update_data.transactions import add_transactions_entry
+from charts.update_data.merchants import add_merchants_entry
 
 
 def check_for_updates(yesterday, coin) -> bool:
@@ -112,3 +113,7 @@ def update_dread_subscriber_count(today):
 def update_shielded_transactions():
 
     add_transactions_entry()
+
+def update_merchants_data():
+
+    add_merchants_entry()

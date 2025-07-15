@@ -20,6 +20,7 @@ from tasks.data_sync import update_dread_subscriber_count
 from tasks.data_sync import update_reddit_data
 from tasks.data_sync import update_p2pool_data
 from tasks.data_sync import update_shielded_transactions
+from tasks.data_sync import update_merchants_data
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
 
@@ -145,6 +146,11 @@ def work():
         update_reddit_data()
 
     @agent.task
+    def merchants_data_updates():
+        print('[INFO] Perform merchant adoption data updates')
+        update_merchants_data()
+
+    @agent.task
     def transactions_data_updates():
         print('[INFO] Perform transaction data updates')
         update_shielded_transactions()
@@ -158,6 +164,7 @@ def work():
     update_database()
     mining_data_updates()
     social_data_updates()
+    merchantes_data_updates()
     transactions_data_updates()
 
     sys.exit(0)
