@@ -8,7 +8,7 @@ from charts.models import Transaction
 
 from django.conf import settings
 
-FILE_CACHE_PATH = setting.BITCOIN_EXPLORER_CACHE_DIR
+FILE_CACHE_PATH = settings.BITCOIN_EXPLORER_CACHE_DIR
 ZEC_EXPLORER = ZecExplorer()
 
 def add_transactions_entry():
