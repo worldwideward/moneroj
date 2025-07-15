@@ -2,11 +2,9 @@
 
 from charts.models import Coin
 from charts.models import DailyData
-from charts.models import Dread
 from charts.synchronous import update_database
 from charts.synchronous import get_history_function
 
-from charts.api.tor import DreadSession
 from charts.update_data.utils import erase_sf_model_data
 from charts.update_data.utils import erase_daily_data_data
 from charts.update_data.stock_to_flow import calculate_sf_model
@@ -14,6 +12,7 @@ from charts.update_data.daily_data import calculate_daily_data
 from charts.update_data.marketcap import update_rank
 from charts.update_data.marketcap import update_dominance
 from charts.update_data.social import add_socials_entry
+from charts.update_data.subscribers import add_dread_entry
 from charts.update_data.p2pool import add_p2pool_entry
 from charts.update_data.transactions import add_transactions_entry
 
@@ -108,26 +107,7 @@ def update_reddit_data():
 
 def update_dread_subscriber_count(today):
 
-    session = DreadSession()
-
-    btc_subscribers = session.get_dread_subscriber_count("btc")
-
-    if btc_subscribers is None:
-        btc_subscribers = 0
-
-    xmr_subscribers = session.get_dread_subscriber_count("xmr")
-
-    if xmr_subscribers is None:
-        xmr_subscribers = 0
-
-    entry = Dread()
-
-    entry.date = today
-    entry.bitcoin_subscriber_count = btc_subscribers
-    entry.monero_subscriber_count = xmr_subscribers
-    entry.save()
-
-    return True
+    add_dread_entry(today)
 
 def update_shielded_transactions():
 
