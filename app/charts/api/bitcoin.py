@@ -19,7 +19,7 @@ from django.conf import settings
 from charts.api.bitcoin_utils import range_of_blocks_today
 
 BITCOIN_EXPLORER_API = "https://bitcoinexplorer.org/api"
-FILE_CACHE_PATH = setting.BITCOIN_EXPLORER_CACHE_DIR
+FILE_CACHE_PATH = settings.BITCOIN_EXPLORER_CACHE_DIR
 
 def create_file_cache(path):
 
