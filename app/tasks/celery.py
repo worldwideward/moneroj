@@ -19,6 +19,7 @@ from tasks.data_sync import recalculate_sf_model
 from tasks.data_sync import recalculate_daily_data
 from tasks.data_sync import update_dread_subscriber_count
 from tasks.data_sync import update_reddit_data
+from tasks.data_sync import update_shielded_transactions
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
 
@@ -123,6 +124,9 @@ def work():
         update_dread_subscriber_count(today)
 
         print('[info] perform reddit updates')
+        update_reddit_data()
+
+        print('[info] perform transactions updates')
         update_reddit_data()
 
         print('[INFO] Executed all jobs', flush=True)
