@@ -14,10 +14,12 @@ from requests.exceptions import ConnectionError
 from urllib3.exceptions import NameResolutionError
 from concurrent import futures
 
+from django.conf import settings
+
 from charts.api.bitcoin_utils import range_of_blocks_today
 
 BITCOIN_EXPLORER_API = "https://bitcoinexplorer.org/api"
-FILE_CACHE_PATH = "/tmp/bitcoin-explorer-api"
+FILE_CACHE_PATH = setting.BITCOIN_EXPLORER_CACHE_DIR
 
 def create_file_cache(path):
 
