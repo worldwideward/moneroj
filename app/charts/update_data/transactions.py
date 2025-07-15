@@ -35,6 +35,6 @@ def add_transactions_entry():
     entry.save()
 
     # clear transaction cache when data was saved successfully
-    shutil.rmtree(BITCOIN_EXPLORER_CACHE_DIR)
+    shutil.rmtree(FILE_CACHE_PATH)
 
     return True
