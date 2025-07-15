@@ -127,13 +127,15 @@ def work():
         print('[info] perform reddit updates')
         update_reddit_data()
 
-        print('[info] perform transactions updates')
-        update_shielded_transactions()
-
         print('[INFO] Executed all jobs', flush=True)
         return None
 
     asyncio.run(todo_list())
+
+    @agent.task
+    def shielded_transactions():
+        print('[info] perform transactions updates')
+        update_shielded_transactions()
 
     sys.exit(0)
 

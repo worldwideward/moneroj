@@ -132,6 +132,8 @@ def whirlpool_analysis():
     print(f'[INFO] Analyzing {block_count} blocks, from {first_block_yesterday} to {first_block_today}')
     print(f'[INFO] Starting process at {process_start}')
 
+    cache = create_file_cache(f'{FILE_CACHE_PATH}')
+
     ## 1. Download block data
 
     block_range = range(first_block_yesterday, first_block_today)
