@@ -4,33 +4,44 @@ from datetime import date
 from charts.api.reddit import RedditAPI
 from charts.models import Social
 
+from django.core.exceptions import ObjectDoesNotExist
+
 REDDIT_API = RedditAPI()
 
 
 def add_socials_entry(subreddit_title):
 
-    client = REDDIT_API.connect()
+    today = date.today()
 
-    subscriber_count = REDDIT_API.get_subreddit_subscriber_count(client, subreddit_title)
+    try:
+        Social.objects.get(date=today)
+        print("[INFO] Entry already exists, skipping")
+    except ObjectDoesNotExist:
 
-    reddit_comments_by_post = REDDIT_API.get_subreddit_daily_comments(client, subreddit_title)
+        client = REDDIT_API.connect()
 
-    comment_count = 0
+        subscriber_count = REDDIT_API.get_subreddit_subscriber_count(client, subreddit_title)
+        reddit_comments_by_post = REDDIT_API.get_subreddit_daily_comments(client, subreddit_title)
 
-    for post_id in reddit_comments_by_post:
+        comment_count = 0
 
-        comments = reddit_comments_by_post[post_id]
-        comment_count += len(comments)
+        for post_id in reddit_comments_by_post:
 
-    posts_per_hour = round(len(reddit_comments_by_post) / 24, 2)
-    comments_per_hour = round(comment_count / 24, 2)
+            comments = reddit_comments_by_post[post_id]
+            comment_count += len(comments)
 
-    entry = Social()
-    entry.name = subreddit_title
-    entry.date = date.today()
-    entry.subscriber_count = subscriber_count
-    entry.comments_per_hour = comments_per_hour
-    entry.posts_per_hour = posts_per_hour
-    entry.save()
+        posts_per_hour = round(len(reddit_comments_by_post) / 24, 2)
+        comments_per_hour = round(comment_count / 24, 2)
+
+        entry = Social()
+        entry.name = subreddit_title
+        entry.date = today
+        entry.subscriber_count = subscriber_count
+        entry.comments_per_hour = comments_per_hour
+        entry.posts_per_hour = posts_per_hour
+        entry.save()
+
+    except Exception as error:
+        print(f'[INFO] An unknown error occurred: {error}')
 
     return None
