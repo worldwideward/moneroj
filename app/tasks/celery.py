@@ -164,7 +164,7 @@ def work():
     update_database()
     mining_data_updates()
     social_data_updates()
-    merchantes_data_updates()
+    merchants_data_updates()
     transactions_data_updates()
 
     sys.exit(0)
