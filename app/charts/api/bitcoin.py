@@ -89,7 +89,14 @@ async def download_blockchain_data(uri, object_list, directory_name):
 def analyze_transaction_data(tx_data):
     '''Determine if a transaction is likely an Ashigaru whirlpool TX0'''
 
-    string = tx_data['vout'][0]['scriptPubKey']['asm']
+    try:
+        string = tx_data['vout'][0]['scriptPubKey']['asm']
+
+    except KeyError as error:
+
+        print(f'[WARN] TX {tx_data['txid']} could not be processed')
+        print(f'[WARN] Key not found in json object: {error}')
+        return None
 
     if string.find("OP_RETURN") != -1:
 
