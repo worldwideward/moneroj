@@ -14,7 +14,7 @@ def add_socials_entry(subreddit_title):
     today = date.today()
 
     try:
-        Social.objects.get(date=today)
+        Social.objects.get(name=subreddit_title)
         print("[INFO] Entry already exists, skipping")
     except ObjectDoesNotExist:
 
