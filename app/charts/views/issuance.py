@@ -325,44 +325,93 @@ def compinflation(request):
     now_zcash = 999999
     now_btc = 999999
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    item = 0
 
-        if item.btc_inflation > 0.1:
-            inflationbtc.append(item.btc_inflation)
-            now_btc = item.btc_inflation
+    for item in range(0, len(data)):
+        dates.append(datetime.strftime(data[item].date, '%Y-%m-%d'))
+
+        btc_inflation = data[item].btc_inflation
+        xmr_inflation = data[item].xmr_inflation
+        zcash_inflation = data[item].zcash_inflation
+        dash_inflation = data[item].dash_inflation
+        grin_inflation = data[item].grin_inflation
+
+        previous_btc_inflation = 0
+        previous_xmr_inflation = 0
+        previous_zcash_inflation = 0
+        previous_dash_inflation = 0
+        previous_grin_inflation = 0
+
+        btc_inflation_difference = 0
+        xmr_inflation_difference = 0
+        zcash_inflation_difference = 0
+        dash_inflation_difference = 0
+        grin_inflation_difference = 0
+
+        if item > 0:
+            previous_btc_inflation = data[item-1].btc_inflation
+            previous_xmr_inflation = data[item-1].xmr_inflation
+            previous_zcash_inflation = data[item-1].zcash_inflation
+            previous_dash_inflation = data[item-1].dash_inflation
+            previous_grin_inflation = data[item-1].grin_inflation
+
+        if btc_inflation > 0:
+            btc_inflation_difference = ( btc_inflation - previous_btc_inflation / btc_inflation ) * 100
+        if xmr_inflation > 0:
+            xmr_inflation_difference = ( xmr_inflation - previous_xmr_inflation / xmr_inflation ) * 100
+        if zcash_inflation > 0:
+            zcash_inflation_difference = ( zcash_inflation - previous_zcash_inflation / zcash_inflation ) * 100
+        if dash_inflation > 0:
+            dash_inflation_difference = ( dash_inflation - previous_dash_inflation / dash_inflation ) * 100
+        if grin_inflation > 0:
+            grin_inflation_difference = ( grin_inflation - previous_grin_inflation / grin_inflation ) * 100
+
+        if btc_inflation_difference < 1:
+            if previous_btc_inflation < 0.5:
+                inflationbtc.append('')
+            else:
+                inflationbtc.append(previous_btc_inflation)
         else:
-            inflationbtc.append('')
+            inflationbtc.append(btc_inflation)
+            now_btc = btc_inflation
 
-        if item.zcash_inflation > 0.1:
-            inflationzcash.append(item.zcash_inflation)
-            now_zcash = item.zcash_inflation
+        if xmr_inflation_difference < 1:
+            if previous_xmr_inflation < 0.5:
+                inflationxmr.append('')
+            else:
+                inflationxmr.append(previous_xmr_inflation)
         else:
-            inflationzcash.append('')
+            inflationxmr.append(xmr_inflation)
+            now_xmr = xmr_inflation
 
-        if item.dash_inflation > 0.1:
-            inflationdash.append(item.dash_inflation)
-            now_dash = item.dash_inflation
+        if zcash_inflation_difference < 1:
+            if previous_zcash_inflation < 0.5:
+                inflationzcash.append('')
+            else:
+                inflationzcash.append(previous_zcash_inflation)
         else:
-            inflationdash.append('')
+            inflationzcash.append(zcash_inflation)
+            now_zcash = zcash_inflation
 
-        if item.xmr_inflation > 0.1:
-            inflationxmr.append(item.xmr_inflation)
-            now_xmr = item.xmr_inflation
+        if dash_inflation_difference < 1:
+            if previous_dash_inflation < 0.5:
+                inflationdash.append('')
+            else:
+                inflationdash.append(previous_dash_inflation)
         else:
-            inflationxmr.append('')
+            inflationdash.append(dash_inflation)
+            now_dash = dash_inflation
 
-        if item.grin_inflation > 0.1:
-            inflationgrin.append(item.grin_inflation)
-            now_grin = item.grin_inflation
+        if grin_inflation_difference < 1:
+            if previous_grin_inflation < 0.5:
+                inflationgrin.append('')
+            else:
+                inflationgrin.append(previous_grin_inflation)
         else:
-            inflationgrin.append('')
+            inflationgrin.append(grin_inflation)
+            now_grin = grin_inflation
 
-    now_dash = locale._format('%.2f', now_dash, grouping=True) + '%'
-    now_grin = locale._format('%.2f', now_grin, grouping=True) + '%'
-    now_zcash = locale._format('%.2f', now_zcash, grouping=True) + '%'
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
-    now_btc = locale._format('%.2f', now_btc, grouping=True) + '%'
+        item += 1
 
     context = {
             'inflationxmr': inflationxmr,
