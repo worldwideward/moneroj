@@ -370,15 +370,26 @@ def miningprofitability(request):
     dates = []
     value = []
     now_value = 0
+    previous_value = 0
+    difference = 0
 
-    coins = Coin.objects.order_by('date').filter(name='xmr')
+    data = Coin.objects.order_by('date').filter(name='xmr')
 
-    for coin in coins:
-        if coin.hashrate > 0 and coin.priceusd > 0 and coin.revenue > 0:
+    for item in range(len(data)):
 
-            if 1000*coin.priceusd*coin.revenue/coin.hashrate < 5000:
-                now_value = 1000*coin.priceusd*coin.revenue/coin.hashrate
-                dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
+        dates.append(datetime.strftime(data[item].date, '%Y-%m-%d'))
+
+        hashrate = data[item].hashrate
+        price = data[item].priceusd
+        revenue = data[item].revenue
+
+        if hashrate > 0 and price > 0 and revenue > 0:
+
+            now_value = 1000 * price * revenue / hashrate
+
+            if now_value < 0.01:
+                value.append('')
+            else:
                 value.append(now_value)
 
     context = {'value': value, 'dates': dates}
