@@ -207,46 +207,77 @@ def inflation(request):
     now_xmr = 999999
     now_btc = 999999
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    item = 0
 
-        if item.btc_inflation > 0.1:
-            inflationbtc.append(item.btc_inflation)
-            now_btc = item.btc_inflation
+    for item in range(0, len(data)):
+
+        dates.append(datetime.strftime(data[item].date, '%Y-%m-%d'))
+
+        xmr_inflation = data[item].xmr_inflation
+        btc_inflation = data[item].btc_inflation
+
+        previous_xmr_inflation = 0
+        previous_btc_inflation = 0
+        xmr_inflation_difference = 0
+        btc_inflation_difference = 0
+
+        if item > 0:
+            previous_xmr_inflation = data[item-1].xmr_inflation
+            previous_btc_inflation = data[item-1].btc_inflation
+
+        if xmr_inflation > 0:
+            xmr_inflation_difference = ( xmr_inflation - previous_xmr_inflation / xmr_inflation ) * 100
+        if btc_inflation > 0:
+            btc_inflation_difference = ( btc_inflation - previous_btc_inflation / btc_inflation ) * 100
+
+        if xmr_inflation_difference < 1:
+            if previous_xmr_inflation < 0.5:
+                inflationxmr.append('')
+            else:
+                inflationxmr.append(previous_xmr_inflation)
         else:
-            inflationbtc.append('')
+            inflationxmr.append(xmr_inflation)
 
-        if item.xmr_inflation > 0.1:
-            inflationxmr.append(item.xmr_inflation)
-            now_xmr = item.xmr_inflation
+        if btc_inflation_difference < 1:
+            inflationbtc.append(previous_btc_inflation)
         else:
-            inflationxmr.append('')
+            inflationbtc.append(btc_inflation)
 
+        # If you remove this you will break the line "future inflation"
         finflationxmr.append('')
         finflationbtc.append('')
 
-    inflationbitcoin = 1.75
-    supply = int(item.xmr_supply)*10**12
-    for i in range(2000):
-        supply = int(supply)
-        reward = (2**64 -1 - supply) >> 19
-        if reward < 0.6*(10**12):
-            reward = 0.6*(10**12)
-        supply += int(720*reward)
-        finflationxmr.append(100*reward*720*365/supply)
-        date_aux = item.date + timedelta(i)
-        dates.append(datetime.strftime(date_aux, '%Y-%m-%d'))
-        finflationbtc.append(inflationbitcoin)
-        date_aux2 = datetime.strftime(date_aux, '%Y-%m-%d')
-        if date_aux2 == '2024-04-23':
-            inflationbitcoin = 0.65
+        item += 1
+
+    # Last item of the array
+    item = item - 1
+
+    supply = int(data[item].xmr_supply)*12**12
+
+    # calculate ~5 years into the future (5*365)
+    for i in range(1825):
+
+        latest_date = datetime.strptime(dates[-1], '%Y-%m-%d')
+        future_date = latest_date + timedelta(1)
+        dates.append(datetime.strftime(future_date, '%Y-%m-%d'))
+
+        finflationxmr.append(100*0.6*720*365/data[item].xmr_supply)
+        ## Adjust reward each halving.
+        finflationbtc.append(100*3.15*144*365/data[item].btc_supply)
+
         inflationxmr.append('')
         inflationbtc.append('')
 
-    now_btc = locale._format('%.2f', now_btc, grouping=True) + '%'
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
+    context = {
+            'inflationxmr': inflationxmr,
+            'inflationbtc': inflationbtc,
+            'finflationxmr': finflationxmr,
+            'finflationbtc': finflationbtc,
+            'now_xmr': now_xmr,
+            'now_btc': now_btc,
+            'dates': dates
+            }
 
-    context = {'inflationxmr': inflationxmr, 'inflationbtc': inflationbtc, 'finflationxmr': finflationxmr, 'finflationbtc': finflationbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/inflation.html', context)
 
 def tail_emission(request):
@@ -333,8 +364,20 @@ def compinflation(request):
     now_xmr = locale._format('%.2f', now_xmr, grouping=True) + '%'
     now_btc = locale._format('%.2f', now_btc, grouping=True) + '%'
 
-    context = {'inflationxmr': inflationxmr, 'inflationdash': inflationdash, 'inflationgrin': inflationgrin, 'inflationzcash': inflationzcash, 'inflationbtc': inflationbtc,
-    'now_xmr': now_xmr, 'now_btc': now_btc, 'now_dash': now_dash, 'now_grin': now_grin, 'now_zcash': now_zcash, 'now_btc': now_btc, 'dates': dates}
+    context = {
+            'inflationxmr': inflationxmr,
+            'inflationdash': inflationdash,
+            'inflationgrin': inflationgrin,
+            'inflationzcash': inflationzcash,
+            'inflationbtc': inflationbtc,
+            'now_xmr': now_xmr,
+            'now_btc': now_btc,
+            'now_dash': now_dash,
+            'now_grin': now_grin,
+            'now_zcash': now_zcash,
+            'now_btc': now_btc,
+            'dates': dates
+            }
     return render(request, 'charts/compinflation.html', context)
 
 def dailyemission(request):
