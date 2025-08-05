@@ -113,10 +113,7 @@ def get_history_function(symbol, start_time=None, end_time=None):
                 coin.stocktoflow = stocktoflow
             try:
                 if symbol == 'xmr':
-                    if float(item['SplyCur']) < 18000000:
-                        coin.supply = float(item['SplyCur']) + 497108
-                    else:
-                        coin.supply = float(item['SplyCur'])
+                    coin.supply = float(item['SplyCur'])
                     supply = coin.supply
                 else:
                     coin.supply = float(item['SplyCur'])
