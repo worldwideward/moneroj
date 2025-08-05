@@ -115,7 +115,12 @@ def calculate_sf_model():
 
             # Format date
             base_date = data_point_date - timedelta(time_interval_days)
-            coin_date = Coin.objects.filter(name='xmr').get(date=base_date)
+
+            try:
+                coin_date = Coin.objects.filter(name='xmr').get(date=base_date)
+            except ObjectDoesNotExist as error:
+                coin_date = False
+                print(f'[ERROR] No data for date {coin_date}: {error}')
 
             base_date_plus_one = data_point_date - timedelta(time_interval_days+1)
 
