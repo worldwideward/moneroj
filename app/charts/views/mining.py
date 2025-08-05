@@ -119,24 +119,52 @@ def minerrev(request):
     costbtc = []
     costxmr = []
     dates = []
+
+    previous_btc_miner_revenue = 0
+    btc_miner_revenue_difference = 0
     now_btc = 0
+
+    previous_xmr_miner_revenue = 0
+    xmr_miner_revenue_difference = 0
     now_xmr = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_minerrevusd < 0.0001:
-            costbtc.append('')
-        else:
-            costbtc.append(item.btc_minerrevusd)
-            now_btc = item.btc_minerrevusd
-        if item.xmr_minerrevusd < 0.0001:
-            costxmr.append('')
-        else:
-            costxmr.append(item.xmr_minerrevusd)
-            now_xmr = item.xmr_minerrevusd
+    for item in range(len(data)):
 
-    now_btc = "$" + locale._format('%.2f', now_btc, grouping=True)
-    now_xmr = "$" + locale._format('%.2f', now_xmr, grouping=True)
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_miner_revenue = data[item].btc_minerrevusd
+        xmr_miner_revenue = data[item].xmr_minerrevusd
+
+        if item > 0:
+            previous_btc_miner_revenue = data[item-1].btc_minerrevusd
+            previous_xmr_miner_revenue = data[item-1].xmr_minerrevusd
+
+        if btc_miner_revenue > 0:
+            btc_miner_revenue_difference = ( btc_miner_revenue - previous_btc_miner_revenue ) / btc_miner_revenue * 100
+
+        if xmr_miner_revenue > 0:
+            xmr_miner_revenue_difference = ( xmr_miner_revenue - previous_xmr_miner_revenue ) / xmr_miner_revenue * 100
+
+        if btc_miner_revenue_difference < 10:
+            if previous_btc_miner_revenue < 15:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_revenue)
+                now_btc = btc_miner_revenue
+        else:
+            costbtc.append(btc_miner_revenue)
+            now_btc = btc_miner_revenue
+
+        if xmr_miner_revenue_difference < 10:
+            if previous_xmr_miner_revenue < 15:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_revenue)
+                now_xmr = xmr_miner_revenue
+        else:
+            costxmr.append(xmr_miner_revenue)
+            now_xmr = xmr_miner_revenue
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrev.html', context)
@@ -148,23 +176,52 @@ def minerrevntv(request):
     costbtc = []
     costxmr = []
     dates = []
-    now_btc = 0
-    now_xmr = 0
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_minerrevntv < 0.0001:
-            costbtc.append('')
-        else:
-            costbtc.append(item.btc_minerrevntv)
-            now_btc = item.btc_minerrevntv
-        if item.xmr_minerrevntv < 0.0001:
-            costxmr.append('')
-        else:
-            costxmr.append(item.xmr_minerrevntv)
-            now_xmr = item.xmr_minerrevntv
 
-    now_btc = locale._format('%.2f', now_btc, grouping=True)
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
+    previous_btc_miner_revenue = 0
+    btc_miner_revenue_difference = 0
+    now_btc = 0
+
+    previous_xmr_miner_revenue = 0
+    xmr_miner_revenue_difference = 0
+    now_xmr = 0
+
+    for item in range(len(data)):
+
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_miner_revenue = data[item].btc_minerrevntv
+        xmr_miner_revenue = data[item].xmr_minerrevntv
+
+        if item > 0:
+            previous_btc_miner_revenue = data[item-1].btc_minerrevntv
+            previous_xmr_miner_revenue = data[item-1].xmr_minerrevntv
+
+        if btc_miner_revenue > 0:
+            btc_miner_revenue_difference = ( btc_miner_revenue - previous_btc_miner_revenue ) / btc_miner_revenue * 100
+
+        if xmr_miner_revenue > 0:
+            xmr_miner_revenue_difference = ( xmr_miner_revenue - previous_xmr_miner_revenue ) / xmr_miner_revenue * 100
+
+        if btc_miner_revenue_difference < 10:
+            if previous_btc_miner_revenue < 50:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_revenue)
+                now_btc = btc_miner_revenue
+        else:
+            costbtc.append(btc_miner_revenue)
+            now_btc = btc_miner_revenue
+
+        if xmr_miner_revenue_difference < 10:
+            if previous_xmr_miner_revenue < 50:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_revenue)
+                now_xmr = xmr_miner_revenue
+        else:
+            costxmr.append(xmr_miner_revenue)
+            now_xmr = xmr_miner_revenue
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevntv.html', context)
