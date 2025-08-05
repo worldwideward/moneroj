@@ -233,23 +233,64 @@ def minerfees(request):
     costbtc = []
     costxmr = []
     dates = []
-    now_btc = 0
-    now_xmr = 0
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_minerfeesusd < 1:
-            costbtc.append('')
-        else:
-            costbtc.append(item.btc_minerfeesusd)
-            now_btc = item.btc_minerfeesusd
-        if item.xmr_minerfeesusd < 1:
-            costxmr.append('')
-        else:
-            costxmr.append(item.xmr_minerfeesusd)
-            now_xmr = item.xmr_minerfeesusd
 
-    now_btc = locale._format('%.2f', now_btc, grouping=True)
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
+    previous_btc_miner_fees = 0
+    btc_miner_fees_difference = 0
+    now_btc = 0
+
+    previous_xmr_miner_fees = 0
+    xmr_miner_fees_difference = 0
+    now_xmr = 0
+
+    for item in range(len(data)):
+
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_miner_fees = data[item].btc_minerfeesusd
+        xmr_miner_fees = data[item].xmr_minerfeesusd
+
+        if item > 0:
+            previous_btc_miner_fees = data[item-1].btc_minerfeesusd
+            previous_xmr_miner_fees = data[item-1].xmr_minerfeesusd
+
+        if btc_miner_fees > 0:
+            btc_miner_fees_difference = ( btc_miner_fees - previous_btc_miner_fees ) / btc_miner_fees * 100
+
+        if xmr_miner_fees > 0:
+            xmr_miner_fees_difference = ( xmr_miner_fees - previous_xmr_miner_fees ) / xmr_miner_fees * 100
+
+        if btc_miner_fees_difference < 0:
+            if previous_btc_miner_fees < 1:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_fees)
+                now_btc = btc_miner_fees
+        elif btc_miner_fees_difference >= 8:
+            if previous_btc_miner_fees < 1:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_fees)
+                now_btc = btc_miner_fees
+        else:
+            costbtc.append(btc_miner_fees)
+            now_btc = btc_miner_fees
+
+        if xmr_miner_fees_difference < 0:
+            if previous_xmr_miner_fees < 1:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_fees)
+                now_xmr = xmr_miner_fees
+        elif xmr_miner_fees_difference >= 8:
+            if previous_xmr_miner_fees < 10:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_fees)
+                now_xmr = xmr_miner_fees
+        else:
+            costxmr.append(xmr_miner_fees)
+            now_xmr = xmr_miner_fees
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerfees.html', context)
@@ -261,23 +302,64 @@ def minerfeesntv(request):
     costbtc = []
     costxmr = []
     dates = []
-    now_btc = 0
-    now_xmr = 0
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_minerfeesntv < 0.1:
-            costbtc.append('')
-        else:
-            costbtc.append(item.btc_minerfeesntv)
-            now_btc = item.btc_minerfeesntv
-        if item.xmr_minerfeesntv < 0.1:
-            costxmr.append('')
-        else:
-            costxmr.append(item.xmr_minerfeesntv)
-            now_xmr = item.xmr_minerfeesntv
 
-    now_btc = locale._format('%.2f', now_btc, grouping=True)
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True)
+    previous_btc_miner_fees = 0
+    btc_miner_fees_difference = 0
+    now_btc = 0
+
+    previous_xmr_miner_fees = 0
+    xmr_miner_fees_difference = 0
+    now_xmr = 0
+
+    for item in range(len(data)):
+
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_miner_fees = data[item].btc_minerfeesntv
+        xmr_miner_fees = data[item].xmr_minerfeesntv
+
+        if item > 0:
+            previous_btc_miner_fees = data[item-1].btc_minerfeesntv
+            previous_xmr_miner_fees = data[item-1].xmr_minerfeesntv
+
+        if btc_miner_fees > 0:
+            btc_miner_fees_difference = ( btc_miner_fees - previous_btc_miner_fees ) / btc_miner_fees * 100
+
+        if xmr_miner_fees > 0:
+            xmr_miner_fees_difference = ( xmr_miner_fees - previous_xmr_miner_fees ) / xmr_miner_fees * 100
+
+        if btc_miner_fees_difference < 0:
+            if previous_btc_miner_fees < 1:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_fees)
+                now_btc = btc_miner_fees
+        elif btc_miner_fees_difference >= 10:
+            if previous_btc_miner_fees < 1:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_fees)
+                now_btc = btc_miner_fees
+        else:
+            costbtc.append(btc_miner_fees)
+            now_btc = btc_miner_fees
+
+        if xmr_miner_fees_difference < 0:
+            if previous_xmr_miner_fees < 1:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_fees)
+                now_xmr = xmr_miner_fees
+        elif xmr_miner_fees_difference >= 1:
+            if previous_xmr_miner_fees < 1:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_fees)
+                now_xmr = xmr_miner_fees
+        else:
+            costxmr.append(xmr_miner_fees)
+            now_xmr = xmr_miner_fees
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerfeesntv.html', context)
@@ -290,8 +372,10 @@ def miningprofitability(request):
     now_value = 0
 
     coins = Coin.objects.order_by('date').filter(name='xmr')
+
     for coin in coins:
         if coin.hashrate > 0 and coin.priceusd > 0 and coin.revenue > 0:
+
             if 1000*coin.priceusd*coin.revenue/coin.hashrate < 5000:
                 now_value = 1000*coin.priceusd*coin.revenue/coin.hashrate
                 dates.append(datetime.strftime(coin.date, '%Y-%m-%d'))
