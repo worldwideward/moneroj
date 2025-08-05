@@ -325,9 +325,7 @@ def compinflation(request):
     now_zcash = 999999
     now_btc = 999999
 
-    item = 0
-
-    for item in range(0, len(data)):
+    for item in range(len(data)):
         dates.append(datetime.strftime(data[item].date, '%Y-%m-%d'))
 
         btc_inflation = data[item].btc_inflation
@@ -411,8 +409,6 @@ def compinflation(request):
             inflationgrin.append(grin_inflation)
             now_grin = grin_inflation
 
-        item += 1
-
     context = {
             'inflationxmr': inflationxmr,
             'inflationdash': inflationdash,
@@ -483,28 +479,60 @@ def dailyemissionntv(request):
     dates = []
     now_btc = 0
     now_xmr = 0
-    for item in data:
-        if item.btc_emissionntv == 0:
-            emissionbtc.append('')
-        else:
-            emissionbtc.append(item.btc_emissionntv)
-            now_btc = item.btc_emissionntv
 
-        if item.xmr_emissionntv == 0:
-            emissionxmr.append('')
-        else:
-            emissionxmr.append(item.xmr_emissionntv)
-            now_xmr = item.xmr_emissionntv
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    for item in range(len(data)):
 
-    for i in range(500):
-        date_aux = item.date + timedelta(i)
-        dates.append(datetime.strftime(date_aux, '%Y-%m-%d'))
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_emission = data[item].btc_emissionntv
+        xmr_emission = data[item].xmr_emissionntv
+
+        previous_btc_emission = 0
+        previous_xmr_emission = 0
+
+        btc_emission_difference = 0
+        xmr_emission_difference = 0
+
+        if item > 0:
+            previous_btc_emission = data[item-1].btc_emissionntv
+            previous_xmr_emission = data[item-1].xmr_emissionntv
+
+        if btc_emission > 0:
+            btc_emission_difference = ( btc_emission - previous_btc_emission / btc_emission ) * 100
+        if xmr_emission > 0:
+            xmr_emission_difference = ( xmr_emission - previous_xmr_emission / xmr_emission ) * 100
+
+        if btc_emission_difference < 1000:
+            if previous_btc_emission < 250:
+                emissionbtc.append('')
+            else:
+                emissionbtc.append(previous_btc_emission)
+        else:
+            emissionbtc.append(btc_emission)
+            now_btc = btc_emission
+
+        if xmr_emission_difference < 1000:
+            if previous_xmr_emission < 250:
+                emissionxmr.append('')
+            else:
+                emissionxmr.append(previous_xmr_emission)
+        else:
+            emissionxmr.append(xmr_emission)
+            now_xmr = xmr_emission
+
+    for i in range(365):
+        latest_date = datetime.strptime(dates[-1], '%Y-%m-%d')
+        future_date = latest_date + timedelta(1)
+        dates.append(datetime.strftime(future_date, '%Y-%m-%d'))
         emissionxmr.append('')
         emissionbtc.append('')
 
-    now_btc = locale._format('%.0f', now_btc, grouping=True)
-    now_xmr = locale._format('%.0f', now_xmr, grouping=True)
-
-    context = {'emissionxmr': emissionxmr, 'emissionbtc': emissionbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    context = {
+            'emissionxmr': emissionxmr,
+            'emissionbtc': emissionbtc,
+            'now_xmr': now_xmr,
+            'now_btc': now_btc,
+            'dates': dates
+            }
     return render(request, 'charts/dailyemissionntv.html', context)
