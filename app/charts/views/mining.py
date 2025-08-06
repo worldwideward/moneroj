@@ -402,24 +402,64 @@ def minerrevcap(request):
     costbtc = []
     costxmr = []
     dates = []
+
+    previous_btc_miner_revenue = 0
+    btc_miner_revenue_difference = 0
     now_btc = 0
+
+    previous_xmr_miner_revenue = 0
+    xmr_miner_revenue_difference = 0
     now_xmr = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.xmr_minerrevcap == 0:
-            costxmr.append('')
-        else:
-            costxmr.append(item.xmr_minerrevcap)
-            now_xmr = item.xmr_minerrevcap
-        if item.btc_minerrevcap == 0:
-            costbtc.append('')
-        else:
-            costbtc.append(item.btc_minerrevcap)
-            now_btc = item.btc_minerrevcap
+    for item in range(len(data)):
 
-    now_btc = locale._format('%.2f', now_btc, grouping=True) + "%"
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + "%"
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_miner_revenue = data[item].btc_minerrevcap
+        xmr_miner_revenue = data[item].xmr_minerrevcap
+
+        if item > 0:
+            previous_btc_miner_revenue = data[item-1].btc_minerrevcap
+            previous_xmr_miner_revenue = data[item-1].xmr_minerrevcap
+
+        if btc_miner_revenue > 0:
+            btc_miner_revenue_difference = ( btc_miner_revenue - previous_btc_miner_revenue ) / btc_miner_revenue * 100
+
+        if xmr_miner_revenue > 0:
+            xmr_miner_revenue_difference = ( xmr_miner_revenue - previous_xmr_miner_revenue ) / xmr_miner_revenue * 100
+
+        if btc_miner_revenue_difference < 10000:
+            if previous_btc_miner_revenue < 0.7:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_revenue)
+                now_btc = btc_miner_revenue
+        elif btc_miner_revenue_difference >= 1000:
+            if previous_btc_miner_revenue < 0:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_revenue)
+                now_btc = btc_miner_revenue
+        else:
+            costbtc.append(btc_miner_revenue)
+            now_btc = btc_miner_revenue
+
+        if xmr_miner_revenue_difference < 10000:
+            if previous_xmr_miner_revenue < 0.7:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_revenue)
+                now_xmr = xmr_miner_revenue
+        elif xmr_miner_revenue_difference >= 1000:
+            if previous_xmr_miner_revenue < 0:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_revenue)
+                now_xmr = xmr_miner_revenue
+        else:
+            costxmr.append(xmr_miner_revenue)
+            now_xmr = xmr_miner_revenue
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/minerrevcap.html', context)
@@ -430,24 +470,64 @@ def commit(request):
     costbtc = []
     costxmr = []
     dates = []
+
+    previous_btc_miner_commitment = 0
+    btc_miner_commitment_difference = 0
     now_btc = 0
+
+    previous_xmr_miner_commitment = 0
+    xmr_miner_commitment_difference = 0
     now_xmr = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_commitusd < 0.000001:
-            costbtc.append('')
-        else:
-            costbtc.append(item.btc_commitusd)
-            now_btc = item.btc_commitusd
-        if item.xmr_commitusd < 0.000001:
-            costxmr.append('')
-        else:
-            costxmr.append(item.xmr_commitusd)
-            now_xmr = item.xmr_commitusd
+    for item in range(len(data)):
 
-    now_btc = locale._format('%.2f', now_btc, grouping=True) + " hashs / dollar"
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + " hashs / dollar"
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_miner_commitment = data[item].btc_commitusd
+        xmr_miner_commitment = data[item].xmr_commitusd
+
+        if item > 0:
+            previous_btc_miner_commitment = data[item-1].btc_commitusd
+            previous_xmr_miner_commitment = data[item-1].xmr_commitusd
+
+        if btc_miner_commitment > 0:
+            btc_miner_commitment_difference = ( btc_miner_commitment - previous_btc_miner_commitment ) / btc_miner_commitment * 100
+
+        if xmr_miner_commitment > 0:
+            xmr_miner_commitment_difference = ( xmr_miner_commitment - previous_xmr_miner_commitment ) / xmr_miner_commitment * 100
+
+        if btc_miner_commitment_difference < 1:
+            if previous_btc_miner_commitment < 0.000001:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_commitment)
+                now_btc = btc_miner_commitment
+        elif btc_miner_commitment_difference >= 0.0000001:
+            if previous_btc_miner_commitment < 0.000001:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_commitment)
+                now_btc = btc_miner_commitment
+        else:
+            costbtc.append(btc_miner_commitment)
+            now_btc = btc_miner_commitment
+
+        if xmr_miner_commitment_difference > 0:
+            if previous_xmr_miner_commitment < 1:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_commitment)
+                now_xmr = xmr_miner_commitment
+        elif xmr_miner_commitment_difference >= 0:
+            if previous_xmr_miner_commitment < 1:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_commitment)
+                now_xmr = xmr_miner_commitment
+        else:
+            costxmr.append(xmr_miner_commitment)
+            now_xmr = xmr_miner_commitment
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/commit.html', context)
@@ -458,24 +538,64 @@ def commitntv(request):
     costbtc = []
     costxmr = []
     dates = []
+
+    previous_btc_miner_commitment = 0
+    btc_miner_commitment_difference = 0
     now_btc = 0
+
+    previous_xmr_miner_commitment = 0
+    xmr_miner_commitment_difference = 0
     now_xmr = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_commitntv < 0.00001:
-            costbtc.append('')
-        else:
-            costbtc.append(item.btc_commitntv)
-            now_btc = item.btc_commitntv
-        if item.xmr_commitntv < 0.00001:
-            costxmr.append('')
-        else:
-            costxmr.append(item.xmr_commitntv)
-            now_xmr = item.xmr_commitntv
+    for item in range(len(data)):
 
-    now_btc = locale._format('%.0f', now_btc, grouping=True) + " hashs / btc"
-    now_xmr = locale._format('%.0f', now_xmr, grouping=True) + " hashs / xmr"
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_miner_commitment = data[item].btc_commitntv
+        xmr_miner_commitment = data[item].xmr_commitntv
+
+        if item > 0:
+            previous_btc_miner_commitment = data[item-1].btc_commitntv
+            previous_xmr_miner_commitment = data[item-1].xmr_commitntv
+
+        if btc_miner_commitment > 0:
+            btc_miner_commitment_difference = ( btc_miner_commitment - previous_btc_miner_commitment ) / btc_miner_commitment * 100
+
+        if xmr_miner_commitment > 0:
+            xmr_miner_commitment_difference = ( xmr_miner_commitment - previous_xmr_miner_commitment ) / xmr_miner_commitment * 100
+
+        if btc_miner_commitment_difference < 1:
+            if previous_btc_miner_commitment < 0.000001:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_commitment)
+                now_btc = btc_miner_commitment
+        elif btc_miner_commitment_difference >= 0.0000001:
+            if previous_btc_miner_commitment < 0.000001:
+                costbtc.append('')
+            else:
+                costbtc.append(previous_btc_miner_commitment)
+                now_btc = btc_miner_commitment
+        else:
+            costbtc.append(btc_miner_commitment)
+            now_btc = btc_miner_commitment
+
+        if xmr_miner_commitment_difference > 0:
+            if previous_xmr_miner_commitment < 1:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_commitment)
+                now_xmr = xmr_miner_commitment
+        elif xmr_miner_commitment_difference >= 0:
+            if previous_xmr_miner_commitment < 1:
+                costxmr.append('')
+            else:
+                costxmr.append(previous_xmr_miner_commitment)
+                now_xmr = xmr_miner_commitment
+        else:
+            costxmr.append(xmr_miner_commitment)
+            now_xmr = xmr_miner_commitment
 
     context = {'costxmr': costxmr, 'costbtc': costbtc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/commitntv.html', context)
@@ -485,30 +605,71 @@ def blocksize(request):
 
     data = DailyData.objects.order_by('date')
 
-    xmr_blocksize = []
-    btc_blocksize = []
+    blocksize_xmr = []
+    blocksize_btc = []
     dates = []
-    now_xmr = 0
+
+    previous_btc_blocksize = 0
+    btc_blocksize_difference = 0
     now_btc = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
-        if item.btc_blocksize > 0.001:
-            btc_blocksize.append(item.btc_blocksize/1024)
-            now_btc = item.btc_blocksize
+    previous_xmr_blocksize = 0
+    xmr_blocksize_difference = 0
+    now_xmr = 0
+
+    for item in range(len(data)):
+
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_blocksize = data[item].btc_blocksize / 1024
+        xmr_blocksize = data[item].xmr_blocksize / 1024
+
+        if item > 0:
+            previous_btc_blocksize = data[item-1].btc_blocksize / 1024
+            previous_xmr_blocksize = data[item-1].xmr_blocksize / 1024
+
+        if btc_blocksize > 0:
+            btc_blocksize_difference = ( btc_blocksize - previous_btc_blocksize ) / btc_blocksize * 100
+
+        if xmr_blocksize > 0:
+            xmr_blocksize_difference = ( xmr_blocksize - previous_xmr_blocksize ) / xmr_blocksize * 100
+
+        ## Bitcoin blocksize
+        if btc_blocksize_difference < 1:
+            if previous_btc_blocksize < 0.5:
+                blocksize_btc.append('')
+            else:
+                blocksize_btc.append(previous_btc_blocksize)
+                now_btc = btc_blocksize
+        elif btc_blocksize_difference >= 0:
+            if previous_btc_blocksize < 0:
+                blocksize_btc.append('')
+            else:
+                blocksize_btc.append(previous_btc_blocksize)
+                now_btc = btc_blocksize
         else:
-            btc_blocksize.append('')
+            blocksize_btc.append(btc_blocksize)
+            now_btc = btc_blocksize
 
-        if item.xmr_blocksize > 0.001:
-            xmr_blocksize.append(item.xmr_blocksize/1024)
-            now_xmr = item.xmr_blocksize
+        ## Monero blocksize
+        if xmr_blocksize_difference < 1:
+            if previous_xmr_blocksize < 1:
+                blocksize_xmr.append('')
+            else:
+                blocksize_xmr.append(previous_xmr_blocksize)
+                now_xmr = xmr_blocksize
+        elif xmr_blocksize_difference >= 0:
+            if previous_xmr_blocksize < 1:
+                blocksize_xmr.append('')
+            else:
+                blocksize_xmr.append(previous_xmr_blocksize)
+                now_xmr = xmr_blocksize
         else:
-            xmr_blocksize.append('')
+            blocksize_xmr.append(xmr_blocksize)
+            now_xmr = xmr_blocksize
 
-    now_btc = locale._format('%.2f', now_btc, grouping=True) + ' bytes'
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + ' bytes'
-
-    context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    context = {'xmr_blocksize': blocksize_xmr, 'btc_blocksize': blocksize_btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/blocksize.html', context)
 
 def blockchainsize(request):
