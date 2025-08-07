@@ -64,6 +64,7 @@
         type: "scatter",
         mode: "lines",
         name: 'Monero Miner Revenue',
+	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ costxmr|safe }},
         line: {
@@ -76,6 +77,7 @@
         type: "scatter",
         mode: "lines",
         name: 'Monero Miner Revenue',
+	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ costxmr|safe }},
         line: {
@@ -88,6 +90,7 @@
         type: "scatter",
         mode: "lines",
         name: 'Bitcoin Miner Revenue',
+	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ costbtc|safe }},
         line: {
@@ -100,6 +103,7 @@
         type: "scatter",
         mode: "lines",
         name: 'Bitcoin Miner Revenue',
+	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ costbtc|safe }},
         line: {
@@ -179,7 +183,7 @@
                 ,size: 13
             }
             ,gridcolor: "#333333"
-            ,zeroline: true
+            ,zeroline: false
         },
         margin: {
             l: 100,
@@ -232,7 +236,7 @@
                 ,size: 7
             }
             ,gridcolor: "#444444"
-            ,zeroline: true
+            ,zeroline: false
         },
         margin: {
             l: 100,
