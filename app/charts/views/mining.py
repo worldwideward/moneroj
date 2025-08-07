@@ -880,19 +880,15 @@ def securitybudget(request):
         ## Monero security
         if xmr_security_difference < 0:
             if previous_xmr_security < 0:
-                print(f'[DEBUG] A - {item_date}: {xmr_security_difference}', flush=True)
                 security_xmr.append('')
             else:
-                print(f'[DEBUG] B - {item_date}: {xmr_security_difference}', flush=True)
                 security_xmr.append(previous_xmr_security)
                 now_xmr = xmr_security
 
         elif xmr_security_difference >= 0:
             if previous_xmr_security < 50:
-                print(f'[DEBUG] C - {item_date}: {xmr_security_difference}', flush=True)
                 security_xmr.append('')
             else:
-                print(f'[DEBUG] D - {item_date}: {xmr_security_difference}', flush=True)
                 security_xmr.append(previous_xmr_security)
                 now_xmr = xmr_security
         else:
