@@ -924,7 +924,7 @@ def efficiency(request):
         if item.xmr_minerrevusd != 0 and item.xmr_inflation > 0:
             if item.xmr_difficulty*0.10/(item.xmr_minerrevusd*5000) > 0.01:
                 now_xmr = item.xmr_difficulty*0.10/(item.xmr_minerrevusd*5000)
-            if now_xmr > 0.01:
+            if now_xmr < 150:
                 xmr_efficiency.append(now_xmr)
             else:
                 xmr_efficiency.append('')
