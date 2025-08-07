@@ -830,31 +830,76 @@ def securitybudget(request):
     '''Security Budget for Monero and Bitcoin (Dollars/second)'''
     data = DailyData.objects.order_by('date')
 
-    xmr_security = []
-    btc_security = []
+    security_xmr = []
+    security_btc = []
     dates = []
-    now_xmr = 0
+
+    previous_btc_security = 0
+    btc_security_difference = 0
     now_btc = 0
 
-    for item in data:
-        date = datetime.strftime(item.date, '%Y-%m-%d')
-        dates.append(date)
-        if item.btc_minerrevusd > 0.001:
-            now_btc = item.btc_minerrevusd/86400
-            btc_security.append(now_btc)
+    previous_xmr_security = 0
+    xmr_security_difference = 0
+    now_xmr = 0
+
+    for item in range(len(data)):
+
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        btc_security = data[item].btc_minerrevusd / 86400
+        xmr_security = data[item].xmr_minerrevusd / 86400
+
+        if item > 0:
+            previous_btc_security = data[item-1].btc_minerrevusd / 86400
+            previous_xmr_security = data[item-1].xmr_minerrevusd / 86400
+
+        if btc_security > 0:
+            btc_security_difference = ( btc_security - previous_btc_security ) / btc_security * 100
+
+        if xmr_security > 0:
+            xmr_security_difference = ( xmr_security - previous_xmr_security ) / xmr_security * 100
+
+        ## Bitcoin security
+        if btc_security_difference < 0:
+            if previous_btc_security < 0:
+                security_btc.append('')
+            else:
+                security_btc.append(previous_btc_security)
+                now_btc = btc_security
+        elif btc_security_difference >= 0:
+            if previous_btc_security > 50:
+                security_btc.append('')
+            else:
+                security_btc.append(previous_btc_security)
+                now_btc = btc_security
         else:
-            btc_security.append('')
+            security_btc.append(btc_security)
+            now_btc = btc_security
 
-        if item.xmr_minerrevusd > 0.001:
-            now_xmr = item.xmr_minerrevusd/86400
-            xmr_security.append(now_xmr)
+        ## Monero security
+        if xmr_security_difference < 0:
+            if previous_xmr_security < 0:
+                print(f'[DEBUG] A - {item_date}: {xmr_security_difference}', flush=True)
+                security_xmr.append('')
+            else:
+                print(f'[DEBUG] B - {item_date}: {xmr_security_difference}', flush=True)
+                security_xmr.append(previous_xmr_security)
+                now_xmr = xmr_security
+
+        elif xmr_security_difference >= 0:
+            if previous_xmr_security < 50:
+                print(f'[DEBUG] C - {item_date}: {xmr_security_difference}', flush=True)
+                security_xmr.append('')
+            else:
+                print(f'[DEBUG] D - {item_date}: {xmr_security_difference}', flush=True)
+                security_xmr.append(previous_xmr_security)
+                now_xmr = xmr_security
         else:
-            xmr_security.append('')
+            security_xmr.append(xmr_security)
+            now_xmr = xmr_security
 
-    now_btc = '$' + locale._format('%.2f', now_btc, grouping=True)
-    now_xmr = '$' + locale._format('%.2f', now_xmr, grouping=True)
-
-    context = {'xmr_security': xmr_security, 'btc_security': btc_security, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    context = {'xmr_security': security_xmr, 'btc_security': security_btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/securitybudget.html', context)
 
 def efficiency(request):
