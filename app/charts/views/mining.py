@@ -721,31 +721,78 @@ def transactionsize(request):
 
     data = DailyData.objects.order_by('date')
 
-    xmr_blocksize = []
-    btc_blocksize = []
+    transactionsize_xmr = []
+    transactionsize_btc = []
     dates = []
-    now_xmr = 0
+
+    btc_transactionsize = 1
+    previous_btc_transactionsize = 0
+    btc_transactionsize_difference = 0
     now_btc = 0
 
-    for item in data:
-        dates.append(datetime.strftime(item.date, '%Y-%m-%d'))
+    xmr_transactionsize = 1
+    previous_xmr_transactionsize = 0
+    xmr_transactionsize_difference = 0
+    now_xmr = 0
 
-        if item.btc_blocksize > 0.001 and item.btc_transactions > 0:
-            now_btc = 144*item.btc_blocksize/(1024*item.btc_transactions)
-            btc_blocksize.append(144*item.btc_blocksize/(1024*item.btc_transactions))
+    for item in range(len(data)):
+
+        item_date = data[item].date
+        dates.append(datetime.strftime(item_date, '%Y-%m-%d'))
+
+        if data[item].btc_transactions > 0:
+            btc_transactionsize = (144 * data[item].btc_blocksize) / (data[item].btc_transactions * 1024)
+        if data[item].xmr_transactions > 0:
+            xmr_transactionsize = (720 * data[item].xmr_blocksize) / (data[item].xmr_transactions * 1024)
+
+        if item > 0:
+            if data[item-1].btc_transactions > 0:
+                previous_btc_transactionsize = (144 * data[item-1].btc_blocksize) / (data[item-1].btc_transactions * 1024)
+            if data[item-1].xmr_transactions > 0:
+                previous_xmr_transactionsize = (720 * data[item-1].xmr_blocksize) / (data[item-1].xmr_transactions * 1024)
+
+        if btc_transactionsize > 0:
+            btc_transactionsize_difference = ( btc_transactionsize - previous_btc_transactionsize ) / btc_transactionsize * 100
+
+        if xmr_transactionsize > 0:
+            xmr_transactionsize_difference = ( xmr_transactionsize - previous_xmr_transactionsize ) / xmr_transactionsize * 100
+
+        ## Bitcoin transactionsize
+        if btc_transactionsize_difference < -100:
+            if previous_btc_transactionsize < 10:
+                transactionsize_btc.append(previous_btc_transactionsize)
+                now_btc = btc_transactionsize
+            else:
+                transactionsize_btc.append('')
+        elif btc_transactionsize_difference >= 0:
+            if previous_btc_transactionsize > 10:
+                transactionsize_btc.append(previous_btc_transactionsize)
+                now_btc = btc_transactionsize
+            else:
+                transactionsize_btc.append('')
         else:
-            btc_blocksize.append('')
+            transactionsize_btc.append(btc_transactionsize)
+            now_btc = btc_transactionsize
 
-        if item.xmr_blocksize > 0.001 and item.xmr_transactions > 0:
-            now_xmr = 720*item.xmr_blocksize/(1024*item.xmr_transactions)
-            xmr_blocksize.append(720*item.xmr_blocksize/(1024*item.xmr_transactions))
+        ## Monero transactionsize
+        if xmr_transactionsize_difference < -100:
+            if previous_xmr_transactionsize < 10:
+                transactionsize_xmr.append(previous_xmr_transactionsize)
+                now_xmr = xmr_transactionsize
+            else:
+                transactionsize_xmr.append('')
+
+        elif xmr_transactionsize_difference >= 0:
+            if previous_xmr_transactionsize > 10:
+                transactionsize_xmr.append(previous_xmr_transactionsize)
+                now_xmr = xmr_transactionsize
+            else:
+                transactionsize_xmr.append('')
         else:
-            xmr_blocksize.append('')
+            transactionsize_xmr.append(xmr_transactionsize)
+            now_xmr = xmr_transactionsize
 
-    now_btc = locale._format('%.2f', now_btc, grouping=True) + ' bytes'
-    now_xmr = locale._format('%.2f', now_xmr, grouping=True) + ' bytes'
-
-    context = {'xmr_blocksize': xmr_blocksize, 'btc_blocksize': btc_blocksize, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
+    context = {'xmr_blocksize': transactionsize_xmr, 'btc_blocksize': transactionsize_btc, 'now_xmr': now_xmr, 'now_btc': now_btc, 'dates': dates}
     return render(request, 'charts/transactionsize.html', context)
 
 def difficulty(request):
