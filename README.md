@@ -1,4 +1,6 @@
-# Moneropro
+# Moneroj.net
+
+Revuo Moneroj was created to help people understand Monero, track its adoption, and compare it objectively with other digital currencies — like Bitcoin.
 
 ## Initial setup
 
