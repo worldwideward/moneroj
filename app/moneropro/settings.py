@@ -22,8 +22,9 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 # Database on sepatare path than source code, so code can be treated as ephemeral
 MONEROJ_REDIS_HOST = "redis:6379"
 MONEROJ_SPREADSHEET_DIR = "/opt"
-SQLITE_FILEPATH = "/opt/db.sqlite3"
+CSV_DATA_SHEET = "moneroj_data.ods"
 
+SQLITE_FILEPATH = "/opt/db.sqlite3"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CELERYD_CHDIR=BASE_DIR
@@ -33,9 +34,14 @@ SOCKS_PROXY_ENABLED = True
 SOCKS_PROXY_HOST = "10.10.10.1"
 SOCKS_PROXY_PORT = "1080"
 
-REDDIT_API_URI = "https://www.reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion"
+TOR_HOST = "tor-socks"
+TOR_PORT = "9050"
 
-# TODO: Handle the following settings dynamically.
+# Set REDDIT_CLIENT_SECRET as environment variable
+REDDIT_REDIRECT_URI = "http://localhost:8000"
+
+BITCOIN_EXPLORER_CACHE_DIR = "/tmp/bitcoin-explorer-api"
+
 DEBUG = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -43,7 +49,7 @@ STATIC_URL = "/static/"
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale/"),)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "sdfasfasdfas324fdsfsd234234dsfdgdffdfghfdfasfasdasfadsffhgf675756748fas0f89as90fd8as9"  # TODO: Move this somewhere else.
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
