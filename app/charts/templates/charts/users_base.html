@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta http-equiv="onion-location" content="http://moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion" />
+  <meta content="text/html; charset=UTF-8" name="Content-Type" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Your information source about Monero, with metrics, charts, stats and articles.">
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:image" content="https://moneroj.net{% static 'img/logo.jpg' %}" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:image" itemprop="image" content="https://moneroj.net{% static 'img/logo.jpg' %}" />
+  <meta property="og:image:type" content="image/jpg" />
+
+  {% if article.title %}
+  <meta name="twitter:title" content="{{ article.title }}" />
+  <meta name="twitter:description" content="{{ article.subtitle }}" />
+  <meta property="og:title" content="{{ article.title }}" />
+  <meta property="og:description" content="{{ article.subtitle }}" />
+  {% else %}
+  <meta name="twitter:title" content="Moneroj.net" />
+  <meta name="twitter:description" content="Your information source about Monero, with metrics, charts, stats and articles." />
+  <meta property="og:title" content="Moneroj.net" />
+  <meta property="og:description" content="Your information source about Monero, with metrics, charts, stats and articles." />
+  {% endif %}
+
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'img/favicon.png' %}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  
+  <style>
+    div.a {
+      word-break: break-all;
+    }
+
+    .color-orange {
+      color: #ff4d21;
+    }
+  </style>
+  {% block header %}{% endblock %}
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      {% if page == 'exchange' %}
+        <a class="navbar-brand" href="{% url 'charts:index' %}"><text class="color-orange">Banko</text> Monero<text class="color-orange">j</text> </a>
+      {% elif page == 'market' %}
+        <a class="navbar-brand" href="{% url 'charts:index' %}"><text class="color-orange">Merkato</text> Monero<text class="color-orange">j</text> </a>
+      {% else %}
+        <a class="navbar-brand" href="{% url 'charts:index' %}">Monero<text class="color-orange">j</text></a>
+      {% endif %}
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'charts:index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'charts:sfmodel' %}">Charts</a>
+          </li>
+          <li class="nav-item dropdown" >
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Settings
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="nav-link" href="{% url 'charts:about' %}">About</a>
+              <div class="dropdown-divider"></div>
+              <a class="nav-link" href="{% url 'charts:index' %}">English</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% block content %}{% endblock %}
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-6 col-md-6 footer-contact">
+            <h3>Moneroj.net</h3>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="{% url 'charts:index' %}">Home</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="{% url 'charts:sfmodel' %}">Charts</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="{% url 'charts:about' %}">About</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://www.getmonero.org/">Getmonero.org</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://www.reddit.com/r/Monero/">Reddit/Monero</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container d-lg-flex py-4">
+      <div class="mr-lg-auto text-center text-lg-left">
+        <div class="copyright a">
+          <strong>&copy; Copyright <span>Moneroj.net</span></strong>
+        </div>
+      </div>
+      <!-- <div class="social-links text-center text-lg-right pt-3 pt-lg-0">
+        <a href="http://moneroj5xq4ttg4ec7e5secqdyw5mcovzvfvlq6i7omv353i6mnexlqd.onion" class="onion" alt="Tor Version"><i class="bx bx-hide"></i></a>
+      </div> -->
+    </div>
+    
+  </footer>
+  <!-- End Footer -->
+
+  {% load static %}
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/jquery/jquery2.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+{% extends 'charts/base.html' %}
+
+{% block header %}
+<title>Moneroj.net - About</title>
+<style>
+    .break {
+        word-break: break-all;
+    }
+    .link {
+        color: #ff4d21;
+        }
+
+    .link:hover {
+        color: #ff8262;
+        text-decoration: none;
+    }
+    .pill {
+        background: #ff4d21;
+        color: #1e1c1b;
+        }
+
+    .pill:hover {
+        background: #ff8262;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% load static %}
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" style="background-color:rgb(48, 44, 41)">
+
+    <!-- Main Content -->
+    <div id="content">
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid"><br>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="row">
+                        <iframe src="https://trocador.app/anonpay/?ticker_to=xmr&network_to=Mainnet&address=8Agy1JvbsttEV2Jp2ecyRLSoKiCQwr4f2FKjWh2dz8Q1Y4LXCxXDNBf5praUrc1v8vDSqHYUefqxkiLNgnjvDfQNQStwvP6&donation=True&amount=1.0&name=Moneroj.net&description=Donation&email=morpheus.anonymous@protonmail.com&ref=pbhBEQR5WU&ticker_from=xmr&network_from=Mainnet&buttonbgcolor=ff4d21" width="100%" height="350" style="border:0" scrolling="no"></iframe>
+                    </div>                        
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="row">
+                        <div class="col mb-4">
+                            <div class="card border-left-new">
+                                <div class="card-body">
+                                    <h4 class="card-text text-white">About this website</h4>
+                                    <p class="card-text text-white" style="text-align: justify; text-justify: inter-word;">
+                                        Moneroj.net was developed to help fellow members of Monero's
+                                        community understand it, visualize adoption and to compare it against other
+                                        projects such as Bitcoin or its competitors
+                                        on the privacy market. This project was made without any intention for profit,
+                                        and is maintained by my own funds. If you liked it and want to help
+                                        the project, you can donate some XMR. Also, all type of suggestions are welcome!<br><br>
+                                        We do believe Monero is like no other currency, since it has true privacy
+                                        (optional privacy is no privacy at all),
+                                        and also serves as a store of value (since it has an already small and yet
+                                        decreasing anual inflation). Bitcoin is not fungible, which means
+                                        different Bitcoins are different from each other, since both have different
+                                        (and verifiable) history. Will you also take the orange pill?
+                                    </p>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <a href="https://www.getmonero.org/" class="btn btn-block pill">Take the Orangepill</a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="https://www.federalreserve.gov/" class="btn btn-block btn-primary">Take the
+                                                Bluepill
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+
+        </div>
+        <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+{% endblock %}

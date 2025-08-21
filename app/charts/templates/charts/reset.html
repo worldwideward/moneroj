@@ -1,0 +1,81 @@
+{% extends "charts/users_base.html" %}
+{% block header %}
+
+<title>Moneroj.net - Monero Metrics</title>
+
+<style>  
+  .login_page {
+      margin: 0 auto 25px;
+  }
+  
+  .form {
+      position: relative;
+      z-index: 1;
+      background: #313030;
+      max-width: 100%;
+      margin: 0 auto 25px;
+      padding: 20px;
+      text-align: center;
+      border-radius: 20px
+  }
+  
+  .form input {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      width: 100%;
+      border: 0;
+      margin: 0 0 10px;
+      padding: 5px;
+      font-size: 14px;
+      border-radius: 5px
+  }
+  
+  .form button {
+      font-family: "Roboto", Sans-serif;
+      outline: 0;
+      background: #ff4d21;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      padding: 5px;
+      color: #ffffff;
+      font-size: 14px;
+      cursor: pointer
+  }
+  
+  .form button:hover,
+  .form button:active {
+      background: #db3b13
+  }
+  
+  .form .message {
+      margin: 10px 0 0;
+      color: rgb(255, 255, 255);
+      font-size: 16px
+  }
+  
+  .form .message a {
+      color: #ff4d21;
+      text-decoration: none
+  }
+  
+  .form .register_form {
+      display: none
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
+    <div class="container">
+      <h1>Total of {{ deleted }} data deleted and {{ added }} new additions.</h1>
+    </div>
+  </section>
+  <br><br>
+  <!-- End Hero -->
+
+{% endblock %}
+
+

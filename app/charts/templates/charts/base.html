@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>    
+    <meta content="text/html; charset=UTF-8" name="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Your information source about Monero, with metrics, charts, stats and articles.">
+  
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content="https://moneroj.net{% static 'img/logo.jpg' %}" />
+    <meta name="twitter:title" content="Moneroj.net" />
+    <meta name="twitter:description" content="Your information source about Monero, with metrics, charts, stats and articles." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:image" itemprop="image" content="https://moneroj.net{% static 'img/logo.jpg' %}" />
+    <meta property="og:image:type" content="image/jpg" />
+    <meta property="og:title" content="Moneroj.net" />
+    <meta property="og:description" content="Your information source about Monero, with metrics, charts, stats and articles." />
+
+    <link href="{% static 'img/favicon.png' %}" rel="icon">
+    <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet"> 
+    <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+        .sidebar-brand {
+            background-color: #ff4d21;
+        }
+
+        .collapse-inner {
+            background-color: #ffb6a0;
+        }
+
+        .navbar-nav {
+            background-color: rgb(29, 26, 25);
+        }
+
+        .card {
+            background-color: rgb(37, 34, 33);
+        }
+
+        .card-header {
+            background-color: rgb(37, 34, 33);
+        }
+
+        .border-left-new {
+            border-left-color: #ff4d21;
+            border-left-width: 5px;
+        }
+        div.a {
+            word-break: break-all;
+        }
+        .btn {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+        
+        #graph1.fullscreen {
+            z-index: 9999;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            padding: 0px;
+            bottom: 0px;
+            float: left;
+            min-height: 100%;
+        }
+
+        .link_graph {
+            color: #ff4d21;
+            text-decoration: none;
+        }
+
+        .link_graph:hover {
+            color: #af3517;
+            text-decoration: none;
+        }
+    </style>
+    
+    <!-- Load plotly-->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    {% block header %}
+    {% endblock %}
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                <br>
+                Metrics
+            </div>
+            <!-- Nav Item - Prices Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePrice"
+                    aria-expanded="true" aria-controls="collapsePrice">
+                    <i class="bx bx-dollar"></i>
+                    <span>Price (18)</span>
+                </a>
+                <div id="collapsePrice" class="collapse" aria-labelledby="headingPrice"
+                    data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:pricelog' %}">Price in Dollars (Log.)</a>
+                        <a class="collapse-item" href="{% url 'charts:pricelin' %}">Price in Dollars (Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:pricesats' %}">Price in BTC (Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:pricesatslog' %}">Price in BTC (Log.)</a>
+                        <a class="collapse-item" href="{% url 'charts:fractal' %}">Fractal Multiple</a>
+                        <a class="collapse-item" href="{% url 'charts:inflationfractal' %}">Inflation-Adjusted Fractal</a>
+                        <a class="collapse-item" href="{% url 'charts:marketcycle' %}">Market Cycle</a>
+                        <a class="collapse-item" href="{% url 'charts:golden' %}">Golden Ratio Multiplier</a>
+                        <a class="collapse-item" href="{% url 'charts:competitors' %}">Performance ($, Log.)</a>
+                        <a class="collapse-item" href="{% url 'charts:competitorslin' %}">Performance ($, Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:competitorssats' %}">Performance (BTC, Log.)</a>
+                        <a class="collapse-item" href="{% url 'charts:competitorssatslin' %}">Performance (BTC, Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:inflationreturn' %}">Return vs. Inflation</a>
+                        <a class="collapse-item" href="{% url 'charts:bitcoin' %}">Comparison to Bitcoin</a>
+                        <a class="collapse-item" href="{% url 'charts:powerlaw' %}">Power Law</a>
+                        <a class="collapse-item" href="{% url 'charts:thermocap' %}">Thermocap Multiple</a>
+                        <a class="collapse-item" href="{% url 'charts:sharpe' %}">Sharpe Ratio</a>
+                        <a class="collapse-item" href="{% url 'charts:deviation' %}">Price Deviation <span class="badge badge-pill badge-secondary">New</span</a>
+                    </div>
+                </div>
+            </li>            
+            <!-- Nav Item - Marketcap Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMarketcap"
+                    aria-expanded="true" aria-controls="collapseMarketcap">
+                    <i class="bx bx-award"></i>
+                    <span>Marketcap (6)</span>
+                </a>
+                <div id="collapseMarketcap" class="collapse" aria-labelledby="headingMarketcap"
+                    data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:dominance' %}">Monero's Dominance</a>
+                        <a class="collapse-item" href="{% url 'charts:monerodominance' %}">Monero Privacy Dominance</a>
+                        <a class="collapse-item" href="{% url 'charts:privacydominance' %}">Total Privacy Dominance</a>
+                        <a class="collapse-item" href="{% url 'charts:rank' %}">Monero's CMC Rank</a>
+                        <a class="collapse-item" href="{% url 'charts:marketcap' %}">Privacy Coins' Marketcap</a>
+                        <a class="collapse-item" href="{% url 'charts:privacymarketcap' %}">Total Privacy Marketcap</a>
+                    </div>
+                </div>
+            </li>
+            <!-- Nav Item - Transactions Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTransactions"
+                    aria-expanded="true" aria-controls="collapseTransactions">
+                    <i class="bx bx-transfer"></i>
+                    <span>Transactions (15)</span>
+                </a>
+                <div id="collapseTransactions" class="collapse" aria-labelledby="headingTransactions"
+                    data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:translin' %}">Transaction Count (Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:translog' %}">Transaction Count (Log.)</a>
+                        <a class="collapse-item" href="{% url 'charts:transmonth' %}">Monthly Transactions (Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:transcost' %}">Transaction Cost ($)</a>
+                        <a class="collapse-item" href="{% url 'charts:transcostntv' %}">Transaction Cost (Ntv.)</a>
+                        <a class="collapse-item" href="{% url 'charts:percentage' %}">Transaction Percentage</a>
+                        <a class="collapse-item" href="{% url 'charts:percentmonth' %}">Monthly Percentage (Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:shielded' %}">Shielded Transactions</a>
+                        <a class="collapse-item" href="{% url 'charts:comptransactions' %}">Competitors' Transac.</a></a>
+                        <a class="collapse-item" href="{% url 'charts:metcalfesats' %}">Metcalfe's Law (BTC)</a>
+                        <a class="collapse-item" href="{% url 'charts:metcalfeusd' %}">Metcalfe's Law ($)</a>
+                        <a class="collapse-item" href="{% url 'charts:metcalfesats_deviation' %}">Metc. Deviation (BTC) <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:metcalfe_deviation' %}">Metcalfe Deviation ($) <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:deviation_tx' %}">Transac. Price Dev. <span class="badge badge-pill badge-secondary">New</span</a>
+                        <a class="collapse-item" href="{% url 'charts:transactiondominance' %}">Transac. Dominance <span class="badge badge-pill badge-secondary">New</span</a>
+                    </div>
+                </div>
+            </li>
+            <!-- Nav Item - Issuance Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseIssuance"
+                    aria-expanded="true" aria-controls="collapseIssuance">
+                    <i class="bx bx-bar-chart"></i>
+                    <span>Issuance (7)</span>
+                </a>
+                <div id="collapseIssuance" class="collapse" aria-labelledby="headingIssuance"
+                    data-parent="#accordionSidebar">
+                    <div class="collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:coins' %}">Coins in Circulation</a>
+                        <a class="collapse-item" href="{% url 'charts:extracoins' %}">Supply Difference</a>
+                        <a class="collapse-item" href="{% url 'charts:inflation' %}">Annual Inflation</a>
+                        <a class="collapse-item" href="{% url 'charts:tail_emission' %}">Tail Emission</a>
+                        <a class="collapse-item" href="{% url 'charts:compinflation' %}">Competitors' Inflation</a>
+                        <a class="collapse-item" href="{% url 'charts:dailyemission' %}">Daily Emission ($)</a>
+                        <a class="collapse-item" href="{% url 'charts:dailyemissionntv' %}">Daily Emission (Ntv.)</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Stock-to-flow Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSF"
+                    aria-expanded="true" aria-controls="collapseSF">
+                    <i class="bx bx-check-circle"></i>
+                    <span>Stock-to-flow (3)</span>
+                </a>
+                <div id="collapseSF" class="collapse" aria-labelledby="headingSF" data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:sfmodel' %}">Stock-to-flow (Log.)</a>
+                        <a class="collapse-item" href="{% url 'charts:sfmodellin' %}">Stock-to-flow (Lin.)</a>
+                        <a class="collapse-item" href="{% url 'charts:sfmultiple' %}">Stock-to-flow Multiple</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Stock-to-flow Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMining"
+                    aria-expanded="true" aria-controls="collapseMining">
+                    <i class="bx bx-calculator"></i>
+                    <span>Mining (22)</span>
+                </a>
+                <div id="collapseMining" class="collapse" aria-labelledby="headingMining"
+                    data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:hashrate' %}">Hashrate</a>
+                        <a class="collapse-item" href="{% url 'charts:hashprice' %}">Price Per Hashrate</a>
+                        <a class="collapse-item" href="{% url 'charts:hashvsprice' %}">Hashrate Vs Price</a>
+                        <a class="collapse-item" href="{% url 'charts:minerrev' %}">Miner Revenue ($)</a>
+                        <a class="collapse-item" href="{% url 'charts:minerrevntv' %}">Miner Revenue (Ntv.)</a>
+                        <a class="collapse-item" href="{% url 'charts:minerfees' %}">Miner Fees ($)</a>
+                        <a class="collapse-item" href="{% url 'charts:minerfeesntv' %}">Miner Fees (Ntv.)</a>
+                        <a class="collapse-item" href="{% url 'charts:miningprofitability' %}">Mining Profitability <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:minerrevcap' %}">Revenue / Marketcap (%)</a>
+                        <a class="collapse-item" href="{% url 'charts:commit' %}">Miner Commitment ($)</a>
+                        <a class="collapse-item" href="{% url 'charts:commitntv' %}">Miner Commitment (Ntv.)</a>
+                        <a class="collapse-item" href="{% url 'charts:blocksize' %}">Block Size (Bytes)</a>
+                        <a class="collapse-item" href="{% url 'charts:blockchainsize' %}">Blockchain Size (Bytes)</a>
+                        <a class="collapse-item" href="{% url 'charts:transactionsize' %}">Transaction Size (Bytes)</a>
+                        <a class="collapse-item" href="{% url 'charts:difficulty' %}">Mining Difficulty</a>
+                        <a class="collapse-item" href="{% url 'charts:securitybudget' %}">Security Budget <span class="badge badge-pill badge-secondary">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:efficiency' %}">Breakeven Efficiency <span class="badge badge-pill badge-secondary">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_hashrate' %}">P2Pool Hashrate <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_dominance' %}">P2Pool Dominance <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_miners' %}">P2Pool Miners <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_totalblocks' %}">P2Pool Blocks Found <span class="badge badge-pill badge-danger">New</span></a>
+                        <a class="collapse-item" href="{% url 'charts:p2pool_totalhashes' %}">P2Pool Hashes Found <span class="badge badge-pill badge-danger">New</span></a>
+                        <!--
+                        <a class="collapse-item" href="{% url 'charts:difficulty' %}">Reward / Hashrate</a>
+                        -->
+                    </div>
+                </div>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Social
+            </div>
+            <!-- Nav Item - Social Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSocial"
+                    aria-expanded="true" aria-controls="collapseSocial">
+                    <i class="bx bxl-reddit"></i>
+                    <span>Reddit (7)</span>
+                </a>
+                <div id="collapseSocial" class="collapse" aria-labelledby="headingSocial"
+                    data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:social' %}">Total Subscribers</a>
+                        <a class="collapse-item" href="{% url 'charts:social6' %}">Daily Comments</a>
+                        <a class="collapse-item" href="{% url 'charts:social7' %}">Daily Posts</a>
+                        <a class="collapse-item" href="{% url 'charts:social4' %}">Monthly Increase</a>
+                        <a class="collapse-item" href="{% url 'charts:social2' %}">Dollars / Subscriber</a>
+                        <a class="collapse-item" href="{% url 'charts:social3' %}">Subscribers Percentage</a>
+                        <a class="collapse-item" href="{% url 'charts:social5' %}">Subscribers & Transac.</a>
+                    </div>
+                </div>
+            </li>
+            <!-- Nav Item - Darknet Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseDread"
+                    aria-expanded="true" aria-controls="collapseDread">
+                    <i class="bx bx-hide"></i>
+                    <span>Subscribers (1)</span>
+                </a>
+                <div id="collapseDread" class="collapse" aria-labelledby="headingDread"
+                    data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:dread_subscribers' %}">Dread Subscribers</a>
+                    </div>
+                </div>
+            </li>
+            <!-- Nav Item - Adoption Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdoption"
+                    aria-expanded="true" aria-controls="collapseAdoption">
+                    <i class="bx bx-store"></i>
+                    <span>Adoption (5)</span>
+                </a>
+                <div id="collapseAdoption" class="collapse" aria-labelledby="headingDarknet"
+                    data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item" href="{% url 'charts:coincards' %}">Coincards Usage</a>
+                        <a class="collapse-item" href="{% url 'charts:merchants' %}">Merchant Acceptance</a>
+                        <a class="collapse-item" href="{% url 'charts:merchants_increase' %}">Merchant Increase</a>
+                        <a class="collapse-item" href="{% url 'charts:merchants_percentage' %}">Merchant Increase (%)</a>
+                        <a class="collapse-item" href="{% url 'charts:withdrawals' %}">Binance Withdrawals</a>
+                    </div>
+                </div>
+            </li>
+            <!-- Nav Item - Trends Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrends"
+                    aria-expanded="true" aria-controls="collapseTrends">
+                    <i class="bx bxl-google"></i>
+                    <span>Google Trends (1)</span>
+                </a>
+                <div id="collapseTrends" class="collapse" aria-labelledby="headingTrends"
+                    data-parent="#accordionSidebar">
+                    <div class="py-2 collapse-inner rounded">
+                        <h6 class="collapse-header text-dark">Charts:</h6>
+                        <a class="collapse-item"
+                            href="https://trends.google.com/trends/explore?date=today%205-y&q=monero"
+                            target="_blank">Google Trends</a>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+        <!-- End of Sidebar -->
+        
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+</html>
