@@ -10,3 +10,4 @@ data/
 coingecko.sh
 app/static
 .env
+*.mo
