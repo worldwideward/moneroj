@@ -5,9 +5,11 @@ import locale
 from datetime import date
 from django.shortcuts import render
 from django.conf import settings
+from django.db.models import F, Q
 
 from charts.models import Usage
 from charts.models import Adoption
+from charts.models import DailyData
 
 ####################################################################################
 #   Set some parameters
@@ -213,3 +215,33 @@ def merchants_percentage(request):
             'data7': new_merchants_accepting_dash
             }
     return render(request, 'charts/merchants_percentage.html', context)
+
+def dex_volume(request):
+    '''Volume on Haveno and Bisq'''
+
+    dex_dates_haveno = []
+    dex_volume_haveno = []
+    dex_dates_bisq = []
+    dex_volume_bisq = []
+
+    dex_data = DailyData.objects.filter(Q(xmr_priceusd__gt=0) | Q(btc_priceusd__gt=0)).annotate(
+        haveno_volume_usd=F('haveno_volume') * F('xmr_priceusd'),
+        bisq_volume_usd=F('bisq_volume') * F('btc_priceusd')
+    ).values('date', 'haveno_volume_usd', 'bisq_volume_usd')
+
+    for item in dex_data:
+        if item['haveno_volume_usd'] > 0:
+            dex_volume_haveno.append(round(item['haveno_volume_usd'], 2))
+            dex_dates_haveno.append(item['date'].strftime("%Y-%m-%d"))
+        if item['bisq_volume_usd'] > 0:
+            dex_volume_bisq.append(round(item['bisq_volume_usd'], 2))
+            dex_dates_bisq.append(item['date'].strftime("%Y-%m-%d"))
+
+    context = {
+        'haveno_dates': dex_dates_haveno,
+        'haveno_volume': dex_volume_haveno,
+        'bisq_dates': dex_dates_bisq,
+        'bisq_volume': dex_volume_bisq
+    }
+
+    return render(request, 'charts/dex_volume.html', context)

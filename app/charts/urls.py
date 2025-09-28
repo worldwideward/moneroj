@@ -107,6 +107,7 @@ urlpatterns = [
     path("merchants/", adoption.merchants, name="merchants"),
     path("merchants_increase/", adoption.merchants_increase, name="merchants_increase"),
     path("merchants_percentage/", adoption.merchants_percentage, name="merchants_percentage"),
+    path("dex_volume/", adoption.dex_volume, name="dex_volume"),
     # Deprecated
     #path("movingaverage/", main.movingaverage, name="movingaverage"),
     #path("withdrawals/", main.withdrawals, name="withdrawals"),
