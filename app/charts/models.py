@@ -151,6 +151,11 @@ class DailyData(models.Model):
     crypto_comments_per_hour = models.FloatField()
     crypto_posts_per_hour = models.FloatField()
 
+    # Dex charts
+    haveno_volume = models.FloatField(default=0)
+    haveno_num_trades = models.IntegerField(default=0)
+    bisq_volume = models.FloatField(default=0)
+    bisq_num_trades = models.IntegerField(default=0)
 
 class P2Pool(models.Model):
     '''Model for P2Pool mining data'''

@@ -21,6 +21,7 @@ from tasks.data_sync import update_reddit_data
 from tasks.data_sync import update_p2pool_data
 from tasks.data_sync import update_shielded_transactions
 from tasks.data_sync import update_merchants_data
+from tasks.data_sync import update_dex_volume
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'moneropro.settings')
 
@@ -155,6 +156,11 @@ def work():
         print('[INFO] Perform transaction data updates')
         update_shielded_transactions()
 
+    @agent.task
+    def volume_data_updates():
+        print('[INFO] Perform Dex volume updates')
+        update_dex_volume()
+
     ## Run all tasks
     update_xmr_data()
     update_btc_data()
@@ -166,6 +172,7 @@ def work():
     social_data_updates()
     merchants_data_updates()
     transactions_data_updates()
+    volume_data_updates()
 
     sys.exit(0)
 
