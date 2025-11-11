@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - About</title>
+<title>{% trans "Revuo Moneroj - About" %}</title>
 <style>
     .break {
         word-break: break-all;
@@ -49,28 +49,33 @@
                         <div class="col mb-4">
                             <div class="card border-left-new">
                                 <div class="card-body">
-                                    <h4 class="card-text text-white">About this website</h4>
+                                    <h4 class="card-text text-white">{% trans "About this website" %}</h4>
                                     <p class="card-text text-white" style="text-align: justify; text-justify: inter-word;">
-Revuo Moneroj was created to help people understand Monero, track its adoption, and compare it objectively with other digital currencies — like Bitcoin. This project is non-profit, funded entirely out of pocket, and driven by a passion for financial privacy and sound money.<br></br>  
-If you find the content valuable, consider supporting the project with an XMR donation (using the Trocador widget on this page). All suggestions and feedback are welcome!<br></br>
+{% blocktrans %}
+Revuo Moneroj was created to help people understand Monero, track its adoption, and compare it objectively with other digital currencies — like Bitcoin. This project is non-profit, funded entirely out of pocket, and driven by a passion for financial privacy and sound money.
+{% endblocktrans %}
+<br></br>
+{% blocktrans %}  
+If you find the content valuable, consider supporting the project with an XMR donation (using the Trocador widget on this page). All suggestions and feedback are welcome!
+{% endblocktrans %}
+<br></br>
 
-We believe Monero is unlike any other cryptocurrency because:<br></br>  
-- <b>True Privacy by Default</b> – Optional privacy is no privacy at all. Monero ensures <i>all transactions</i> are confidential and untraceable.<br></br>
-- <b>A Reliable Store of Value</b> – With a low, fixed inflation rate, Monero maintains scarcity while remaining usable as money.<br></br> 
-- <b>Real Fungibility</b> – Unlike Bitcoin, where coins carry traceable histories, every XMR is identical and interchangeable.<br></br> 
+{% trans "We believe Monero is unlike any other cryptocurrency because:" %}<br></br>  
+- <b>{% trans "True Privacy by Default" %}</b> – {% blocktrans trimmed with emphasis="<i>all transactions</i>"|safe %}Optional privacy is no privacy at all. Monero ensures {{ emphasis }} are confidential and untraceable.{% endblocktrans %}<br></br>
+- <b>{% trans "A Reliable Store of Value" %}</b> – {% trans "With a low, fixed inflation rate, Monero maintains scarcity while remaining usable as money." %}<br></br> 
+- <b>{% trans "Real Fungibility" %}</b> – {% trans "Unlike Bitcoin, where coins carry traceable histories, every XMR is identical and interchangeable." %}<br></br> 
 
-Monero isn’t just another coin—it’s the only digital cash that delivers on the original promise of cryptocurrency.<br></br> 
+{% trans "Monero isn’t just another coin—it’s the only digital cash that delivers on the original promise of cryptocurrency." %}<br></br> 
 
-<b>Will you take the orange pill?</b>  
+<b>{% trans "Will you take the orange pill?" %}</b>  
 
                                     </p>
                                     <div class="row">
                                         <div class="col-6">
-                                            <a href="https://www.getmonero.org/" class="btn btn-block pill">Take the Orangepill</a>
+                                            <a href="https://www.getmonero.org/" class="btn btn-block pill">{% trans "Take the Orangepill" %}</a>
                                         </div>
                                         <div class="col-6">
-                                            <a href="https://www.federalreserve.gov/" class="btn btn-block btn-primary">Take the
-                                                Bluepill
+                                            <a href="https://www.federalreserve.gov/" class="btn btn-block btn-primary">{% trans "Take the Bluepill" %}
                                             </a>
                                         </div>
 

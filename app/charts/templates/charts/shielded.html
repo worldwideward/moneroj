@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Dread Subscribers</title>
+<title>{% trans "Revuo Moneroj - Dread Subscribers" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Shielded Transactions
+                    {% trans "Shielded Transactions" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,16 +41,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows all private transactions from Bitcoin (the ones that go via Ashigaru Whirlpool), Zcash shielded transactions and Monero private transactions.
+                {% trans "This chart shows all private transactions from Bitcoin (the ones that go via Ashigaru Whirlpool), Zcash shielded transactions and Monero private transactions." %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
 
 var data1 = {
         type: "bar",
-        name: 'Zcash Shielded Transactions',
+        name: '{% trans "Zcash Shielded Transactions" %}',
         x: {{ dates|safe }},
         y: {{ values|safe }},
         hovertemplate: '%{y}',
@@ -83,7 +83,7 @@ var data1 = {
     
     var data1_mobile = {
         type: "bar",
-        name: 'Zcash Shielded Transactions',
+        name: '{% trans "Zcash Shielded Transactions" %}',
         x: {{ dates|safe }},
         y: {{ values|safe }},
         hovertemplate: '%{y}',
@@ -106,7 +106,7 @@ var data1 = {
     
     var data2 = {
         type: "bar",
-        name: 'Monero Anonymous Transactions',
+        name: '{% trans "Monero Anonymous Transactions" %}',
         x: {{ dates|safe }},
         y: {{ values2|safe }},
         hovertemplate: '%{y}',
@@ -127,7 +127,7 @@ var data1 = {
     
     var data2_mobile = {
         type: "bar",
-        name: 'Monero Anonymous Transactions',
+        name: '{% trans "Monero Anonymous Transactions" %}',
         x: {{ dates|safe }},
         y: {{ values|safe }},
         hovertemplate: '%{y}',
@@ -148,7 +148,7 @@ var data1 = {
 
     var data3 = {
         type: "bar",
-        name: 'Ashigaru Whirlpool Tx0s',
+        name: '{% trans "Ashigaru Whirlpool Tx0s" %}',
         x: {{ dates|safe }},
         y: {{ values3|safe }},
         hovertemplate: '%{y}',
@@ -169,7 +169,7 @@ var data1 = {
     
     var data3_mobile = {
         type: "bar",
-        name: 'Ashigaru Whirlpool Tx0s',
+        name: '{% trans "Ashigaru Whirlpool Tx0s" %}',
         x: {{ dates|safe }},
         y: {{ values3|safe }},
         hovertemplate: '%{y}',

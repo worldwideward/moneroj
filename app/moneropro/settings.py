@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
+from django.utils.translation import gettext_lazy as gettext
 
 # Necessary for assynchronous django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rest.settings")
@@ -75,6 +76,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'django.middleware.locale.LocaleMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -132,7 +134,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "it"
+LANGUAGES = [
+    ('en', gettext('English')),
+    ('it', gettext('Italian')),
+]
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True

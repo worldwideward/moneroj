@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Blockchain Size</title>
+<title>{% trans "Revuo Moneroj - Blockchain Size" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Security Budget for Monero and Bitcoin (Dollars/second)
+                    {% trans "Security Budget for Monero and Bitcoin (Dollars/second)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,18 +41,20 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows the security budget each coin has. This is the total of dollars given to miners each second, so you can imagine this as the amount of money that is 
                 directed towards the security of the network. <br>
                 Chart suggested by community member endor00.<br>
+                {% endblocktrans %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -65,7 +67,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Security Budget',
+        name: '{% trans "Bitcoin Security Budget" %}',
 	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ btc_security|safe }},
@@ -78,7 +80,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Security Budget',
+        name: '{% trans "Bitcoin Security Budget" %}',
 	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ btc_security|safe }},
@@ -91,7 +93,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Security Budget',
+        name: '{% trans "Monero Security Budget" %}',
 	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ xmr_security|safe }},
@@ -104,7 +106,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Security Budget',
+        name: '{% trans "Monero Security Budget" %}',
 	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ xmr_security|safe }},

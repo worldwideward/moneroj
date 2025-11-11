@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Blockchain Size</title>
+<title>{% trans "Revuo Moneroj - Blockchain Size" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Total Blockchain Size for Monero and Bitcoin (KB)
+                    {% trans "Total Blockchain Size for Monero and Bitcoin (KB)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,16 +41,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows the average space in disc that the whole blockchain of Bitcoin and Monero ocupy. <br>
+                {% trans "This chart shows the average space in disc that the whole blockchain of Bitcoin and Monero ocupy." %} <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -63,7 +63,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Blockchain Size',
+        name: '{% trans "Bitcoin Blockchain Size" %}',
         x: {{ dates|safe }},
         y: {{ btc_blocksize|safe }},
         line: {
@@ -75,7 +75,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Blockchain Size',
+        name: '{% trans "Bitcoin Blockchain Size" %}',
         x: {{ dates|safe }},
         y: {{ btc_blocksize|safe }},
         line: {
@@ -87,7 +87,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Blockchain Size',
+        name: '{% trans "Monero Blockchain Size" %}',
         x: {{ dates|safe }},
         y: {{ xmr_blocksize|safe }},
         line: {
@@ -99,7 +99,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Blockchain Size',
+        name: '{% trans "Monero Blockchain Size" %}',
         x: {{ dates|safe }},
         y: {{ xmr_blocksize|safe }},
         line: {
@@ -155,7 +155,7 @@
             yaxis: {
                 type: "log",
                 title: {
-                    text: 'Blockchain Size (KB)',
+                text: '{% trans "Blockchain Size (KB)" %}',
                     font: {
                         size: 20,
                         color: 'white'

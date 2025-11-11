@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Sharpe Ratio</title>
+<title>{% trans "Revuo Moneroj - Sharpe Ratio" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Sharpe Ratio
+                    {% trans "Sharpe Ratio" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,20 +41,22 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This is the Sharpe Ratio for Monero, which is an indicator that calculates the return over the risk of
                 the investment. For more information
                 access <a href="https://web.stanford.edu/~wfsharpe/art/sr/SR.htm" target="_blank">this webpage.</a> This
                 is a rolling 52 week Sharpe Ratio,
                 calculated by Ratio = Yearly Moving Average(Weekly R.O.C.)/ Yearly StDev(Weekly R.O.C.))*Sqrt(52).<br>
+                {% endblocktrans %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -67,7 +69,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Sharpe Ratio',
+        name: '{% trans "Sharpe Ratio" %}',
         x: {{ dates|safe }},
         y: {{ sharpe|safe }},
         line: {
@@ -80,7 +82,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Sharpe Ratio',
+        name: '{% trans "Sharpe Ratio" %}',
         x: {{ dates|safe }},
         y: {{ sharpe|safe }},
         line: {
@@ -93,7 +95,7 @@
     var data2 = {
         type: "scatter",
         mode: "markers",
-        name: 'Average price on date',
+        name: '{% trans "Average price on date" %}',
         x: {{ dates|safe }},
         y: {{ values|safe }},
         line: {color: '#7f421d'},
@@ -110,7 +112,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "markers",
-        name: 'Average price on date',
+        name: '{% trans "Average price on date" %}',
         x: {{ dates|safe }},
         y: {{ values|safe }},
         line: {color: '#7f421d'},
@@ -171,7 +173,7 @@
         yaxis: {
             type: "log",
             title: {
-                text: 'Price (USD)',
+                text: '{% trans "Price (USD)" %}',
                 font: {
                     size: 20,
                     color: 'white'
@@ -188,7 +190,7 @@
         yaxis2: {
         type: "linear",
         title: {
-            text: 'Sharpe Ratio',
+            text: '{% trans "Sharpe Ratio" %}',
             font: {
                 size: 20,
                 color: 'white'

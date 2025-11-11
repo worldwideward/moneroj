@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Blockchain Size</title>
+<title>{% trans "Revuo Moneroj - Breakeven Efficiency" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Breakeven efficiency required for mining profitability for Monero and Bitcoin (at $0.10/KWh, Hashes/Watt*second)
+                    {% blocktrans %}Breakeven efficiency required for mining profitability for Monero and Bitcoin (at $0.10/KWh, Hashes/Watt*second){% endblocktrans %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,22 +41,25 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows the Breakeven Efficiency required for both Monero and Bitcoin calculated at energy cost of $0.10/KWh. 
                 This is the minimum efficiency you would need to mine profitably (mining income >= electricity cost) at any given moment. 
                 This value is directly proportional to your electricity cost: for example, if your energy cost is $0.20/KWh, just multiply the value on the chart by 2. 
                 That will give you the number of H/s you must produce for each Watt of electricity you consume. 
                 In simple words, divide your hashrate (H/s) by your power consumption at the wall (Watts); 
                 if this number is bigger than the latest Breakeven efficiency on the chart, then you are mining at a profit; otherwise, you are mining at a loss.<br><br>
-                Chart suggested by community member endor00.<br>
+                Chart suggested by community member endor00.
+                {% endblocktrans %}
+                <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -69,7 +72,7 @@
 var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Breakeven Efficiency at $0.10/KWh',
+        name: '{% trans "Bitcoin Breakeven Efficiency at $0.10/KWh" %}',
         x: {{ dates|safe }},
         y: {{ btc_efficiency|safe }},
         line: {
@@ -81,7 +84,7 @@ var data3 = {
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Breakeven Efficiency at $0.10/KWh',
+        name: '{% trans "Bitcoin Breakeven Efficiency at $0.10/KWh" %}',
         x: {{ dates|safe }},
         y: {{ btc_efficiency|safe }},
         line: {
@@ -93,7 +96,7 @@ var data3 = {
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Breakeven Efficiency at $0.10/KWh',
+        name: '{% trans "Monero Breakeven Efficiency at $0.10/KWh" %}',
         x: {{ dates|safe }},
         y: {{ xmr_efficiency|safe }},
         line: {
@@ -105,7 +108,7 @@ var data3 = {
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Breakeven Efficiency at $0.10/KWh',
+        name: '{% trans "Monero Breakeven Efficiency at $0.10/KWh" %}',
         x: {{ dates|safe }},
         y: {{ xmr_efficiency|safe }},
         line: {
@@ -161,7 +164,7 @@ var data3 = {
             yaxis: {
                 type: "log",
                 title: {
-                    text: 'Breakeven Efficiency (Hashs / Watt * second)',
+                    text: '{% trans "Breakeven Efficiency (Hashs / Watt * second)" %}',
                     font: {
                         size: 20,
                         color: 'white'

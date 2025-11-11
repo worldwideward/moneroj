@@ -1,7 +1,8 @@
 {% extends "charts/users_base.html" %}
+{% load i18n %}
 {% block header %}
 
-<title>Revuo Moneroj - New Article</title>
+<title>{% trans "Revuo Moneroj - New Article" %}</title>
 
 <style>
   .form button {
@@ -36,161 +37,161 @@
   </div>
   {% endif %}
 
-  <h2>Add a new coin:</h2><br>
+  <h2>{% trans "Add a new coin:" %}</h2><br>
   <form class="needs-validation form" action="{% url 'charts:add_coin' %}" method='POST' novalidate>
     {% csrf_token %}
     <div class="form-row">
       <div class="col-md-4 mb-3">
-        <label for="name">Name:</label>
-        <input type="text" class="form-control" name="name" id="id_name" placeholder="Example: xmr" required>
+        <label for="name">{% trans "Name:" %}</label>
+        <input type="text" class="form-control" name="name" id="id_name" placeholder="{% trans 'Example: xmr' %}" required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
 
       <div class="col-md-4 mb-3">
-        <label for="date">Date:</label>
-        <input type="date" class="form-control" name="date" id="id_date" placeholder="Example: 2022-01-01" required>
+        <label for="date">{% trans "Date:" %}</label>
+        <input type="date" class="form-control" name="date" id="id_date" placeholder="{% trans 'Example: 2022-01-01' %}" required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
 
       <div class="col-md-4 mb-3">
-        <label for="priceusd">Price USD:</label>
-        <input type="number" class="form-control" name="priceusd" id="id_priceusd" placeholder="Example: 200,00"
+        <label for="priceusd">{% trans "Price USD:" %}</label>
+        <input type="number" class="form-control" name="priceusd" id="id_priceusd" placeholder="{% trans 'Example: 200,00' %}"
           required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="col-md-4 mb-3">
-        <label for="pricebtc">Price BTC:</label>
-        <input type="number" class="form-control" name="pricebtc" id="id_pricebtc" placeholder="Example: 0,016"
+        <label for="pricebtc">{% trans "Price BTC:" %}</label>
+        <input type="number" class="form-control" name="pricebtc" id="id_pricebtc" placeholder="{% trans 'Example: 0,016' %}"
           required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
 
       <div class="col-md-4 mb-3">
-        <label for="inflation">Inflation:</label>
-        <input type="number" class="form-control" name="inflation" id="id_inflation" placeholder="Example: 0,86%"
+        <label for="inflation">{% trans "Inflation:" %}</label>
+        <input type="number" class="form-control" name="inflation" id="id_inflation" placeholder="{% trans 'Example: 0,86%' %}"
           required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
 
       <div class="col-md-4 mb-3">
-        <label for="transactions">Transactions:</label>
-        <input type="number" class="form-control" name="transactions" id="id_transactions" placeholder="Example: 40000"
+        <label for="transactions">{% trans "Transactions:" %}</label>
+        <input type="number" class="form-control" name="transactions" id="id_transactions" placeholder="{% trans 'Example: 40000' %}"
           required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="col-md-4 mb-3">
-        <label for="hashrate">Hashrate:</label>
-        <input type="number" class="form-control" name="hashrate" id="id_hashrate" placeholder="Example: 150000000"
+        <label for="hashrate">{% trans "Hashrate:" %}</label>
+        <input type="number" class="form-control" name="hashrate" id="id_hashrate" placeholder="{% trans 'Example: 150000000' %}"
           required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
 
       <div class="col-md-4 mb-3">
-        <label for="supply">Supply:</label>
-        <input type="number" class="form-control" name="supply" id="id_supply" placeholder="Example: 21000000" required>
+        <label for="supply">{% trans "Supply:" %}</label>
+        <input type="number" class="form-control" name="supply" id="id_supply" placeholder="{% trans 'Example: 21000000' %}" required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
 
       <div class="col-md-4 mb-3">
-        <label for="difficulty">Difficulty:</label>
-        <input type="text" class="form-control" name="difficulty" id="id_difficulty" placeholder="Example: 00000000"
+        <label for="difficulty">{% trans "Difficulty:" %}</label>
+        <input type="text" class="form-control" name="difficulty" id="id_difficulty" placeholder="{% trans 'Example: 00000000' %}"
           required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="col-md-4 mb-3">
-        <label for="fee">Fee:</label>
-        <input type="number" class="form-control" name="fee" id="id_fee" placeholder="Example: 150 xmr" required>
+        <label for="fee">{% trans "Fee:" %}</label>
+        <input type="number" class="form-control" name="fee" id="id_fee" placeholder="{% trans 'Example: 150 xmr' %}" required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
 
       <div class="col-md-4 mb-3">
-        <label for="revenue">Revenue:</label>
-        <input type="number" class="form-control" name="revenue" id="id_revenue" placeholder="Example: 150 xmr"
+        <label for="revenue">{% trans "Revenue:" %}</label>
+        <input type="number" class="form-control" name="revenue" id="id_revenue" placeholder="{% trans 'Example: 150 xmr' %}"
           required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
 
       <div class="col-md-4 mb-3">
-        <label for="blocksize">Blocksize:</label>
-        <input type="number" class="form-control" name="blocksize" id="id_blocksize" placeholder="Example: 15 kb"
+        <label for="blocksize">{% trans "Blocksize:" %}</label>
+        <input type="number" class="form-control" name="blocksize" id="id_blocksize" placeholder="{% trans 'Example: 15 kb' %}"
           required>
         <div class="valid-tooltip">
-          OK
+          {% trans "OK" %}
         </div>
         <div class="invalid-tooltip">
-          This field is required
+          {% trans "This field is required" %}
         </div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="col-md-4 mb-3">
-        <label for="text">Save:</label>
-        <button class="" type="submit">Add</button>
+        <label for="text">{% trans "Save:" %}</label>
+        <button class="" type="submit">{% trans "Add" %}</button>
       </div>
     </div>
 

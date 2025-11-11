@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Miner Revenue</title>
+<title>{% trans "Revuo Moneroj - Miner Revenue" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Miner Revenue (Dollars / day)
+                    {% trans "Miner Revenue (Dollars / day)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,13 +41,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows average daily miner revenue (fees plus new coins) for both Bitcoin and Monero.<br>
+                {% trans "This chart shows average daily miner revenue (fees plus new coins) for both Bitcoin and Monero." %}<br>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -63,7 +63,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Miner Revenue',
+        name: '{% trans "Monero Miner Revenue" %}',
 	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ costxmr|safe }},
@@ -76,7 +76,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Miner Revenue',
+        name: '{% trans "Monero Miner Revenue" %}',
 	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ costxmr|safe }},
@@ -89,7 +89,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Miner Revenue',
+        name: '{% trans "Bitcoin Miner Revenue" %}',
 	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ costbtc|safe }},
@@ -102,7 +102,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Miner Revenue',
+        name: '{% trans "Bitcoin Miner Revenue" %}',
 	connectgaps: true,
         x: {{ dates|safe }},
         y: {{ costbtc|safe }},
@@ -159,7 +159,7 @@
         yaxis: {
             type: "log",
             title: {
-                text: 'Daily Miner Revenue (USD)',
+                text: '{% trans "Daily Miner Revenue (USD)" %}',
                 font: {
                     size: 20,
                     color: 'white'

@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Monero's Coinmarketcap Rank</title>
+<title>{% trans "Revuo Moneroj - Monero's Coinmarketcap Rank" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -41,16 +41,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows Monero's mining profitability, considering its total hash power and the income for miners. Chart suggested by community member MoneroMon.<br>
+                {% trans "This chart shows Monero's mining profitability, considering its total hash power and the income for miners. Chart suggested by community member MoneroMon." %}<br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Mining Profitability',
+        name: '{% trans "Monero Mining Profitability" %}',
         x: {{ dates|safe }},
         y: {{ value|safe }},
         line: {
@@ -74,7 +74,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Mining Profitability',
+        name: '{% trans "Monero Mining Profitability" %}',
         x: {{ dates|safe }},
         y: {{ value|safe }},
         line: {
@@ -130,7 +130,7 @@
         yaxis: {
             type: "log",
             title: {
-                text: 'Mining Profitability (USD/day for 1 KH/s)',
+                text: '{% trans "Mining Profitability (USD/day for 1 KH/s)" %}',
                 font: {
                     size: 20,
                     color: 'white'

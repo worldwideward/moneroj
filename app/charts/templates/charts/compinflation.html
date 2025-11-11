@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Inflation</title>
+<title>{% trans "Revuo Moneroj - Inflation" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,13 +14,15 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
+                    {% blocktrans %}
                     Annualized Inflation for Monero and its competitors (Bitcoin and
                                 privacy-oriented Dash, Zcash and Grin)
+                    {% endblocktrans %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -42,21 +44,24 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows a comparison between the annual inflation rate of Monero and its competitors. The lower
                 the inflation, the better, since lower inflation rates
                 protect better the purchasing power of its holders. Monero is by far the best privacy coin you hold,
                 since its inflation is way lower than the others. Another thing
                 evident from this chart is that the other privacy coins are many years away from having an inflation
-                rate as small as Monero. Cool!<br>
+                rate as small as Monero. Cool!
+                {% endblocktrans %}
+                <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -69,7 +74,7 @@
         var data3 = {
             type: "scatter",
             mode: "lines",
-            name: 'Dash Annual Inflation',
+            name: '{% trans "Dash Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationdash|safe }},
             line: {
@@ -81,7 +86,7 @@
         var data3_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Dash Annual Inflation',
+            name: '{% trans "Dash Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationdash|safe }},
             line: {
@@ -93,7 +98,7 @@
         var data1 = {
             type: "scatter",
             mode: "lines",
-            name: 'Grin Annual Inflation',
+            name: '{% trans "Grin Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationgrin|safe }},
             line: {
@@ -105,7 +110,7 @@
         var data1_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Grin Annual Inflation',
+            name: '{% trans "Grin Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationgrin|safe }},
             line: {
@@ -117,7 +122,7 @@
         var data4 = {
             type: "scatter",
             mode: "lines",
-            name: 'Zcash Annual Inflation',
+            name: '{% trans "Zcash Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationzcash|safe }},
             line: {
@@ -129,7 +134,7 @@
         var data4_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Zcash Annual Inflation',
+            name: '{% trans "Zcash Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationzcash|safe }},
             line: {
@@ -141,7 +146,7 @@
         var data2 = {
             type: "scatter",
             mode: "lines",
-            name: 'Monero Annual Inflation',
+            name: '{% trans "Monero Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationxmr|safe }},
             line: {
@@ -154,7 +159,7 @@
         var data2_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Monero Annual Inflation',
+            name: '{% trans "Monero Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationxmr|safe }},
             line: {
@@ -166,7 +171,7 @@
         var data5 = {
             type: "scatter",
             mode: "lines",
-            name: 'Bitcoin Annual Inflation',
+            name: '{% trans "Bitcoin Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationbtc|safe }},
             line: {
@@ -179,7 +184,7 @@
         var data5_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Bitcoin Annual Inflation',
+            name: '{% trans "Bitcoin Annual Inflation" %}',
             x: {{ dates|safe }},
             y: {{ inflationbtc|safe }},
             line: {
@@ -235,7 +240,7 @@
             yaxis: {
                 type: "log",
                 title: {
-                    text: 'Inflation (%)',
+                    text: '{% trans "Inflation (%)" %}',
                     font: {
                         size: 20,
                         color: 'white'

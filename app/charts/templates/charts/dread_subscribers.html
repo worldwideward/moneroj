@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Dread Subscribers</title>
+<title>{% trans "Revuo Moneroj - Dread Subscribers" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Dread Subscribes (Darknet forum)
+                    {% trans "Dread Subscribes (Darknet forum)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,16 +41,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                Number of subscribers to Bitcoin and Monero threads on Dread forum.<br>
+                {% trans "Number of subscribers to Bitcoin and Monero threads on Dread forum." %}<br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
 
     var data1 = {
         type: "bar",
-        name: 'Bitcoin Darknet Subscribers',
+        name: '{% trans "Bitcoin Darknet Subscribers" %}',
         x: {{ dates|safe }},
         y: {{ data1|safe }},
         hovertemplate: '%{y}',
@@ -83,7 +83,7 @@
     
     var data1_mobile = {
         type: "bar",
-        name: 'Bitcoin Darknet Subscribers',
+        name: '{% trans "Bitcoin Darknet Subscribers" %}',
         x: {{ dates|safe }},
         y: {{ data1|safe }},
         hovertemplate: '%{y}',
@@ -105,7 +105,7 @@
     
     var data2 = {
         type: "bar",
-        name: 'Monero Darknet Subscribers',
+        name: '{% trans "Monero Darknet Subscribers" %}',
         x: {{ dates|safe }},
         y: {{ data2|safe }},
         hovertemplate: '%{y}',
@@ -126,7 +126,7 @@
     
     var data2_mobile = {
         type: "bar",
-        name: 'Monero Darknet Subscribers',
+        name: '{% trans "Monero Darknet Subscribers" %}',
         x: {{ dates|safe }},
         y: {{ data2|safe }},
         hovertemplate: '%{y}',
@@ -192,7 +192,7 @@
               yaxis: {
                   type: "linear",
                   title: {
-                      text: 'Subscribers',
+                      text: '{% trans "Subscribers" %}',
                       font: {
                           size: 20,
                           color: 'white'

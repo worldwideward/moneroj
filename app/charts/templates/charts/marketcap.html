@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Marketcap</title>
+<title>{% trans "Revuo Moneroj - Marketcap" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Marketcap (USD)
+                    {% trans "Marketcap (USD)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,16 +41,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                This chart shows the comparison between Monero's most important competitors. It shows their total marketcap value over time.<br>
+                {% trans "This chart shows the comparison between Monero's most important competitors. It shows their total marketcap value over time." %}<br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Dash Marketcap',
+        name: '{% trans "Dash Marketcap" %}',
         x: {{ dates|safe }},
         y: {{ dash|safe }},
         line: {
@@ -74,7 +74,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Dash Marketcap',
+        name: '{% trans "Dash Marketcap" %}',
         x: {{ dates|safe }},
         y: {{ dash|safe }},
         line: {
@@ -86,7 +86,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Grin Marketcap',
+        name: '{% trans "Grin Marketcap" %}',
         x: {{ dates|safe }},
         y: {{ grin|safe }},
         line: {
@@ -98,7 +98,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Grin Marketcap',
+        name: '{% trans "Grin Marketcap" %}',
         x: {{ dates|safe }},
         y: {{ grin|safe }},
         line: {
@@ -110,7 +110,7 @@
     var data4 = {
         type: "scatter",
         mode: "lines",
-        name: 'Zcash Marketcap',
+        name: '{% trans "Zcash Marketcap" %}',
         x: {{ dates|safe }},
         y: {{ zcash|safe }},
         line: {
@@ -122,7 +122,7 @@
     var data4_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Zcash Marketcap',
+        name: '{% trans "Zcash Marketcap" %}',
         x: {{ dates|safe }},
         y: {{ zcash|safe }},
         line: {
@@ -134,7 +134,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Marketcap',
+        name: '{% trans "Monero Marketcap" %}',
         x: {{ dates|safe }},
         y: {{ xmr|safe }},
         line: {
@@ -147,7 +147,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Marketcap',
+        name: '{% trans "Monero Marketcap" %}',
         x: {{ dates|safe }},
         y: {{ xmr|safe }},
         line: {
@@ -203,7 +203,7 @@
         yaxis: {
             type: "log",
             title: {
-                text: 'Marketcap (USD)',
+                text: '{% trans "Marketcap (USD)" %}',
                 font: {
                     size: 20,
                     color: 'white'
