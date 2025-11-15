@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Power Law</title>
+<title>{% trans "Revuo Moneroj - Power Law" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Power Law
+                    {% trans "Power Law" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,19 +41,21 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows the current support, resistance and best fit for buying using Bitcoin's Power Law
                 Model, ported to Monero. To see more about this, check Christopher's <a
                     href="https://medium.com/quantodian-publications/bitcoins-natural-long-term-power-law-corridor-of-growth-649d0e9b3c94"
                     target="_blank">article.</a><br>
+                {% endblocktrans %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -67,7 +69,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Support',
+        name: '{% trans "Support" %}',
         x: {{ counter|safe }},
         y: {{ line1|safe }},
         line: {
@@ -79,7 +81,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Support',
+        name: '{% trans "Support" %}',
         x: {{ counter|safe }},
         y: {{ line1|safe }},
         line: {
@@ -90,7 +92,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Neutral Line',
+        name: '{% trans "Neutral Line" %}',
         x: {{ counter|safe }},
         y: {{ line2|safe }},
         line: {
@@ -103,7 +105,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Neutral Line',
+        name: '{% trans "Neutral Line" %}',
         x: {{ counter|safe }},
         y: {{ line2|safe }},
         line: {
@@ -115,7 +117,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Resistance',
+        name: '{% trans "Resistance" %}',
         x: {{ counter|safe }},
         y: {{ line3|safe }},
         line: {
@@ -128,7 +130,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Resistance',
+        name: '{% trans "Resistance" %}',
         x: {{ counter|safe }},
         y: {{ line3|safe }},
         line: {
@@ -141,7 +143,7 @@
     var data4 = {
     type: "scatter",
     mode: "markers",
-    name: 'Average price on date',
+    name: '{% trans "Average price on date" %}',
     x: {{ counter|safe }},
     y: {{ values|safe }},
     line: {color: '#7f421d'},
@@ -149,7 +151,7 @@
         color: {{ color|safe }},
         colorbar: {
             title: {
-                text: 'Cycle on the Bitcoin pair (%)',
+                text: '{% trans "Cycle on the Bitcoin pair (%)" %}',
                 side: 'right'
                 ,font: {
                     color: 'white'
@@ -174,7 +176,7 @@
 var data4_mobile = {
     type: "scatter",
     mode: "markers",
-    name: 'Average price on date',
+    name: '{% trans "Average price on date" %}',
     x: {{ counter|safe }},
     y: {{ values|safe }},
     line: {color: '#7f421d'},
@@ -243,7 +245,7 @@ var layout = {
     yaxis: {
         type: "log",
         title: {
-            text: 'Price (USD)',
+            text: '{% trans "Price (USD)" %}',
             font: {
                 size: 20,
                 color: 'white'

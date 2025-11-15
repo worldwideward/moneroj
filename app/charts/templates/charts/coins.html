@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Coins in Circulation</title>
+<title>{% trans "Revuo Moneroj - Coins in Circulation" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,13 +14,13 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Coins in Circulation
+                    {% trans "Coins in Circulation" %}
 
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -42,19 +42,22 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows the total issuance in units of both Bitcoin and Monero. You can see Monero is a younger
                 project, since it started after. Both coins
                 were distributed to miners, without premine. The main difference is Monero will be scarce comparing to
-                Bitcoin until Bitcoin's next halving.<br>
+                Bitcoin until Bitcoin's next halving.
+                {% endblocktrans %}
+                <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -66,7 +69,7 @@
         var data2 = {
             type: "scatter",
             mode: "lines",
-            name: 'Monero Supply',
+            name: '{% trans "Monero Supply" %}',
             x: {{ dates|safe }},
             y: {{ supplyxmr|safe }},
             line: {
@@ -78,7 +81,7 @@
         var data2_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Monero Supply',
+            name: '{% trans "Monero Supply" %}',
             x: {{ dates|safe }},
             y: {{ supplyxmr|safe }},
             line: {
@@ -90,7 +93,7 @@
         var data3 = {
             type: "scatter",
             mode: "lines",
-            name: 'Bitcoin Supply',
+            name: '{% trans "Bitcoin Supply" %}',
             x: {{ dates|safe }},
             y: {{ supplybtc|safe }},
             line: {
@@ -102,7 +105,7 @@
         var data3_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Bitcoin Supply',
+            name: '{% trans "Bitcoin Supply" %}',
             x: {{ dates|safe }},
             y: {{ supplybtc|safe }},
             line: {
@@ -114,7 +117,7 @@
         var data1 = {
               type: "scatter",
               mode: "lines",
-              name: 'Monero Future Supply',
+              name: '{% trans "Monero Future Supply" %}',
               x: {{ dates|safe }},
               y: {{ fsupplyxmr|safe }},
               line: {
@@ -126,7 +129,7 @@
           var data1_mobile = {
               type: "scatter",
               mode: "lines",
-              name: 'Monero Future Supply',
+              name: '{% trans "Monero Future Supply" %}',
               x: {{ dates|safe }},
               y: {{ fsupplyxmr|safe }},
               line: {
@@ -138,7 +141,7 @@
           var data4 = {
               type: "scatter",
               mode: "lines",
-              name: 'Bitcoin Future Supply',
+              name: '{% trans "Bitcoin Future Supply" %}',
               x: {{ dates|safe }},
               y: {{ fsupplybtc|safe }},
               line: {
@@ -150,7 +153,7 @@
           var data4_mobile = {
               type: "scatter",
               mode: "lines",
-              name: 'Bitcoin Future Supply',
+              name: '{% trans "Bitcoin Future Supply" %}',
               x: {{ dates|safe }},
               y: {{ fsupplybtc|safe }},
               line: {
@@ -206,7 +209,7 @@
               yaxis: {
                   type: "linear",
                   title: {
-                      text: 'Coins',
+                      text: '{% trans "Coins" %}',
                       font: {
                           size: 20,
                           color: 'white'

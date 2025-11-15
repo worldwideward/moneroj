@@ -1,7 +1,8 @@
 {% extends "charts/users_base.html" %}
+{% load i18n %}
 {% block header %}
 
-<title>Revuo Moneroj - Monero Metrics</title>
+<title>{% trans "Revuo Moneroj - Monero Metrics" %}</title>
 
 <style>
   .break {
@@ -32,16 +33,16 @@
 <section id="hero">
 
   <div class="container">
-    <div class="row align-items-center">
+      <div class="row align-items-center">
       <div class="col-lg-8" style="margin:0px 0 10px 0px;">
 
         <div class="row align-items-center" style="margin: 10px 10px 10px 10px;">
-          <h1>Bitcoin exposes your data—Monero gives you private digital cash.</h1>
-          <h2 style="margin-bottom:10px;">What you think you’re getting with Bitcoin, you’ll find with Monero.</h2><br>
+          <h1>{% trans "Bitcoin exposes your data—Monero gives you private digital cash." %}</h1>
+          <h2 style="margin-bottom:10px;">{% trans "What you think you’re getting with Bitcoin, you’ll find with Monero." %}</h2><br>
         </div>
       </div>
       <div class="col-xl-4 d-flex justify-content-center align-items-center pb-3">
-	      <iframe src="https://trocador.app/en/widget/?ref=Wt82oG80Wn" style="border:0px white solid;height:395px;width:100%;" scrolling="no"></iframe>
+	      <iframe src="https://trocador.app/{{ LANGUAGE_CODE }}/widget/?ref=Wt82oG80Wn" style="border:0px white solid;height:395px;width:100%;" scrolling="no"></iframe>
       </div>
     </div>
     <br><br>
@@ -57,15 +58,17 @@
       <div class="row mb-3">
         <div class="col-xl-4 col-lg-5">
           <div class="content p-4 my-1">
-            <h3 class="my-2">Privacy built in from the start</h3>
+            <h3 class="my-2">{% trans "Privacy built in from the start" %}</h3>
             <p>
+            {% blocktrans %}
             Many have believed Bitcoin can be 'anonymous'—but that’s a myth. In reality, Bitcoin is a transparent ledger, where every transaction,  
             including amounts, sender/receiver addresses, and more, are permanently visible online. Bitcoin’s transparency makes it even less private 
             than a traditional bank account. That’s why cypherpunks designed Monero with default privacy, from the ground up. Just like physical cash.
+            {% endblocktrans %}
             </p>
             <div class="text-center">
               <a href="https://www.fintechweekly.com/magazine/articles/an-untraceable-currency-bitcoin-privacy-concerns"
-                class="more-btn mt-2 p-2" target="_blank">Learn More Here<i
+                class="more-btn mt-2 p-2" target="_blank">{% trans "Learn More Here" %}<i
                   class="bx bx-chevron-right"></i></a>
             </div>
           </div>
@@ -76,33 +79,39 @@
               <div class="col-xl-4 d-flex">
                 <div class="icon-box p-3 my-1">
                   <i class="bx bx-hide m-1"></i>
-                  <h5 class="my-3">Privacy, Perfected</h5>
+                  <h5 class="my-3">{% trans "Privacy, Perfected" %}</h5>
                   <p>
+                  {% blocktrans %}
                   With Monero, your financial activity stays truly private. 
                   No corporation, government, or third party can view your transaction details. Only the sender and receiver know the amount    
                   transferred — and no one can see your balance. Your money, your business.
+                  {% endblocktrans %}
                   </p>
                 </div>
               </div>
               <div class="col-xl-4 d-flex">
                 <div class="icon-box p-3 my-1">
                   <i class="bx bx-cube-alt m-1"></i>
-                  <h5 class="my-3">Security You Can Trust</h5>
+                  <h5 class="my-3">{% trans "Security You Can Trust" %}</h5>
                   <p>
+                  {% blocktrans %}
                   Monero is an open-source, independently audited project that upholds the highest security standards crafted by 
                   some of the brightest minds in cryptography. Monero development is supported by a <a href="https://
                   ccs.getmonero.org/" target="_blank">Community Crowdfunding System</a> which enables continuous innovation. 
+                  {% endblocktrans %}
                   </p>
                 </div>
               </div>
               <div class="col-xl-4 d-flex">
                 <div class="icon-box p-3 my-1">
                   <i class="bx bx-check-shield m-1"></i>
-                  <h5 class="my-3">Freedom Through Privacy</h5>
+                  <h5 class="my-3">{% trans "Freedom Through Privacy" %}</h5>
                   <p>
+                  {% blocktrans %}
                   Monero restores your right to financial privacy. With privacy-by-default, it protects users from mass surveillance and 
                   censorship, safeguarding true personal freedom. Need transparency? Monero offers that too — selectively. Individuals or 
                   organizations can prove their balances when they choose.
+                  {% endblocktrans %}
                   </p>
                 </div>
               </div>
@@ -118,33 +127,39 @@
               <div class="col-xl-4 d-flex">
                 <div class="icon-box p-3 my-1">
                   <i class="bx bx-stats m-1"></i>
-                  <h5 class="my-3">Low Inflation, Fair Distribution</h5>
+                  <h5 class="my-3">{% trans "Low Inflation, Fair Distribution" %}</h5>
                   <p>
+                  {% blocktrans %}
                   Monero maintains a low and constantly decreasing annual inflation rate.
                   There was no premine, no ICO — every coin has been mined fairly since 2014.
                   Monero's <a href="https://www.getmonero.org/resources/moneropedia/tail-emission.html" target="_blank">“tail emission”</a> 
                   also ensures long-term network security and miner incentives.
+                  {% endblocktrans %}
                   </p>
                 </div>
               </div>
               <div class="col-xl-4 d-flex">
                 <div class="icon-box p-3 my-1">
                   <i class="bx bx-layer m-1"></i>
-                  <h5 class="my-3">Built in Scarcity</h5>
+                  <h5 class="my-3">{% trans "Built in Scarcity" %}</h5>
                   <p>
+                  {% blocktrans %}
                   There are fewer Monero in circulation today than Bitcoin — and this will remain true until at least 2040.
                   As the world seeks private alternatives to offshore banking, Monero is positioned to capture a market much larger than
                   its current value.
+                  {% endblocktrans %}
                   </p>
                 </div>
               </div>
               <div class="col-xl-4 d-flex">
                 <div class="icon-box p-3 my-1">
                   <i class="bx bx-timer m-1"></i>
-                  <h5 class="my-3">Fast, Affordable Transactions</h5>
+                  <h5 class="my-3">{% trans "Fast, Affordable Transactions" %}</h5>
                   <p>
+                  {% blocktrans %}
                   Monero transactions appear instantly in your wallet, with funds spendable within minutes. Most transactions cost less than a penny,
                   making Monero one of the fastest and most cost-effective ways to move value privately.
+                  {% endblocktrans %}
                   </p>
                 </div>
               </div>
@@ -153,12 +168,14 @@
         </div>
         <div class="col-xl-4 col-lg-5">
           <div class="content p-4 my-1">
-            <h3 class="my-1">Bitcoin Isn’t a Privacy Solution</h3>
+            <h3 class="my-1">{% trans "Bitcoin Isn’t a Privacy Solution" %}</h3>
             <p>
+              {% blocktrans %}
               Bitcoin is a powerful project that pushes governments to compete with private, hard money.
               But it’s a mistake to believe it solves privacy concerns. While Bitcoin’s transparency benefits institutions that require public
               auditing, most individuals and businesses will prefer truly private money — because no one wants to expose their entire financial
               history with every transaction.
+              {% endblocktrans %}
             </p>
           </div>
         </div>
@@ -180,29 +197,36 @@
 
         <div
           class="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5">
-          <h4>Monero Means Money</h4>
-          <h3>Watch Dr. Daniel Kim Explain Monero's Value</h3>
+          <h4>{% trans "Monero Means Money" %}</h4>
+          <h3>{% trans "Watch Dr. Daniel Kim Explain Monero's Value" %}</h3>
           <p>
+          {% blocktrans %}
           Monero is a project from the cypherpunk community, completely decentralized, without any central authority
           directing it. It is impossible to censor, unlike with transparent Bitcoin addresses. Monero is unstoppable money for all. 
+          {% endblocktrans %}
           </p>
 
           <div class="icon-box">
             <div class="icon"><i class="bx bx-world"></i></div>
-            <h4 class="title"><a href="">Afraid the government will ban it? Think twice.</a></h4>
-            <p class="description"> Monero’s true anonymity makes it a digital offshore account — without the need for banks or bureaucratic barriers.
+            <h4 class="title"><a href="">{% trans "Afraid the government will ban it? Think twice." %}</a></h4>
+            <p class="description">
+            {% blocktrans %}
+            Monero’s true anonymity makes it a digital offshore account — without the need for banks or bureaucratic barriers.
             Banning it would be nearly impossible: Monero runs on a decentralized network that cannot be shut down.
             And ironically, even governments could find value in using Monero to discreetly move or protect their own assets.Watch this video below
             about this market behvior. 
+            {% endblocktrans %}
             </p>
           </div>
           <div class="icon-box">
             <div class="icon"><i class="bx bx-dna"></i></div>
-            <h4 class="title"><a href="">Banning Monero Would Only Make It More Valuable</a></h4>
+            <h4 class="title"><a href="">{% trans "Banning Monero Would Only Make It More Valuable" %}</a></h4>
             <p class="description">
+            {% blocktrans %}
             Monero is scarce, private money — a combination that mirrors the appeal of physical gold.
             Its built-in utility ensures demand won't vanish with a ban; it would only intensify, driving even greater scarcity and pushing prices
             higher. Monero is anti-fragile: it protects both your wealth from inflation and your finances from surveillance. 
+            {% endblocktrans %}
             </p>
           </div>
         </div>
@@ -213,27 +237,31 @@
       <div class="row">
         <div
           class="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5">
-          <h4>Evolving Trends</h4>
-          <h3>A Smart Addition to Your Investment Portfolio</h3>
+          <h4>{% trans "Evolving Trends" %}</h4>
+          <h3>{% trans "A Smart Addition to Your Investment Portfolio" %}</h3>
           <p>
+            {% blocktrans %}
             Monero is a cryptocurrency like no other.
             With a low correlation to Bitcoin, it offers true diversification — a critical factor for maximizing future returns.
             Today, Monero is a $3.2 billion asset aiming to disrupt the offshore banking market.
             In a world where money is becoming fully digital, does it make sense to rely on physical offshore accounts to protect your wealth?
             Monero offers a smarter, more private solution for the digital age.
+            {% endblocktrans %}
           </p>
 
           <div class="icon-box">
             <div class="icon"><i class="bx bx-trophy"></i></div>
             <h4 class="title"><a
                 href="https://markets.businessinsider.com/currencies/news/why-the-dark-nets-most-active-market-ditched-bitcoin-for-monero-9698092?op=1"
-                target="_blank">Monero Has Surpassed Bitcoin Where Privacy Matters</a></h4>
+                target="_blank">{% trans "Monero Has Surpassed Bitcoin Where Privacy Matters" %}</a></h4>
             <p class="description">
+            {% blocktrans %}
             While most illicit activity still happens with traditional currencies like the dollar, Bitcoin’s transparent blockchain has led to
             retroactive tracking and accusations — even against innocent users.
             Without access to expensive forensic tools, it’s impossible to know if a Bitcoin transaction is "tainted".
             Monero changes that. 
             With full default privacy, it protects individuals from unjust scrutiny and safeguards honest users from being falsely implicated.
+            {% endblocktrans %}
             </p>
           </div>
 
@@ -241,11 +269,13 @@
           <div class="icon-box">
             <div class="icon"><i class="bx bx-store"></i></div>
             <h4 class="title"><a href="https://analyticsindiamag.com/monero-cryptocurrency-hackers/"
-                target="_blank">Hackers and Experts Prefer Monero</a></h4>
+                target="_blank">{% trans "Hackers and Experts Prefer Monero" %}</a></h4>
             <p class="description">
+            {% blocktrans %}
             In the world of cybersecurity, privacy isn't optional. 
             Monero's cutting-edge technology has made it the cryptocurrency of choice among hackers and privacy experts.
             As Bitcoin’s transparency becomes a liability, we’re witnessing a clear shift: those who understand the stakes are moving to Monero.
+            {% endblocktrans %}
             </p>
           </div>
 
@@ -265,12 +295,14 @@
   <div class="container">
 
     <div class="section-title">
-      <h2>Want to Acquire Monero?</h2>
+      <h2>{% trans "Want to Acquire Monero?" %}</h2>
       <p>
+        {% blocktrans %}
         Because Monero is so effective at protecting privacy, governments worldwide have pressured traditional 
         cryptocurrency exchanges to delist it — making it harder for citizens to purchase Monero with local currency. 
         Fortunately, the Monero community is global and resilient. Thanks to the voluntary efforts of developers and supporters, 
         easy alternatives now exist. Explore the options below and find the best way for you to acquire Monero.
+        {% endblocktrans %}
       </p>
     </div>
 
@@ -278,10 +310,12 @@
       <div class="col-lg-3 col-md-6">
         <div class="icon-box">
           <div class="icon"><i class="bx bx-transfer"></i></div>
-          <h4 class="title"><a href="https://www.kraken.com/en-us/learn/buy-monero-xmr" target="_blank">Open an Exchange Account</a></h4>
+          <h4 class="title"><a href="https://www.kraken.com/en-us/learn/buy-monero-xmr" target="_blank">{% trans "Open an Exchange Account" %}</a></h4>
           <p class="description">
+            {% blocktrans %}
             Link a bank account to purchase Monero directly. 
             This method requires full "Know Your Customer" (KYC) identity verification.
+            {% endblocktrans %}
           </p>
         </div>
       </div>
@@ -289,13 +323,15 @@
       <div class="col-lg-3 col-md-6">
         <div class="icon-box">
           <div class="icon"><i class="bx bx-shuffle"></i></div>
-          <h4 class="title"><a href="https://kycnot.me/" target="_blank">Decentralized Options</a></h4>
+          <h4 class="title"><a href="https://kycnot.me/" target="_blank">{% trans "Decentralized Options" %}</a></h4>
           <p class="description">
+            {% blocktrans %}
             Already own crypto? Use 
             <a href="https://kycnot.me/" target="_blank">KYCnot.me</a> as a guide for services. 
             Some of the latest swap technology includes 
             <a href="https://haveno.exchange/" target="_blank">Haveno</a> and
             <a href="https://unstoppableswap.net/" target="_blank">Unstoppable</a>.
+            {% endblocktrans %}
           </p>
         </div>
       </div>
@@ -303,12 +339,14 @@
       <div class="col-lg-3 col-md-6">
         <div class="icon-box">
           <div class="icon"><i class="bx bx-wallet"></i></div>
-          <h4 class="title"><a href="https://www.getmonero.org/downloads/" target="_blank">Set Up a Wallet</a></h4>
+          <h4 class="title"><a href="https://www.getmonero.org/downloads/" target="_blank">{% trans "Set Up a Wallet" %}</a></h4>
           <p class="description">
+            {% blocktrans %}
             Use the <a href="https://www.getmonero.org/downloads/" target="_blank">official Monero wallet</a> on PC,
             or mobile apps like <a href="https://cakewallet.com/" target="_blank">Cake Wallet</a> and 
             <a href="https://www.monerujo.io/" target="_blank">Monerujo</a>. 
             Hardware wallets like <a href="https://ledger.com/" target="_blank">Ledger</a> offer extra security.
+            {% endblocktrans %}
           </p>
         </div>
       </div>
@@ -316,11 +354,13 @@
       <div class="col-lg-3 col-md-6">
         <div class="icon-box">
           <div class="icon"><i class="bx bx-log-in"></i></div>
-          <h4 class="title"><a href="https://www.getmonero.org/resources/user-guides/securely_purchase.html" target="_blank">Withdraw to Your Wallet</a></h4>
+          <h4 class="title"><a href="https://www.getmonero.org/resources/user-guides/securely_purchase.html" target="_blank">{% trans "Withdraw to Your Wallet" %}</a></h4>
           <p class="description">
+            {% blocktrans %}
             After buying Monero, withdraw it to a wallet you control. 
             Learn how to securely send and receive Monero transactions 
             <a href="https://www.getmonero.org/resources/user-guides/make-payment.html" target="_blank">here</a>.
+            {% endblocktrans %}
           </p>
         </div>
       </div>
@@ -337,96 +377,112 @@
   <div class="container">
 
     <div class="section-title">
-      <h2>F.A.Q.</h2>
-      <p>Not sure how to buy or store Monero? Start with the basics here.</p>
+      <h2>{% trans "F.A.Q." %}</h2>
+      <p>{% trans "Not sure how to buy or store Monero? Start with the basics here." %}</p>
     </div>
 
     <div class="faq-list">
       <ul>
         <li>
           <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" class="collapse"
-            href="#faq-list-1">What exactly is Monero?<i class="bx bx-chevron-down icon-show"></i><i
+            href="#faq-list-1">{% trans "What exactly is Monero?" %}<i class="bx bx-chevron-down icon-show"></i><i
               class="bx bx-chevron-up icon-close"></i></a>
           <div id="faq-list-1" class="collapse show" data-parent=".faq-list">
             <p>
+              {% blocktrans %}
               Monero is a private, open-source cryptocurrency that runs on its own blockchain. Like Bitcoin, it can be mined using computer power to validate transactions and issue new coins. Unlike Bitcoin, Monero prioritizes privacy—your balances and transactions are hidden. Its decreasing inflation and scarcity also make it a strong store of value, similar to gold.
+              {% endblocktrans %}
             </p>
           </div>
         </li>
 
         <li>
           <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-2"
-            class="collapsed">How does Monero hide my money? How does it give me privacy?<i
+            class="collapsed">{% trans "How does Monero hide my money? How does it give me privacy?" %}<i
               class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
           <div id="faq-list-2" class="collapse" data-parent=".faq-list">
             <p>
+            {% blocktrans %}
               Monero uses advanced privacy technologies like RingCTs, Stealth Addresses, Bulletproofs, Dandelion++, and soon FCMPs. These tools hide the sender, receiver, amount, and even the IP address, ensuring full transaction privacy.
+            {% endblocktrans %}  
             </p>
           </div>
         </li>
 
         <li>
           <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-3"
-            class="collapsed">Why do people say Monero is unstoppable?<i class="bx bx-chevron-down icon-show"></i><i
+            class="collapsed">{% trans "Why do people say Monero is unstoppable?" %}<i class="bx bx-chevron-down icon-show"></i><i
               class="bx bx-chevron-up icon-close"></i></a>
           <div id="faq-list-3" class="collapse" data-parent=".faq-list">
             <p>
+              {% blocktrans %}
               Monero supports atomic swaps with Bitcoin, allowing direct, private exchanges without intermediaries. Because these swaps rely on Bitcoin's blockchain, banning Monero would require censoring Bitcoin itself—an unlikely scenario—making Monero resistant to censorship.
+              {% endblocktrans %}
             </p>
           </div>
         </li>
 
         <li>
           <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-4"
-            class="collapsed">How does its inflation work? How are new coins created?<i
+            class="collapsed">{% trans "How does its inflation work? How are new coins created?" %}<i
               class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
           <div id="faq-list-4" class="collapse" data-parent=".faq-list">
             <p>
+              {% blocktrans %}
               Monero had no premine—all coins are earned by miners who secure the network. As supply increases, block rewards and inflation decrease. With {{ supply }} coins in circulation, annual inflation is down to {{ inflation }} and will keep declining, making Monero increasingly scarce.
+              {% endblocktrans %}
             </p>
           </div>
         </li>
 
         <li>
           <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-5"
-            class="collapsed">Which is better, Bitcoin or Monero?<i class="bx bx-chevron-down icon-show"></i><i
+            class="collapsed">{% trans "Which is better, Bitcoin or Monero?" %}<i class="bx bx-chevron-down icon-show"></i><i
               class="bx bx-chevron-up icon-close"></i></a>
           <div id="faq-list-5" class="collapse" data-parent=".faq-list">
             <p>
+              {% blocktrans %}
               Bitcoin pioneered cryptocurrency but lacks privacy—every transaction and balance is publicly visible. This makes Bitcoin non-fungible and prone to censorship. Monero, on the other hand, is private, fungible, faster, cheaper, and better suited for use as true digital money.
+              {% endblocktrans %}
             </p>
           </div>
         </li>
 
         <li>
           <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-6"
-            class="collapsed">Is Monero a good investment?<i class="bx bx-chevron-down icon-show"></i><i
+            class="collapsed">{% trans "Is Monero a good investment?" %}<i class="bx bx-chevron-down icon-show"></i><i
               class="bx bx-chevron-up icon-close"></i></a>
           <div id="faq-list-6" class="collapse" data-parent=".faq-list">
             <p>
+              {% blocktrans %}
               While no investment is guaranteed, Monero appeals to those who believe in the future of digital privacy. In past cycles, it has delivered strong returns. However, always do your own research—this is not financial advice.
+              {% endblocktrans %}
             </p>
           </div>
         </li>
 
         <li>
           <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-7"
-            class="collapsed">What's the first step if I want to invest in Monero?<i
+            class="collapsed">{% trans "What's the first step if I want to invest in Monero?" %}<i
               class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
           <div id="faq-list-7" class="collapse" data-parent=".faq-list">
             <p>
+              {% blocktrans %}
               Create an account on a trusted exchange like Kraken. Complete the registration and KYC steps, enable two-factor authentication, fund your account, and purchase Monero. Then withdraw it to your personal wallet for full control.
+              {% endblocktrans %}
             </p>
           </div>
         </li>
 
         <li>
           <i class="bx bx-help-circle icon-help"></i> <a data-toggle="collapse" href="#faq-list-8"
-            class="collapsed">If I already have an account, what next?<i class="bx bx-chevron-down icon-show"></i><i
+            class="collapsed">{% trans "If I already have an account, what next?" %}<i class="bx bx-chevron-down icon-show"></i><i
               class="bx bx-chevron-up icon-close"></i></a>
           <div id="faq-list-8" class="collapse" data-parent=".faq-list">
             <p>
+              {% blocktrans %}
               Download a Monero wallet—like Cake Wallet, Monerujo, or the official desktop version—or use a hardware wallet like Ledger. Then withdraw your Monero from the exchange to your wallet to secure your funds.
+              {% endblocktrans %}
             </p>
           </div>
         </li>

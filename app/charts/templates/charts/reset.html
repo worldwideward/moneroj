@@ -1,7 +1,8 @@
 {% extends "charts/users_base.html" %}
+{% load i18n %}
 {% block header %}
 
-<title>Revuo Moneroj - Monero Metrics</title>
+<title>{% trans "Revuo Moneroj - Monero Metrics" %}</title>
 
 <style>  
   .login_page {
@@ -70,7 +71,7 @@
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
     <div class="container">
-      <h1>Total of {{ deleted }} data deleted and {{ added }} new additions.</h1>
+      <h1>{% trans "Total of {{ deleted }} data deleted and {{ added }} new additions." %}</h1>
     </div>
   </section>
   <br><br>

@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Price</title>
+<title>{% trans "Revuo Moneroj - Price" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Price (linear scale, USD)
+                    {% trans "Price (linear scale, USD)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,17 +41,19 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows the price of the coin on a linear scale. The color of the points indicate their
                 position on the Bitcoin pair, being red as overbought and blue as cheap.<br>
+                {% endblocktrans %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -73,7 +75,7 @@
         color: {{ color|safe }},
         colorbar: {
             title: {
-                text: 'Cycle on the Bitcoin pair (%)',
+                text: '{% trans "Cycle on the Bitcoin pair (%)" %}',
                 side: 'right'
                 ,font: {
                     color: 'white'
@@ -98,7 +100,7 @@
 var data4_mobile = {
     type: "scatter",
     mode: "markers",
-    name: 'Average price on date',
+    name: '{% trans "Average price on date" %}',
     x: {{ dates|safe }},
     y: {{ values|safe }},
     line: {color: '#7f421d'},
@@ -167,7 +169,7 @@ var layout = {
     yaxis: {
         type: "linear",
         title: {
-            text: 'Price (USD)',
+            text: '{% trans "Price (USD)" %}',
             font: {
                 size: 20,
                 color: 'white'

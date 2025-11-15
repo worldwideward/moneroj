@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Monero's Coinmarketcap Rank</title>
+<title>{% trans "Revuo Moneroj - Monero's Coinmarketcap Rank" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    P2Pool Total Hashes (Tera Hashes) Found
+                    {% trans "P2Pool Total Hashes (Tera Hashes) Found" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,16 +41,18 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows Monero's both P2Pool (mining pool) total hashes found. Data provided by community member DataHoarder. Check out the API from <a href="https://p2pool.observer/" target="_blank">P2Pool Observer</a>.<br>
+                {% endblocktrans %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -62,7 +64,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'P2Pool Hashes Found (TH)',
+        name: '{% trans "P2Pool Hashes Found (TH)" %}',
         x: {{ dates|safe }},
         y: {{ totalblocks|safe }},
         line: {
@@ -74,7 +76,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'P2Pool Hashes Found (TH)',
+        name: '{% trans "P2Pool Hashes Found (TH)" %}',
         x: {{ dates|safe }},
         y: {{ totalblocks|safe }},
         line: {
@@ -86,7 +88,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'P2Pool_mini Hashes Found (TH)',
+        name: '{% trans "P2Pool_mini Hashes Found (TH)" %}',
         x: {{ dates|safe }},
         y: {{ totalblocks_mini|safe }},
         line: {
@@ -98,7 +100,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'P2Pool_mini Hashes Found (TH)',
+        name: '{% trans "P2Pool_mini Hashes Found (TH)" %}',
         x: {{ dates|safe }},
         y: {{ totalblocks_mini|safe }},
         line: {
@@ -110,7 +112,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Total P2Pool Hashes Found (TH)',
+        name: '{% trans "Total P2Pool Hashes Found (TH)" %}',
         x: {{ dates|safe }},
         y: {{ combined|safe }},
         line: {
@@ -122,7 +124,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Total P2Pool Hashes Found (TH)',
+        name: '{% trans "Total P2Pool Hashes Found (TH)" %}',
         x: {{ dates|safe }},
         y: {{ combined|safe }},
         line: {
@@ -178,7 +180,7 @@
         yaxis: {
             type: "linear",
             title: {
-                text: 'Hashes Found (TH)',
+                text: '{% trans "Hashes Found (TH)" %}',
                 font: {
                     size: 20,
                     color: 'white'

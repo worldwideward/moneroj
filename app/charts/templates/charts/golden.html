@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Golden Ratio Multiplier</title>
+<title>{% trans "Revuo Moneroj - Golden Ratio Multiplier" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Golden Ratio Multiplier
+                    {% trans "Golden Ratio Multiplier" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,21 +41,24 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 As proposed by Philip Swift <a
                     href="https://positivecrypto.medium.com/the-golden-ratio-multiplier-c2567401e12a">here</a>, this
                 chart uses the same
                 indicator known as GRM (Golden Ratio Multiplier) to find nice spots where the coin is overbought,
                 indicating sell signals. The algo automatically calculates (based on a
-                certain logic) where would be reasonable to sell.<br>
+                certain logic) where would be reasonable to sell.
+                {% endblocktrans %}
+                <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -67,7 +70,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Price on date',
+        name: '{% trans "Price on date" %}',
         x: {{ dates|safe }},
         y: {{ prices|safe }},
         line: {
@@ -79,7 +82,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Price on date',
+        name: '{% trans "Price on date" %}',
         x: {{ dates|safe }},
         y: {{ prices|safe }},
         line: {
@@ -91,7 +94,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days',
+        name: '{% trans "Median 350 days" %}',
         x: {{ dates|safe }},
         y: {{ m_350|safe }},
         line: {
@@ -103,7 +106,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days',
+        name: '{% trans "Median 350 days" %}',
         x: {{ dates|safe }},
         y: {{ m_350|safe }},
         line: {
@@ -116,7 +119,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 0.4',
+        name: '{% trans "Median 350 days x 0.4" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0042|safe }},
         line: {
@@ -128,7 +131,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 0.4',
+        name: '{% trans "Median 350 days x 0.4" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0042|safe }},
         line: {
@@ -141,7 +144,7 @@
     var data4 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 0.6',
+        name: '{% trans "Median 350 days x 0.6" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0060|safe }},
         line: {
@@ -153,7 +156,7 @@
     var data4_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 0.6',
+        name: '{% trans "Median 350 days x 0.6" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0060|safe }},
         line: {
@@ -166,7 +169,7 @@
     var data5 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 2',
+        name: '{% trans "Median 350 days x 2" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0200|safe }},
         line: {
@@ -178,7 +181,7 @@
     var data5_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 2',
+        name: '{% trans "Median 350 days x 2" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0200|safe }},
         line: {
@@ -191,7 +194,7 @@
     var data6 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 3',
+        name: '{% trans "Median 350 days x 3" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0300|safe }},
         line: {
@@ -203,7 +206,7 @@
     var data6_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 3',
+        name: '{% trans "Median 350 days x 3" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0300|safe }},
         line: {
@@ -216,7 +219,7 @@
     var data7 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 5',
+        name: '{% trans "Median 350 days x 5" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0500|safe }},
         line: {
@@ -228,7 +231,7 @@
     var data7_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 5',
+        name: '{% trans "Median 350 days x 5" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0500|safe }},
         line: {
@@ -241,7 +244,7 @@
     var data8 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 8',
+        name: '{% trans "Median 350 days x 8" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0800|safe }},
         line: {
@@ -253,7 +256,7 @@
     var data8_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 8',
+        name: '{% trans "Median 350 days x 8" %}',
         x: {{ dates|safe }},
         y: {{ m_350_0800|safe }},
         line: {
@@ -266,7 +269,7 @@
     var data9 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 13',
+        name: '{% trans "Median 350 days x 13" %}',
         x: {{ dates|safe }},
         y: {{ m_350_1300|safe }},
         line: {
@@ -278,7 +281,7 @@
     var data9_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 350 days x 13',
+        name: '{% trans "Median 350 days x 13" %}',
         x: {{ dates|safe }},
         y: {{ m_350_1300|safe }},
         line: {
@@ -290,7 +293,7 @@
     var data11 = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 111 days',
+        name: '{% trans "Median 111 days" %}',
         x: {{ dates|safe }},
         y: {{ m_111|safe }},
         line: {
@@ -302,7 +305,7 @@
     var data11_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Median 111 days',
+        name: '{% trans "Median 111 days" %}',
         x: {{ dates|safe }},
         y: {{ m_111|safe }},
         line: {
@@ -314,7 +317,7 @@
     var data12 = {
     type: "scatter",
     mode: "markers",
-    name: 'Sell Signal',
+    name: '{% trans "Sell Signal" %}',
     x: {{ dates|safe }},
     y: {{ price_cross|safe }},
     line: {color: '#7f421d'},
@@ -322,7 +325,7 @@
         color: '#ff0000',
         colorbar: {
             title: {
-                text: 'Sell Signal',
+                text: '{% trans "Sell Signal" %}',
                 side: 'right'
                 ,font: {
                     color: 'white'
@@ -416,7 +419,7 @@ var data12_mobile = {
         yaxis: {
             type: "log",
             title: {
-                text: 'Price (USD)',
+                text: '{% trans "Price (USD)" %}',
                 font: {
                     size: 20,
                     color: 'white'

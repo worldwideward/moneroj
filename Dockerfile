@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-RUN apt update && apt install -y locales
+RUN apt update && apt install -y locales gettext
 
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 

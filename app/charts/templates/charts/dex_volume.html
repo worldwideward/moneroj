@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
 
 {% block header %}
-<title>Revuo Moneroj - Dex Volume</title>
+<title>{% trans "Revuo Moneroj - Dex Volume" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Daily Dex volume
+                    {% trans "Daily Dex volume" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,17 +41,19 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 Daily overall volume on Haveno and Bisq.<br>
                 Data provided by <a href="https://haveno.markets">haveno.markets</a> and <a href="https://markets.bisq.network/">bisq.markets</a><br>
+                {% endblocktrans %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -131,7 +133,7 @@
             yaxis: {
                 type: "linear",
                 title: {
-                    text: "Volume (USD)",
+                    text: '{% trans "Volume (USD)" %}',
                     font: {
                         size: 20,
                         color: "white",

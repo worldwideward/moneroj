@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Competitor Performance</title>
+<title>{% trans "Revuo Moneroj - Competitor Performance" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Competitor Performance (Log Scale)
+                    {% trans "Competitor Performance (Log Scale)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,21 +41,24 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows the comparison between Monero's most important competitors. It shows their return as a
                 multiplication of the price on their respective first top.
                 This chart shows clearly that the coin with the lowest inflation is the one that protects most the
                 purchasing power of its holders. In this case, since Monero's Inflation
                 is way lower than its competitors, it takes the cake as the best coin (or, in other words, the one that
-                made people most for their money).<br>
+                made people most for their money).
+                {% endblocktrans %}
+                <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -67,7 +70,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Dash Return On Capital',
+        name: '{% trans "Dash Return On Capital" %}',
         x: {{ dates|safe }},
         y: {{ dash|safe }},
         line: {
@@ -79,7 +82,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Dash Return On Capital',
+        name: '{% trans "Dash Return On Capital" %}',
         x: {{ dates|safe }},
         y: {{ dash|safe }},
         line: {
@@ -91,7 +94,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Grin Return On Capital',
+        name: '{% trans "Grin Return On Capital" %}',
         x: {{ dates|safe }},
         y: {{ grin|safe }},
         line: {
@@ -103,7 +106,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Grin Return On Capital',
+        name: '{% trans "Grin Return On Capital" %}',
         x: {{ dates|safe }},
         y: {{ grin|safe }},
         line: {
@@ -115,7 +118,7 @@
     var data4 = {
         type: "scatter",
         mode: "lines",
-        name: 'Zcash Return On Capital',
+        name: '{% trans "Zcash Return On Capital" %}',
         x: {{ dates|safe }},
         y: {{ zcash|safe }},
         line: {
@@ -127,7 +130,7 @@
     var data4_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Zcash Return On Capital',
+        name: '{% trans "Zcash Return On Capital" %}',
         x: {{ dates|safe }},
         y: {{ zcash|safe }},
         line: {
@@ -139,7 +142,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Return On Capital',
+        name: '{% trans "Monero Return On Capital" %}',
         x: {{ dates|safe }},
         y: {{ xmr|safe }},
         line: {
@@ -152,7 +155,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Return On Capital',
+        name: '{% trans "Monero Return On Capital" %}',
         x: {{ dates|safe }},
         y: {{ xmr|safe }},
         line: {
@@ -208,7 +211,7 @@
         yaxis: {
             type: "log",
             title: {
-                text: 'Multiple from first top',
+                text: '{% trans "Multiple from first top" %}',
                 font: {
                     size: 20,
                     color: 'white'

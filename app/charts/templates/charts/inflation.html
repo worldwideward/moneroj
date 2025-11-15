@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Annualized Inflation</title>
+<title>{% trans "Revuo Moneroj - Annualized Inflation" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Annualized Inflation for both Monero and Bitcoin
+                    {% trans "Annualized Inflation for both Monero and Bitcoin" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -40,20 +40,23 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows a comparison between the anual inflation rate of Monero and Bitcoin. The lower the
                 inflation, the better, since lower inflation rates
                 protect better the purchasing power of its holders. Monero is by far the best privacy coin you hold,
                 since its inflation is way lower than its competitors. Another thing
-                evident from this chart is that even Bitcoin has a higher inflation than Monero. Cool!<br>
+                evident from this chart is that even Bitcoin has a higher inflation than Monero. Cool!
+                {% endblocktrans %}
+                <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -66,7 +69,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Inflation',
+        name: '{% trans "Bitcoin Inflation" %}',
         x: {{ dates|safe }},
         y: {{ inflationbtc|safe }},
         line: {
@@ -78,7 +81,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Bitcoin Inflation',
+        name: '{% trans "Bitcoin Inflation" %}',
         x: {{ dates|safe }},
         y: {{ inflationbtc|safe }},
         line: {
@@ -90,7 +93,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Inflation',
+        name: '{% trans "Monero Inflation" %}',
         x: {{ dates|safe }},
         y: {{ inflationxmr|safe }},
         line: {
@@ -102,7 +105,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Monero Inflation',
+        name: '{% trans "Monero Inflation" %}',
         x: {{ dates|safe }},
         y: {{ inflationxmr|safe }},
         line: {
@@ -115,7 +118,7 @@
     var data1 = {
             type: "scatter",
             mode: "lines",
-            name: 'Bitcoin Future Inflation',
+            name: '{% trans "Bitcoin Future Inflation" %}',
             x: {{ dates|safe }},
             y: {{ finflationbtc|safe }},
             line: {
@@ -127,7 +130,7 @@
         var data1_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Bitcoin Future Inflation',
+            name: '{% trans "Bitcoin Future Inflation" %}',
             x: {{ dates|safe }},
             y: {{ finflationbtc|safe }},
             line: {
@@ -139,7 +142,7 @@
         var data4 = {
             type: "scatter",
             mode: "lines",
-            name: 'Monero Future Inflation',
+            name: '{% trans "Monero Future Inflation" %}',
             x: {{ dates|safe }},
             y: {{ finflationxmr|safe }},
             line: {
@@ -151,7 +154,7 @@
         var data4_mobile = {
             type: "scatter",
             mode: "lines",
-            name: 'Monero Future Inflation',
+            name: '{% trans "Monero Future Inflation" %}',
             x: {{ dates|safe }},
             y: {{ finflationxmr|safe }},
             line: {
@@ -207,7 +210,7 @@
             yaxis: {
                 type: "log",
                 title: {
-                    text: 'Inflation (%)',
+                    text: '{% trans "Inflation (%)" %}',
                     font: {
                         size: 20,
                         color: 'white'

@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Metcalfe's Law</title>
+<title>{% trans "Revuo Moneroj - Metcalfe's Law (BTC)" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Metcalfe's Law (BTC)
+                    {% trans "Metcalfe's Law (BTC)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,12 +41,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Cancel' %}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows the Monero's supposed fair price, judging by the number of transactions it has each day
                 on. Higher transaction count means the coin is being increasingly
                 used, and since Metcalfe's Law proposes that more information being exchanged in a network means the
@@ -54,10 +55,12 @@
                 increase in price. This was calculated as "how much Monero should be worth if it was a part of Bitcoin's
                 network?" The answear is that Monero should be worth as much
                 as its transactions represent as a percentage of Bitcoin's own transactions, but considering both coins'
-                supplies. The formula is XMR-Supply*XMR-Tx/(BTC-Tx*BTC-Supply);<br>
+                supplies. The formula is XMR-Supply*XMR-Tx/(BTC-Tx*BTC-Supply);
+                {% endblocktrans %}
+                <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -69,7 +72,7 @@
     var data3 = {
         type: "scatter",
         mode: "lines",
-        name: 'Fair price (XMR-Tx/BTC-Tx)',
+        name: '{% trans "Fair price (XMR-Tx/BTC-Tx)" %}',
         x: {{ dates|safe }},
         y: {{ metcalfe|safe }},
         line: {
@@ -81,7 +84,7 @@
     var data3_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Fair price (XMR-Tx/BTC-Tx)',
+        name: '{% trans "Fair price (XMR-Tx/BTC-Tx)" %}',
         x: {{ dates|safe }},
         y: {{ metcalfe|safe }},
         line: {
@@ -92,7 +95,7 @@
     var data4 = {
     type: "scatter",
     mode: "markers",
-    name: 'Average price on date',
+    name: '{% trans "Average price on date" %}',
     x: {{ dates|safe }},
     y: {{ prices|safe }},
     line: {color: '#7f421d'},
@@ -100,7 +103,7 @@
         color: {{ color|safe }},
         colorbar: {
             title: {
-                text: 'Cycle on the Bitcoin pair (%)',
+                text: '{% trans "Cycle on the Bitcoin pair (%)" %}',
                 side: 'right'
                 ,font: {
                     color: 'white'
@@ -125,7 +128,7 @@
 var data4_mobile = {
     type: "scatter",
     mode: "markers",
-    name: 'Average price on date',
+    name: '{% trans "Average price on date" %}',
     x: {{ dates|safe }},
     y: {{ prices|safe }},
     line: {color: '#7f421d'},
@@ -194,7 +197,7 @@ var data4_mobile = {
         yaxis: {
             type: "log",
             title: {
-                text: 'Price (BTC)',
+                text: '{% trans "Price (BTC)" %}',
                 font: {
                     size: 20,
                     color: 'white'

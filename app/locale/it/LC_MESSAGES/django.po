@@ -1,0 +1,5008 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <everoddandeven@protonmail.com>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-11 17:42+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: everoddandeven <everoddandeven@protonmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: Italian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: app/charts/templates/charts/about.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - About"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/about.html:52
+msgid "About this website"
+msgstr "Scopri di più"
+
+#: app/charts/templates/charts/about.html:54
+msgid ""
+"\n"
+"Revuo Moneroj was created to help people understand Monero, track its "
+"adoption, and compare it objectively with other digital currencies — like "
+"Bitcoin. This project is non-profit, funded entirely out of pocket, and "
+"driven by a passion for financial privacy and sound money.\n"
+msgstr ""
+"\n"
+"Revuo Moneroj è stato creato per aiutare le persone a capire Monero, oltre a "
+"documentare la sua adozione e metterla a confronto in modo obiettivo con "
+"altri valute digitali — proprio come Bitcoin. È un progetto non-profit, "
+"finanziato di tasca propria, e guidato dalla passione per la privacy e il "
+"sound money.\n"
+
+#: app/charts/templates/charts/about.html:58
+msgid ""
+"  \n"
+"If you find the content valuable, consider supporting the project with an "
+"XMR donation (using the Trocador widget on this page). All suggestions and "
+"feedback are welcome!\n"
+msgstr ""
+"  \n"
+"Se hai trovato il contenuto utile, e vuoi supportare il progetto con una "
+"donazione XMR, usa il widget di Trocador widget in questa pagina. "
+"Suggerimenti e feedback sono benvenuti!\n"
+
+#: app/charts/templates/charts/about.html:63
+msgid "We believe Monero is unlike any other cryptocurrency because:"
+msgstr "Crediamo che Monero sia diverso da ogni altra criptovaluta perché:"
+
+#: app/charts/templates/charts/about.html:64
+msgid "True Privacy by Default"
+msgstr "Vera Privacy di Default"
+
+#: app/charts/templates/charts/about.html:64
+#, python-format
+msgid ""
+"Optional privacy is no privacy at all. Monero ensures %(emphasis)s are "
+"confidential and untraceable."
+msgstr ""
+"Se è opzionale, non è vera privacy. %(emphasis)s Monero sono confidenziali e "
+"non tracciabili."
+
+#: app/charts/templates/charts/about.html:65
+msgid "A Reliable Store of Value"
+msgstr "Una Riserva di Valore Affidabile"
+
+#: app/charts/templates/charts/about.html:65
+msgid ""
+"With a low, fixed inflation rate, Monero maintains scarcity while remaining "
+"usable as money."
+msgstr ""
+"Grazie al basso e decrescente tasso di inflazione, Monero offre scarsità "
+"eutilità come denaro contante."
+
+#: app/charts/templates/charts/about.html:66
+msgid "Real Fungibility"
+msgstr "Vera Fungibilità"
+
+#: app/charts/templates/charts/about.html:66
+msgid ""
+"Unlike Bitcoin, where coins carry traceable histories, every XMR is "
+"identical and interchangeable."
+msgstr ""
+"A differenza di Bitcoin, dove ogni moneta presenta uno storico tracciabile, "
+"ogni XMR èindistinguibile e completamente intercambiabile"
+
+#: app/charts/templates/charts/about.html:68
+msgid ""
+"Monero isn’t just another coin—it’s the only digital cash that delivers on "
+"the original promise of cryptocurrency."
+msgstr ""
+"Monero non è solo un'altra coin, è l'unico contante digitale che mantiene la "
+"promessa originale delle criptovalute"
+
+#: app/charts/templates/charts/about.html:70
+msgid "Will you take the orange pill?"
+msgstr "Pillola arancione o pillolola blu?"
+
+#: app/charts/templates/charts/about.html:75
+msgid "Take the Orangepill"
+msgstr "Prendi la pillola arancione"
+
+#: app/charts/templates/charts/about.html:78
+msgid "Take the Bluepill"
+msgstr "Prendi la pillola blu"
+
+#: app/charts/templates/charts/add_coin.html:5
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - New Article"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/add_coin.html:40
+msgid "Add a new coin:"
+msgstr "Aggiungi nuova coin:"
+
+#: app/charts/templates/charts/add_coin.html:45
+msgid "Name:"
+msgstr "Nome:"
+
+#: app/charts/templates/charts/add_coin.html:46
+msgid "Example: xmr"
+msgstr "Esempio: xmr"
+
+#: app/charts/templates/charts/add_coin.html:48
+#: app/charts/templates/charts/add_coin.html:59
+#: app/charts/templates/charts/add_coin.html:71
+#: app/charts/templates/charts/add_coin.html:85
+#: app/charts/templates/charts/add_coin.html:97
+#: app/charts/templates/charts/add_coin.html:109
+#: app/charts/templates/charts/add_coin.html:123
+#: app/charts/templates/charts/add_coin.html:134
+#: app/charts/templates/charts/add_coin.html:146
+#: app/charts/templates/charts/add_coin.html:159
+#: app/charts/templates/charts/add_coin.html:171
+#: app/charts/templates/charts/add_coin.html:183
+msgid "OK"
+msgstr "Ok"
+
+#: app/charts/templates/charts/add_coin.html:51
+#: app/charts/templates/charts/add_coin.html:62
+#: app/charts/templates/charts/add_coin.html:74
+#: app/charts/templates/charts/add_coin.html:88
+#: app/charts/templates/charts/add_coin.html:100
+#: app/charts/templates/charts/add_coin.html:112
+#: app/charts/templates/charts/add_coin.html:126
+#: app/charts/templates/charts/add_coin.html:137
+#: app/charts/templates/charts/add_coin.html:149
+#: app/charts/templates/charts/add_coin.html:162
+#: app/charts/templates/charts/add_coin.html:174
+#: app/charts/templates/charts/add_coin.html:186
+msgid "This field is required"
+msgstr "Questo campo è obbligatorio"
+
+#: app/charts/templates/charts/add_coin.html:56
+msgid "Date:"
+msgstr "Data:"
+
+#: app/charts/templates/charts/add_coin.html:57
+msgid "Example: 2022-01-01"
+msgstr "Esempio: 2022-01-01"
+
+#: app/charts/templates/charts/add_coin.html:67
+msgid "Price USD:"
+msgstr "Prezzo USD:"
+
+#: app/charts/templates/charts/add_coin.html:68
+msgid "Example: 200,00"
+msgstr "Esempio: 200,00"
+
+#: app/charts/templates/charts/add_coin.html:81
+msgid "Price BTC:"
+msgstr "Price BTC:"
+
+#: app/charts/templates/charts/add_coin.html:82
+msgid "Example: 0,016"
+msgstr "Esempio: 0,016"
+
+#: app/charts/templates/charts/add_coin.html:93
+msgid "Inflation:"
+msgstr "Inflazione:"
+
+#: app/charts/templates/charts/add_coin.html:94
+#, python-format
+msgid "Example: 0,86%%"
+msgstr "Esempio: 0,86%%"
+
+#: app/charts/templates/charts/add_coin.html:105
+msgid "Transactions:"
+msgstr "Transazioni:"
+
+#: app/charts/templates/charts/add_coin.html:106
+msgid "Example: 40000"
+msgstr "Esempio: 40000"
+
+#: app/charts/templates/charts/add_coin.html:119
+msgid "Hashrate:"
+msgstr "Hashrate:"
+
+#: app/charts/templates/charts/add_coin.html:120
+msgid "Example: 150000000"
+msgstr "Esempio: 150000000"
+
+#: app/charts/templates/charts/add_coin.html:131
+msgid "Supply:"
+msgstr "Offerta:"
+
+#: app/charts/templates/charts/add_coin.html:132
+msgid "Example: 21000000"
+msgstr "Esempio: 21000000"
+
+#: app/charts/templates/charts/add_coin.html:142
+msgid "Difficulty:"
+msgstr "Difficoltà:"
+
+#: app/charts/templates/charts/add_coin.html:143
+msgid "Example: 00000000"
+msgstr "Esempio: 00000000"
+
+#: app/charts/templates/charts/add_coin.html:156
+msgid "Fee:"
+msgstr "Commissione:"
+
+#: app/charts/templates/charts/add_coin.html:157
+#: app/charts/templates/charts/add_coin.html:168
+msgid "Example: 150 xmr"
+msgstr "Esempio: 150 xmr"
+
+#: app/charts/templates/charts/add_coin.html:167
+msgid "Revenue:"
+msgstr "Rendita"
+
+#: app/charts/templates/charts/add_coin.html:179
+msgid "Blocksize:"
+msgstr "Dimensione Blocco"
+
+#: app/charts/templates/charts/add_coin.html:180
+msgid "Example: 15 kb"
+msgstr "Esempio: 15 kb"
+
+#: app/charts/templates/charts/add_coin.html:193
+msgid "Save:"
+msgstr "Salva:"
+
+#: app/charts/templates/charts/add_coin.html:194
+msgid "Add"
+msgstr "Aggiungi"
+
+#: app/charts/templates/charts/adoption_changelist.html:4
+#: app/charts/templates/charts/usage_changelist.html:4
+msgid "Import CSV"
+msgstr "Importa CSV"
+
+#: app/charts/templates/charts/base.html:8
+#: app/charts/templates/charts/base.html:13
+#: app/charts/templates/charts/base.html:19
+#: app/charts/templates/charts/users_base.html:9
+#: app/charts/templates/charts/users_base.html:25
+#: app/charts/templates/charts/users_base.html:27
+msgid ""
+"Your information source about Monero, with metrics, charts, stats and "
+"articles."
+msgstr ""
+"La tua fonte di informazioni su Monero, con metriche, grafici, statistiche e "
+"articoli."
+
+#: app/charts/templates/charts/base.html:12
+#: app/charts/templates/charts/base.html:18
+#: app/charts/templates/charts/users_base.html:24
+#: app/charts/templates/charts/users_base.html:26
+#: app/charts/templates/charts/users_base.html:110
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/base.html:108
+msgid "Metrics"
+msgstr "Metriche"
+
+#: app/charts/templates/charts/base.html:115
+msgid "Price (18)"
+msgstr "Prezzo (18)"
+
+#: app/charts/templates/charts/base.html:120
+#: app/charts/templates/charts/base.html:152
+#: app/charts/templates/charts/base.html:172
+#: app/charts/templates/charts/base.html:201
+#: app/charts/templates/charts/base.html:222
+#: app/charts/templates/charts/base.html:240
+#: app/charts/templates/charts/base.html:286
+#: app/charts/templates/charts/base.html:307
+#: app/charts/templates/charts/base.html:322
+#: app/charts/templates/charts/base.html:341
+msgid "Charts:"
+msgstr "Grafici:"
+
+#: app/charts/templates/charts/base.html:121
+msgid "Price in Dollars (Log.)"
+msgstr "Prezzo in Dollari (Log.)"
+
+#: app/charts/templates/charts/base.html:122
+msgid "Price in Dollars (Lin.)"
+msgstr "Prezzo in Dollari (Lin.)"
+
+#: app/charts/templates/charts/base.html:123
+msgid "Price in BTC (Lin.)"
+msgstr "Prezzo in BTC (Lin.)"
+
+#: app/charts/templates/charts/base.html:124
+msgid "Price in BTC (Log.)"
+msgstr "Prezzo in BTC (Log.)"
+
+#: app/charts/templates/charts/base.html:125
+#: app/charts/templates/charts/fractal.html:17
+msgid "Fractal Multiple"
+msgstr "Frattale Multiplo"
+
+#: app/charts/templates/charts/base.html:126
+#: app/charts/templates/charts/inflationfractal.html:17
+msgid "Inflation-Adjusted Fractal"
+msgstr "Frattale Aggiustato Per Inflazione"
+
+#: app/charts/templates/charts/base.html:127
+#: app/charts/templates/charts/marketcycle.html:17
+msgid "Market Cycle"
+msgstr "Ciclo di Mercato"
+
+#: app/charts/templates/charts/base.html:128
+#: app/charts/templates/charts/golden.html:17
+msgid "Golden Ratio Multiplier"
+msgstr "Moltiplicatore di Fibonacci"
+
+#: app/charts/templates/charts/base.html:129
+msgid "Performance ($, Log.)"
+msgstr "Performance ($, Log.)"
+
+#: app/charts/templates/charts/base.html:130
+msgid "Performance ($, Lin.)"
+msgstr "Performance ($, Lin.)"
+
+#: app/charts/templates/charts/base.html:131
+msgid "Performance (BTC, Log.)"
+msgstr "Performance (BTC, Log.)"
+
+#: app/charts/templates/charts/base.html:132
+msgid "Performance (BTC, Lin.)"
+msgstr "Performance (BTC, Lin.)"
+
+#: app/charts/templates/charts/base.html:133
+msgid "Return vs. Inflation"
+msgstr "Rendita vs Inflazione"
+
+#: app/charts/templates/charts/base.html:134
+msgid "Comparison to Bitcoin"
+msgstr "Confronto con Bitcoin"
+
+#: app/charts/templates/charts/base.html:135
+#: app/charts/templates/charts/powerlaw.html:17
+msgid "Power Law"
+msgstr "Legge di Potenza"
+
+#: app/charts/templates/charts/base.html:136
+#: app/charts/templates/charts/thermocap.html:17
+#: app/charts/templates/charts/thermocap.html:184
+#: app/charts/templates/charts/thermocap.html:197
+#: app/charts/templates/charts/thermocap.html:271
+msgid "Thermocap Multiple"
+msgstr "Multiplo Thermocap"
+
+#: app/charts/templates/charts/base.html:137
+#: app/charts/templates/charts/sharpe.html:17
+#: app/charts/templates/charts/sharpe.html:72
+#: app/charts/templates/charts/sharpe.html:85
+#: app/charts/templates/charts/sharpe.html:193
+msgid "Sharpe Ratio"
+msgstr "Indice di Sharpe"
+
+#: app/charts/templates/charts/base.html:138
+msgid "Price Deviation"
+msgstr "Deviazione del Prezzo"
+
+#: app/charts/templates/charts/base.html:138
+#: app/charts/templates/charts/base.html:184
+#: app/charts/templates/charts/base.html:185
+#: app/charts/templates/charts/base.html:186
+#: app/charts/templates/charts/base.html:187
+#: app/charts/templates/charts/base.html:248
+#: app/charts/templates/charts/base.html:256
+#: app/charts/templates/charts/base.html:257
+#: app/charts/templates/charts/base.html:258
+#: app/charts/templates/charts/base.html:259
+#: app/charts/templates/charts/base.html:260
+#: app/charts/templates/charts/base.html:261
+#: app/charts/templates/charts/base.html:262
+msgid "New"
+msgstr "Nuovo"
+
+#: app/charts/templates/charts/base.html:147
+msgid "Marketcap (6)"
+msgstr "Capitalizzazione di Mercato (6)"
+
+#: app/charts/templates/charts/base.html:153
+#, fuzzy
+#| msgid "Monero Means Money"
+msgid "Monero's Dominance"
+msgstr "Dominanza Monero"
+
+#: app/charts/templates/charts/base.html:154
+msgid "Monero Privacy Dominance"
+msgstr "Dominanza Mercato Privacy di Monero"
+
+#: app/charts/templates/charts/base.html:155
+msgid "Total Privacy Dominance"
+msgstr "Dominanza Mercato Privacy (Totale)"
+
+#: app/charts/templates/charts/base.html:156
+msgid "Monero's CMC Rank"
+msgstr "Posizione Classifica CMC di Monero"
+
+#: app/charts/templates/charts/base.html:157
+msgid "Privacy Coins' Marketcap"
+msgstr "Marketcap Privacy Coin"
+
+#: app/charts/templates/charts/base.html:158
+#: app/charts/templates/charts/privacymarketcap.html:91
+#: app/charts/templates/charts/privacymarketcap.html:104
+msgid "Total Privacy Marketcap"
+msgstr "Marketcap Privacy Totale"
+
+#: app/charts/templates/charts/base.html:167
+msgid "Transactions (15)"
+msgstr "Transazioni (15)"
+
+#: app/charts/templates/charts/base.html:173
+msgid "Transaction Count (Lin.)"
+msgstr "Num. Transazioni (Lin.)"
+
+#: app/charts/templates/charts/base.html:174
+msgid "Transaction Count (Log.)"
+msgstr "Num. Transazioni (Log.)"
+
+#: app/charts/templates/charts/base.html:175
+msgid "Monthly Transactions (Lin.)"
+msgstr "Num. Transazioni Mensile (Lin.)"
+
+#: app/charts/templates/charts/base.html:176
+msgid "Transaction Cost ($)"
+msgstr "Costo Transazione ($)"
+
+#: app/charts/templates/charts/base.html:177
+msgid "Transaction Cost (Ntv.)"
+msgstr "Costo Transazione (Ntv.)"
+
+#: app/charts/templates/charts/base.html:178
+msgid "Transaction Percentage"
+msgstr "Percentuale Transazioni"
+
+#: app/charts/templates/charts/base.html:179
+msgid "Monthly Percentage (Lin.)"
+msgstr "Percentuale Mensile (Lin.)"
+
+#: app/charts/templates/charts/base.html:180
+#: app/charts/templates/charts/shielded.html:17
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Shielded Transactions"
+msgstr "Transazioni Veloci ed Economiche"
+
+#: app/charts/templates/charts/base.html:181
+msgid "Competitors' Transac."
+msgstr "Transazioni dei Competitor"
+
+#: app/charts/templates/charts/base.html:182
+#: app/charts/templates/charts/metcalfesats.html:17
+msgid "Metcalfe's Law (BTC)"
+msgstr "Legge di Metcalfe (BTC)"
+
+#: app/charts/templates/charts/base.html:183
+msgid "Metcalfe's Law ($)"
+msgstr "Legge di Metcalfe ($)"
+
+#: app/charts/templates/charts/base.html:184
+msgid "Metc. Deviation (BTC)"
+msgstr "Deviazione Metcalfe (BTC)"
+
+#: app/charts/templates/charts/base.html:185
+msgid "Metcalfe Deviation ($)"
+msgstr "Deviazione Metcalfe ($)"
+
+#: app/charts/templates/charts/base.html:186
+msgid "Transac. Price Dev."
+msgstr "Deviazione Prezzo Trans."
+
+#: app/charts/templates/charts/base.html:187
+msgid "Transac. Dominance"
+msgstr "Dominanza Transazioni"
+
+#: app/charts/templates/charts/base.html:196
+msgid "Issuance (7)"
+msgstr "Emissione (7)"
+
+#: app/charts/templates/charts/base.html:202
+#: app/charts/templates/charts/coins.html:17
+msgid "Coins in Circulation"
+msgstr "Monete in Circolazione"
+
+#: app/charts/templates/charts/base.html:203
+#: app/charts/templates/charts/extracoins.html:17
+#: app/charts/templates/charts/extracoins.html:163
+msgid "Supply Difference"
+msgstr "Differenza Offerta"
+
+#: app/charts/templates/charts/base.html:204
+msgid "Annual Inflation"
+msgstr "Inflazione Annuale"
+
+#: app/charts/templates/charts/base.html:205
+msgid "Tail Emission"
+msgstr "Emissione Residua"
+
+#: app/charts/templates/charts/base.html:206
+msgid "Competitors' Inflation"
+msgstr "Inflazione dei Competitor"
+
+#: app/charts/templates/charts/base.html:207
+msgid "Daily Emission ($)"
+msgstr "Emissione Giornaliera ($)"
+
+#: app/charts/templates/charts/base.html:208
+msgid "Daily Emission (Ntv.)"
+msgstr "Emissione Giornaliera (Ntv.)"
+
+#: app/charts/templates/charts/base.html:218
+#, fuzzy
+#| msgid "Stock-to-flow Model"
+msgid "Stock-to-flow (3)"
+msgstr "Modello Stock-to-Flow"
+
+#: app/charts/templates/charts/base.html:223
+#, fuzzy
+#| msgid "Stock-to-flow Model"
+msgid "Stock-to-flow (Log.)"
+msgstr "Modello Stock-to-Flow"
+
+#: app/charts/templates/charts/base.html:224
+#, fuzzy
+#| msgid "Stock-to-flow Model"
+msgid "Stock-to-flow (Lin.)"
+msgstr "Modello Stock-to-Flow"
+
+#: app/charts/templates/charts/base.html:225
+#, fuzzy
+#| msgid "Stock-to-flow Model"
+msgid "Stock-to-flow Multiple"
+msgstr "Modello Stock-to-Flow"
+
+#: app/charts/templates/charts/base.html:235
+msgid "Mining (22)"
+msgstr "Mining (22)"
+
+#: app/charts/templates/charts/base.html:241
+msgid "Hashrate"
+msgstr "Hashrate"
+
+#: app/charts/templates/charts/base.html:242
+msgid "Price Per Hashrate"
+msgstr "Prezzo Per Hashrate"
+
+#: app/charts/templates/charts/base.html:243
+msgid "Hashrate vs Price"
+msgstr "Hashrate / Prezzo"
+
+#: app/charts/templates/charts/base.html:244
+msgid "Miner Revenue ($)"
+msgstr "Rendita Miner ($)"
+
+#: app/charts/templates/charts/base.html:245
+msgid "Miner Revenue (Ntv.)"
+msgstr "Rendita Miner (Ntv.)"
+
+#: app/charts/templates/charts/base.html:246
+msgid "Miner Fees ($)"
+msgstr "Commissioni Miner ($)"
+
+#: app/charts/templates/charts/base.html:247
+msgid "Miner Fees (Ntv.)"
+msgstr "Commissioni Miner (Ntv.)"
+
+#: app/charts/templates/charts/base.html:248
+msgid "Mining Profitability"
+msgstr "Redditività Mining"
+
+#: app/charts/templates/charts/base.html:249
+#, python-format
+msgid "Revenue / Marketcap (%%)"
+msgstr "Rendita / Marketcap (%%)"
+
+#: app/charts/templates/charts/base.html:250
+msgid "Miner Commitment ($)"
+msgstr "Impegno Miner ($)"
+
+#: app/charts/templates/charts/base.html:251
+msgid "Miner Commitment (Ntv.)"
+msgstr "Impegno Miner (Ntv.)"
+
+#: app/charts/templates/charts/base.html:252
+msgid "Block Size (Bytes)"
+msgstr "Dimensione Blocco (Byte)"
+
+#: app/charts/templates/charts/base.html:253
+msgid "Blockchain Size (Bytes)"
+msgstr "Dimensione Blockchain (Byte)"
+
+#: app/charts/templates/charts/base.html:254
+msgid "Transaction Size (Bytes)"
+msgstr "Dimensione Transazioni (Byte)"
+
+#: app/charts/templates/charts/base.html:255
+#: app/charts/templates/charts/difficulty.html:17
+msgid "Mining Difficulty"
+msgstr "Difficoltà Mining"
+
+#: app/charts/templates/charts/base.html:256
+msgid "Security Budget"
+msgstr "Budget di Sicurezza"
+
+#: app/charts/templates/charts/base.html:257
+msgid "Breakeven Efficiency"
+msgstr "Efficienza Breakeven"
+
+#: app/charts/templates/charts/base.html:258
+msgid "P2Pool Hashrate"
+msgstr "Hashrate P2Pool"
+
+#: app/charts/templates/charts/base.html:259
+#: app/charts/templates/charts/p2pool_dominance.html:67
+#: app/charts/templates/charts/p2pool_dominance.html:79
+msgid "P2Pool Dominance"
+msgstr "Dominanza P2Pool"
+
+#: app/charts/templates/charts/base.html:260
+#: app/charts/templates/charts/p2pool_miners.html:67
+#: app/charts/templates/charts/p2pool_miners.html:79
+msgid "P2Pool Miners"
+msgstr "Miner P2Pool"
+
+#: app/charts/templates/charts/base.html:261
+#: app/charts/templates/charts/p2pool_totalblocks.html:17
+#: app/charts/templates/charts/p2pool_totalblocks.html:67
+#: app/charts/templates/charts/p2pool_totalblocks.html:79
+msgid "P2Pool Blocks Found"
+msgstr "Blocchi P2Pool Estratti"
+
+#: app/charts/templates/charts/base.html:262
+msgid "P2Pool Hashes Found"
+msgstr "Hash P2Pool Trovati"
+
+#: app/charts/templates/charts/base.html:274
+msgid "Social"
+msgstr "Social"
+
+#: app/charts/templates/charts/base.html:281
+msgid "Reddit (7)"
+msgstr "Reddit (7)"
+
+#: app/charts/templates/charts/base.html:287
+msgid "Total Subscribers"
+msgstr "Totale Abbonati"
+
+#: app/charts/templates/charts/base.html:288
+msgid "Daily Comments"
+msgstr "Commenti Giornalieri"
+
+#: app/charts/templates/charts/base.html:289
+msgid "Daily Posts"
+msgstr "Post Giornalieri"
+
+#: app/charts/templates/charts/base.html:290
+msgid "Monthly Increase"
+msgstr "Aumento Mensile"
+
+#: app/charts/templates/charts/base.html:291
+msgid "Dollars per Subscriber"
+msgstr "Dollari per Abbonato"
+
+#: app/charts/templates/charts/base.html:292
+msgid "Subscribers Percentage"
+msgstr "Percentuale Abbonati"
+
+#: app/charts/templates/charts/base.html:293
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Subscribers & Transactions"
+msgstr "Transazioni Veloci ed Economiche"
+
+#: app/charts/templates/charts/base.html:302
+msgid "Subscribers (1)"
+msgstr "Abbonati (1)"
+
+#: app/charts/templates/charts/base.html:308
+msgid "Dread Subscribers"
+msgstr "Abbonati a Dread"
+
+#: app/charts/templates/charts/base.html:317
+msgid "Adoption (5)"
+msgstr "Adozione (5)"
+
+#: app/charts/templates/charts/base.html:323
+msgid "Coincards Usage"
+msgstr "Utilizzo Coincard"
+
+#: app/charts/templates/charts/base.html:324
+msgid "Merchant Acceptance"
+msgstr "Diffusione Commercianti"
+
+#: app/charts/templates/charts/base.html:325
+msgid "Merchant Increase"
+msgstr "Aumento Commercianti"
+
+#: app/charts/templates/charts/base.html:326
+#, python-format
+msgid "Merchant Increase (%%)"
+msgstr "Aumento Commercianti (%%)"
+
+#: app/charts/templates/charts/base.html:327
+msgid "Dex Volume"
+msgstr "Volume Dex"
+
+#: app/charts/templates/charts/base.html:336
+msgid "Google Trends (1)"
+msgstr "Google Trends (1)"
+
+#: app/charts/templates/charts/base.html:344
+#, fuzzy
+#| msgid "Evolving Trends"
+msgid "Google Trends"
+msgstr "Google Trend"
+
+#: app/charts/templates/charts/bitcoin.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Bitcoin Comparison"
+msgstr "Revuo Moneroj - Confronto con Bitcoin"
+
+#: app/charts/templates/charts/bitcoin.html:17
+#: app/charts/templates/charts/blockchainsize.html:17
+msgid "Total Blockchain Size for Monero and Bitcoin (KB)"
+msgstr "Dimensione Totale Blockchain Monero e Bitcoin (KB)"
+
+#: app/charts/templates/charts/bitcoin.html:22
+#: app/charts/templates/charts/bitcoin.html:46
+#: app/charts/templates/charts/blockchainsize.html:22
+#: app/charts/templates/charts/blocksize.html:22
+#: app/charts/templates/charts/coincards.html:22
+#: app/charts/templates/charts/coins.html:23
+#: app/charts/templates/charts/commit.html:22
+#: app/charts/templates/charts/commitntv.html:22
+#: app/charts/templates/charts/competitors.html:22
+#: app/charts/templates/charts/competitorslin.html:22
+#: app/charts/templates/charts/competitorssats.html:22
+#: app/charts/templates/charts/competitorssatslin.html:22
+#: app/charts/templates/charts/compinflation.html:25
+#: app/charts/templates/charts/comptransactions.html:25
+#: app/charts/templates/charts/dailyemission.html:22
+#: app/charts/templates/charts/dailyemissionntv.html:22
+#: app/charts/templates/charts/deviation.html:22
+#: app/charts/templates/charts/deviation_tx.html:22
+#: app/charts/templates/charts/dex_volume.html:22
+#: app/charts/templates/charts/difficulty.html:22
+#: app/charts/templates/charts/dominance.html:22
+#: app/charts/templates/charts/dread_subscribers.html:22
+#: app/charts/templates/charts/efficiency.html:22
+#: app/charts/templates/charts/extracoins.html:22
+#: app/charts/templates/charts/fractal.html:22
+#: app/charts/templates/charts/golden.html:22
+#: app/charts/templates/charts/hashprice.html:22
+#: app/charts/templates/charts/hashrate.html:22
+#: app/charts/templates/charts/hashvsprice.html:22
+#: app/charts/templates/charts/inflation.html:22
+#: app/charts/templates/charts/inflationfractal.html:22
+#: app/charts/templates/charts/inflationreturn.html:22
+#: app/charts/templates/charts/marketcap.html:22
+#: app/charts/templates/charts/marketcycle.html:22
+#: app/charts/templates/charts/merchants.html:22
+#: app/charts/templates/charts/merchants_increase.html:22
+#: app/charts/templates/charts/merchants_percentage.html:22
+#: app/charts/templates/charts/metcalfe_deviation.html:22
+#: app/charts/templates/charts/metcalfesats.html:22
+#: app/charts/templates/charts/metcalfesats_deviation.html:22
+#: app/charts/templates/charts/metcalfeusd.html:22
+#: app/charts/templates/charts/minerfees.html:22
+#: app/charts/templates/charts/minerfeesntv.html:22
+#: app/charts/templates/charts/minerrev.html:22
+#: app/charts/templates/charts/minerrevcap.html:22
+#: app/charts/templates/charts/minerrevntv.html:22
+#: app/charts/templates/charts/monerodominance.html:22
+#: app/charts/templates/charts/p2pool_dominance.html:22
+#: app/charts/templates/charts/p2pool_hashrate.html:22
+#: app/charts/templates/charts/p2pool_miners.html:22
+#: app/charts/templates/charts/p2pool_totalblocks.html:22
+#: app/charts/templates/charts/p2pool_totalhashes.html:22
+#: app/charts/templates/charts/percentage.html:22
+#: app/charts/templates/charts/percentmonth.html:22
+#: app/charts/templates/charts/powerlaw.html:22
+#: app/charts/templates/charts/pricelin.html:22
+#: app/charts/templates/charts/pricelog.html:22
+#: app/charts/templates/charts/pricesats.html:21
+#: app/charts/templates/charts/pricesatslog.html:21
+#: app/charts/templates/charts/privacydominance.html:22
+#: app/charts/templates/charts/privacymarketcap.html:22
+#: app/charts/templates/charts/rank.html:22
+#: app/charts/templates/charts/securitybudget.html:22
+#: app/charts/templates/charts/sfmodel.html:22
+#: app/charts/templates/charts/sfmodellin.html:22
+#: app/charts/templates/charts/sfmultiple.html:22
+#: app/charts/templates/charts/sharpe.html:22
+#: app/charts/templates/charts/shielded.html:22
+#: app/charts/templates/charts/social.html:22
+#: app/charts/templates/charts/social_comments_per_day.html:22
+#: app/charts/templates/charts/social_comments_per_day.html:42
+#: app/charts/templates/charts/social_dividend.html:22
+#: app/charts/templates/charts/social_monthly_increase.html:22
+#: app/charts/templates/charts/social_monthly_increase.html:42
+#: app/charts/templates/charts/social_posts_per_day.html:22
+#: app/charts/templates/charts/social_posts_per_day.html:42
+#: app/charts/templates/charts/social_subscribers_percentage.html:22
+#: app/charts/templates/charts/social_transactions_percentage.html:22
+#: app/charts/templates/charts/tail_emission.html:22
+#: app/charts/templates/charts/thermocap.html:22
+#: app/charts/templates/charts/transactiondominance.html:22
+#: app/charts/templates/charts/transactionsize.html:22
+#: app/charts/templates/charts/transcost.html:22
+#: app/charts/templates/charts/transcostntv.html:22
+#: app/charts/templates/charts/translin.html:22
+#: app/charts/templates/charts/translog.html:22
+#: app/charts/templates/charts/transmonth.html:22
+#: app/charts/templates/charts/withdrawals.html:22
+msgid "About this chart?"
+msgstr "Info su questo grafico"
+
+#: app/charts/templates/charts/bitcoin.html:41
+msgid "Comparison to Bitcoin (aligned)"
+msgstr "Confronto con Bitcoin (allineato)"
+
+#: app/charts/templates/charts/bitcoin.html:66
+#: app/charts/templates/charts/blockchainsize.html:44
+#: app/charts/templates/charts/blocksize.html:44
+#: app/charts/templates/charts/coincards.html:44
+#: app/charts/templates/charts/coins.html:45
+#: app/charts/templates/charts/commit.html:44
+#: app/charts/templates/charts/commitntv.html:44
+#: app/charts/templates/charts/competitors.html:44
+#: app/charts/templates/charts/competitorslin.html:44
+#: app/charts/templates/charts/competitorssats.html:45
+#: app/charts/templates/charts/competitorssatslin.html:45
+#: app/charts/templates/charts/compinflation.html:47
+#: app/charts/templates/charts/comptransactions.html:47
+#: app/charts/templates/charts/dailyemission.html:44
+#: app/charts/templates/charts/dailyemissionntv.html:44
+#: app/charts/templates/charts/deviation.html:44
+#: app/charts/templates/charts/deviation_tx.html:44
+#: app/charts/templates/charts/dex_volume.html:44
+#: app/charts/templates/charts/difficulty.html:44
+#: app/charts/templates/charts/dominance.html:44
+#: app/charts/templates/charts/dread_subscribers.html:44
+#: app/charts/templates/charts/efficiency.html:44
+#: app/charts/templates/charts/extracoins.html:46
+#: app/charts/templates/charts/fractal.html:44
+#: app/charts/templates/charts/golden.html:44
+#: app/charts/templates/charts/hashprice.html:44
+#: app/charts/templates/charts/hashrate.html:44
+#: app/charts/templates/charts/hashvsprice.html:44
+#: app/charts/templates/charts/inflation.html:43
+#: app/charts/templates/charts/inflationfractal.html:44
+#: app/charts/templates/charts/inflationreturn.html:44
+#: app/charts/templates/charts/marketcap.html:44
+#: app/charts/templates/charts/marketcycle.html:44
+#: app/charts/templates/charts/merchants.html:45
+#: app/charts/templates/charts/merchants_increase.html:44
+#: app/charts/templates/charts/merchants_percentage.html:45
+#: app/charts/templates/charts/metcalfe_deviation.html:44
+#: app/charts/templates/charts/metcalfesats.html:44
+#: app/charts/templates/charts/metcalfesats_deviation.html:44
+#: app/charts/templates/charts/metcalfeusd.html:44
+#: app/charts/templates/charts/minerfees.html:44
+#: app/charts/templates/charts/minerfeesntv.html:44
+#: app/charts/templates/charts/minerrevcap.html:44
+#: app/charts/templates/charts/minerrevntv.html:44
+#: app/charts/templates/charts/miningprofitability.html:44
+#: app/charts/templates/charts/monerodominance.html:44
+#: app/charts/templates/charts/p2pool_dominance.html:44
+#: app/charts/templates/charts/p2pool_hashrate.html:44
+#: app/charts/templates/charts/p2pool_miners.html:44
+#: app/charts/templates/charts/p2pool_totalblocks.html:44
+#: app/charts/templates/charts/p2pool_totalhashes.html:44
+#: app/charts/templates/charts/percentage.html:44
+#: app/charts/templates/charts/percentmonth.html:45
+#: app/charts/templates/charts/powerlaw.html:44
+#: app/charts/templates/charts/pricelin.html:44
+#: app/charts/templates/charts/pricelog.html:44
+#: app/charts/templates/charts/pricesats.html:43
+#: app/charts/templates/charts/pricesatslog.html:43
+#: app/charts/templates/charts/privacydominance.html:44
+#: app/charts/templates/charts/privacymarketcap.html:44
+#: app/charts/templates/charts/rank.html:44
+#: app/charts/templates/charts/securitybudget.html:44
+#: app/charts/templates/charts/sfmodel.html:44
+#: app/charts/templates/charts/sfmodellin.html:44
+#: app/charts/templates/charts/sfmultiple.html:44
+#: app/charts/templates/charts/sharpe.html:44
+#: app/charts/templates/charts/shielded.html:44
+#: app/charts/templates/charts/social.html:40
+#: app/charts/templates/charts/social_comments_per_day.html:60
+#: app/charts/templates/charts/social_dividend.html:44
+#: app/charts/templates/charts/social_monthly_increase.html:60
+#: app/charts/templates/charts/social_posts_per_day.html:60
+#: app/charts/templates/charts/social_subscribers_percentage.html:40
+#: app/charts/templates/charts/social_transactions_percentage.html:44
+#: app/charts/templates/charts/tail_emission.html:44
+#: app/charts/templates/charts/thermocap.html:44
+#: app/charts/templates/charts/transactiondominance.html:44
+#: app/charts/templates/charts/transactionsize.html:44
+#: app/charts/templates/charts/transcost.html:44
+#: app/charts/templates/charts/transcostntv.html:44
+#: app/charts/templates/charts/translin.html:44
+#: app/charts/templates/charts/translog.html:44
+#: app/charts/templates/charts/transmonth.html:44
+#: app/charts/templates/charts/withdrawals.html:44
+#, fuzzy
+#| msgid "About this chart?"
+msgid "Help about the chart"
+msgstr "Info su questo grafico"
+
+#: app/charts/templates/charts/bitcoin.html:67
+#: app/charts/templates/charts/blockchainsize.html:45
+#: app/charts/templates/charts/blocksize.html:45
+#: app/charts/templates/charts/coincards.html:45
+#: app/charts/templates/charts/coins.html:46
+#: app/charts/templates/charts/commit.html:45
+#: app/charts/templates/charts/commitntv.html:45
+#: app/charts/templates/charts/competitors.html:45
+#: app/charts/templates/charts/competitorslin.html:45
+#: app/charts/templates/charts/competitorssats.html:46
+#: app/charts/templates/charts/competitorssatslin.html:46
+#: app/charts/templates/charts/compinflation.html:48
+#: app/charts/templates/charts/comptransactions.html:48
+#: app/charts/templates/charts/dailyemission.html:45
+#: app/charts/templates/charts/dailyemissionntv.html:45
+#: app/charts/templates/charts/deviation.html:45
+#: app/charts/templates/charts/deviation_tx.html:45
+#: app/charts/templates/charts/difficulty.html:45
+#: app/charts/templates/charts/dominance.html:45
+#: app/charts/templates/charts/dread_subscribers.html:45
+#: app/charts/templates/charts/efficiency.html:45
+#: app/charts/templates/charts/extracoins.html:47
+#: app/charts/templates/charts/fractal.html:45
+#: app/charts/templates/charts/golden.html:45
+#: app/charts/templates/charts/hashprice.html:45
+#: app/charts/templates/charts/hashrate.html:45
+#: app/charts/templates/charts/hashvsprice.html:45
+#: app/charts/templates/charts/inflation.html:44
+#: app/charts/templates/charts/inflationfractal.html:45
+#: app/charts/templates/charts/inflationreturn.html:45
+#: app/charts/templates/charts/marketcap.html:45
+#: app/charts/templates/charts/marketcycle.html:45
+#: app/charts/templates/charts/merchants.html:46
+#: app/charts/templates/charts/merchants_increase.html:45
+#: app/charts/templates/charts/merchants_percentage.html:46
+#: app/charts/templates/charts/metcalfe_deviation.html:45
+#: app/charts/templates/charts/metcalfesats.html:45
+#: app/charts/templates/charts/metcalfesats_deviation.html:45
+#: app/charts/templates/charts/metcalfeusd.html:45
+#: app/charts/templates/charts/minerfees.html:45
+msgid "Cancel"
+msgstr "Annulla"
+
+#: app/charts/templates/charts/bitcoin.html:72
+msgid ""
+"\n"
+"                These three charts show the comparison between Bitcoin's and "
+"Monero's prices since inception. On the\n"
+"                first chart, both coins are compared with the X axis being "
+"the current\n"
+"                date those prices happened. For the second chart, I placed "
+"both first local tops at the \"day zero\", and\n"
+"                it is easily visible how both coins are very similar. While "
+"BTC took 900\n"
+"                days to achieve 37x return, Monero took 1279 days to give "
+"95x return. Since Monero's cycle is longer in\n"
+"                days because it somewhat depends on how much time Bitcoin's "
+"bull market\n"
+"                will take to finnish (and each cycle takes more time than "
+"the previous), Monero's return in one whole\n"
+"                bull market was much better than Bitcoin's. I plotted this "
+"chart in order\n"
+"                to make evident how the narrative that \"Bitcoin is better "
+"any other coins\" can be somehow too narrow.\n"
+"                The last chart has a distorted time scale to show how both "
+"coins\n"
+"                look very much like the other, and in fact it seems Monero "
+"is printing a fractal from Bitcoin's second\n"
+"                cycle... but with a better return on capital.\n"
+"                "
+msgstr ""
+"\n"
+"                Questi tre grafici confrontano il prezzo di Bitcoin e Monero "
+"dalla loro nascita. Nel \n"
+"                primo grafico, un punto nell'asse X indica la data in\n"
+"                cui la coin ha raggiunto un determinato prezzo. Nel secondo "
+"grafico i primi top di entrambe le coin indicano il \"giorno zero\", ed è\n"
+"                facile notare che i loro andamenti sono molto simili. Mentre "
+"BTC ci messo 900\n"
+"                giorni per ottenere un ritorno del 37x, Monero ha impiegato "
+"1279 giorni per dare un ritorno del 95x. Il ciclo di Monero è più lungo in "
+"termini di durata\n"
+"                perché in qualche modo dipende da quanto tempo il bull "
+"market di Bitcoin\n"
+"                impiega per terminare (e ogni ciclo impiega dura di più del "
+"precedente). I risultati di Monero nel bull market sono stati\n"
+"                decisamente migliori di quelli di Bitcoin. I grafici sono "
+"stati disposti in ordine\n"
+"                per rendere evidente come la narrativa \"Bitcoin è meglio di "
+"qualsiasi altra coin\" sia soltanto fette di salame sugli occhi.\n"
+"                L'ultimo grafico presenta una scala temporale distorta in "
+"modo da mostrare come entrambe le coin\n"
+"                si assomiglino molto, e in effetti sembra che Monero stia "
+"delineando un frattale dal secondo ciclo di Bitcoin...\n"
+"                ma con migliori ritorni sul capitale.\n"
+"                "
+
+#: app/charts/templates/charts/bitcoin.html:89
+#: app/charts/templates/charts/blockchainsize.html:53
+#: app/charts/templates/charts/blocksize.html:57
+#: app/charts/templates/charts/coincards.html:53
+#: app/charts/templates/charts/coins.html:60
+#: app/charts/templates/charts/commit.html:59
+#: app/charts/templates/charts/commitntv.html:61
+#: app/charts/templates/charts/competitors.html:61
+#: app/charts/templates/charts/competitorslin.html:61
+#: app/charts/templates/charts/competitorssats.html:62
+#: app/charts/templates/charts/competitorssatslin.html:62
+#: app/charts/templates/charts/compinflation.html:64
+#: app/charts/templates/charts/comptransactions.html:58
+#: app/charts/templates/charts/dailyemission.html:57
+#: app/charts/templates/charts/dailyemissionntv.html:53
+#: app/charts/templates/charts/deviation.html:53
+#: app/charts/templates/charts/deviation_tx.html:58
+#: app/charts/templates/charts/dex_volume.html:56
+#: app/charts/templates/charts/difficulty.html:53
+#: app/charts/templates/charts/dominance.html:53
+#: app/charts/templates/charts/dread_subscribers.html:53
+#: app/charts/templates/charts/efficiency.html:62
+#: app/charts/templates/charts/extracoins.html:59
+#: app/charts/templates/charts/fractal.html:58
+#: app/charts/templates/charts/golden.html:61
+#: app/charts/templates/charts/hashprice.html:60
+#: app/charts/templates/charts/hashrate.html:57
+#: app/charts/templates/charts/hashvsprice.html:53
+#: app/charts/templates/charts/inflation.html:59
+#: app/charts/templates/charts/inflationfractal.html:58
+#: app/charts/templates/charts/inflationreturn.html:60
+#: app/charts/templates/charts/marketcap.html:53
+#: app/charts/templates/charts/marketcycle.html:53
+#: app/charts/templates/charts/merchants.html:54
+#: app/charts/templates/charts/merchants_increase.html:53
+#: app/charts/templates/charts/merchants_percentage.html:54
+#: app/charts/templates/charts/metcalfe_deviation.html:56
+#: app/charts/templates/charts/metcalfesats.html:63
+#: app/charts/templates/charts/metcalfesats_deviation.html:56
+#: app/charts/templates/charts/metcalfeusd.html:63
+#: app/charts/templates/charts/minerfees.html:53
+#: app/charts/templates/charts/minerfeesntv.html:53
+#: app/charts/templates/charts/minerrevcap.html:57
+#: app/charts/templates/charts/minerrevntv.html:57
+#: app/charts/templates/charts/miningprofitability.html:53
+#: app/charts/templates/charts/monerodominance.html:53
+#: app/charts/templates/charts/p2pool_dominance.html:55
+#: app/charts/templates/charts/p2pool_miners.html:55
+#: app/charts/templates/charts/p2pool_totalblocks.html:55
+#: app/charts/templates/charts/p2pool_totalhashes.html:55
+#: app/charts/templates/charts/percentage.html:56
+#: app/charts/templates/charts/percentmonth.html:56
+#: app/charts/templates/charts/powerlaw.html:58
+#: app/charts/templates/charts/pricelin.html:56
+#: app/charts/templates/charts/pricelog.html:56
+#: app/charts/templates/charts/pricesats.html:55
+#: app/charts/templates/charts/pricesatslog.html:55
+#: app/charts/templates/charts/privacydominance.html:55
+#: app/charts/templates/charts/privacymarketcap.html:55
+#: app/charts/templates/charts/rank.html:55
+#: app/charts/templates/charts/securitybudget.html:57
+#: app/charts/templates/charts/sfmodel.html:60
+#: app/charts/templates/charts/sfmodellin.html:60
+#: app/charts/templates/charts/sfmultiple.html:60
+#: app/charts/templates/charts/sharpe.html:59
+#: app/charts/templates/charts/shielded.html:53
+#: app/charts/templates/charts/social.html:55
+#: app/charts/templates/charts/social_comments_per_day.html:76
+#: app/charts/templates/charts/social_dividend.html:58
+#: app/charts/templates/charts/social_monthly_increase.html:75
+#: app/charts/templates/charts/social_posts_per_day.html:76
+#: app/charts/templates/charts/social_subscribers_percentage.html:56
+#: app/charts/templates/charts/social_transactions_percentage.html:53
+#: app/charts/templates/charts/tail_emission.html:54
+#: app/charts/templates/charts/thermocap.html:62
+#: app/charts/templates/charts/transactiondominance.html:57
+#: app/charts/templates/charts/transactionsize.html:57
+#: app/charts/templates/charts/transcost.html:54
+#: app/charts/templates/charts/transcostntv.html:57
+#: app/charts/templates/charts/translin.html:59
+#: app/charts/templates/charts/translog.html:59
+#: app/charts/templates/charts/transmonth.html:53
+#: app/charts/templates/charts/withdrawals.html:53
+msgid "Close"
+msgstr "Chiudi"
+
+#: app/charts/templates/charts/bitcoin.html:102
+#: app/charts/templates/charts/bitcoin.html:114
+#: app/charts/templates/charts/bitcoin.html:151
+#: app/charts/templates/charts/bitcoin.html:163
+msgid "Bitcoin Return on Capital"
+msgstr "Ritorno sul Capitale (Bitcoin)"
+
+#: app/charts/templates/charts/bitcoin.html:126
+#: app/charts/templates/charts/bitcoin.html:139
+#: app/charts/templates/charts/bitcoin.html:175
+#: app/charts/templates/charts/bitcoin.html:187
+msgid "Monero Return on Capital"
+msgstr "Ritorno sul Capitale (Monero)"
+
+#: app/charts/templates/charts/bitcoin.html:245
+#: app/charts/templates/charts/bitcoin.html:325
+#: app/charts/templates/charts/fractal.html:162
+#: app/charts/templates/charts/inflationfractal.html:162
+msgid "Multiple from previous top"
+msgstr "Multiplo da top precedenti"
+
+#: app/charts/templates/charts/blockchainsize.html:4
+#: app/charts/templates/charts/securitybudget.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Blockchain Size"
+msgstr "Revuo Moneroj - Dimensione Blockchain"
+
+#: app/charts/templates/charts/blockchainsize.html:50
+msgid ""
+"This chart shows the average space in disc that the whole blockchain of "
+"Bitcoin and Monero ocupy."
+msgstr ""
+"Questo grafico mostra la media dello spazio di memoria su disco che le "
+"blockchain di Bitcoin e Monero richiedono."
+
+#: app/charts/templates/charts/blockchainsize.html:66
+#: app/charts/templates/charts/blockchainsize.html:78
+msgid "Bitcoin Blockchain Size"
+msgstr "Dimensione Blockchain Bitcoin"
+
+#: app/charts/templates/charts/blockchainsize.html:90
+#: app/charts/templates/charts/blockchainsize.html:102
+msgid "Monero Blockchain Size"
+msgstr "Dimensione Blockchain Monero"
+
+#: app/charts/templates/charts/blockchainsize.html:158
+msgid "Blockchain Size (KB)"
+msgstr "Dimensione Blockchain (KB)"
+
+#: app/charts/templates/charts/blocksize.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Block Size"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/blocksize.html:17
+msgid "Average Block Size for both Monero and Bitcoin (KB)"
+msgstr "Media Dimensione Blocchi per Monero e Bitcoin (KB)"
+
+#: app/charts/templates/charts/blocksize.html:50
+msgid ""
+"\n"
+"                This chart shows the average space in disc that each block "
+"ocupies daily for both Bitcoin and Monero. To obtain the total disc space "
+"used daily, \n"
+"                you have to multiply by the number of blocks each day.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico illustra lo spazio medio di archiviazione che "
+"ogni blocco ocuppa giornalmente sia per Bitcoin che per Monero. Per ottere "
+"il totale dello spazio di archiviazione usato giornalmente, \n"
+"                è necessario moltiplicare per il numero di blocchi "
+"giornalieri.\n"
+"                "
+
+#: app/charts/templates/charts/blocksize.html:70
+#: app/charts/templates/charts/blocksize.html:82
+msgid "Bitcoin Block Size"
+msgstr "Dimensione Blocco Bitcoin"
+
+#: app/charts/templates/charts/blocksize.html:94
+#: app/charts/templates/charts/blocksize.html:106
+msgid "Monero Block Size"
+msgstr "Dimensione Blocco Monero"
+
+#: app/charts/templates/charts/blocksize.html:162
+msgid "Average Block Size (KB)"
+msgstr "Media Dimensione Blocco (KB)"
+
+#: app/charts/templates/charts/coincards.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Coincards Usage"
+msgstr "Revuo Moneroj - Utilizzo Coincards"
+
+#: app/charts/templates/charts/coincards.html:17
+#, python-format
+msgid "Coincards Usage (%%)"
+msgstr "Utilizzo Coincard (%%)"
+
+#: app/charts/templates/charts/coincards.html:50
+msgid "Coincards usage (percentage)."
+msgstr "Utilizzo Coincard (percentuale)."
+
+#: app/charts/templates/charts/coincards.html:138
+#: app/charts/templates/charts/coincards.html:150
+msgid "Others"
+msgstr "Altro"
+
+#: app/charts/templates/charts/coincards.html:206
+#: app/charts/templates/charts/metcalfe_deviation.html:162
+#: app/charts/templates/charts/metcalfesats_deviation.html:162
+#: app/charts/templates/charts/percentage.html:136
+#, python-format
+msgid "Percentage (%%)"
+msgstr "Percentuale (%%)"
+
+#: app/charts/templates/charts/coins.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Coins in Circulation"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/coins.html:51
+msgid ""
+"\n"
+"                This chart shows the total issuance in units of both Bitcoin "
+"and Monero. You can see Monero is a younger\n"
+"                project, since it started after. Both coins\n"
+"                were distributed to miners, without premine. The main "
+"difference is Monero will be scarce comparing to\n"
+"                Bitcoin until Bitcoin's next halving.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il totale dell'emissione di coin per "
+"Bitcoin e Monero. Si noti che Monero è un progetto\n"
+"                più giovane, dal momento che ha avuto inizio in seguito a "
+"Bitcoin. Entrambe le coin\n"
+"                sono state distribuite ai miner (dunque senza premine). La "
+"differenza principale è che Monero sarà scarso in confronto a Bitcoin fino "
+"al suo\n"
+"                prossimo halving.\n"
+"                "
+
+#: app/charts/templates/charts/coins.html:72
+#: app/charts/templates/charts/coins.html:84
+msgid "Monero Supply"
+msgstr "Offerta Monero"
+
+#: app/charts/templates/charts/coins.html:96
+#: app/charts/templates/charts/coins.html:108
+msgid "Bitcoin Supply"
+msgstr "Offerta Bitcoin"
+
+#: app/charts/templates/charts/coins.html:120
+#: app/charts/templates/charts/coins.html:132
+msgid "Monero Future Supply"
+msgstr "Offerta Monero Futura"
+
+#: app/charts/templates/charts/coins.html:144
+#: app/charts/templates/charts/coins.html:156
+msgid "Bitcoin Future Supply"
+msgstr "Offerta Bitcoin Futura"
+
+#: app/charts/templates/charts/coins.html:212
+msgid "Coins"
+msgstr "Coin"
+
+#: app/charts/templates/charts/commit.html:4
+#: app/charts/templates/charts/commitntv.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Miner Commitment"
+msgstr "Revuo Moneroj - Impegno dei Miner"
+
+#: app/charts/templates/charts/commit.html:17
+msgid ""
+"Miner Commitment (Hashrate divided by revenue, hashs/dollar) - WARNING: "
+"DON'T COMPARE DIRECTLY BOTH COINS"
+msgstr ""
+"Impegno dei Miner (Hasharate diviso da rendita, hashs/dollari) - ATTENZIONE: "
+"NON CONFRONTARE DIRETTAMENTE ENTRAMBE LE COIN"
+
+#: app/charts/templates/charts/commit.html:50
+msgid ""
+"\n"
+"                This chart shows how much hashpower miners put into the "
+"network considering their revenue in dollars.\n"
+"                Higher numbers mean miners expect the value of the coin to "
+"keep increasing, since no miner would\n"
+"                increase hashpower if they didnt expect better returns.\n"
+"                However Bitcoin's and Monero's hashpowers can't be directly "
+"compared. The viewer must only look for each\n"
+"                coin's particular increase as a percentage of itself.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra quanta potenza di calcolo i miner "
+"impiegano nella rete considerando la rendita in dollari.\n"
+"                Valori alti indicano che i miner si aspettano che il valore "
+"della coin continuerà a crescere, visto che nessun miner impiegherebbe\n"
+"                più hashpower se non si aspettasse incassi migliori.\n"
+"                Tuttavia l'hashpower di Bitcoin e Monero non possono essere "
+"confrontanti direttamente, e dovrebbe essere preso in considerazione "
+"soltanto \n"
+"                l'aumento in percentuale della coin di interesse.<br>\n"
+"                "
+
+#: app/charts/templates/charts/commit.html:71
+#: app/charts/templates/charts/commit.html:83
+#: app/charts/templates/charts/commitntv.html:73
+#: app/charts/templates/charts/commitntv.html:85
+msgid "Monero Miner Commitment"
+msgstr "Impegno Miner Monero"
+
+#: app/charts/templates/charts/commit.html:95
+#: app/charts/templates/charts/commit.html:107
+#: app/charts/templates/charts/commitntv.html:97
+#: app/charts/templates/charts/commitntv.html:109
+msgid "Bitcoin Miner Commitment"
+msgstr "Impegno Miner Bitcoin"
+
+#: app/charts/templates/charts/commit.html:163
+msgid "Miner Commitment (hashes/dollar)"
+msgstr "Impegno Miner (hashes/dollari)"
+
+#: app/charts/templates/charts/commitntv.html:17
+msgid ""
+"Miner Commitment (Hashrate divided by revenue, hashs/coin) - WARNING: DON'T "
+"COMPARE DIRECTLY BOTH COINS"
+msgstr ""
+"Impegno dei Miner (Hasharate diviso da rendita, hashs/dollari) - ATTENZIONE: "
+"NON CONFRONTARE DIRETTAMENTE ENTRAMBE LE COIN"
+
+#: app/charts/templates/charts/commitntv.html:50
+msgid ""
+"\n"
+"                This chart shows how much hashpower miners put into the "
+"network considering their revenue in native\n"
+"                coins.\n"
+"                Higher numbers mean miners expect the value of the coin to "
+"keep increasing, since no miner would\n"
+"                increase hashpower if they didnt expect better returns.\n"
+"                However Bitcoin's and Monero's hashpowers can't be directly "
+"compared. The viewer must only look for each\n"
+"                coin's particular increase as a percentage of itself.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra quanta potenza di calcolo i miner "
+"impiegano nella rete considerando la rendita nella coin nativa.\n"
+"                Valori alti indicano che i miner si aspettano che il valore "
+"della coin continuerà a crescere, visto che nessun miner impiegherebbe\n"
+"                più hashpower se non si aspettasse incassi migliori.\n"
+"                Tuttavia l'hashpower di Bitcoin e Monero non possono essere "
+"confrontanti direttamente, e dovrebbe essere preso in considerazione "
+"soltanto \n"
+"                l'aumento in percentuale della coin di interesse.<br>\n"
+"                "
+
+#: app/charts/templates/charts/commitntv.html:165
+msgid "Miner Commitment (hashes/coin)"
+msgstr "Impegno Miner (hashes/coin)"
+
+#: app/charts/templates/charts/competitors.html:4
+#: app/charts/templates/charts/competitorslin.html:4
+#: app/charts/templates/charts/competitorssats.html:4
+#: app/charts/templates/charts/competitorssatslin.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Competitor Performance"
+msgstr "Revuo Moneroj - Performance dei Competitor"
+
+#: app/charts/templates/charts/competitors.html:17
+msgid "Competitor Performance (Log Scale)"
+msgstr "Performance Competitor (Scala Log)"
+
+#: app/charts/templates/charts/competitors.html:50
+#: app/charts/templates/charts/competitorslin.html:50
+#: app/charts/templates/charts/competitorssats.html:51
+#: app/charts/templates/charts/competitorssatslin.html:51
+msgid ""
+"\n"
+"                This chart shows the comparison between Monero's most "
+"important competitors. It shows their return as a\n"
+"                multiplication of the price on their respective first top.\n"
+"                This chart shows clearly that the coin with the lowest "
+"inflation is the one that protects most the\n"
+"                purchasing power of its holders. In this case, since "
+"Monero's Inflation\n"
+"                is way lower than its competitors, it takes the cake as the "
+"best coin (or, in other words, the one that\n"
+"                made people most for their money).\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mette in confronto Monero con i suoi "
+"competitor più importanti, calcolando la loro ritorno come risultato della\n"
+"                multiplicazione con il prezzo del loro rispettivo primo "
+"top.\n"
+"                È possibile notare chiaramente che la coin con il più basso "
+"tasso di inflazione è quella che protegge di più il\n"
+"                potere di acquisto dei suoi holder. In questo caso, dato che "
+"l'inflazione di Monero\n"
+"                è decisamente più basso dei suoi competitor, e vince nel "
+"confronto di migliore coin.\n"
+"                "
+
+#: app/charts/templates/charts/competitors.html:73
+#: app/charts/templates/charts/competitors.html:85
+#: app/charts/templates/charts/competitorslin.html:73
+#: app/charts/templates/charts/competitorslin.html:85
+#: app/charts/templates/charts/competitorssats.html:74
+#: app/charts/templates/charts/competitorssats.html:86
+#: app/charts/templates/charts/competitorssatslin.html:74
+#: app/charts/templates/charts/competitorssatslin.html:86
+#: app/charts/templates/charts/inflationreturn.html:72
+#: app/charts/templates/charts/inflationreturn.html:89
+msgid "Dash Return On Capital"
+msgstr "Ritorno sul Capitale (Dash)"
+
+#: app/charts/templates/charts/competitors.html:97
+#: app/charts/templates/charts/competitors.html:109
+#: app/charts/templates/charts/competitorslin.html:97
+#: app/charts/templates/charts/competitorslin.html:109
+#: app/charts/templates/charts/competitorssats.html:98
+#: app/charts/templates/charts/competitorssats.html:110
+#: app/charts/templates/charts/competitorssatslin.html:98
+#: app/charts/templates/charts/competitorssatslin.html:110
+#: app/charts/templates/charts/inflationreturn.html:106
+#: app/charts/templates/charts/inflationreturn.html:123
+msgid "Grin Return On Capital"
+msgstr "Ritorno sul Capitale (Grin)"
+
+#: app/charts/templates/charts/competitors.html:121
+#: app/charts/templates/charts/competitors.html:133
+#: app/charts/templates/charts/competitorslin.html:121
+#: app/charts/templates/charts/competitorslin.html:133
+#: app/charts/templates/charts/competitorssats.html:122
+#: app/charts/templates/charts/competitorssats.html:134
+#: app/charts/templates/charts/competitorssatslin.html:122
+#: app/charts/templates/charts/competitorssatslin.html:134
+#: app/charts/templates/charts/inflationreturn.html:140
+#: app/charts/templates/charts/inflationreturn.html:157
+msgid "Zcash Return On Capital"
+msgstr "Ritorno sul Capitale (Zcash)"
+
+#: app/charts/templates/charts/competitors.html:145
+#: app/charts/templates/charts/competitors.html:158
+#: app/charts/templates/charts/competitorslin.html:145
+#: app/charts/templates/charts/competitorslin.html:158
+#: app/charts/templates/charts/competitorssats.html:146
+#: app/charts/templates/charts/competitorssats.html:159
+#: app/charts/templates/charts/competitorssatslin.html:146
+#: app/charts/templates/charts/competitorssatslin.html:159
+#: app/charts/templates/charts/inflationreturn.html:174
+#: app/charts/templates/charts/inflationreturn.html:191
+msgid "Monero Return On Capital"
+msgstr "Ritorno sul Capitale (Monero)"
+
+#: app/charts/templates/charts/competitors.html:214
+#: app/charts/templates/charts/competitorslin.html:214
+#: app/charts/templates/charts/competitorssats.html:215
+#: app/charts/templates/charts/competitorssatslin.html:215
+msgid "Multiple from first top"
+msgstr "Multiplo da top precedenti"
+
+#: app/charts/templates/charts/competitorslin.html:17
+msgid "Competitor Performance (Linear Scale)"
+msgstr "Performance Competitor (Scala Lineare)"
+
+#: app/charts/templates/charts/competitorssats.html:17
+#: app/charts/templates/charts/competitorssatslin.html:17
+msgid "Competitor Performance"
+msgstr "Performance dei Competitor"
+
+#: app/charts/templates/charts/compinflation.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Inflation"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/compinflation.html:17
+msgid ""
+"\n"
+"                    Annualized Inflation for Monero and its competitors "
+"(Bitcoin and\n"
+"                                privacy-oriented Dash, Zcash and Grin)\n"
+"                    "
+msgstr ""
+"\n"
+"                    Inflazione Annuale di Monero e dei suoi competitor "
+"(Bitcoin e\n"
+"                                coint orientate alla privacy come Dash, "
+"Zcash and Grin)\n"
+"                    "
+
+#: app/charts/templates/charts/compinflation.html:53
+msgid ""
+"\n"
+"                This chart shows a comparison between the annual inflation "
+"rate of Monero and its competitors. The lower\n"
+"                the inflation, the better, since lower inflation rates\n"
+"                protect better the purchasing power of its holders. Monero "
+"is by far the best privacy coin you hold,\n"
+"                since its inflation is way lower than the others. Another "
+"thing\n"
+"                evident from this chart is that the other privacy coins are "
+"many years away from having an inflation\n"
+"                rate as small as Monero. Cool!\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico confronta il tasso di inflazione annuale di "
+"Monero e dei suoi competitor. Più basso è\n"
+"                il tasso di inflazione, più è protetto il potere di "
+"acquisto\n"
+"                dei suoi holder. Monero è la miglior privacy coin da "
+"holdare,\n"
+"                in quanto il suo tasso di inflazione è inferiore rispetto "
+"alle altre coin. È possibile notare anche\n"
+"                che le altre privacy coins sono lontane anni dall'avere un "
+"tasso di inflazione\n"
+"                basso come quello di Monero. Figo!\n"
+"                "
+
+#: app/charts/templates/charts/compinflation.html:77
+#: app/charts/templates/charts/compinflation.html:89
+msgid "Dash Annual Inflation"
+msgstr "Inflazione Annuale Dash"
+
+#: app/charts/templates/charts/compinflation.html:101
+#: app/charts/templates/charts/compinflation.html:113
+msgid "Grin Annual Inflation"
+msgstr "Inflazione Annuale Grin"
+
+#: app/charts/templates/charts/compinflation.html:125
+#: app/charts/templates/charts/compinflation.html:137
+msgid "Zcash Annual Inflation"
+msgstr "Inflazione Annuale Zcash"
+
+#: app/charts/templates/charts/compinflation.html:149
+#: app/charts/templates/charts/compinflation.html:162
+msgid "Monero Annual Inflation"
+msgstr "Inflazione Annuale Monero"
+
+#: app/charts/templates/charts/compinflation.html:174
+#: app/charts/templates/charts/compinflation.html:187
+msgid "Bitcoin Annual Inflation"
+msgstr "Inflazione Annuale Bitcoin"
+
+#: app/charts/templates/charts/compinflation.html:243
+#: app/charts/templates/charts/inflation.html:213
+#, python-format
+msgid "Inflation (%%)"
+msgstr "Inflazione (%%)"
+
+#: app/charts/templates/charts/comptransactions.html:4
+#: app/charts/templates/charts/transactionsize.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Transactions"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/comptransactions.html:17
+msgid ""
+"\n"
+"                    Daily Transactions for Monero and its competitors "
+"(Bitcoin and\n"
+"                                privacy-oriented Dash, Zcash and Grin)\n"
+"                    "
+msgstr ""
+"\n"
+"                    Transazioni Giornaliere di Monero e dei suoi competitor "
+"(Bitcoin e\n"
+"                                privacy-oriented Dash, Zcash and Grin)\n"
+"                    "
+
+#: app/charts/templates/charts/comptransactions.html:53
+msgid ""
+"\n"
+"                This chart shows a comparison between the daily transaction "
+"numbers for Bitcoin, Monero and the other major privacy-oriented "
+"cryptocurrencies. Chart provided as courtesy from Cake Wallet and Monero."
+"com. <a href=\"https://monero.com/charts/total_transactions\" "
+"target=\"_blank\">Link.</a><br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico confronta il numero di transazioni "
+"giornaliere di Bitcoin, Monero e altre coin privacy-oriented. Grafico "
+"fornito cortesemente da Cake Wallet and Monero.com. <a href=\"https://monero."
+"com/charts/total_transactions\" target=\"_blank\">Link.</a><br>\n"
+"                "
+
+#: app/charts/templates/charts/comptransactions.html:71
+#: app/charts/templates/charts/comptransactions.html:83
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Dash Daily Transactions"
+msgstr "Transazioni Veloci ed Economiche"
+
+#: app/charts/templates/charts/comptransactions.html:95
+#: app/charts/templates/charts/comptransactions.html:107
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Grin Daily Transactions"
+msgstr "Transazioni Veloci ed Economiche"
+
+#: app/charts/templates/charts/comptransactions.html:119
+#: app/charts/templates/charts/comptransactions.html:131
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Zcash Daily Transactions"
+msgstr "Transazioni Veloci ed Economiche"
+
+#: app/charts/templates/charts/comptransactions.html:143
+#: app/charts/templates/charts/comptransactions.html:156
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Monero Daily Transactions"
+msgstr "Transazioni Veloci ed Economiche"
+
+#: app/charts/templates/charts/comptransactions.html:168
+#: app/charts/templates/charts/comptransactions.html:181
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Bitcoin Daily Transactions"
+msgstr "Transazioni Veloci ed Economiche"
+
+#: app/charts/templates/charts/comptransactions.html:204
+msgid "Moneroj<br>Chart provided courtesy of Cake Wallet and Monero.com"
+msgstr "Moneroj<br>Grafico fornito cortesemente da Cake Wallet e Monero.com"
+
+#: app/charts/templates/charts/comptransactions.html:237
+#: app/charts/templates/charts/translin.html:72
+#: app/charts/templates/charts/translin.html:85
+#: app/charts/templates/charts/translin.html:182
+#: app/charts/templates/charts/translog.html:72
+#: app/charts/templates/charts/translog.html:85
+#: app/charts/templates/charts/translog.html:182
+#: app/charts/templates/charts/withdrawals.html:66
+#: app/charts/templates/charts/withdrawals.html:79
+msgid "Transactions"
+msgstr "Transazioni"
+
+#: app/charts/templates/charts/dailyemission.html:4
+#: app/charts/templates/charts/dailyemissionntv.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Daily Emission"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/dailyemission.html:17
+#: app/charts/templates/charts/dailyemission.html:161
+msgid "Daily Emission (USD)"
+msgstr "Emissione Giornaliera (USD)"
+
+#: app/charts/templates/charts/dailyemission.html:50
+msgid ""
+"\n"
+"                This chart shows the total issuance in units of both Bitcoin "
+"and Monero calculated in dollars. This cant\n"
+"                also be seen as how much money one would need to buy all "
+"newly mined coins in the last day.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico illustra l'offerta totale di Bitcoin e Monero "
+"calcolata in dollari, ovvero\n"
+"                quanti soldi servirebbero per comprare tutte le coin "
+"estratte fino ad oggi.\n"
+"                "
+
+#: app/charts/templates/charts/dailyemission.html:69
+#: app/charts/templates/charts/dailyemission.html:81
+#, fuzzy
+#| msgid "Monero Means Money"
+msgid "Monero Emission"
+msgstr "Monero è Denaro"
+
+#: app/charts/templates/charts/dailyemission.html:93
+#: app/charts/templates/charts/dailyemission.html:105
+msgid "Bitcoin Emission"
+msgstr "Emissione Bitcoin"
+
+#: app/charts/templates/charts/dailyemissionntv.html:17
+#: app/charts/templates/charts/dailyemissionntv.html:158
+msgid "Daily Emission (Native Units)"
+msgstr "Emissione Giornaliera (Unità Native)"
+
+#: app/charts/templates/charts/dailyemissionntv.html:50
+msgid "This chart shows the number of all mined coins daily."
+msgstr ""
+"Questo grafico mostra lo storico del numero di monete coniate giornalmente."
+
+#: app/charts/templates/charts/dailyemissionntv.html:66
+#: app/charts/templates/charts/dailyemissionntv.html:78
+msgid "Monero Daily Emission"
+msgstr "Emissione Giornaliera Monero"
+
+#: app/charts/templates/charts/dailyemissionntv.html:90
+#: app/charts/templates/charts/dailyemissionntv.html:102
+msgid "Bitcoin Daily Emission"
+msgstr "Emissione Giornaliera Bitcoin"
+
+#: app/charts/templates/charts/deviation.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Price Deviation"
+msgstr "Revuo Moneroj - Deviazione Prezzo"
+
+#: app/charts/templates/charts/deviation.html:17
+msgid "Price Deviation from 6-Month Average"
+msgstr "Deviazione Prezzo dalla Media di 6 Mesi"
+
+#: app/charts/templates/charts/deviation.html:50
+msgid ""
+"This chart shows the average deviation percentage from the 180 days simple "
+"average and also the total deviation in dollars."
+msgstr ""
+"Questo grafico mostra la media della percentuale di deviazione dalla media "
+"semplice a 180 giorni e anche la deviazione totale in dollari."
+
+#: app/charts/templates/charts/deviation.html:66
+#: app/charts/templates/charts/deviation.html:79
+msgid "Deviation (Dollars)"
+msgstr "Deviazione (Dollari)"
+
+#: app/charts/templates/charts/deviation.html:92
+#: app/charts/templates/charts/deviation.html:105
+#: app/charts/templates/charts/deviation_tx.html:84
+msgid "Deviation (Percentage)"
+msgstr "Deviazione (Percentuale)"
+
+#: app/charts/templates/charts/deviation.html:118
+#: app/charts/templates/charts/deviation.html:130
+#: app/charts/templates/charts/deviation_tx.html:97
+#: app/charts/templates/charts/deviation_tx.html:109
+#: app/charts/templates/charts/dominance.html:94
+#: app/charts/templates/charts/dominance.html:107
+#: app/charts/templates/charts/rank.html:93
+#: app/charts/templates/charts/rank.html:105
+#: app/charts/templates/charts/transactiondominance.html:69
+#: app/charts/templates/charts/transactiondominance.html:81
+#: app/charts/templates/charts/translin.html:97
+#: app/charts/templates/charts/translin.html:109
+#: app/charts/templates/charts/translog.html:109
+msgid "Price"
+msgstr "Prezzo"
+
+#: app/charts/templates/charts/deviation.html:186
+#: app/charts/templates/charts/deviation_tx.html:165
+#: app/charts/templates/charts/dominance.html:163
+#: app/charts/templates/charts/golden.html:422
+#: app/charts/templates/charts/hashvsprice.html:178
+#: app/charts/templates/charts/metcalfeusd.html:200
+#: app/charts/templates/charts/powerlaw.html:248
+#: app/charts/templates/charts/pricelin.html:172
+#: app/charts/templates/charts/pricelog.html:172
+#: app/charts/templates/charts/rank.html:161
+#: app/charts/templates/charts/sfmodel.html:223
+#: app/charts/templates/charts/sfmodellin.html:199
+#: app/charts/templates/charts/sharpe.html:176
+#: app/charts/templates/charts/thermocap.html:254
+#: app/charts/templates/charts/translin.html:165
+#: app/charts/templates/charts/translog.html:165
+msgid "Price (USD)"
+msgstr "Prezzo (USD)"
+
+#: app/charts/templates/charts/deviation.html:203
+#: app/charts/templates/charts/deviation_tx.html:71
+msgid "Deviation"
+msgstr "Deviazione"
+
+#: app/charts/templates/charts/deviation_tx.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Transacted Price Deviation"
+msgstr "Revuo Moneroj - Deviazione Contrattazione Prezzi"
+
+#: app/charts/templates/charts/deviation_tx.html:17
+msgid "Transacted Price Deviation (USD)"
+msgstr "Deviazione Prezzo Contrattato (USD)"
+
+#: app/charts/templates/charts/deviation_tx.html:50
+msgid ""
+"\n"
+"                This chart shows the price deviation from the 180 days "
+"moving average increased by the surge in daily transactions, when compared "
+"by the 180 days averaged transaction number.\n"
+"                Big positive spikes indicate selling pressure at high "
+"prices. Negative values indicate accumulation over a negative price "
+"deviation. Momentum shifts bearish to bullish \n"
+"                when the indicator breaks above zero, and indicates bearish "
+"momentum when the opposite happens. Values are capped at 100 and -100 for "
+"better visualization. <br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico illustra la deviazione del prezzo dalla media "
+"mobile a 180 giorni che varia in base al numero di transazioni giornaliere, "
+"in confronto con la media a 180 giorni del numero di transazioni.\n"
+"                Grandi spike positivi indicano una pressione di vendita "
+"quando il prezzo aumenta. Valori negativi indicano un'accumulazione su una "
+"deviazione negativa del prezzo. Il momentum si inverte da bearish a "
+"bullish \n"
+"                quando l'indicatore rompe sopra lo zero, e indica momentum "
+"quando avviene l'opposto. I valori sono compresi nell'intervallo [100, -100] "
+"per una migliore visualizzazione. <br>\n"
+"                "
+
+#: app/charts/templates/charts/deviation_tx.html:182
+#: app/charts/templates/charts/metcalfe_deviation.html:179
+msgid "Deviation (USD)"
+msgstr "Deviazione (USD)"
+
+#: app/charts/templates/charts/dex_volume.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Dex Volume"
+msgstr "Revuo Moneroj - Volume Dex"
+
+#: app/charts/templates/charts/dex_volume.html:17
+#, fuzzy
+#| msgid "Dex Volume"
+msgid "Daily Dex volume"
+msgstr "Volume Dex Giornaliero"
+
+#: app/charts/templates/charts/dex_volume.html:50
+msgid ""
+"\n"
+"                Daily overall volume on Haveno and Bisq.<br>\n"
+"                Data provided by <a href=\"https://haveno.markets\">haveno."
+"markets</a> and <a href=\"https://markets.bisq.network/\">bisq.markets</"
+"a><br>\n"
+"                "
+msgstr ""
+"\n"
+"                Volume giornaliero complessivo su Haveno e Bisq.<br>\n"
+"                Dati forniti da <a href=\"https://haveno.markets\">haveno."
+"markets</a> e <a href=\"https://markets.bisq.network/\">bisq.markets</"
+"a><br>\n"
+"                "
+
+#: app/charts/templates/charts/dex_volume.html:136
+#, fuzzy
+#| msgid "Price (USD)"
+msgid "Volume (USD)"
+msgstr "Volume (USD)"
+
+#: app/charts/templates/charts/difficulty.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Mining Difficulty"
+msgstr "Revuo Moneroj - Difficoltà Mining"
+
+#: app/charts/templates/charts/difficulty.html:50
+msgid ""
+"This chart shows the current mining difficulty for Monero and Bitcoin. They "
+"are not directly comparable."
+msgstr ""
+"Questo grafico mostra la difficoltà di mining corrente per Monero e Bitcoin. "
+"Non sono però direttamente confrontabili."
+
+#: app/charts/templates/charts/difficulty.html:66
+#: app/charts/templates/charts/difficulty.html:78
+msgid "Bitcoin Mining Difficulty"
+msgstr "Difficoltà Mining Bitcoin"
+
+#: app/charts/templates/charts/difficulty.html:90
+#: app/charts/templates/charts/difficulty.html:102
+msgid "Monero Mining Difficulty"
+msgstr "Difficoltà Mining Monero"
+
+#: app/charts/templates/charts/dominance.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Marketcap Dominance"
+msgstr "Revuo Moneroj - Dominanza di Mercato"
+
+#: app/charts/templates/charts/dominance.html:17
+#, python-format
+msgid "Monero's Marketcap Dominance (%%)"
+msgstr "Dominanza di Mercato di Monero (%%)"
+
+#: app/charts/templates/charts/dominance.html:50
+msgid ""
+"This chart shows Monero's dominance over the whole cryptocurrency market, "
+"judging by total marketcap value in dollars."
+msgstr ""
+"Questo grafico mostra la dominanza di Monero sulla capitalizzazione totale "
+"del mercato delle criptovalute in dollari"
+
+#: app/charts/templates/charts/dominance.html:67
+#: app/charts/templates/charts/dominance.html:81
+msgid "Dominance"
+msgstr "Dominanza"
+
+#: app/charts/templates/charts/dominance.html:180
+#: app/charts/templates/charts/monerodominance.html:133
+#: app/charts/templates/charts/privacydominance.html:152
+#: app/charts/templates/charts/transactiondominance.html:137
+#, python-format
+msgid "Dominance (%%)"
+msgstr "Dominanza (%%)"
+
+#: app/charts/templates/charts/dread_subscribers.html:4
+#: app/charts/templates/charts/shielded.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Dread Subscribers"
+msgstr "Revuo Moneroj - Abbonati Dread"
+
+#: app/charts/templates/charts/dread_subscribers.html:17
+msgid "Dread Subscribes (Darknet forum)"
+msgstr "Abbonati Dread (forum Darknet)"
+
+#: app/charts/templates/charts/dread_subscribers.html:50
+msgid "Number of subscribers to Bitcoin and Monero threads on Dread forum."
+msgstr "Numero di abbonati a thread Bitcoin e Monero sul forum Dread."
+
+#: app/charts/templates/charts/dread_subscribers.html:65
+#: app/charts/templates/charts/dread_subscribers.html:86
+msgid "Bitcoin Darknet Subscribers"
+msgstr "Abbonati Darknet a Bitcoin"
+
+#: app/charts/templates/charts/dread_subscribers.html:108
+#: app/charts/templates/charts/dread_subscribers.html:129
+msgid "Monero Darknet Subscribers"
+msgstr "Abbonati Darknet a Monero"
+
+#: app/charts/templates/charts/dread_subscribers.html:195
+msgid "Subscribers"
+msgstr "Abbonati"
+
+#: app/charts/templates/charts/efficiency.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Breakeven Efficiency"
+msgstr "Revuo Moneroj - Efficienza di Breakeven"
+
+#: app/charts/templates/charts/efficiency.html:17
+msgid ""
+"Breakeven efficiency required for mining profitability for Monero and "
+"Bitcoin (at $0.10/KWh, Hashes/Watt*second)"
+msgstr ""
+"Efficienza di Breakeven richiesta affinché il mining di Monero e Bitcoin sia "
+"profittevole (a $0.10/KWh, Hashes/Watt*second)"
+
+#: app/charts/templates/charts/efficiency.html:50
+msgid ""
+"\n"
+"                This chart shows the Breakeven Efficiency required for both "
+"Monero and Bitcoin calculated at energy cost of $0.10/KWh. \n"
+"                This is the minimum efficiency you would need to mine "
+"profitably (mining income >= electricity cost) at any given moment. \n"
+"                This value is directly proportional to your electricity "
+"cost: for example, if your energy cost is $0.20/KWh, just multiply the value "
+"on the chart by 2. \n"
+"                That will give you the number of H/s you must produce for "
+"each Watt of electricity you consume. \n"
+"                In simple words, divide your hashrate (H/s) by your power "
+"consumption at the wall (Watts); \n"
+"                if this number is bigger than the latest Breakeven "
+"efficiency on the chart, then you are mining at a profit; otherwise, you are "
+"mining at a loss.<br><br>\n"
+"                Chart suggested by community member endor00.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra l'Efficienza di Breakeven richiesta "
+"per Monero e Bitcoin, calcolata in base ad un prezzo dell'energia di $0.10/"
+"KWh. \n"
+"                Questa è l'efficienza minima necessaria affinché l'attività "
+"di mining sia profittevole (entrate mining >= costo elettricità). \n"
+"                Il valore è direttamente proporzionale al costo "
+"dell'elettricità: per esempio, se il costo dell'energia è pari a $0.20/KWh, "
+"basta moltiplicare il valore sul grafico per 2. \n"
+"                Il risultato corrisponde al numero di H/s da produrre per "
+"ogni Watt di elettricità consumato. \n"
+"                In parole povere, dividi l'hashrate (H/s) per la potenza "
+"consumata (Watts); \n"
+"                se questo numero è maggiore dell'ultimo Breakeven di "
+"efficienza sul grafico, allora si sta minando in profitto; altrimenti, si è "
+"perdita.<br><br>\n"
+"                Grafico consigliato dal membro della comunità Monero "
+"endor00.\n"
+"                "
+
+#: app/charts/templates/charts/efficiency.html:75
+#: app/charts/templates/charts/efficiency.html:87
+msgid "Bitcoin Breakeven Efficiency at $0.10/KWh"
+msgstr "Efficienza di Breakeven di Bitcoin a $0.10/KWh"
+
+#: app/charts/templates/charts/efficiency.html:99
+#: app/charts/templates/charts/efficiency.html:111
+msgid "Monero Breakeven Efficiency at $0.10/KWh"
+msgstr "Efficienza di Breakeven di Monero a $0.10/KWh"
+
+#: app/charts/templates/charts/efficiency.html:167
+msgid "Breakeven Efficiency (Hashs / Watt * second)"
+msgstr "Efficienza di Breakeven (Hash / Watt * secondi)"
+
+#: app/charts/templates/charts/extracoins.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Supply Difference"
+msgstr "Revuo Moneroj - Differenza Offerta"
+
+#: app/charts/templates/charts/extracoins.html:52
+msgid ""
+"\n"
+"                This chart shows the difference between Bitcoin supply and "
+"Monero supply. Formula is BTC-Supply -\n"
+"                XMR-Supply.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra la differenza tra l'offerta di Bitcoin "
+"e Monero. La formula è BTC-Supply -\n"
+"                XMR-Supply.\n"
+"                "
+
+#: app/charts/templates/charts/extracoins.html:71
+#: app/charts/templates/charts/extracoins.html:83
+msgid "Current Difference"
+msgstr "Differenza Attuale"
+
+#: app/charts/templates/charts/extracoins.html:95
+#: app/charts/templates/charts/extracoins.html:107
+msgid "Future Difference"
+msgstr "Differenza Futura"
+
+#: app/charts/templates/charts/fractal.html:4
+#: app/charts/templates/charts/inflationfractal.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Fractal Multiple"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/fractal.html:50
+msgid ""
+"\n"
+"                This is a very simple chart that displays Monero's two "
+"cycles, one above the other, as fractals one from\n"
+"                the other. This shows the past and current returns\n"
+"                as a multiple from the previous cycle top.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo è un semplice grafico che illustra i due cicli di "
+"Monero, uno sopra l'altro, come frattali l'uno dell'\n"
+"                altro. Indica inoltre i ritorni sul capitale presenti e "
+"passati\n"
+"                come multipli del loro top del ciclo precedente.\n"
+"                "
+
+#: app/charts/templates/charts/fractal.html:70
+#: app/charts/templates/charts/fractal.html:82
+#: app/charts/templates/charts/inflationfractal.html:70
+#: app/charts/templates/charts/inflationfractal.html:82
+msgid "First Cycle"
+msgstr "Primo Ciclo"
+
+#: app/charts/templates/charts/fractal.html:94
+#: app/charts/templates/charts/fractal.html:106
+#: app/charts/templates/charts/inflationfractal.html:94
+#: app/charts/templates/charts/inflationfractal.html:106
+msgid "Second Cycle"
+msgstr "Secondo Ciclo"
+
+#: app/charts/templates/charts/golden.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Golden Ratio Multiplier"
+msgstr "Revuo Moneroj - Moltiplicatore di Fibonacci"
+
+#: app/charts/templates/charts/golden.html:50
+msgid ""
+"\n"
+"                As proposed by Philip Swift <a\n"
+"                    href=\"https://positivecrypto.medium.com/the-golden-"
+"ratio-multiplier-c2567401e12a\">here</a>, this\n"
+"                chart uses the same\n"
+"                indicator known as GRM (Golden Ratio Multiplier) to find "
+"nice spots where the coin is overbought,\n"
+"                indicating sell signals. The algo automatically calculates "
+"(based on a\n"
+"                certain logic) where would be reasonable to sell.\n"
+"                "
+msgstr ""
+"\n"
+"                Come proposto da Philip Swift <a\n"
+"                    href=\"https://positivecrypto.medium.com/the-golden-"
+"ratio-multiplier-c2567401e12a\">qui</a>, in questo\n"
+"                grafico viene usato lo stesso\n"
+"                indicatore conosciuto come GRM (Golden Ratio Multiplier) per "
+"individuare buoni punti in cui la coin è ipercomprata,\n"
+"                ovvero segnali di vendita. L'algoritmo calcola "
+"automaticamente (secondo una\n"
+"                certa logica) in quale punto è ragionevole vendere.\n"
+"                "
+
+#: app/charts/templates/charts/golden.html:73
+#: app/charts/templates/charts/golden.html:85
+msgid "Price on date"
+msgstr "Prezzo alla data"
+
+#: app/charts/templates/charts/golden.html:97
+#: app/charts/templates/charts/golden.html:109
+msgid "Median 350 days"
+msgstr "Media 350 giorni"
+
+#: app/charts/templates/charts/golden.html:122
+#: app/charts/templates/charts/golden.html:134
+msgid "Median 350 days x 0.4"
+msgstr "Media 350 giorni x 0.4"
+
+#: app/charts/templates/charts/golden.html:147
+#: app/charts/templates/charts/golden.html:159
+msgid "Median 350 days x 0.6"
+msgstr "Media 350 giorni x 0.6"
+
+#: app/charts/templates/charts/golden.html:172
+#: app/charts/templates/charts/golden.html:184
+msgid "Median 350 days x 2"
+msgstr "Media 350 giorni x 2"
+
+#: app/charts/templates/charts/golden.html:197
+#: app/charts/templates/charts/golden.html:209
+msgid "Median 350 days x 3"
+msgstr "Media 350 giorni x 3"
+
+#: app/charts/templates/charts/golden.html:222
+#: app/charts/templates/charts/golden.html:234
+msgid "Median 350 days x 5"
+msgstr "Media 350 giorni x 5"
+
+#: app/charts/templates/charts/golden.html:247
+#: app/charts/templates/charts/golden.html:259
+msgid "Median 350 days x 8"
+msgstr "Media 350 giorni x 8"
+
+#: app/charts/templates/charts/golden.html:272
+#: app/charts/templates/charts/golden.html:284
+msgid "Median 350 days x 13"
+msgstr "Media 350 giorni x 13"
+
+#: app/charts/templates/charts/golden.html:296
+#: app/charts/templates/charts/golden.html:308
+msgid "Median 111 days"
+msgstr "Media 111 giorni"
+
+#: app/charts/templates/charts/golden.html:320
+#: app/charts/templates/charts/golden.html:328
+msgid "Sell Signal"
+msgstr "Segnale di Vendita"
+
+#: app/charts/templates/charts/hashprice.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Price per hashrate"
+msgstr "Revuo Moneroj - Prezzo per Hashrate"
+
+#: app/charts/templates/charts/hashprice.html:17
+msgid "Price in Dollars per Hashrate"
+msgstr "Prezzo in Dollari per Hashrate"
+
+#: app/charts/templates/charts/hashprice.html:50
+msgid ""
+"\n"
+"                This chart shows average daily price divided by total "
+"Hashrate/s Monero has. Higher prices on relative\n"
+"                low hashrate means Monero is overbought and a top is\n"
+"                getting nearer. On the other hand, if Monero has low average "
+"price and high hashrate, it signals a\n"
+"                possible bottom, since many people are mining expecting "
+"future\n"
+"                higher prices.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico illustra la media giornaliera del prezzo "
+"diviso dal totale dell'Hashrate/s di Monero. Prezzi alti accompagnati da un "
+"hashrate\n"
+"                relativamente basso indica che Monero è ipercomprato e che "
+"il top si\n"
+"                sta avvicinando. Viceversa, se Monero presenta un basso "
+"media dei prezzi ed un alto hashrate, ciò indica un\n"
+"                possibile bottom, dato che molte persone si aspettano un "
+"futuro\n"
+"                aumento dei prezzi.\n"
+"                "
+
+#: app/charts/templates/charts/hashprice.html:72
+#: app/charts/templates/charts/hashprice.html:84
+#: app/charts/templates/charts/marketcycle.html:66
+#: app/charts/templates/charts/marketcycle.html:78
+#: app/charts/templates/charts/sfmultiple.html:73
+#: app/charts/templates/charts/sfmultiple.html:85
+msgid "Oversold"
+msgstr "Ipervenduto"
+
+#: app/charts/templates/charts/hashprice.html:96
+#: app/charts/templates/charts/hashprice.html:108
+#: app/charts/templates/charts/marketcycle.html:90
+#: app/charts/templates/charts/marketcycle.html:102
+#: app/charts/templates/charts/sfmultiple.html:97
+#: app/charts/templates/charts/sfmultiple.html:109
+msgid "Overbought"
+msgstr "Ipercomprato"
+
+#: app/charts/templates/charts/hashprice.html:120
+#: app/charts/templates/charts/hashprice.html:153
+msgid "Dollars / Hashs/s"
+msgstr "Dollari / Hashs/s"
+
+#: app/charts/templates/charts/hashprice.html:128
+#: app/charts/templates/charts/marketcycle.html:122
+#: app/charts/templates/charts/metcalfesats.html:106
+#: app/charts/templates/charts/metcalfeusd.html:106
+#: app/charts/templates/charts/powerlaw.html:154
+#: app/charts/templates/charts/pricelin.html:78
+#: app/charts/templates/charts/pricelog.html:78
+#: app/charts/templates/charts/pricesats.html:76
+#: app/charts/templates/charts/sfmodel.html:129
+#: app/charts/templates/charts/sfmodellin.html:105
+#: app/charts/templates/charts/sfmultiple.html:129
+#, python-format
+msgid "Cycle on the Bitcoin pair (%%)"
+msgstr "Ciclo nel pair con Bitcoin (%%)"
+
+#: app/charts/templates/charts/hashprice.html:222
+msgid "Price in Dollars Per H/s"
+msgstr "Prezzo in Dollari per H/s"
+
+#: app/charts/templates/charts/hashrate.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Hashrate"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/hashrate.html:17
+msgid "Monero's Hashrate"
+msgstr "Hashrate di Monero"
+
+#: app/charts/templates/charts/hashrate.html:50
+msgid ""
+"\n"
+"                This chart shows the total Hashrate/s Monero has on average. "
+"Higher hashrates mean more people are\n"
+"                mining it on profit and/or confident prices will go up in "
+"the near future.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il valore medio dell'Hashrate per "
+"secondo di Monero. Valori alti indicano che sempre più persone\n"
+"                stanno facendo mining in profitto e sono confindenti sul "
+"fatto che i prezzi saliranno nel breve futuro.\n"
+"                "
+
+#: app/charts/templates/charts/hashvsprice.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Price Versus Hashrate"
+msgstr "Revuo Moneroj - Prezzo/Hashrate"
+
+#: app/charts/templates/charts/hashvsprice.html:17
+msgid "Price Versus Hashrate (Dollars)"
+msgstr "Prezzo su Hashrate (Dollari)"
+
+#: app/charts/templates/charts/hashvsprice.html:50
+msgid ""
+"This chart shows average daily price and average hashrate (hashs per second)."
+msgstr ""
+"Questo grafico mostra la media giornaliera del prezzo e dell'hashrate (hash "
+"per secondi)."
+
+#: app/charts/templates/charts/hashvsprice.html:91
+#: app/charts/templates/charts/hashvsprice.html:108
+msgid "Price in Dollars"
+msgstr "Prezzo in Dollari"
+
+#: app/charts/templates/charts/hashvsprice.html:196
+msgid "H/s"
+msgstr "H/s"
+
+#: app/charts/templates/charts/index.html:5
+#: app/charts/templates/charts/maintenance.html:5
+#: app/charts/templates/charts/reset.html:5
+msgid "Revuo Moneroj - Monero Metrics"
+msgstr "Revuo Moneroj - Metriche Monero"
+
+#: app/charts/templates/charts/index.html:40
+msgid "Bitcoin exposes your data—Monero gives you private digital cash."
+msgstr ""
+"Bitcoin espone i tuoi dati in chiaro—Monero conferisce vero denaro digitale "
+"privato."
+
+#: app/charts/templates/charts/index.html:41
+msgid "What you think you’re getting with Bitcoin, you’ll find with Monero."
+msgstr "Quel che cerchi in Bitcoin, lo troverai in Monero."
+
+#: app/charts/templates/charts/index.html:61
+msgid "Privacy built in from the start"
+msgstr "Privacy integrata dall'inizio"
+
+#: app/charts/templates/charts/index.html:63
+msgid ""
+"\n"
+"            Many have believed Bitcoin can be 'anonymous'—but that’s a myth. "
+"In reality, Bitcoin is a transparent ledger, where every transaction,  \n"
+"            including amounts, sender/receiver addresses, and more, are "
+"permanently visible online. Bitcoin’s transparency makes it even less "
+"private \n"
+"            than a traditional bank account. That’s why cypherpunks designed "
+"Monero with default privacy, from the ground up. Just like physical cash.\n"
+"            "
+msgstr ""
+"\n"
+"            Molti credono che Bitcoin può essere usato in modo 'anomimo'— ma "
+"è una leggenda metropolitana. In realtà, Bitcoin si basa su un registro "
+"transparente, dove ogni transazione,  \n"
+"            compresi importi, gli indirizzi di mittente e destinatario, ed "
+"altro ancora, sono visibili permanentemente online. La trasparenza di "
+"Bitcoin lo rende meno privato \n"
+"            rispetto ad un conto corrente bancario tradizionale. Ecco perché "
+"i cypherpunks hanno progettato Monero, privato per default, in ogni suo "
+"aspetto. Proprio come il denaro contante.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:71
+msgid "Learn More Here"
+msgstr "Scopri di Più"
+
+#: app/charts/templates/charts/index.html:82
+msgid "Privacy, Perfected"
+msgstr "Privacy, Perfezionata"
+
+#: app/charts/templates/charts/index.html:84
+msgid ""
+"\n"
+"                  With Monero, your financial activity stays truly "
+"private. \n"
+"                  No corporation, government, or third party can view your "
+"transaction details. Only the sender and receiver know the amount    \n"
+"                  transferred — and no one can see your balance. Your money, "
+"your business.\n"
+"                  "
+msgstr ""
+"\n"
+"                  Con Monero, la tua attività finanziaria rimane privata, "
+"sempre. \n"
+"                  Nessuna organizzazione, governo, o entità terze può vedere "
+"i dettagli delle transazioni. Solo il mittente e il destinatario conoscono "
+"l'importo    \n"
+"                  trasferito — e nessun può vedere il tuo saldo. Soldi tuoi, "
+"affari tuoi.\n"
+"                  "
+
+#: app/charts/templates/charts/index.html:95
+msgid "Security You Can Trust"
+msgstr "Sicurezza Affidabile"
+
+#: app/charts/templates/charts/index.html:97
+msgid ""
+"\n"
+"                  Monero is an open-source, independently audited project "
+"that upholds the highest security standards crafted by \n"
+"                  some of the brightest minds in cryptography. Monero "
+"development is supported by a <a href=\"https://\n"
+"                  ccs.getmonero.org/\" target=\"_blank\">Community "
+"Crowdfunding System</a> which enables continuous innovation. \n"
+"                  "
+msgstr ""
+"\n"
+"                  Monero è un progetto open-source e revisionato in modo "
+"indipendente che rispetta i più alti standard di sicurezza realizzati "
+"dalle \n"
+"                  menti più brillanti nel mondo della crittografia. Lo "
+"sviluppo di Monero è supportato da un <a href=\"https://\n"
+"                  ccs.getmonero.org/\" target=\"_blank\">Community "
+"Crowdfunding System</a> che dà carburante alla continua innovazione nel "
+"progetto. \n"
+"                  "
+
+#: app/charts/templates/charts/index.html:108
+msgid "Freedom Through Privacy"
+msgstr "Libertà Attraverso Privacy"
+
+#: app/charts/templates/charts/index.html:110
+msgid ""
+"\n"
+"                  Monero restores your right to financial privacy. With "
+"privacy-by-default, it protects users from mass surveillance and \n"
+"                  censorship, safeguarding true personal freedom. Need "
+"transparency? Monero offers that too — selectively. Individuals or \n"
+"                  organizations can prove their balances when they choose.\n"
+"                  "
+msgstr ""
+"\n"
+"                  Monero ripristina il tuo diritto alla privacy finanziaria. "
+"Il modello privacy-by-default protegge gli utenti dalla sorveglianza di "
+"massa e \n"
+"                  dalla censura, salvaguardando la libertà invidividuale. "
+"Hai bisogno di trasparenza? Monero offre anche questo — in modo selettivo. "
+"Individui o \n"
+"                  organizzazioni possono verificare e dimostrare il loro "
+"saldo quando vogliono.\n"
+"                  "
+
+#: app/charts/templates/charts/index.html:130
+msgid "Low Inflation, Fair Distribution"
+msgstr "Bassa Inflazione, Distribuzione Onesta"
+
+#: app/charts/templates/charts/index.html:132
+msgid ""
+"\n"
+"                  Monero maintains a low and constantly decreasing annual "
+"inflation rate.\n"
+"                  There was no premine, no ICO — every coin has been mined "
+"fairly since 2014.\n"
+"                  Monero's <a href=\"https://www.getmonero.org/resources/"
+"moneropedia/tail-emission.html\" target=\"_blank\">“tail emission”</a> \n"
+"                  also ensures long-term network security and miner "
+"incentives.\n"
+"                  "
+msgstr ""
+"\n"
+"                  Monero mantiene un basso e in costante decrescita tasso di "
+"inflazione.\n"
+"                  Non c'è stato alcun pre-mine, nessuna ICO — ogni singola "
+"moneta è stata estratta in modo onesto dal 2014.\n"
+"                  Inoltre, <a href=\"https://www.getmonero.org/resources/"
+"moneropedia/tail-emission.html\" target=\"_blank\">“l'emissione residua”</a> "
+"di Monero \n"
+"                  garantisce una sicurezza di rete a lungo termine "
+"incentivando i miner a continuare le loro attività.\n"
+"                  "
+
+#: app/charts/templates/charts/index.html:144
+msgid "Built in Scarcity"
+msgstr "Scarsità Intrinseca"
+
+#: app/charts/templates/charts/index.html:146
+msgid ""
+"\n"
+"                  There are fewer Monero in circulation today than Bitcoin — "
+"and this will remain true until at least 2040.\n"
+"                  As the world seeks private alternatives to offshore "
+"banking, Monero is positioned to capture a market much larger than\n"
+"                  its current value.\n"
+"                  "
+msgstr ""
+"\n"
+"                  Ad oggi ci sono meno Monero in circolazione rispetto ai "
+"Bitcoin — e ciò rimarrà tale fino al 2040.\n"
+"                  Mentre il mondo cerca alternative ai sistemi bancari "
+"offshore, Monero è pronto a conquistare un mercato molto più ampio\n"
+"                  del suo valore attuale.\n"
+"                  "
+
+#: app/charts/templates/charts/index.html:157
+msgid "Fast, Affordable Transactions"
+msgstr "Transazioni Veloci ed Economiche"
+
+#: app/charts/templates/charts/index.html:159
+msgid ""
+"\n"
+"                  Monero transactions appear instantly in your wallet, with "
+"funds spendable within minutes. Most transactions cost less than a penny,\n"
+"                  making Monero one of the fastest and most cost-effective "
+"ways to move value privately.\n"
+"                  "
+msgstr ""
+"\n"
+"                  Le transazioni Monero sono visibili istantaneamente nel "
+"tuo wallet, e i fondi spendibili in qualche minuto. La maggior parte delle "
+"transazioni costano meno di un centesimo,\n"
+"                  rendendo Monero uno dei modi più veloci e a basso costo "
+"per spostare valore privatamente.\n"
+"                  "
+
+#: app/charts/templates/charts/index.html:171
+msgid "Bitcoin Isn’t a Privacy Solution"
+msgstr "Bitcoin non è una soluzione per la privacy"
+
+#: app/charts/templates/charts/index.html:173
+msgid ""
+"\n"
+"              Bitcoin is a powerful project that pushes governments to "
+"compete with private, hard money.\n"
+"              But it’s a mistake to believe it solves privacy concerns. "
+"While Bitcoin’s transparency benefits institutions that require public\n"
+"              auditing, most individuals and businesses will prefer truly "
+"private money — because no one wants to expose their entire financial\n"
+"              history with every transaction.\n"
+"              "
+msgstr ""
+"\n"
+"              Bitcoin è un potente progetto che obbliga i governi a "
+"competere con una moneta dura e <i>privata</i> (ovvero senza enti "
+"centrali).\n"
+"              Ma è un errore credere che sia una soluzione ai problemi di "
+"privacy. Nonostante la transparenza di Bitcoin sia perfetta per le "
+"istituzioni che richiedono un\n"
+"              auditing pubblico, la maggior parte degli individui e aziende "
+"preferiranno usare vero denaro privato — questo perché nessuno vuole esporre "
+"la propria cronologia\n"
+"              di transazioni.\n"
+"              "
+
+#: app/charts/templates/charts/index.html:200
+msgid "Monero Means Money"
+msgstr "Monero è Denaro"
+
+#: app/charts/templates/charts/index.html:201
+msgid "Watch Dr. Daniel Kim Explain Monero's Value"
+msgstr "Vedi il discorso di Dr. Daniel Kim sul valore di Monero"
+
+#: app/charts/templates/charts/index.html:203
+msgid ""
+"\n"
+"          Monero is a project from the cypherpunk community, completely "
+"decentralized, without any central authority\n"
+"          directing it. It is impossible to censor, unlike with transparent "
+"Bitcoin addresses. Monero is unstoppable money for all. \n"
+"          "
+msgstr ""
+"\n"
+"          Monero è un progetto che viene dalla comunità cypherpunk, "
+"completamente decentralizzato, senza alcuna autorità centrale\n"
+"          a coordinarlo. È impossibile censurarlo, a differenza degli "
+"indirizzi trasparenti di Bitcoin. Monero è denaro inarrestabile per tutti. \n"
+"          "
+
+#: app/charts/templates/charts/index.html:211
+msgid "Afraid the government will ban it? Think twice."
+msgstr "Temi che i governi lo vieteranno? Pensaci due volte."
+
+#: app/charts/templates/charts/index.html:213
+msgid ""
+"\n"
+"            Monero’s true anonymity makes it a digital offshore account — "
+"without the need for banks or bureaucratic barriers.\n"
+"            Banning it would be nearly impossible: Monero runs on a "
+"decentralized network that cannot be shut down.\n"
+"            And ironically, even governments could find value in using "
+"Monero to discreetly move or protect their own assets.Watch this video "
+"below\n"
+"            about this market behvior. \n"
+"            "
+msgstr ""
+"\n"
+"            L'anonimato di Monero lo rende in pratica un account digitale "
+"offshore — senza il bisogno di banche o di scavalcare barriere "
+"burocratiche.\n"
+"            Vietarlo è in pratica impossibile: Monero è mantenuto da una "
+"rete decentralizzata che nessuno può spegnere.\n"
+"            Ed ironicamente, anche i governi possono usufruire dei benefici "
+"di Monero usandolo per proteggere e spostare in modo discreto i propri "
+"asset. Scopri di più su questo nel video indicato accanto.\n"
+"            \n"
+"            "
+
+#: app/charts/templates/charts/index.html:223
+msgid "Banning Monero Would Only Make It More Valuable"
+msgstr "Vietare Monero Lo Rende Più Prezioso"
+
+#: app/charts/templates/charts/index.html:225
+msgid ""
+"\n"
+"            Monero is scarce, private money — a combination that mirrors the "
+"appeal of physical gold.\n"
+"            Its built-in utility ensures demand won't vanish with a ban; it "
+"would only intensify, driving even greater scarcity and pushing prices\n"
+"            higher. Monero is anti-fragile: it protects both your wealth "
+"from inflation and your finances from surveillance. \n"
+"            "
+msgstr ""
+"\n"
+"            Monero è denaro privato ma scarso — una combinazione di "
+"caratteristiche simile a quella offerta dall'oro fisico.\n"
+"            La sua utilità intrinseca garantisce che la domanda per questo "
+"asset non svanisca in seguito ad una messa al bando, poiché porterebbe ad "
+"una maggiore richiesta, dunque ad una maggiore scarsità ed infine a\n"
+"            prezzi più alti. Monero è una tecnologia robusta: protegge il "
+"tuo patrimonio dall'inflazione e le tue finanze dalla sorveglianza. \n"
+"            "
+
+#: app/charts/templates/charts/index.html:240
+msgid "Evolving Trends"
+msgstr "Trend in Evoluzione"
+
+#: app/charts/templates/charts/index.html:241
+msgid "A Smart Addition to Your Investment Portfolio"
+msgstr "Una scelta intelligente per il tuo portafoglio di investimenti"
+
+#: app/charts/templates/charts/index.html:243
+msgid ""
+"\n"
+"            Monero is a cryptocurrency like no other.\n"
+"            With a low correlation to Bitcoin, it offers true "
+"diversification — a critical factor for maximizing future returns.\n"
+"            Today, Monero is a $3.2 billion asset aiming to disrupt the "
+"offshore banking market.\n"
+"            In a world where money is becoming fully digital, does it make "
+"sense to rely on physical offshore accounts to protect your wealth?\n"
+"            Monero offers a smarter, more private solution for the digital "
+"age.\n"
+"            "
+msgstr ""
+"\n"
+"            Monero è una criptovaluta unica nel suo genere.\n"
+"            Offre una vera diversificazione grazie alla sua bassa "
+"correlazione con Bitcoin — fattore critico per massimizzare futuri ritorni "
+"sugli investimenti.\n"
+"            Ad oggi, Monero è un asset da $3.2 miliardi che punta a "
+"stravolgere il mercato bancario offshore.\n"
+"            In un mondo dove il denaro si sposta verso il reame digitale, ha "
+"ancora senso affidarsi a conti offshore fisici per proteggere il proprio "
+"patrimonio?\n"
+"            Monero offre una soluzione più privata ed intelligente per l'era "
+"digitale.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:256
+msgid "Monero Has Surpassed Bitcoin Where Privacy Matters"
+msgstr "Dove la privacy conta, Monero sorpassa Bitcoin"
+
+#: app/charts/templates/charts/index.html:258
+msgid ""
+"\n"
+"            While most illicit activity still happens with traditional "
+"currencies like the dollar, Bitcoin’s transparent blockchain has led to\n"
+"            retroactive tracking and accusations — even against innocent "
+"users.\n"
+"            Without access to expensive forensic tools, it’s impossible to "
+"know if a Bitcoin transaction is \"tainted\".\n"
+"            Monero changes that. \n"
+"            With full default privacy, it protects individuals from unjust "
+"scrutiny and safeguards honest users from being falsely implicated.\n"
+"            "
+msgstr ""
+"\n"
+"            Mentre la maggior parte delle attività illecite opera ancora con "
+"le valute tradizionali come il dollaro, la blockchain transparente di "
+"Bitcoin ha comunque consensito \n"
+"            analisi retroattive che hanno portato ad accuse in aule di "
+"tribunali — anche contro utenti innocenti.\n"
+"            Senza l'accesso a costosi strumenti di analisi forense, è "
+"impossibile stabilire se una transazione Bitcoin sia \"macchiata\".\n"
+"            Monero cambia questo paradigma. \n"
+"            Grazie alla piena privacy per default, ogni individuo è protetto "
+"da ispezioni ingiuste. Questo design salvaguarda gli utenti onesti da essere "
+"falsamente implicati in situazioni del genere.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:272
+msgid "Hackers and Experts Prefer Monero"
+msgstr "Esperti e hacker preferiscono Monero"
+
+#: app/charts/templates/charts/index.html:274
+msgid ""
+"\n"
+"            In the world of cybersecurity, privacy isn't optional. \n"
+"            Monero's cutting-edge technology has made it the cryptocurrency "
+"of choice among hackers and privacy experts.\n"
+"            As Bitcoin’s transparency becomes a liability, we’re witnessing "
+"a clear shift: those who understand the stakes are moving to Monero.\n"
+"            "
+msgstr ""
+"\n"
+"            Nel mondo della cybersicurezza, la privacy non è un optional. \n"
+"            La tecnologia all'avanguardia di Monero, l'ha resa la "
+"criptovaluta più gettonata da hacker ed esperti di sicurezza.\n"
+"            Mentre la trasparenza di Bitcoin diventa un problema sempre più "
+"visibile, il vento inizia a tirare verso una direzione precisa: quelli che "
+"comprendono la posta in gioco si stanno spostando su Monero.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:298
+msgid "Want to Acquire Monero?"
+msgstr "Vuoi ottenere dei Monero?"
+
+#: app/charts/templates/charts/index.html:300
+msgid ""
+"\n"
+"        Because Monero is so effective at protecting privacy, governments "
+"worldwide have pressured traditional \n"
+"        cryptocurrency exchanges to delist it — making it harder for "
+"citizens to purchase Monero with local currency. \n"
+"        Fortunately, the Monero community is global and resilient. Thanks to "
+"the voluntary efforts of developers and supporters, \n"
+"        easy alternatives now exist. Explore the options below and find the "
+"best way for you to acquire Monero.\n"
+"        "
+msgstr ""
+"\n"
+"        Poiché Monero è così efficace nel proteggere la privacy, i governi "
+"di tutto il mondo hanno fatto pressioni sugli exchange \n"
+"        tradizionali di criptovalute al fine di impedirne lo scambio — "
+"rendendo ancora più difficile per i comuni cittadini comprare Monero con le "
+"valute locali. \n"
+"        Fortunatamente, la comunità Monero è resiliente e distribuita in "
+"tutto il globo. Grazie allo sforzo di sviluppatori e sostenitori "
+"volontari, \n"
+"        alternative semplici sono adesso disponibili. Consulta le opzioni "
+"indicate di seguito per trovare il modo per comprare Monero adatto a te.\n"
+"        "
+
+#: app/charts/templates/charts/index.html:313
+msgid "Open an Exchange Account"
+msgstr "Apri un Account su un Exchange"
+
+#: app/charts/templates/charts/index.html:315
+msgid ""
+"\n"
+"            Link a bank account to purchase Monero directly. \n"
+"            This method requires full \"Know Your Customer\" (KYC) identity "
+"verification.\n"
+"            "
+msgstr ""
+"\n"
+"            Collega un conto bancario per comprare Monero direttamente. \n"
+"            Questo metodo richiede la verifica \"Know Your Customer\" (KYC) "
+"dell'identità verification.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:326
+msgid "Decentralized Options"
+msgstr "Opzioni Decentralizzate"
+
+#: app/charts/templates/charts/index.html:328
+msgid ""
+"\n"
+"            Already own crypto? Use \n"
+"            <a href=\"https://kycnot.me/\" target=\"_blank\">KYCnot.me</a> "
+"as a guide for services. \n"
+"            Some of the latest swap technology includes \n"
+"            <a href=\"https://haveno.exchange/\" target=\"_blank\">Haveno</"
+"a> and\n"
+"            <a href=\"https://unstoppableswap.net/\" "
+"target=\"_blank\">Unstoppable</a>.\n"
+"            "
+msgstr ""
+"\n"
+"            Possiedi già delle crypto? Consulta \n"
+"            <a href=\"https://kycnot.me/\" target=\"_blank\">KYCnot.me</a> , "
+"una guida completa per i vari servizi disponibili. \n"
+"            Alcune soluzioni all'avanguardia per swap disponibili sono \n"
+"            <a href=\"https://haveno.exchange/\" target=\"_blank\">Haveno</"
+"a> e\n"
+"            <a href=\"https://unstoppableswap.net/\" "
+"target=\"_blank\">Unstoppable</a>.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:342
+msgid "Set Up a Wallet"
+msgstr "Configura un Portafoglio"
+
+#: app/charts/templates/charts/index.html:344
+msgid ""
+"\n"
+"            Use the <a href=\"https://www.getmonero.org/downloads/\" "
+"target=\"_blank\">official Monero wallet</a> on PC,\n"
+"            or mobile apps like <a href=\"https://cakewallet.com/\" "
+"target=\"_blank\">Cake Wallet</a> and \n"
+"            <a href=\"https://www.monerujo.io/\" target=\"_blank\">Monerujo</"
+"a>. \n"
+"            Hardware wallets like <a href=\"https://ledger.com/\" "
+"target=\"_blank\">Ledger</a> offer extra security.\n"
+"            "
+msgstr ""
+"\n"
+"            Scarica il <a href=\"https://www.getmonero.org/downloads/\" "
+"target=\"_blank\">wallet ufficiale di Monero</a> su PC,\n"
+"            o applicazioni come <a href=\"https://cakewallet.com/\" "
+"target=\"_blank\">Cake Wallet</a> e \n"
+"            <a href=\"https://www.monerujo.io/\" target=\"_blank\">Monerujo</"
+"a> per smartphone. \n"
+"            Hardware wallet come <a href=\"https://ledger.com/\" "
+"target=\"_blank\">Ledger</a> offrono uno strato aggiuntivo di sicurezza.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:357
+msgid "Withdraw to Your Wallet"
+msgstr "Prelievare sul Tuo Portafoglio"
+
+#: app/charts/templates/charts/index.html:359
+msgid ""
+"\n"
+"            After buying Monero, withdraw it to a wallet you control. \n"
+"            Learn how to securely send and receive Monero transactions \n"
+"            <a href=\"https://www.getmonero.org/resources/user-guides/make-"
+"payment.html\" target=\"_blank\">here</a>.\n"
+"            "
+msgstr ""
+"\n"
+"            Dopo aver comprato Monero, prelevali su un portafoglio che "
+"controlli. \n"
+"            Scopri come inviare e ricevere Monero in modo sicuro \n"
+"            <a href=\"https://www.getmonero.org/resources/user-guides/make-"
+"payment.html\" target=\"_blank\">qui</a>.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:380
+msgid "F.A.Q."
+msgstr "F.A.Q."
+
+#: app/charts/templates/charts/index.html:381
+msgid "Not sure how to buy or store Monero? Start with the basics here."
+msgstr ""
+"Non sai dove comprare o conservare i tuoi Monero? Parti dalle basi da qui."
+
+#: app/charts/templates/charts/index.html:388
+msgid "What exactly is Monero?"
+msgstr "Cos'è Monero esattamente?"
+
+#: app/charts/templates/charts/index.html:392
+msgid ""
+"\n"
+"              Monero is a private, open-source cryptocurrency that runs on "
+"its own blockchain. Like Bitcoin, it can be mined using computer power to "
+"validate transactions and issue new coins. Unlike Bitcoin, Monero "
+"prioritizes privacy—your balances and transactions are hidden. Its "
+"decreasing inflation and scarcity also make it a strong store of value, "
+"similar to gold.\n"
+"              "
+msgstr ""
+"\n"
+"              Monero è una criptovaluta privata, open-source con la propria "
+"blockchain indipendente. Come Bitcoin, può essere estratto usando la potenza "
+"di calcolo del proprio computer validando le transazioni e generando così "
+"nuove monete. A differenza di Bitcoin, Monero dà priorità alla privacy— il "
+"saldo e le transazioni del tuo portafoglio sono nascoste da occhi "
+"indiscreti. La inflazione descrescente e scarsità rendono Monero un'ottima "
+"riserva di valore, in modo simile all'oro.\n"
+"              "
+
+#: app/charts/templates/charts/index.html:401
+msgid "How does Monero hide my money? How does it give me privacy?"
+msgstr ""
+"Come fa Monero a nascondere i miei soldi? Come fa proteggere la mia privacy?"
+
+#: app/charts/templates/charts/index.html:405
+msgid ""
+"\n"
+"              Monero uses advanced privacy technologies like RingCTs, "
+"Stealth Addresses, Bulletproofs, Dandelion++, and soon FCMPs. These tools "
+"hide the sender, receiver, amount, and even the IP address, ensuring full "
+"transaction privacy.\n"
+"            "
+msgstr ""
+"\n"
+"              Monero usa costrutti crittografici avanzati come le RingCT, "
+"Indirizzi Stealth, Bulletproof, Dandelion++, e presto FCMP. Questi strumenti "
+"nascondono il mittente, il destinatario, l'importo, e perfino l'indirizzo "
+"IP, garantendo una privacy completa sulle transazioni.\n"
+"            "
+
+#: app/charts/templates/charts/index.html:414
+msgid "Why do people say Monero is unstoppable?"
+msgstr "Perché dicono che Monero sia inarrestabile?"
+
+#: app/charts/templates/charts/index.html:418
+msgid ""
+"\n"
+"              Monero supports atomic swaps with Bitcoin, allowing direct, "
+"private exchanges without intermediaries. Because these swaps rely on "
+"Bitcoin's blockchain, banning Monero would require censoring Bitcoin itself—"
+"an unlikely scenario—making Monero resistant to censorship.\n"
+"              "
+msgstr ""
+"\n"
+"              Monero supporta gli atomic swap come Bitcoin, consentendo "
+"scambi privati e diretti senza intermediari. Poiché questi swap si basano "
+"sulla blockchain di Bitcoin, mettere al bando Monero richiederebbe censurare "
+"anche Bitcoin—scenario improbabile— rendendo Monero resistente alla "
+"censura.\n"
+"              "
+
+#: app/charts/templates/charts/index.html:427
+msgid "How does its inflation work? How are new coins created?"
+msgstr ""
+"Come funziona l'inflazione su Monero? Secondo quali criteri vengono generate "
+"nuove monete?"
+
+#: app/charts/templates/charts/index.html:431
+#, python-format
+msgid ""
+"\n"
+"              Monero had no premine—all coins are earned by miners who "
+"secure the network. As supply increases, block rewards and inflation "
+"decrease. With %(supply)s coins in circulation, annual inflation is down to "
+"%(inflation)s and will keep declining, making Monero increasingly scarce.\n"
+"              "
+msgstr ""
+"\n"
+"              Monero had no premine—all coins are earned by miners who "
+"secure the network. As supply increases, block rewards and inflation "
+"decrease. With %(supply)s coins in circulation, annual inflation is down to "
+"%(inflation)s and will keep declining, making Monero increasingly scarce.\n"
+"              "
+
+#: app/charts/templates/charts/index.html:440
+msgid "Which is better, Bitcoin or Monero?"
+msgstr "Bitcoin o Monero? Qual è la migliore?"
+
+#: app/charts/templates/charts/index.html:444
+msgid ""
+"\n"
+"              Bitcoin pioneered cryptocurrency but lacks privacy—every "
+"transaction and balance is publicly visible. This makes Bitcoin non-fungible "
+"and prone to censorship. Monero, on the other hand, is private, fungible, "
+"faster, cheaper, and better suited for use as true digital money.\n"
+"              "
+msgstr ""
+"\n"
+"              Bitcoin è stato pionere nelle criptovalute ma manca totalmente "
+"di privacy— ogni transazione e saldo è pubblicamente visibile. Ciò rende "
+"Bitcoin un bene non fungibile e soggetto a censura. Monero, in "
+"contrapposizione, è privato, fungibile, più veloce, più economico e meglio "
+"predisposto per essere utilizzato come vero denaro digitale.\n"
+"              "
+
+#: app/charts/templates/charts/index.html:453
+msgid "Is Monero a good investment?"
+msgstr "Monero è un buon investimento?"
+
+#: app/charts/templates/charts/index.html:457
+msgid ""
+"\n"
+"              While no investment is guaranteed, Monero appeals to those who "
+"believe in the future of digital privacy. In past cycles, it has delivered "
+"strong returns. However, always do your own research—this is not financial "
+"advice.\n"
+"              "
+msgstr ""
+"\n"
+"              Nonostante nessun investimento sia garantito, Monero attrae "
+"colore che credono nel futuro della privacy digitale. Nei cicli di mercato "
+"passati, Monero ha presentato ottimi ritorni. Tuttavia, si consiglia "
+"vivamente di effettuare le proprie ricerche— questo non è un consiglio "
+"finanziario.\n"
+"              "
+
+#: app/charts/templates/charts/index.html:466
+msgid "What's the first step if I want to invest in Monero?"
+msgstr "Qual è il primo passo da fare se voglio investire su Monero?"
+
+#: app/charts/templates/charts/index.html:470
+msgid ""
+"\n"
+"              Create an account on a trusted exchange like Kraken. Complete "
+"the registration and KYC steps, enable two-factor authentication, fund your "
+"account, and purchase Monero. Then withdraw it to your personal wallet for "
+"full control.\n"
+"              "
+msgstr ""
+"\n"
+"              Crea un account su un exchange affidabile come Kraken. "
+"Completa la registrazione e la verifica dell'identità (KYC), abilita "
+"l'autenticazione a due fattori, finanzia il tuo account ed infine acquista "
+"Monero. Prelevalo poi su un portafoglio personale sotto il tuo totale "
+"controllo.\n"
+"              "
+
+#: app/charts/templates/charts/index.html:479
+msgid "If I already have an account, what next?"
+msgstr "Se ho già un account, cosa devo fare?"
+
+#: app/charts/templates/charts/index.html:483
+msgid ""
+"\n"
+"              Download a Monero wallet—like Cake Wallet, Monerujo, or the "
+"official desktop version—or use a hardware wallet like Ledger. Then withdraw "
+"your Monero from the exchange to your wallet to secure your funds.\n"
+"              "
+msgstr ""
+"\n"
+"              Scarica un wallet Monero— come Cake Wallet, Monerujo, o la "
+"versione desktop del wallet ufficiale— oppure usa un hardware wallet come "
+"Ledger. Infine preleva i tuoi Monero dall'exchange sul tuo wallet, mettendo "
+"così al sicuro i tuoi Monero.\n"
+"              "
+
+#: app/charts/templates/charts/inflation.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Annualized Inflation"
+msgstr "Revuo Moneroj - Scopri"
+
+#: app/charts/templates/charts/inflation.html:17
+msgid "Annualized Inflation for both Monero and Bitcoin"
+msgstr "Inflazione Annuale per Monero e Bitcoin"
+
+#: app/charts/templates/charts/inflation.html:49
+msgid ""
+"\n"
+"                This chart shows a comparison between the anual inflation "
+"rate of Monero and Bitcoin. The lower the\n"
+"                inflation, the better, since lower inflation rates\n"
+"                protect better the purchasing power of its holders. Monero "
+"is by far the best privacy coin you hold,\n"
+"                since its inflation is way lower than its competitors. "
+"Another thing\n"
+"                evident from this chart is that even Bitcoin has a higher "
+"inflation than Monero. Cool!\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico confronta il tasso di inflazione annuale di "
+"Monero e Bitcoin. Più basso è\n"
+"                il tasso di inflazione, più è protetto il potere di "
+"acquisto\n"
+"                dei suoi holder. Monero è la miglior privacy coin da "
+"holdare,\n"
+"                in quanto il suo tasso di inflazione è inferiore rispetto "
+"alle altre coin. È possibile notare anche\n"
+"                che le altre privacy coins sono lontane anni dall'avere un "
+"tasso di inflazione\n"
+"                basso come quello di Monero. Figo!\n"
+"                "
+
+#: app/charts/templates/charts/inflation.html:72
+#: app/charts/templates/charts/inflation.html:84
+msgid "Bitcoin Inflation"
+msgstr "Inflazione Bitcoin"
+
+#: app/charts/templates/charts/inflation.html:96
+#: app/charts/templates/charts/inflation.html:108
+msgid "Monero Inflation"
+msgstr "Inflazione Monero"
+
+#: app/charts/templates/charts/inflation.html:121
+#: app/charts/templates/charts/inflation.html:133
+msgid "Bitcoin Future Inflation"
+msgstr "Inflazione Futura Bitcoin"
+
+#: app/charts/templates/charts/inflation.html:145
+#: app/charts/templates/charts/inflation.html:157
+#: app/charts/templates/charts/tail_emission.html:67
+#: app/charts/templates/charts/tail_emission.html:79
+msgid "Monero Future Inflation"
+msgstr "Inflazione Futura Monero"
+
+#: app/charts/templates/charts/inflationfractal.html:50
+msgid ""
+"\n"
+"                This is a very simple chart that displays Monero's two "
+"cycles, one above the other, as fractals one from\n"
+"                the other. This shows the past and current returns\n"
+"                as a multiple from the previous cycle top, considering its "
+"inflation.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo è un semplice grafico che illustra i due cicli di "
+"Monero, uno sopra l'altro, come frattali l'uno dell'\n"
+"                altro. Indica inoltre i ritorni sul capitale presenti e "
+"passati\n"
+"                come multipli del loro top del ciclo precedente, tenendo in "
+"considerazione\n"
+"l'inflazione.\n"
+"                "
+
+#: app/charts/templates/charts/inflationreturn.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Return Versus Inflation"
+msgstr "Revuo Moneroj - Ritorno su Inflazione"
+
+#: app/charts/templates/charts/inflationreturn.html:17
+msgid "Return Versus Inflation"
+msgstr "Rendita su Inflazione"
+
+#: app/charts/templates/charts/inflationreturn.html:50
+msgid ""
+"\n"
+"                This chart shows the return on capital since inception for "
+"each privacy coin, plotted against its own\n"
+"                reverse from inflation (x100). The x axis value means the "
+"number of years\n"
+"                it would take to double the supply of the coin based on "
+"current inflation. This shows how Monero is a\n"
+"                beast, having higher return at the same time as very low "
+"inflation. Both values\n"
+"                are correlated and inversely proportional.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il ritorno sul capitale dall'inizio di "
+"ogni privacy coin, in rapporto al suo\n"
+"                inverso dall'inflazione (x100). L'asse X indica il numero di "
+"anni\n"
+"                che ci vorrebbero per raddoppiare l'offerta di coin in base "
+"all'inflazione corrente. Questo mostra la bestia che Monero è,\n"
+"                con ritorni più elevati e con bassissima inflazione. "
+"Entrambi i valori\n"
+"                sono correlati e inversamente proporzionali.\n"
+"                "
+
+#: app/charts/templates/charts/inflationreturn.html:287
+msgid "Return on Capital"
+msgstr "Ritorno sul Capitale"
+
+#: app/charts/templates/charts/inflationreturn.html:304
+#: app/charts/templates/charts/inflationreturn.html:363
+msgid "Number of years to double the supply"
+msgstr "Anni necessari per raddoppiare l'offerta"
+
+#: app/charts/templates/charts/marketcap.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Marketcap"
+msgstr "Revuo Moneroj - Capitalizzazione"
+
+#: app/charts/templates/charts/marketcap.html:17
+#: app/charts/templates/charts/marketcap.html:206
+#: app/charts/templates/charts/privacymarketcap.html:160
+msgid "Marketcap (USD)"
+msgstr "Capitalizzazione di Mercato (USD)"
+
+#: app/charts/templates/charts/marketcap.html:50
+msgid ""
+"This chart shows the comparison between Monero's most important competitors. "
+"It shows their total marketcap value over time."
+msgstr ""
+"Questo grafico confronta Monero con i suoi competitor più importanti, "
+"mostrando l'andamento della capitalizzazione di mercato totale nel tempo."
+
+#: app/charts/templates/charts/marketcap.html:65
+#: app/charts/templates/charts/marketcap.html:77
+msgid "Dash Marketcap"
+msgstr "Capitalizzazione Dash"
+
+#: app/charts/templates/charts/marketcap.html:89
+#: app/charts/templates/charts/marketcap.html:101
+msgid "Grin Marketcap"
+msgstr "Capitalizzazione Grin"
+
+#: app/charts/templates/charts/marketcap.html:113
+#: app/charts/templates/charts/marketcap.html:125
+msgid "Zcash Marketcap"
+msgstr "Capitalizzazione Zcash"
+
+#: app/charts/templates/charts/marketcap.html:137
+#: app/charts/templates/charts/marketcap.html:150
+#: app/charts/templates/charts/privacymarketcap.html:67
+#: app/charts/templates/charts/privacymarketcap.html:79
+msgid "Monero Marketcap"
+msgstr "Capitalizzazione Monero"
+
+#: app/charts/templates/charts/marketcycle.html:4
+#: app/charts/templates/charts/sfmultiple.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Stock to Flow Multiple"
+msgstr "Revuo Moneroj - Modello Stock to Flow"
+
+#: app/charts/templates/charts/marketcycle.html:50
+msgid ""
+"This chart shows an estimated Market Cycle for Monero, based on its price "
+"agains Bitcoin. The lower the more devaluated the coin is, and closer to the "
+"end of its Bear Market. Chart provided as courtesy from Cake Wallet and "
+"Monero.com."
+msgstr ""
+"Questo grafico illustra un ciclo di mercato approssimato per Monero, in base "
+"al cambio con Bitcoin. Un basso valore indica una svalutazione della coin, e "
+"l'avvicinarsi della del suo relativo Bear Market. Grafico fornito "
+"cortesemente da Cake Wallet e Monero.com."
+
+#: app/charts/templates/charts/marketcycle.html:114
+#: app/charts/templates/charts/marketcycle.html:147
+#: app/charts/templates/charts/metcalfesats.html:98
+#: app/charts/templates/charts/metcalfesats.html:131
+#: app/charts/templates/charts/metcalfeusd.html:98
+#: app/charts/templates/charts/metcalfeusd.html:131
+#: app/charts/templates/charts/powerlaw.html:146
+#: app/charts/templates/charts/powerlaw.html:179
+#: app/charts/templates/charts/pricelin.html:103
+#: app/charts/templates/charts/pricelog.html:70
+#: app/charts/templates/charts/pricelog.html:103
+#: app/charts/templates/charts/pricesats.html:68
+#: app/charts/templates/charts/pricesats.html:101
+#: app/charts/templates/charts/pricesatslog.html:68
+#: app/charts/templates/charts/pricesatslog.html:101
+#: app/charts/templates/charts/sfmodel.html:121
+#: app/charts/templates/charts/sfmodel.html:154
+#: app/charts/templates/charts/sfmodellin.html:97
+#: app/charts/templates/charts/sfmodellin.html:130
+#: app/charts/templates/charts/sfmultiple.html:121
+#: app/charts/templates/charts/sfmultiple.html:154
+#: app/charts/templates/charts/sharpe.html:98
+#: app/charts/templates/charts/sharpe.html:115
+#: app/charts/templates/charts/thermocap.html:150
+#: app/charts/templates/charts/thermocap.html:167
+msgid "Average price on date"
+msgstr "Prezzo medio alla data"
+
+#: app/charts/templates/charts/marketcycle.html:183
+msgid "Moneroj<br>Chart provided as courtesy from Cake Wallet and Monero.com"
+msgstr "Moneroj<br>Grafico fornito cortesemente da Cake Wallet e Monero.com"
+
+#: app/charts/templates/charts/marketcycle.html:216
+msgid "Cycle"
+msgstr "Ciclo"
+
+#: app/charts/templates/charts/merchants.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Total Merchants"
+msgstr "Revuo Moneroj - Totale Commercianti"
+
+#: app/charts/templates/charts/merchants.html:17
+msgid "Merchants accepting cryptocurrency (absolute numbers)"
+msgstr "Commercianti che accettano criptovalute (numeri assoluti)"
+
+#: app/charts/templates/charts/merchants.html:51
+msgid "Merchants accepting a coin. Data from BTCmap and Monerica"
+msgstr ""
+"Commercianti che accettano almeno una coin. Dati ottenuti da BTCmap e "
+"Monerica"
+
+#: app/charts/templates/charts/merchants.html:279
+msgid "Merchants"
+msgstr "Commercianti"
+
+#: app/charts/templates/charts/merchants_increase.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Merchants Increase"
+msgstr "Revuo Moneroj - Aumento Commercianti"
+
+#: app/charts/templates/charts/merchants_increase.html:17
+msgid ""
+"Monthly increase in number of merchants accepting cryptocurrency (absolute "
+"numbers)"
+msgstr ""
+"Aumento mensile del numero di commercianti che accettano criptovalute "
+"(numeri assoluti)"
+
+#: app/charts/templates/charts/merchants_increase.html:50
+msgid ""
+"Increase in the number of merchants accepting a coin. Data from BTCmap and "
+"Monerica."
+msgstr ""
+"Aumento del numero di commercianti che accettano almeno una coin. Dati "
+"ottenuti da BTCmap e Monerica."
+
+#: app/charts/templates/charts/merchants_increase.html:278
+msgid "Increase (new merchants per month)"
+msgstr "Aumento Mensile Commercianti"
+
+#: app/charts/templates/charts/merchants_percentage.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Merchants Percentage"
+msgstr "Revuo Moneroj - Percentuale Commercianti"
+
+#: app/charts/templates/charts/merchants_percentage.html:17
+msgid "Increase in number of merchants accepting cryptocurrency (percentage)"
+msgstr ""
+"Aumento del numero di commercianti che accettano criptovalute (percentuale)"
+
+#: app/charts/templates/charts/merchants_percentage.html:51
+msgid ""
+"Increase in percentage of the number of merchants accepting a coin. Data "
+"from BTCmap and Monerica."
+msgstr ""
+"Aumento in percentuale del numero di commercianti che accettano almeno una "
+"coin. Dati forniti da BTCmap e Monerica."
+
+#: app/charts/templates/charts/merchants_percentage.html:279
+#, python-format
+msgid "Increase (%%)"
+msgstr "Aumento (%%)"
+
+#: app/charts/templates/charts/metcalfe_deviation.html:4
+#: app/charts/templates/charts/metcalfesats_deviation.html:4
+#: app/charts/templates/charts/translin.html:4
+#: app/charts/templates/charts/translog.html:4
+#: app/charts/templates/charts/withdrawals.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Transaction Count"
+msgstr "Revuo Moneroj - Numero Transazioni"
+
+#: app/charts/templates/charts/metcalfe_deviation.html:17
+msgid "Metcalfe's Model Deviation (linear chart, percentage and dollars)"
+msgstr "Deviazione dal Modello Metcalfe (lineare, percentuale e dollari)"
+
+#: app/charts/templates/charts/metcalfe_deviation.html:50
+msgid ""
+"\n"
+"                This chart shows the diference between current XMR price "
+"(Dollar pair) and its supposed value considering its Metcalfe's Model.\n"
+"                It shows both the absolute difference (Model Price minus "
+"Real Price) and the percentage difference (Model Price/Real Price minus "
+"1)x100.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra la differenza dal prezzo attuale di "
+"XMR (in dollari) e il suo valore stimato secondo il Modello di Metcalfe.\n"
+"                Mostra la differenza sia in termini assoluti (Prezzo del "
+"Modello - Prezzo Reale) che che in percentuale [(Prezzo del Modello/Prezzo "
+"Reale) - 1]x100.<br>\n"
+"                "
+
+#: app/charts/templates/charts/metcalfe_deviation.html:69
+#: app/charts/templates/charts/metcalfe_deviation.html:82
+msgid "Model Deviation (USD)"
+msgstr "Deviazione Modello (USD)"
+
+#: app/charts/templates/charts/metcalfe_deviation.html:94
+#: app/charts/templates/charts/metcalfe_deviation.html:106
+#: app/charts/templates/charts/metcalfesats_deviation.html:94
+#: app/charts/templates/charts/metcalfesats_deviation.html:106
+#, python-format
+msgid "Model Deviation (%%)"
+msgstr "Deviazione Modello (%%)"
+
+#: app/charts/templates/charts/metcalfesats.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Metcalfe's Law (BTC)"
+msgstr "Revuo Moneroj - Legge di Metcalfe (BTC)"
+
+#: app/charts/templates/charts/metcalfesats.html:50
+msgid ""
+"\n"
+"                This chart shows the Monero's supposed fair price, judging "
+"by the number of transactions it has each day\n"
+"                on. Higher transaction count means the coin is being "
+"increasingly\n"
+"                used, and since Metcalfe's Law proposes that more "
+"information being exchanged in a network means the\n"
+"                network itself should be worth more, it also means the coin "
+"should\n"
+"                increase in price. This was calculated as \"how much Monero "
+"should be worth if it was a part of Bitcoin's\n"
+"                network?\" The answear is that Monero should be worth as "
+"much\n"
+"                as its transactions represent as a percentage of Bitcoin's "
+"own transactions, but considering both coins'\n"
+"                supplies. The formula is XMR-Supply*XMR-Tx/(BTC-Tx*BTC-"
+"Supply);\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il fair price stimato di Monero, in "
+"base al numero di transazioni giornaliere\n"
+"                Molte transazioni indicano che la coin viene usata sempre di "
+"più\n"
+"                e, dato che la Legge di Metcalfe sostiene che più "
+"informazioni vengono scambiate all'interno di una rete,\n"
+"                più questa rete dovrebbe valere di più, ciò indica anche che "
+"la coin dovrebbe\n"
+"                aumentare di valore. La formula di questo grafico risponde "
+"alla domanda \"quanto varrebbe Monero se fosse stato una parte del network "
+"di\n"
+"                Bitcoin?\" La risposta è che Monero dovrebbe valere tanto "
+"quanto\n"
+"                la percentuale di transazioni che processa rispetto al "
+"totale di quelle di Bitcoin  ma considerando entrambe le offerte delle "
+"rispettive\n"
+"                coin. La formula è: BTC-PrezzoUSD*OffertaXMR*NumTxXMR/"
+"(NumTxBTC*OffertaBTC);\n"
+"                "
+
+#: app/charts/templates/charts/metcalfesats.html:75
+#: app/charts/templates/charts/metcalfesats.html:87
+#: app/charts/templates/charts/metcalfeusd.html:75
+#: app/charts/templates/charts/metcalfeusd.html:87
+msgid "Fair price (XMR-Tx/BTC-Tx)"
+msgstr "Fair price (XMR-Tx/BTC-Tx"
+
+#: app/charts/templates/charts/metcalfesats.html:200
+#: app/charts/templates/charts/pricesats.html:16
+#: app/charts/templates/charts/pricesatslog.html:16
+#: app/charts/templates/charts/pricesatslog.html:170
+msgid "Price (BTC)"
+msgstr "Prezzo (BTC)"
+
+#: app/charts/templates/charts/metcalfesats_deviation.html:17
+msgid "Metcalfe's Model Deviation (linear chart, percentage and BTC)"
+msgstr "Deviazione dal Modello di Metcalfe (lineare, percentuale e BTC)"
+
+#: app/charts/templates/charts/metcalfesats_deviation.html:50
+msgid ""
+"\n"
+"                This chart shows the diference between current XMR price "
+"(BTC pair) and its supposed value considering its Metcalfe's Model.\n"
+"                It shows both the absolute difference (Model Price minus "
+"Real Price) and the percentage difference (Model Price/Real Price minus "
+"1)x100.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra la differenza dal prezzo attuale di "
+"XMR (in BTC) e il suo valore stimato secondo il Modello di Metcalfe.\n"
+"                Mostra la differenza sia in termini assoluti (Prezzo del "
+"Modello - Prezzo Reale) che che in percentuale [(Prezzo del Modello/Prezzo "
+"Reale) - 1]x100.<br>\n"
+"                "
+
+#: app/charts/templates/charts/metcalfesats_deviation.html:69
+#: app/charts/templates/charts/metcalfesats_deviation.html:82
+msgid "Model Deviation (BTC)"
+msgstr "Deviazione Modello (BTC)"
+
+#: app/charts/templates/charts/metcalfesats_deviation.html:179
+msgid "Deviation (BTC)"
+msgstr "Deviazione (BTC)"
+
+#: app/charts/templates/charts/metcalfeusd.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Metcalfe's Law"
+msgstr "Revuo Moneroj - Legge di Metcalfe"
+
+#: app/charts/templates/charts/metcalfeusd.html:17
+msgid "Metcalfe's Law (USD)"
+msgstr "Legge di Metcalfe (USD)"
+
+#: app/charts/templates/charts/metcalfeusd.html:50
+msgid ""
+"\n"
+"                This chart shows the Monero's supposed fair price, judging "
+"by the number of transactions it has each day\n"
+"                on. Higher transaction count means the coin is being "
+"increasingly\n"
+"                used, and since Metcalfe's Law proposes that more "
+"information being exchanged in a network means the\n"
+"                network itself should be worth more, it also means the coin "
+"should\n"
+"                increase in price. This was calculated as \"how much Monero "
+"should be worth if it was a part of Bitcoin's\n"
+"                network?\" The answear is that Monero should be worth as "
+"much\n"
+"                as its transactions represent as a percentage of Bitcoin's "
+"own transactions, but considering both coins'\n"
+"                supplies. The formula is BTC-PriceUSD*XMR-Supply*XMR-Tx/(BTC-"
+"Tx*BTC-Supply);\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il fair price stimato di Monero, in "
+"base al numero di transazioni giornaliere\n"
+"                Molte transazioni indicano che la coin viene usata sempre di "
+"più\n"
+"                e, dato che la Legge di Metcalfe sostiene che più "
+"informazioni vengono scambiate all'interno di una rete,\n"
+"                più questa rete dovrebbe valere di più, ciò indica anche che "
+"la coin dovrebbe\n"
+"                aumentare di valore. La formula di questo grafico risponde "
+"alla domanda \"quanto varrebbe Monero se fosse stato una parte del network "
+"di\n"
+"                Bitcoin?\" La risposta è che Monero dovrebbe valere tanto "
+"quanto\n"
+"                la percentuale di transazioni che processa rispetto al "
+"totale di quelle di Bitcoin  ma considerando entrambe le offerte delle "
+"rispettive\n"
+"                coin. La formula è: BTC-PrezzoUSD*OffertaXMR*NumTxXMR/"
+"(NumTxBTC*OffertaBTC);\n"
+"                "
+
+#: app/charts/templates/charts/minerfees.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Miner Fees"
+msgstr "Revuo Moneroj - Commissioni di Mining"
+
+#: app/charts/templates/charts/minerfees.html:17
+msgid "Miner Fees (Fees excluded new coins, Dollars)"
+msgstr "Commissioni Miner (eccetto nuove coin, in Dollari)"
+
+#: app/charts/templates/charts/minerfees.html:50
+#: app/charts/templates/charts/minerfeesntv.html:50
+msgid "This chart shows the total fees charged by miners daily."
+msgstr ""
+"Questo grafico mostra il totale di commissioni incassate dai miner "
+"giornalmente."
+
+#: app/charts/templates/charts/minerfees.html:66
+#: app/charts/templates/charts/minerfees.html:78
+#: app/charts/templates/charts/minerfeesntv.html:66
+#: app/charts/templates/charts/minerfeesntv.html:78
+#, fuzzy
+#| msgid "Monero Means Money"
+msgid "Monero Miner Fees"
+msgstr "Commissioni Miner Monero"
+
+#: app/charts/templates/charts/minerfees.html:90
+#: app/charts/templates/charts/minerfees.html:102
+#: app/charts/templates/charts/minerfeesntv.html:90
+#: app/charts/templates/charts/minerfeesntv.html:102
+msgid "Bitcoin Miner Fees"
+msgstr "Commissioni Miner Bitcoin"
+
+#: app/charts/templates/charts/minerfees.html:158
+msgid "Miner Fees (USD)"
+msgstr "Commissioni Miner (USD)"
+
+#: app/charts/templates/charts/minerfeesntv.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Miner Fee"
+msgstr "Revuo Moneroj - Commissioni di Mining"
+
+#: app/charts/templates/charts/minerfeesntv.html:17
+#, fuzzy
+#| msgid "Miner Fees (Fees excluded new coins, Dollars)"
+msgid "Miner Fees (Fees excluded new coins, Native Units)"
+msgstr "Commissioni Miner (eccetto nuove coin, Unità Native)"
+
+#: app/charts/templates/charts/minerfeesntv.html:158
+#, fuzzy
+#| msgid "Miner Fees (Ntv.)"
+msgid "Miner Fees (Native Units)"
+msgstr "Commissioni Miner (Ntv.)"
+
+#: app/charts/templates/charts/minerrev.html:4
+#: app/charts/templates/charts/minerrevcap.html:4
+#: app/charts/templates/charts/minerrevntv.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Miner Revenue"
+msgstr "Revuo Moneroj - Rendita Miner"
+
+#: app/charts/templates/charts/minerrev.html:17
+#, fuzzy
+#| msgid "Miner Revenue ($)"
+msgid "Miner Revenue (Dollars / day)"
+msgstr "Rendita Miner (Dollari / giorno)"
+
+#: app/charts/templates/charts/minerrev.html:50
+#, fuzzy
+#| msgid ""
+#| "This chart shows the average space in disc that the whole blockchain of "
+#| "Bitcoin and Monero ocupy."
+msgid ""
+"This chart shows average daily miner revenue (fees plus new coins) for both "
+"Bitcoin and Monero."
+msgstr ""
+"Questo grafico mostra la rendita media giornaliera dei miner (commissioni "
+"più nuove coin) per Bitcoin e Monero."
+
+#: app/charts/templates/charts/minerrev.html:66
+#: app/charts/templates/charts/minerrev.html:79
+#: app/charts/templates/charts/minerrevcap.html:70
+#: app/charts/templates/charts/minerrevcap.html:82
+#: app/charts/templates/charts/minerrevntv.html:70
+#: app/charts/templates/charts/minerrevntv.html:82
+#, fuzzy
+#| msgid "Monero Means Money"
+msgid "Monero Miner Revenue"
+msgstr "Rendita Miner Monero"
+
+#: app/charts/templates/charts/minerrev.html:92
+#: app/charts/templates/charts/minerrev.html:105
+#: app/charts/templates/charts/minerrevcap.html:94
+#: app/charts/templates/charts/minerrevcap.html:106
+#: app/charts/templates/charts/minerrevntv.html:94
+#: app/charts/templates/charts/minerrevntv.html:106
+#, fuzzy
+#| msgid "Bitcoin Miner Fees"
+msgid "Bitcoin Miner Revenue"
+msgstr "Rendita Miner Bitcoin"
+
+#: app/charts/templates/charts/minerrev.html:162
+#, fuzzy
+#| msgid "Miner Revenue ($)"
+msgid "Daily Miner Revenue (USD)"
+msgstr "Rendita Miner Giornaliera (USD)"
+
+#: app/charts/templates/charts/minerrevcap.html:17
+msgid "Annualized Miner Revenue / Marketcap (Fees plus new coins, percentage)"
+msgstr ""
+"Rendita Miner Annuale / Marketcap (Commissioni più nuove coin, percentuale)"
+
+#: app/charts/templates/charts/minerrevcap.html:50
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                This chart shows the difference between Bitcoin supply "
+#| "and Monero supply. Formula is BTC-Supply -\n"
+#| "                XMR-Supply.\n"
+#| "                "
+msgid ""
+"\n"
+"                This chart shows average daily miner revenue for both "
+"Bitcoin and Monero calculated as percentage of\n"
+"                their marketcaps.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra la rendita media giornaliera dei miner "
+"di Bitcoin e Monero, calcolata come percentuale delle rispettive\n"
+"                marketcap.\n"
+"                "
+
+#: app/charts/templates/charts/minerrevcap.html:162
+#, fuzzy, python-format
+#| msgid "Miner Revenue ($)"
+msgid "Annualized Miner Revenue (%%)"
+msgstr "Rendita Annuale Miner (%%)"
+
+#: app/charts/templates/charts/minerrevntv.html:17
+#, fuzzy
+#| msgid "Miner Fees (Fees excluded new coins, Dollars)"
+msgid "Daily Miner Revenue (Fees plus new coins, Native Units / day)"
+msgstr ""
+"Commissioni Miner Giornaliere (Commissioni più nuove coin, Unità Native / "
+"giorno)"
+
+#: app/charts/templates/charts/minerrevntv.html:50
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                This chart shows the difference between Bitcoin supply "
+#| "and Monero supply. Formula is BTC-Supply -\n"
+#| "                XMR-Supply.\n"
+#| "                "
+msgid ""
+"\n"
+"                This chart shows average daily miner revenue for both "
+"Bitcoin and Monero calculated in terms of the own\n"
+"                coin.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra la rendita media giornaliera dei miner "
+"di Bitcoin e Monero, calcolata come unità native delle rispettive\n"
+"                coin.\n"
+"                "
+
+#: app/charts/templates/charts/minerrevntv.html:162
+#, fuzzy
+#| msgid "Miner Revenue (Ntv.)"
+msgid "Miner Revenue (Native Units)"
+msgstr "Rendita Miner (Unità Native)"
+
+#: app/charts/templates/charts/miningprofitability.html:4
+#: app/charts/templates/charts/p2pool_dominance.html:4
+#: app/charts/templates/charts/p2pool_hashrate.html:4
+#: app/charts/templates/charts/p2pool_miners.html:4
+#: app/charts/templates/charts/p2pool_totalblocks.html:4
+#: app/charts/templates/charts/p2pool_totalhashes.html:4
+#: app/charts/templates/charts/rank.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Monero's Coinmarketcap Rank"
+msgstr "Revuo Moneroj - Classifica CMC Monero"
+
+#: app/charts/templates/charts/miningprofitability.html:50
+msgid ""
+"This chart shows Monero's mining profitability, considering its total hash "
+"power and the income for miners. Chart suggested by community member "
+"MoneroMon."
+msgstr ""
+"Questo grafico illustra la redditività del mining di Monero, considerando il "
+"totale della potenza di hash e le entrate stimate per i miner. Grafico "
+"suggerito dal membro della comunità MoneroMon."
+
+#: app/charts/templates/charts/miningprofitability.html:65
+#: app/charts/templates/charts/miningprofitability.html:77
+#, fuzzy
+#| msgid "Mining Profitability"
+msgid "Monero Mining Profitability"
+msgstr "Redditività Mining Monero"
+
+#: app/charts/templates/charts/miningprofitability.html:133
+#, fuzzy
+#| msgid "Mining Profitability"
+msgid "Mining Profitability (USD/day for 1 KH/s)"
+msgstr "Redditività Mining (USD/giorno per 1KH/s)"
+
+#: app/charts/templates/charts/monerodominance.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Monero's Dominance"
+msgstr "Revuo Moneroj - Dominanza Monero"
+
+#: app/charts/templates/charts/monerodominance.html:17
+#, python-format
+msgid "Monero's Dominance Over Other 'Privacy' Coins (%%)"
+msgstr "Dominanza di Monero sulle altre Privacy Coin (%%)"
+
+#: app/charts/templates/charts/monerodominance.html:50
+#, fuzzy
+#| msgid ""
+#| "This chart shows Monero's dominance over the whole cryptocurrency market, "
+#| "judging by total marketcap value in dollars."
+msgid ""
+"This chart shows Monero's dominance over the privacy cryptocurrency market, "
+"judging by total marketcap value in dollars."
+msgstr ""
+"Questo grafico mostra la dominanza di Monero sulla capitalizzazione totale "
+"del mercato delle criptovalute in dollari"
+
+#: app/charts/templates/charts/p2pool_dominance.html:17
+#, python-format
+msgid "P2Pool and P2Pool_mini Market Share (%%)"
+msgstr "Market Share P2Pool e P2Pool_mini (%%)"
+
+#: app/charts/templates/charts/p2pool_dominance.html:50
+#: app/charts/templates/charts/p2pool_hashrate.html:50
+#: app/charts/templates/charts/p2pool_miners.html:50
+msgid ""
+"\n"
+"                This chart shows Monero's both P2Pool (mining pool) total "
+"hashrate (MH/s). Data provided by community member DataHoarder. Check out "
+"the API from <a href=\"https://p2pool.observer/\" target=\"_blank\">P2Pool "
+"Observer</a>.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il totale dell'hashrate (MH/s) di "
+"entrambe le mining pool di P2Pool. Dati forniti dal membro della comunità "
+"DataHoarder. Dai un'occhiata all'API su <a href=\"https://p2pool.observer/\" "
+"target=\"_blank\">P2Pool Observer</a>.<br>\n"
+"                "
+
+#: app/charts/templates/charts/p2pool_dominance.html:91
+#: app/charts/templates/charts/p2pool_dominance.html:103
+#, fuzzy
+#| msgid "P2Pool Dominance"
+msgid "Total P2Pool Dominance"
+msgstr "Dominanza P2Pool"
+
+#: app/charts/templates/charts/p2pool_dominance.html:115
+#: app/charts/templates/charts/p2pool_dominance.html:127
+#, fuzzy
+#| msgid "P2Pool Dominance"
+msgid "P2Pool_mini Dominance"
+msgstr "Dominanza P2Pool_mini"
+
+#: app/charts/templates/charts/p2pool_dominance.html:183
+#: app/charts/templates/charts/percentmonth.html:155
+#: app/charts/templates/charts/social_subscribers_percentage.html:163
+#, fuzzy
+#| msgid "Percentage (%%)"
+msgid "Percentage"
+msgstr "Percentuale"
+
+#: app/charts/templates/charts/p2pool_hashrate.html:17
+msgid "P2Pool and P2Pool_mini Hashrate (MH/s)"
+msgstr "Hashrate P2Pool e P2Pool mini (MH/s)"
+
+#: app/charts/templates/charts/p2pool_hashrate.html:68
+#: app/charts/templates/charts/p2pool_hashrate.html:80
+#, fuzzy
+#| msgid "P2Pool Hashrate"
+msgid "P2Pool Hashrate MH/s"
+msgstr "Hashrate P2Pool MH/s"
+
+#: app/charts/templates/charts/p2pool_hashrate.html:92
+#: app/charts/templates/charts/p2pool_hashrate.html:104
+#, fuzzy
+#| msgid "P2Pool Hashrate"
+msgid "Total P2Pool Hashrate MH/s"
+msgstr "Totale Hashrate P2Pool MH/s"
+
+#: app/charts/templates/charts/p2pool_hashrate.html:116
+#: app/charts/templates/charts/p2pool_hashrate.html:128
+#, fuzzy
+#| msgid "P2Pool Hashrate"
+msgid "P2Pool_mini Hashrate MH/s"
+msgstr "Hashrate P2Pool_mini MH/s"
+
+#: app/charts/templates/charts/p2pool_hashrate.html:184
+#, fuzzy
+#| msgid "Hashrate"
+msgid "Hashrate (MH/s)"
+msgstr "Hashrate (MH/s)"
+
+#: app/charts/templates/charts/p2pool_miners.html:17
+#, fuzzy
+#| msgid "P2Pool Miners"
+msgid "P2Pool and P2Pool_mini Miners"
+msgstr "Miner P2Pool e P2Pool_mini"
+
+#: app/charts/templates/charts/p2pool_miners.html:91
+#: app/charts/templates/charts/p2pool_miners.html:103
+#, fuzzy
+#| msgid "P2Pool Miners"
+msgid "Total P2Pool Miners"
+msgstr "Totale Miner P2Pool"
+
+#: app/charts/templates/charts/p2pool_miners.html:115
+#: app/charts/templates/charts/p2pool_miners.html:127
+#, fuzzy
+#| msgid "P2Pool Miners"
+msgid "P2Pool_mini Miners"
+msgstr "Miner P2Pool_mini"
+
+#: app/charts/templates/charts/p2pool_totalblocks.html:50
+msgid ""
+"\n"
+"                This chart shows Monero's both P2Pool (mining pool) total "
+"number of blocks found. Data provided by community member DataHoarder. Check "
+"out the API from <a href=\"https://p2pool.observer/\" "
+"target=\"_blank\">P2Pool Observer</a>.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico tiene traccia del totale dei blocchi trovati "
+"da entrambe le mining pool P2Pool di Monero. Dati forniti dal membro della "
+"comunità DataHoarder. Dai un'occhiata all'API su <a href=\"https://p2pool."
+"observer/\" target=\"_blank\">P2Pool Observer</a>.<br>\n"
+"                "
+
+#: app/charts/templates/charts/p2pool_totalblocks.html:91
+#: app/charts/templates/charts/p2pool_totalblocks.html:103
+#, fuzzy
+#| msgid "P2Pool Blocks Found"
+msgid "P2Pool_mini Blocks Found"
+msgstr "Blocchi P2Pool_mini Estratti"
+
+#: app/charts/templates/charts/p2pool_totalblocks.html:115
+#: app/charts/templates/charts/p2pool_totalblocks.html:127
+#, fuzzy
+#| msgid "P2Pool Blocks Found"
+msgid "Total P2Pool Blocks Found"
+msgstr "Totale Blocchi P2Pool Estratti"
+
+#: app/charts/templates/charts/p2pool_totalblocks.html:183
+#, fuzzy
+#| msgid "P2Pool Blocks Found"
+msgid "Blocks Found"
+msgstr "Blocchi Estratti"
+
+#: app/charts/templates/charts/p2pool_totalhashes.html:17
+#, fuzzy
+#| msgid "P2Pool Hashes Found"
+msgid "P2Pool Total Hashes (Tera Hashes) Found"
+msgstr "Totale Hash P2Pool Trovati (Tera Hash)"
+
+#: app/charts/templates/charts/p2pool_totalhashes.html:50
+msgid ""
+"\n"
+"                This chart shows Monero's both P2Pool (mining pool) total "
+"hashes found. Data provided by community member DataHoarder. Check out the "
+"API from <a href=\"https://p2pool.observer/\" target=\"_blank\">P2Pool "
+"Observer</a>.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico tiene traccia del totale degli hash trovati "
+"da entrambe le mining pool P2Pool di Monero. Dati forniti dal membro della "
+"comunità DataHoarder. Dai un'occhiata all'API su <a href=\"https://p2pool."
+"observer/\" target=\"_blank\">P2Pool Observer</a>.<br>\n"
+"                "
+
+#: app/charts/templates/charts/p2pool_totalhashes.html:67
+#: app/charts/templates/charts/p2pool_totalhashes.html:79
+#, fuzzy
+#| msgid "P2Pool Hashes Found"
+msgid "P2Pool Hashes Found (TH)"
+msgstr "Hash P2Pool Trovati (TH)"
+
+#: app/charts/templates/charts/p2pool_totalhashes.html:91
+#: app/charts/templates/charts/p2pool_totalhashes.html:103
+#, fuzzy
+#| msgid "P2Pool Hashes Found"
+msgid "P2Pool_mini Hashes Found (TH)"
+msgstr "Hash P2Pool_mini Trovati (TH)"
+
+#: app/charts/templates/charts/p2pool_totalhashes.html:115
+#: app/charts/templates/charts/p2pool_totalhashes.html:127
+#, fuzzy
+#| msgid "P2Pool Hashes Found"
+msgid "Total P2Pool Hashes Found (TH)"
+msgstr "Totale Hash P2Pool Trovati (TH)"
+
+#: app/charts/templates/charts/p2pool_totalhashes.html:183
+#, fuzzy
+#| msgid "P2Pool Hashes Found"
+msgid "Hashes Found (TH)"
+msgstr "Hash Trovati (TH)"
+
+#: app/charts/templates/charts/percentage.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Transaction Percentage"
+msgstr "Revuo Moneroj - Percentuale Transazioni"
+
+#: app/charts/templates/charts/percentage.html:17
+#, fuzzy
+#| msgid "Transaction Percentage"
+msgid "Transaction Percentage (XMR's tx / BTC's tx)"
+msgstr "Percentuale Transazioni (tx XMR / tx BTC)"
+
+#: app/charts/templates/charts/percentage.html:50
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                This chart shows the total Hashrate/s Monero has on "
+#| "average. Higher hashrates mean more people are\n"
+#| "                mining it on profit and/or confident prices will go up in "
+#| "the near future.\n"
+#| "                "
+msgid ""
+"\n"
+"                This chart shows the total transactions Monero has daily as "
+"a percentage of Bitcoin's transactions,\n"
+"                which we might call \"Monero's Transaction Dominance\" over "
+"Bitcoin.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il totale delle transazioni ha "
+"giornalmente come percentuale delle transazioni Bitcoin,\n"
+"                ovvero la dominance delle transazioni di Monero su quelle di "
+"Bitcoin.\n"
+"                "
+
+#: app/charts/templates/charts/percentage.html:68
+#: app/charts/templates/charts/percentage.html:80
+#: app/charts/templates/charts/sfmodel.html:97
+#: app/charts/templates/charts/sfmodel.html:109
+msgid "Fractal of past price"
+msgstr "Frattale del prezzo precedente"
+
+#: app/charts/templates/charts/percentmonth.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Monthly Percentage"
+msgstr "Revuo Moneroj - Percentuale Mensile"
+
+#: app/charts/templates/charts/percentmonth.html:17
+#, fuzzy
+#| msgid "Monthly Percentage (Lin.)"
+msgid "Monthly Percentage (XMR's tx / BTC's tx)"
+msgstr "Percentuale Mensile (tx XMR / tx BTC)"
+
+#: app/charts/templates/charts/percentmonth.html:51
+msgid ""
+"\n"
+"                Number of monthly Monero transactions as a percentage of "
+"total Bitcoin transactions.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Totale mensile delle transazioni Monero of monthly Monero "
+"transactions come percentuale del totale di transazioni Bitcoin.<br>\n"
+"                "
+
+#: app/charts/templates/charts/percentmonth.html:68
+#: app/charts/templates/charts/percentmonth.html:89
+#: app/charts/templates/charts/transmonth.html:65
+#: app/charts/templates/charts/transmonth.html:86
+#, fuzzy
+#| msgid "Transactions (15)"
+msgid "Number of Transactions (XMR)"
+msgstr "Numero Transazioni (XMR)"
+
+#: app/charts/templates/charts/powerlaw.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Power Law"
+msgstr "Revuo Moneroj - Legge di Potenza"
+
+#: app/charts/templates/charts/powerlaw.html:50
+msgid ""
+"\n"
+"                This chart shows the current support, resistance and best "
+"fit for buying using Bitcoin's Power Law\n"
+"                Model, ported to Monero. To see more about this, check "
+"Christopher's <a\n"
+"                    href=\"https://medium.com/quantodian-publications/"
+"bitcoins-natural-long-term-power-law-corridor-of-growth-649d0e9b3c94\"\n"
+"                    target=\"_blank\">article.</a><br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il supporto, resistenza e il miglior "
+"punto per comprare usando il Modello della Legge di Potenza di Bitcoin,\n"
+"                applicato a Monero. Per maggiori informazioni, dai "
+"un'occhiata a questo <a\n"
+"                    href=\"https://medium.com/quantodian-publications/"
+"bitcoins-natural-long-term-power-law-corridor-of-growth-649d0e9b3c94\"\n"
+"                    target=\"_blank\">articolo</a><br>\n"
+"                "
+
+#: app/charts/templates/charts/powerlaw.html:72
+#: app/charts/templates/charts/powerlaw.html:84
+msgid "Support"
+msgstr "Supporto"
+
+#: app/charts/templates/charts/powerlaw.html:95
+#: app/charts/templates/charts/powerlaw.html:108
+msgid "Neutral Line"
+msgstr "Linea Neutrale"
+
+#: app/charts/templates/charts/powerlaw.html:120
+#: app/charts/templates/charts/powerlaw.html:133
+#: app/charts/templates/charts/thermocap.html:124
+#: app/charts/templates/charts/thermocap.html:137
+msgid "Resistance"
+msgstr "Resistenza"
+
+#: app/charts/templates/charts/pricelin.html:4
+#: app/charts/templates/charts/pricelog.html:4
+#: app/charts/templates/charts/pricesats.html:4
+#: app/charts/templates/charts/pricesatslog.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Price"
+msgstr "Revuo Moneroj - Prezzo"
+
+#: app/charts/templates/charts/pricelin.html:17
+#, fuzzy
+#| msgid "Price (USD)"
+msgid "Price (linear scale, USD)"
+msgstr "Prezzo (scala linear, USD)"
+
+#: app/charts/templates/charts/pricelin.html:50
+#: app/charts/templates/charts/pricelog.html:50
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                This chart shows the total issuance in units of both "
+#| "Bitcoin and Monero calculated in dollars. This cant\n"
+#| "                also be seen as how much money one would need to buy all "
+#| "newly mined coins in the last day.\n"
+#| "                "
+msgid ""
+"\n"
+"                This chart shows the price of the coin on a linear scale. "
+"The color of the points indicate their\n"
+"                position on the Bitcoin pair, being red as overbought and "
+"blue as cheap.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico illustra il prezzo della coin su scala "
+"lineare. Il colore dei punti indicano la loro\n"
+"                posizione nello coppia con Bitcoin. Rosso per ipercomprato e "
+"blue per ipervenduto.\n"
+"                "
+
+#: app/charts/templates/charts/pricelog.html:17
+#, fuzzy
+#| msgid "Price (USD)"
+msgid "Price (log scale, USD)"
+msgstr "Prezzo (scala log, USD)"
+
+#: app/charts/templates/charts/pricesats.html:49
+#: app/charts/templates/charts/pricesatslog.html:49
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                This chart shows the total Hashrate/s Monero has on "
+#| "average. Higher hashrates mean more people are\n"
+#| "                mining it on profit and/or confident prices will go up in "
+#| "the near future.\n"
+#| "                "
+msgid ""
+"\n"
+"                This chart shows the price of the coin on the BTC pair on a "
+"linear scale. The color of the points\n"
+"                indicate their position on the Bitcoin pair, being red as "
+"overbought and blue as cheap.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico illustra il prezzo della coin su scala "
+"lineare. Il colore dei punti indicano la loro\n"
+"                posizione nello coppia con Bitcoin. Rosso per ipercomprato e "
+"blue per ipervenduto.\n"
+"                "
+
+#: app/charts/templates/charts/privacydominance.html:4
+#, fuzzy
+#| msgid "Monero Privacy Dominance"
+msgid "Revuo Moneroj - Privacy Dominance"
+msgstr "Revuo Moneroj - Dominanza Privacy"
+
+#: app/charts/templates/charts/privacydominance.html:17
+#, python-format
+msgid "Total Dominance of Privacy Coins Over the Cryptocurrency Market (%%)"
+msgstr "Dominanza Privacy Coin su Mercato Crypto (%%)"
+
+#: app/charts/templates/charts/privacydominance.html:50
+msgid ""
+"\n"
+"                This chart shows the total marketcap of the most important "
+"privacy coins combined and its dominance.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il totale della marketcap delle più "
+"importanti privacy coin e la loro dominanza.<br>\n"
+"                "
+
+#: app/charts/templates/charts/privacydominance.html:67
+#: app/charts/templates/charts/privacydominance.html:79
+#, fuzzy
+#| msgid "Total Privacy Dominance"
+msgid "Privacy Dominance"
+msgstr "Dominanza Privacy"
+
+#: app/charts/templates/charts/privacydominance.html:135
+#, fuzzy, python-format
+#| msgid "Dominance (%%)"
+msgid "Privacy Dominance (%%)"
+msgstr "Dominanza Privacy (%%)"
+
+#: app/charts/templates/charts/privacymarketcap.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Privacy Marketcap"
+msgstr "Revuo Moneroj - Capitalizzazione Privacy"
+
+#: app/charts/templates/charts/privacymarketcap.html:17
+msgid "Total Marketcap of Privacy Coins (USD)"
+msgstr "Capitalizzazione Totale Privacy Coin (USD)"
+
+#: app/charts/templates/charts/privacymarketcap.html:50
+msgid ""
+"\n"
+"                This chart shows the total marketcap of the most important "
+"privacy coins compared to Monero's Marketcap.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il totale della marketcap delle più "
+"importanti privacy coin in confronto alla capitalizzazione di Monero.<br>\n"
+"                "
+
+#: app/charts/templates/charts/rank.html:17
+#, fuzzy
+#| msgid "Monero Marketcap"
+msgid "Monero's Coinmarketcap Rank"
+msgstr "Classifica Capitalizzazione Monero"
+
+#: app/charts/templates/charts/rank.html:50
+#, fuzzy
+#| msgid ""
+#| "This chart shows Monero's dominance over the whole cryptocurrency market, "
+#| "judging by total marketcap value in dollars."
+msgid ""
+"\n"
+"                This chart shows Monero's rank over the whole cryptocurrency "
+"market, judging by Coinmarketcap rankings.<br>\n"
+"                "
+msgstr ""
+"Questo grafico mostra la dominanza di Monero sulla capitalizzazione totale "
+"del mercato delle criptovalute, in base alla classifica di Coinmarketcap."
+"<br>\n"
+
+#: app/charts/templates/charts/rank.html:68
+#: app/charts/templates/charts/rank.html:81
+msgid "Rank"
+msgstr "Classifica"
+
+#: app/charts/templates/charts/reset.html:74
+msgid "Total of {{ deleted }} data deleted and {{ added }} new additions."
+msgstr "Eliminati {{ deleted }} dati e aggiunti {{ added }} nuovi."
+
+#: app/charts/templates/charts/securitybudget.html:17
+msgid "Security Budget for Monero and Bitcoin (Dollars/second)"
+msgstr "Security Budget di Monero e Bitcoin (Dollari/secondo)"
+
+#: app/charts/templates/charts/securitybudget.html:50
+msgid ""
+"\n"
+"                This chart shows the security budget each coin has. This is "
+"the total of dollars given to miners each second, so you can imagine this as "
+"the amount of money that is \n"
+"                directed towards the security of the network. <br>\n"
+"                Chart suggested by community member endor00.<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il Security Budget che ogni coin "
+"presenta. Questo è il totale in dollari che ogni miner ottiene al secondo. È "
+"possibile interpretarlo come l'ammontare di denaro che viene indirizzato \n"
+"                per mettere in sicurezza la rete. <br>\n"
+"                Grafico consigliato dal membro della comunità endor00.<br>\n"
+"                "
+
+#: app/charts/templates/charts/securitybudget.html:70
+#: app/charts/templates/charts/securitybudget.html:83
+#, fuzzy
+#| msgid "Security Budget"
+msgid "Bitcoin Security Budget"
+msgstr "Budget di Sicurezza di Bitcoin"
+
+#: app/charts/templates/charts/securitybudget.html:96
+#: app/charts/templates/charts/securitybudget.html:109
+#, fuzzy
+#| msgid "Security Budget"
+msgid "Monero Security Budget"
+msgstr "Budget di Sicurezza di Monero"
+
+#: app/charts/templates/charts/sfmodel.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Stock to Flow Model"
+msgstr "Revuo Moneroj - Modello Stock to Flow"
+
+#: app/charts/templates/charts/sfmodel.html:17
+#: app/charts/templates/charts/sfmodellin.html:17
+msgid "Stock-to-flow Model"
+msgstr "Modello Stock-to-Flow"
+
+#: app/charts/templates/charts/sfmodel.html:50
+msgid ""
+"\n"
+"                This chart shows the price of the coin on each date, "
+"coloring the points indicating their position on\n"
+"                the Bitcoin pair, being red as overbought and blue as "
+"cheap.\n"
+"                This chart is plotted on a log scale. The formula is "
+"Stocktoflow = (100/Inflation)^Multiplier,\n"
+"                Multiplier is 1.65 for Monero (it's higher for Bitcoin's "
+"stock-to-flow\n"
+"                model, for example).\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il prezzo per ogni data, coloring the "
+"points indicating their position on\n"
+"                the Bitcoin pair, being red as overbought and blue as "
+"cheap.\n"
+"                This chart is plotted on a log scale. La formula è "
+"Stocktoflow = (100/Inflazione)^FattoreMoltiplicativo,\n"
+"                Il Fattore Moltiplicativo è 1.65 per Monero (it's higher for "
+"Bitcoin's stock-to-flow\n"
+"                model, for example).\n"
+"                "
+
+#: app/charts/templates/charts/sfmodellin.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Stock to Flow Mode"
+msgstr "Revuo Moneroj - Modalità Stock to Flow"
+
+#: app/charts/templates/charts/sfmodellin.html:50
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                This chart shows the price of the coin on each date, "
+#| "coloring the points indicating their position on\n"
+#| "                the Bitcoin pair, being red as overbought and blue as "
+#| "cheap.\n"
+#| "                This chart is plotted on a log scale. The formula is "
+#| "Stocktoflow = (100/Inflation)^Multiplier,\n"
+#| "                Multiplier is 1.65 for Monero (it's higher for Bitcoin's "
+#| "stock-to-flow\n"
+#| "                model, for example).\n"
+#| "                "
+msgid ""
+"\n"
+"                This chart shows the price of the coin on each date, "
+"coloring the points indicating their position on\n"
+"                the Bitcoin pair, being red as overbought and blue as "
+"cheap.\n"
+"                This chart is plotted on a linear scale. The formula is "
+"Stocktoflow = (100/Inflation)^Multiplier,\n"
+"                Multiplier is 1.65 for Monero (it's higher for Bitcoin's "
+"stock-to-flow\n"
+"                model, for example).\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il prezzo per ogni data, coloring the "
+"points indicating their position on\n"
+"                the Bitcoin pair, being red as overbought and blue as "
+"cheap.\n"
+"                This chart is plotted on a log scale. La formula è "
+"Stocktoflow = (100/Inflazione)^FattoreMoltiplicativo,\n"
+"                Il Fattore Moltiplicativo è 1.65 per Monero (è più alto per "
+"il  modello stock-to-flow\n"
+"                di Bitcoin, ad esempio).\n"
+"                "
+
+#: app/charts/templates/charts/sfmodellin.html:73
+#: app/charts/templates/charts/sfmodellin.html:85
+#, fuzzy
+#| msgid "Stock-to-flow Model"
+msgid "Stock-to-flow"
+msgstr "Modello Stock-to-Flow"
+
+#: app/charts/templates/charts/sfmultiple.html:17
+#, fuzzy
+#| msgid "Stock-to-flow Model"
+msgid "Stock-to-flow Multiple (Price / SF Model)"
+msgstr "Modello Stock-to-Flow (Prezzo / Modello SF)"
+
+#: app/charts/templates/charts/sfmultiple.html:50
+msgid ""
+"\n"
+"                This chart shows the Stock-to-flow Multiple, which is the "
+"comparison between its current price against\n"
+"                its supposed value. When the indicator reaches 100, it "
+"suggests\n"
+"                the coin is at the end of its cycle and will now begin a "
+"bear market. This indicator is my own\n"
+"                aprimoration of PlanB's model, since for this one I also "
+"considered\n"
+"                the coin's supply. The formula is XMR-Supply*Price/(SF-"
+"Value*1.500.000);\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico illustra lo Stock-to-flow Multiplo, che non è "
+"altro che il confronto tra il prezzo attuale e \n"
+"                il suo valore stimato. Quando l'indicatore raggiunge 100, "
+"esso indica\n"
+"                che la coin è alla fine del suo ciclo e inizierà a breve un "
+"bear market. Questo indicatore è il mio personale\n"
+"                miglioramento del modello di PlanB, in quanto in questo "
+"grafico è stata presa in considerazionoe\n"
+"                l'offerta della coin. La formula è Offerta-XMR*Prezzo/"
+"(Valore-SF*1.500.000);\n"
+"                "
+
+#: app/charts/templates/charts/sfmultiple.html:223
+#, fuzzy
+#| msgid "Stock-to-flow Model"
+msgid "Price / Stock-to-flow"
+msgstr "Prezzo / Stock-to-Flow"
+
+#: app/charts/templates/charts/sharpe.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Sharpe Ratio"
+msgstr "Revuo Moneroj - Sharpe Ratio"
+
+#: app/charts/templates/charts/sharpe.html:50
+msgid ""
+"\n"
+"                This is the Sharpe Ratio for Monero, which is an indicator "
+"that calculates the return over the risk of\n"
+"                the investment. For more information\n"
+"                access <a href=\"https://web.stanford.edu/~wfsharpe/art/sr/"
+"SR.htm\" target=\"_blank\">this webpage.</a> This\n"
+"                is a rolling 52 week Sharpe Ratio,\n"
+"                calculated by Ratio = Yearly Moving Average(Weekly R.O.C.)/ "
+"Yearly StDev(Weekly R.O.C.))*Sqrt(52).<br>\n"
+"                "
+msgstr ""
+"\n"
+"                Questo è lo Sharpe Ratio di Monero, ovvero un indicatore che "
+"calcola il ritorno sul rischio di\n"
+"                un investimento. Per maggiori informazioni\n"
+"                vai su <a href=\"https://web.stanford.edu/~wfsharpe/art/sr/"
+"SR.htm\" target=\"_blank\">questa pagina.</a> Questo\n"
+"                è un indice di Sharpe mobile a 52 settimane,\n"
+"                calcolato come Ratio = Media Mobile Annuale(R.O.C. "
+"Settimanale)/ StDev Annuale(R.O.C. Settimale))*Sqrt(52).<br>\n"
+"                "
+
+#: app/charts/templates/charts/shielded.html:50
+msgid ""
+"This chart shows all private transactions from Bitcoin (the ones that go via "
+"Ashigaru Whirlpool), Zcash shielded transactions and Monero private "
+"transactions."
+msgstr ""
+"Questo grafico illustra tutte le transazione private di Bitcoin (quelle che "
+"attraversano la Whirlpool Ashigaru), quelle shielded di ZCash e infine "
+"quelle di Monero."
+
+#: app/charts/templates/charts/shielded.html:65
+#: app/charts/templates/charts/shielded.html:86
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Zcash Shielded Transactions"
+msgstr "Transazioni Shielded ZCash"
+
+#: app/charts/templates/charts/shielded.html:109
+#: app/charts/templates/charts/shielded.html:130
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Monero Anonymous Transactions"
+msgstr "Transazioni Anonime Monero"
+
+#: app/charts/templates/charts/shielded.html:151
+#: app/charts/templates/charts/shielded.html:172
+msgid "Ashigaru Whirlpool Tx0s"
+msgstr "Whirlpool Ashigaru Tx0s"
+
+#: app/charts/templates/charts/social.html:4
+#: app/charts/templates/charts/social_comments_per_day.html:4
+#: app/charts/templates/charts/social_dividend.html:4
+#: app/charts/templates/charts/social_monthly_increase.html:4
+#: app/charts/templates/charts/social_posts_per_day.html:4
+#: app/charts/templates/charts/social_subscribers_percentage.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Reddit Subscribers"
+msgstr "Revuo Moneroj - Abbonati Reddit"
+
+#: app/charts/templates/charts/social.html:17
+msgid "Total Number of Reddit Subscribers by Subreddit"
+msgstr "Totale di Abbonati Reddit per Subreddit"
+
+#: app/charts/templates/charts/social.html:46
+#: app/charts/templates/charts/social_monthly_increase.html:66
+msgid ""
+"\n"
+"                These charts show the total number of users for Subreddits: "
+"Monero, CryptoCurrency and Bitcoin. The more\n"
+"                users the subreddit has, more likely it is to\n"
+"                achieve mass adoption. So, sudden spikes in total number of "
+"users indicate there's a new wave of people\n"
+"                getting into cryptocurrencies. Also, a sudden increase in\n"
+"                /CryptoCurrency indicates others coins are getting into "
+"relevance, not only Bitcoin.\n"
+"                "
+msgstr ""
+"\n"
+"                Questi grafici mostrano il totale del numero di utenti per i "
+"Subreddit: Monero, CryptoCurrency e Bitcoin. Più\n"
+"                utenti il subreddit ha, più ha probabilità di\n"
+"                raggiungere l'adozione di massa. Dunque, spike improvissi "
+"nel totale di utenti indica la presenza di una nuova ondata di gente\n"
+"                che si avvicinano alle cryptovalute. Mentre, un aumento "
+"improvviso nel\n"
+"                /CryptoCurrency indica che altre coin stanno guadangnando "
+"campo, non solo Bitcoin.\n"
+"                "
+
+#: app/charts/templates/charts/social.html:160
+#: app/charts/templates/charts/social_transactions_percentage.html:161
+#, fuzzy
+#| msgid "Dread Subscribers"
+msgid "Reddit Subscribers"
+msgstr "Num. Abbonati Reddit"
+
+#: app/charts/templates/charts/social_comments_per_day.html:17
+msgid "Comments per day on Subreddits /Bitcoin and /CryptoCurrency"
+msgstr "Commenti giornalieri sui Subreddit /Bitcoin e /CryptoCurrency"
+
+#: app/charts/templates/charts/social_comments_per_day.html:37
+msgid "Comments per day on Subreddit /Monero"
+msgstr "Commenti giornalieri su Subreddit /Monero"
+
+#: app/charts/templates/charts/social_comments_per_day.html:66
+#: app/charts/templates/charts/social_posts_per_day.html:66
+#: app/charts/templates/charts/social_subscribers_percentage.html:46
+msgid ""
+"\n"
+"                These charts show the total number of users for subreddits /"
+"Monero ang /CryptoCurrency as a percentage\n"
+"                of the total users of /Bitcoin subreddit.\n"
+"                Sudden spikes in total percentage indicate there's a new "
+"wave of people getting into other\n"
+"                cryptocurrencies, not only in Bitcoin. When /CryptoCurrency "
+"dominance increase,\n"
+"                it makes sense to expect that such projects will appreciate "
+"against the BTC pair. However, this is just\n"
+"                and idea to observe.\n"
+"                "
+msgstr ""
+"\n"
+"                Questi grafici mostrano il totale di utenti nei subreddit /"
+"Monero e /CryptoCurrency come percentuale\n"
+"                del totale di utenti del subrredit /Bitcoin.\n"
+"                Spike improvvisi nella percentuale indica che una nuova "
+"ondata di gente di sta avvicinando alle altre\n"
+"                cryptovalute, non solo Bitcoin. Quando la dominannza di /"
+"CryptoCurrency aumenta,\n"
+"                ha senso aspettarsi che tali progetti si apprezzeranno nel "
+"cambio con BTC. Tuttavia, rimane solo\n"
+"                un'idea che lascia il suo tempo.\n"
+"                "
+
+#: app/charts/templates/charts/social_dividend.html:17
+msgid "Marketcap Divided by Number of Reddit Subscribers"
+msgstr "Capitalizzazione Divisa per Numero di Abbonati Reddit"
+
+#: app/charts/templates/charts/social_dividend.html:50
+msgid ""
+"\n"
+"                These charts show the total marketcap divided by the total "
+"number of users in /Bitcoin and /Monero\n"
+"                subreddits. It makes sense to obeserve this metric,\n"
+"                since a price too high in dollars/user might indicate a "
+"bubble. Similarly, a low marketcap/user might\n"
+"                indicate a bottom.\n"
+"                "
+msgstr ""
+"\n"
+"                Questi grafici mostrano il totale della marketcap divisa per "
+"il numero di utenti /Bitcoin e /Monero.\n"
+"                Ha senso osservare questa metrica,\n"
+"                dato che un prezzo troppo alto in dollari per utente può "
+"indicare una bolla speculativa. Viceversa, un rapporto marketcap/user basso "
+"può\n"
+"                indicare un probabile bottom.\n"
+"                "
+
+#: app/charts/templates/charts/social_dividend.html:71
+#: app/charts/templates/charts/social_dividend.html:83
+#, fuzzy
+#| msgid "Bitcoin Darknet Subscribers"
+msgid "Bitcoin, Dollars / Subscriber"
+msgstr "Bitcoin, Dollari per Abbonato"
+
+#: app/charts/templates/charts/social_dividend.html:94
+#: app/charts/templates/charts/social_dividend.html:106
+#, fuzzy
+#| msgid "Monero Darknet Subscribers"
+msgid "Monero, Dollars / Subscriber"
+msgstr "Monero, Dollari per Abbonato"
+
+#: app/charts/templates/charts/social_dividend.html:162
+#, fuzzy
+#| msgid "Dollars per Subscriber"
+msgid "Dollars / Subscriber"
+msgstr "Dollari per Abbonato"
+
+#: app/charts/templates/charts/social_monthly_increase.html:17
+msgid "/Bitcoin, /CryptoCurrency and /Monero Monthly New Subscribers"
+msgstr "Nuovi Abbontati Mensili /Bitcoin, /CryptoCurrency e /Monero"
+
+#: app/charts/templates/charts/social_monthly_increase.html:37
+msgid "/Bitcoin, /CryptoCurrency and /Monero Monthly Percentage Increase"
+msgstr "Aumento Percentuale Mensile /Bitcoin, /CryptoCurrency and /Monero"
+
+#: app/charts/templates/charts/social_monthly_increase.html:273
+#, fuzzy
+#| msgid "Subscribers (1)"
+msgid "New Subscribers (units)"
+msgstr "Nuovi Abbonati (unità)"
+
+#: app/charts/templates/charts/social_monthly_increase.html:405
+#, fuzzy, python-format
+#| msgid "Subscribers (1)"
+msgid "New Subscribers (%%)"
+msgstr "Nuovi Abbonati (%%)"
+
+#: app/charts/templates/charts/social_posts_per_day.html:17
+msgid "Posts per day on Subreddits /Bitcoin and /CryptoCurrency"
+msgstr "Post giornalieri nei Subreddit /Bitcoin e /CryptoCurrency"
+
+#: app/charts/templates/charts/social_posts_per_day.html:37
+msgid "Posts per day on Reddit /Monero"
+msgstr "Post giornalieri su Reddit /Monero"
+
+#: app/charts/templates/charts/social_subscribers_percentage.html:17
+msgid "Reddit Subscribers of /Monero as a Percentage of /Bitcoin"
+msgstr "Abbonati su /Monero come Percentuale di /Bitcoin (Reddit)"
+
+#: app/charts/templates/charts/social_subscribers_percentage.html:69
+#: app/charts/templates/charts/social_subscribers_percentage.html:81
+#, python-format
+msgid "/Monero as %% of /Bitcoin"
+msgstr "/Monero come %% di /Bitcoin"
+
+#: app/charts/templates/charts/social_subscribers_percentage.html:94
+#: app/charts/templates/charts/social_subscribers_percentage.html:106
+#, python-format
+msgid "/CryptoCurrency as %% of /Bitcoin"
+msgstr "/CryptoCurrency come %% di /Bitcoin"
+
+#: app/charts/templates/charts/social_transactions_percentage.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Reddit Subscribers and Transactions"
+msgstr "Revuo Moneroj - Abbonati Reddit e Transazioni"
+
+#: app/charts/templates/charts/social_transactions_percentage.html:17
+msgid ""
+"Total Number of Reddit Subscribers for Monero and Number of Transactions"
+msgstr "Totale Abbonati Reddit di Monero e Numero di Transazioni"
+
+#: app/charts/templates/charts/social_transactions_percentage.html:50
+msgid ""
+"These charts show the total number of users for Monero subreddit plotted "
+"compared to the number of daily transactions the coin has."
+msgstr ""
+"Questi grafici mostrano il totale del numero di utenti per il subreddit "
+"Monero in confronto al numero di transazioni giornaliere che la coin ha."
+
+#: app/charts/templates/charts/social_transactions_percentage.html:66
+#: app/charts/templates/charts/social_transactions_percentage.html:79
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Daily Transactions"
+msgstr "Transazioni Giornaliere"
+
+#: app/charts/templates/charts/social_transactions_percentage.html:92
+#: app/charts/templates/charts/social_transactions_percentage.html:104
+#, fuzzy
+#| msgid "Monero Marketcap"
+msgid "Monero Subreddit"
+msgstr "Subreddit Monero"
+
+#: app/charts/templates/charts/social_transactions_percentage.html:178
+#, fuzzy
+#| msgid "Transactions"
+msgid "Transactions/day"
+msgstr "Transazioni/giorno"
+
+#: app/charts/templates/charts/tail_emission.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Tail Emission"
+msgstr "Revuo Moneroj - Emissione di Coda"
+
+#: app/charts/templates/charts/tail_emission.html:17
+#, fuzzy
+#| msgid "Monero Daily Emission"
+msgid "Monero's Tail Emission"
+msgstr "Emissione di Coda di Monero"
+
+#: app/charts/templates/charts/tail_emission.html:50
+msgid ""
+"This chart shows Monero's Tail Emission. Tail emission is the residual "
+"inflation rate after block rewards gets to a perpetual state of 0.6 XMR per "
+"block."
+msgstr ""
+"Quest grafico illustra l'emissione di coda di Monero. L'emissione di Coda è "
+"il tasso d'inflazione residuo dopo che la rete ha raggiunto lo stato "
+"perpetuo di ricompensa pari a 0.6 XMR per ogni blocco"
+
+#: app/charts/templates/charts/tail_emission.html:135
+#, fuzzy, python-format
+#| msgid "Annual Inflation"
+msgid "Annual Inflation (%%)"
+msgstr "Inflazione Annuale (%%)"
+
+#: app/charts/templates/charts/thermocap.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Thermocap Multiple"
+msgstr "Revuo Moneroj - Multiplo Thermocap"
+
+#: app/charts/templates/charts/thermocap.html:50
+msgid ""
+"\n"
+"                Thermocap multiple is the ratio obtained between dividing "
+"the current price of the coin by the\n"
+"                accumulated price of each mined coin.\n"
+"                It is often used to indicate end of a bull market. The "
+"formula is XMR-price/(SUM(Daily Reward * Price at\n"
+"                current date)). The Thermocap Bands are calculated\n"
+"                by the current sum of all mined coins multiplied to its "
+"price at that current date. You can learn more\n"
+"                about this <a\n"
+"                    href=\"https://geertjancap.medium.com/modeling-bitcoin-"
+"price-dynamics-with-systems-dynamics-theory-c028d788fd0e\"\n"
+"                    target=\"_blank\">here.</a><br>\n"
+"                "
+msgstr ""
+"\n"
+"                Thermocap Multiplo è il rapporto tra il prezzo attuale della "
+"coin e\n"
+"                il prezzo accumulato di ogni coin estratta.\n"
+"                Di solito è utilizzato per indicare del bull market. La "
+"formula è prezzo-XMR/(SOMMA(Ricmompensa Giornaliera * Prezzo alla\n"
+"                data corrente)). Le Bande della Thermocap sono calcolate\n"
+"                tramite la somma attuale di tutte le coin estratte "
+"moltiplicato il prezzo alla data odierna. Scopri di più\n"
+"                su questo <a\n"
+"                    href=\"https://geertjancap.medium.com/modeling-bitcoin-"
+"price-dynamics-with-systems-dynamics-theory-c028d788fd0e\"\n"
+"                    target=\"_blank\">qui.</a><br>\n"
+"                "
+
+#: app/charts/templates/charts/thermocap.html:75
+#: app/charts/templates/charts/thermocap.html:87
+msgid "Accumulated Thermocap"
+msgstr "Thermocap Accumulata"
+
+#: app/charts/templates/charts/thermocap.html:98
+#: app/charts/templates/charts/thermocap.html:111
+msgid "Neutral line"
+msgstr "Linea neutrale"
+
+#: app/charts/templates/charts/transactiondominance.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Privacy Transactions"
+msgstr "Revuo Moneroj - Transazioni Private"
+
+#: app/charts/templates/charts/transactiondominance.html:17
+#, python-format
+msgid ""
+"Monero's Dominance Over the Number of Transactions on the Privacy Market (%%)"
+msgstr "Dominanza Transazioni Monero su Totale Privacy Market (%%)"
+
+#: app/charts/templates/charts/transactiondominance.html:50
+#, fuzzy
+#| msgid ""
+#| "This chart shows Monero's dominance over the whole cryptocurrency market, "
+#| "judging by total marketcap value in dollars."
+msgid ""
+"\n"
+"                This chart shows Monero's dominance over the privacy "
+"cryptocurrency market, judging by the total number of transactions. \n"
+"                Calculated considering Monero, Dash, Zcash and Grin.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra la dominanza di Monero sul mercato "
+"delle privacy coin, in base al totale di transazioni. \n"
+"                Calcolato tendendo in considerazione Monero, Dash, Zcash e "
+"Grin.\n"
+"                "
+
+#: app/charts/templates/charts/transactionsize.html:17
+#, fuzzy
+#| msgid "Average Block Size for both Monero and Bitcoin (KB)"
+msgid "Average Transaction Size for both Monero and Bitcoin (KB)"
+msgstr "Media Dimensione Transazioni per Monero e Bitcoin (KB)"
+
+#: app/charts/templates/charts/transactionsize.html:50
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                This chart shows the average space in disc that each "
+#| "block ocupies daily for both Bitcoin and Monero. To obtain the total disc "
+#| "space used daily, \n"
+#| "                you have to multiply by the number of blocks each day.\n"
+#| "                "
+msgid ""
+"\n"
+"                This chart shows the average space in disc that transaction "
+"ocupies on average for both Bitcoin and Monero. To obtain the total disc "
+"space used daily, \n"
+"                you have to multiply this number by the daily transaction "
+"count.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico illustra lo spazio medio di archiviazione che "
+"ogni transazione ocuppa giornalmente sia per Bitcoin che per Monero. Per "
+"ottere il totale dello spazio di archiviazione usato giornalmente, \n"
+"                è necessario moltiplicare per il numero di transazioni "
+"giornaliere.\n"
+"                "
+
+#: app/charts/templates/charts/transactionsize.html:70
+#: app/charts/templates/charts/transactionsize.html:83
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Bitcoin Transaction Size"
+msgstr "Dimensione Transazione Bitcoin"
+
+#: app/charts/templates/charts/transactionsize.html:96
+#: app/charts/templates/charts/transactionsize.html:109
+#, fuzzy
+#| msgid "Fast, Affordable Transactions"
+msgid "Monero Transaction Size"
+msgstr "Dimensioni Transazione Monero"
+
+#: app/charts/templates/charts/transactionsize.html:166
+#, fuzzy
+#| msgid "Transaction Size (Bytes)"
+msgid "Transaction Size (KB)"
+msgstr "Dimensione Transazione (Byte)"
+
+#: app/charts/templates/charts/transcost.html:4
+#: app/charts/templates/charts/transcostntv.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Transaction Cost"
+msgstr "Revuo Moneroj - Costo Transazione"
+
+#: app/charts/templates/charts/transcost.html:17
+#, fuzzy
+#| msgid "Transaction Cost ($)"
+msgid "Average Transaction Cost"
+msgstr "Costo Medio Transazione"
+
+#: app/charts/templates/charts/transcost.html:50
+#, fuzzy
+#| msgid ""
+#| "This chart shows the average space in disc that the whole blockchain of "
+#| "Bitcoin and Monero ocupy."
+msgid ""
+"This chart shows average daily transaction cost for both Bitcoin and Monero."
+msgstr ""
+"Questo grafico mostra il costo medio giornaliero delle transazioni di "
+"Bitcoin e Monero."
+
+#: app/charts/templates/charts/transcost.html:67
+#: app/charts/templates/charts/transcost.html:79
+#: app/charts/templates/charts/transcostntv.html:70
+#: app/charts/templates/charts/transcostntv.html:82
+msgid "Monero Tx Cost"
+msgstr "Costo Transazione Monero"
+
+#: app/charts/templates/charts/transcost.html:91
+#: app/charts/templates/charts/transcost.html:103
+#: app/charts/templates/charts/transcostntv.html:94
+#: app/charts/templates/charts/transcostntv.html:106
+#, fuzzy
+#| msgid "Bitcoin Miner Commitment"
+msgid "Bitcoin Tx Cost"
+msgstr "Costo Transazione Bitcoin"
+
+#: app/charts/templates/charts/transcost.html:159
+#, fuzzy
+#| msgid "Transaction Cost ($)"
+msgid "Transaction Cost (USD)"
+msgstr "Costo Transazione (USD)"
+
+#: app/charts/templates/charts/transcostntv.html:17
+#, fuzzy
+#| msgid "Transaction Cost (Ntv.)"
+msgid "Average Transaction Cost (Native Units)"
+msgstr "Costo Medio Transazione (Ntv.)"
+
+#: app/charts/templates/charts/transcostntv.html:50
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "                This chart shows the difference between Bitcoin supply "
+#| "and Monero supply. Formula is BTC-Supply -\n"
+#| "                XMR-Supply.\n"
+#| "                "
+msgid ""
+"\n"
+"                This chart shows average daily transaction cost for both "
+"Bitcoin and Monero calculated in terms of the\n"
+"                own coin.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra la media del costo di transazione per "
+"Bitcoin e Monero, nella coin nativa.\n"
+"                "
+
+#: app/charts/templates/charts/transcostntv.html:162
+#, fuzzy
+#| msgid "Transaction Cost (Ntv.)"
+msgid "Transaction Cost (Native Units)"
+msgstr "Costo Transazione (Ntv.)"
+
+#: app/charts/templates/charts/translin.html:17
+#, fuzzy
+#| msgid "Transaction Count (Lin.)"
+msgid "Transaction Count (linear)"
+msgstr "Num. Transazioni (Lin.)"
+
+#: app/charts/templates/charts/translin.html:50
+msgid ""
+"\n"
+"                This chart shows the total transactions Monero has each day "
+"on a linear scale. Higher transaction count\n"
+"                means the coin is being increasingly used, and since "
+"Metcalfe's Law\n"
+"                proposes that more information being exchanged in a network "
+"means the network itself should be worth\n"
+"                more, it also means the coin should increase in price.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il totale delle transazioni che Monero "
+"ha giorno per giorno in una scala lineare. Un numero alto di transazioni\n"
+"                indica che la coin è sempre più utilizzata, e, dal momento "
+"che la Legge di Metcalfe\n"
+"                ipotizza che più informazioni vengono scambiate all'interno "
+"di una rete più essa dovrebbe valere di più,\n"
+"                il valore della coin dovrebbe aumentare nel corso del "
+"tempo.\n"
+"                "
+
+#: app/charts/templates/charts/translog.html:17
+#, fuzzy
+#| msgid "Transaction Count (Log.)"
+msgid "Transaction Count (log scale)"
+msgstr "Num. Transazioni (Log.)"
+
+#: app/charts/templates/charts/translog.html:50
+msgid ""
+"\n"
+"                This chart shows the total transactions Monero has each day "
+"on a log scale. Higher transaction count\n"
+"                means the coin is being increasingly used, and since "
+"Metcalfe's Law\n"
+"                proposes that more information being exchanged in a network "
+"means the network itself should be worth\n"
+"                more, it also means the coin should increase in price.\n"
+"                "
+msgstr ""
+"\n"
+"                Questo grafico mostra il totale delle transazioni che Monero "
+"ha giorno per giorno in una scala logaritmica. Un numero alto di "
+"transazioni\n"
+"                indica che la coin è sempre più utilizzata, e, dal momento "
+"che la Legge di Metcalfe\n"
+"                ipotizza che più informazioni vengono scambiate all'interno "
+"di una rete più essa dovrebbe valere di più,\n"
+"                il valore della coin dovrebbe aumentare nel corso del "
+"tempo.\n"
+"                "
+
+#: app/charts/templates/charts/transmonth.html:4
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Revuo Moneroj - Monthly Transactions"
+msgstr "Revuo Moneroj - Transazioni Mensili"
+
+#: app/charts/templates/charts/transmonth.html:17
+#, fuzzy
+#| msgid "Monthly Transactions (Lin.)"
+msgid "Monthly Transactions"
+msgstr "Num. Transazioni Mensile (Lin.)"
+
+#: app/charts/templates/charts/transmonth.html:50
+#, fuzzy
+#| msgid "Revuo Moneroj - Monero Metrics"
+msgid "Number of monthly Monero transactions."
+msgstr "Numero di Transazioni Mensili di Monero"
+
+#: app/charts/templates/charts/transmonth.html:152
+#, fuzzy
+#| msgid "Monthly Transactions (Lin.)"
+msgid "Number of Monthly Transactions"
+msgstr "Num. Transazioni Mensile"
+
+#: app/charts/templates/charts/users_base.html:65
+#: app/charts/templates/charts/users_base.html:116
+msgid "Home"
+msgstr "Home"
+
+#: app/charts/templates/charts/users_base.html:68
+#: app/charts/templates/charts/users_base.html:117
+msgid "Charts"
+msgstr "Grafici"
+
+#: app/charts/templates/charts/users_base.html:72
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: app/charts/templates/charts/users_base.html:75
+#: app/charts/templates/charts/users_base.html:118
+msgid "About"
+msgstr "Su di Noi"
+
+#: app/charts/templates/charts/users_base.html:77
+#: app/charts/templates/charts/users_base.html:84
+msgid "Language"
+msgstr "Lingua"
+
+#: app/charts/templates/charts/users_base.html:114
+msgid "Useful Links"
+msgstr "Link Utili"
+
+#: app/charts/templates/charts/withdrawals.html:17
+msgid "Binance withdrawal state for Monero (1 = Enabled, 0 = Disabled)"
+msgstr ""
+"Stato dei prelievi su Binance per Monero (1 = Abilitati, 0 = Disabilitati)"
+
+#: app/charts/templates/charts/withdrawals.html:50
+#, fuzzy
+#| msgid "This chart shows the number of all mined coins daily."
+msgid "This chart shows the state of Binance withdrawals for Monero."
+msgstr "Questo grafico mostra lo stato dei prelievi su Binance per Monero."
+
+#: app/charts/templates/charts/withdrawals.html:136
+msgid "Current state of withdrawals"
+msgstr "Stato corrente dei prelievi"
+
+#: app/moneropro/settings.py:139
+msgid "English"
+msgstr "Inglese"
+
+#: app/moneropro/settings.py:140
+#, fuzzy
+#| msgid "Italiano"
+msgid "Italian"
+msgstr "Italiano"

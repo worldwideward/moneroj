@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Reddit Subscribers</title>
+<title>{% trans "Revuo Moneroj - Reddit Subscribers" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph_2" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Reddit Subscribers of /Monero as a Percentage of /Bitcoin
+                    {% trans "Reddit Subscribers of /Monero as a Percentage of /Bitcoin" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                 </div>
             </div>
@@ -37,21 +37,23 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 These charts show the total number of users for subreddits /Monero ang /CryptoCurrency as a percentage
                 of the total users of /Bitcoin subreddit.
                 Sudden spikes in total percentage indicate there's a new wave of people getting into other
                 cryptocurrencies, not only in Bitcoin. When /CryptoCurrency dominance increase,
                 it makes sense to expect that such projects will appreciate against the BTC pair. However, this is just
                 and idea to observe.
+                {% endblocktrans %}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -64,7 +66,7 @@
 var data1 = {
         type: "scatter",
         mode: "lines",
-        name: '/Monero as % of /Bitcoin',
+        name: '{% trans "/Monero as % of /Bitcoin" %}',
         x: {{ dates|safe }},
         y: {{ social_xmr|safe }},
         line: {
@@ -76,7 +78,7 @@ var data1 = {
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: '/Monero as % of /Bitcoin',
+        name: '{% trans "/Monero as % of /Bitcoin" %}',
         x: {{ dates|safe }},
         y: {{ social_xmr|safe }},
         line: {
@@ -89,7 +91,7 @@ var data1 = {
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: '/CryptoCurrency as % of /Bitcoin',
+        name: '{% trans "/CryptoCurrency as % of /Bitcoin" %}',
         x: {{ dates|safe }},
         y: {{ social_crypto|safe }},
         line: {
@@ -101,7 +103,7 @@ var data1 = {
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: '/CryptoCurrency as % of /Bitcoin',
+        name: '{% trans "/CryptoCurrency as % of /Bitcoin" %}',
         x: {{ dates|safe }},
         y: {{ social_crypto|safe }},
         line: {
@@ -158,7 +160,7 @@ var data1 = {
             yaxis: {
                 type: "linear",
                 title: {
-                    text: 'Percentage',
+                    text: '{% trans "Percentage" %}',
                     font: {
                         size: 20,
                         color: 'white'

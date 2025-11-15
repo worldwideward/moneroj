@@ -1,7 +1,7 @@
 {% extends 'admin/change_list.html' %}
-
+{% load i18n %}
 {% block object-tools %}
-    <a href="import-csv/">Import CSV</a>
+    <a href="import-csv/">{% trans "Import CSV" %}</a>
     <br />
     {{ block.super }}
 {% endblock %}

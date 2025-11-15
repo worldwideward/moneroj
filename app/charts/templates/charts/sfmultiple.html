@@ -1,7 +1,7 @@
 {% extends 'charts/base.html' %}
-
+{% load i18n %}
 {% block header %}
-<title>Revuo Moneroj - Stock to Flow Multiple</title>
+<title>{% trans "Revuo Moneroj - Stock to Flow Multiple" %}</title>
 {% endblock %}
 
 {% block content %}
@@ -14,12 +14,12 @@
         <div class="card" id="graph1" style="width: 100%; height: 100%;">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between text-white">
                 <h6 class="m-0 text-light">
-                    Stock-to-flow Multiple (Price / SF Model)
+                    {% trans "Stock-to-flow Multiple (Price / SF Model)" %}
                 </h6>
                 
                 <div class="dropdown no-arrow">
                     <a data-toggle="modal" href="#" class="link_graph" data-target="#id_Modal">
-                        About this chart?
+                        {% trans "About this chart?" %}
                     </a>
                     <a class="dropdown-toggle" href="#" role="button"
                         onclick="$('#graph1').toggleClass('fullscreen');window.dispatchEvent(new Event('resize'));">
@@ -41,20 +41,23 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="Modal">Help about the chart</h5>
+                <h5 class="modal-title" id="Modal">{% trans "Help about the chart" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Cancelar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+                {% blocktrans %}
                 This chart shows the Stock-to-flow Multiple, which is the comparison between its current price against
                 its supposed value. When the indicator reaches 100, it suggests
                 the coin is at the end of its cycle and will now begin a bear market. This indicator is my own
                 aprimoration of PlanB's model, since for this one I also considered
-                the coin's supply. The formula is XMR-Supply*Price/(SF-Value*1.500.000);<br>
+                the coin's supply. The formula is XMR-Supply*Price/(SF-Value*1.500.000);
+                {% endblocktrans %}
+                <br>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
             </div>
         </div>
     </div>
@@ -67,7 +70,7 @@
     var data1 = {
         type: "scatter",
         mode: "lines",
-        name: 'Oversold',
+        name: '{% trans "Oversold" %}',
         x: {{ dates|safe }},
         y: {{ buy|safe }},
         line: {
@@ -79,7 +82,7 @@
     var data1_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Oversold',
+        name: '{% trans "Oversold" %}',
         x: {{ dates|safe }},
         y: {{ buy|safe }},
         line: {
@@ -91,7 +94,7 @@
     var data2 = {
         type: "scatter",
         mode: "lines",
-        name: 'Overbought',
+        name: '{% trans "Overbought" %}',
         x: {{ dates|safe }},
         y: {{ sell|safe }},
         line: {
@@ -103,7 +106,7 @@
     var data2_mobile = {
         type: "scatter",
         mode: "lines",
-        name: 'Overbought',
+        name: '{% trans "Overbought" %}',
         x: {{ dates|safe }},
         y: {{ sell|safe }},
         line: {
@@ -115,7 +118,7 @@
     var data3 = {
     type: "scatter",
     mode: "markers",
-    name: 'Average price on date',
+    name: '{% trans "Average price on date" %}',
     x: {{ dates|safe }},
     y: {{ stock_to_flow|safe }},
     line: {color: '#7f421d'},
@@ -123,7 +126,7 @@
         color: {{ color|safe }},
         colorbar: {
             title: {
-                text: 'Cycle on the Bitcoin pair (%)',
+                text: '{% trans "Cycle on the Bitcoin pair (%)" %}',
                 side: 'right'
                 ,font: {
                     color: 'white'
@@ -148,7 +151,7 @@
 var data3_mobile = {
     type: "scatter",
     mode: "markers",
-    name: 'Average price on date',
+    name: '{% trans "Average price on date" %}',
     x: {{ dates|safe }},
     y: {{ stock_to_flow|safe }},
     line: {color: '#7f421d'},
@@ -217,7 +220,7 @@ var layout = {
     yaxis: {
         type: "log",
         title: {
-            text: 'Price / Stock-to-flow',
+            text: '{% trans "Price / Stock-to-flow" %}',
             font: {
                 size: 20,
                 color: 'white'
