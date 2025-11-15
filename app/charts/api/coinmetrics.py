@@ -11,7 +11,14 @@ class CoinmetricsAPI():
 
     def get_asset_metrics(self, symbol, start_time=None, end_time=None):
 
-        metrics="PriceUSD,PriceBTC,IssContPctAnn,SplyCur,FeeTotNtv,RevNtv,HashRate,TxCnt,BlkSizeMeanByte,DiffLast"
+        #metrics="PriceUSD,PriceBTC,IssContPctAnn,SplyCur,FeeTotNtv,RevNtv,HashRate,TxCnt,BlkSizeMeanByte,DiffLast"
+        ###
+        # Metrics aren't provided for free anymore:
+        # - IssContPctAnn
+        # - RevNtv
+        # - BlkSizeMeanByte
+        # - DiffLast
+        metrics="PriceUSD,PriceBTC,SplyCur,FeeTotNtv,HashRate,TxCnt"
 
         if not(start_time and end_time):
 
