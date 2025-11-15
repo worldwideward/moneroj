@@ -103,7 +103,9 @@ def get_history_function(symbol, start_time=None, end_time=None):
                 print(f'Something went wrong {error}', flush=True)
                 coin.pricebtc = pricebtc
             try:
-                coin.inflation = float(item['IssContPctAnn'])
+                #coin.inflation = float(item['IssContPctAnn']) ## Metric not available anymore for free
+                coin.inflation = 100 # Dummy value
+
                 coin.stocktoflow = (100/coin.inflation)**1.65
                 inflation = coin.inflation
                 stocktoflow = coin.stocktoflow
@@ -128,7 +130,8 @@ def get_history_function(symbol, start_time=None, end_time=None):
                 print(f'Something went wrong {error}', flush=True)
                 coin.fee = fee
             try:
-                coin.revenue = float(item['RevNtv'])
+                # coin.revenue = float(item['RevNtv']) ## Metric not available anymore for free
+                coin.revenue = 0 # Dummy value
                 revenue = coin.revenue
             except Exception as error:
                 print(f'Something went wrong {error}', flush=True)
@@ -146,13 +149,15 @@ def get_history_function(symbol, start_time=None, end_time=None):
                 print(f'Something went wrong {error}', flush=True)
                 coin.transactions = transactions
             try:
-                coin.blocksize = float(item['BlkSizeMeanByte'])
+                # coin.blocksize = float(item['BlkSizeMeanByte']) ## Metric not available anymore for free
+                coin.blocksize = 0 # Dummy value
                 blocksize = coin.blocksize
             except Exception as error:
                 print(f'Something went wrong {error}', flush=True)
                 coin.blocksize = blocksize
             try:
-                coin.difficulty = float(item['DiffLast'])
+                # coin.difficulty = float(item['DiffLast']) ## Metric not available anymore for free
+                coin.difficulty = 1000000 # Dummy value
                 difficulty = coin.difficulty
             except Exception as error:
                 print(f'Something went wrong {error}', flush=True)
