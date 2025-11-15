@@ -51,115 +51,161 @@ def work():
     def update_xmr_data():
 
         print('[INFO] Check for XMR updates')
-        today, yesterday = get_times()
-        result = check_for_updates(yesterday, "xmr")
 
-        if result is True:
-            print('[INFO] Update XMR coin data')
-            update_coin_data("xmr", yesterday, today)
-        else:
-            print('[WARN] Skipped updating XMR coin data')
+        try:
+            today, yesterday = get_times()
+            result = check_for_updates(yesterday, "xmr")
 
-        print('[INFO] Update XMR marketcap')
-        update_xmr_marketcap()
+            if result is True:
+                print('[INFO] Update XMR coin data')
+                update_coin_data("xmr", yesterday, today)
+            else:
+                print('[WARN] Skipped updating XMR coin data')
+
+            print('[INFO] Update XMR marketcap')
+            update_xmr_marketcap()
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def update_btc_data():
 
         print('[INFO] Check for Bitcoin updates')
-        today, yesterday = get_times()
-        result = check_for_updates(yesterday, "btc")
 
-        if result is True:
-            print("[INFO] Update Bitcoin coin data", flush=True)
-            update_coin_data("btc", yesterday, today)
-        else:
-            print('[WARN] Skipped updating Bitcoin coin data')
+        try:
+            today, yesterday = get_times()
+            result = check_for_updates(yesterday, "btc")
+
+            if result is True:
+                print("[INFO] Update Bitcoin coin data", flush=True)
+                update_coin_data("btc", yesterday, today)
+            else:
+                print('[WARN] Skipped updating Bitcoin coin data')
+
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def update_dash_data():
 
         print('[INFO] Check for Dash updates')
-        today, yesterday = get_times()
-        result = check_for_updates(yesterday, "dash")
 
-        if result is True:
-            print("[INFO] Update Dash coin data", flush=True)
-            update_coin_data("dash", yesterday, today)
-        else:
-            print('[WARN] Skipped updating Dash coin data')
+        try:
+            today, yesterday = get_times()
+            result = check_for_updates(yesterday, "dash")
+
+            if result is True:
+                print("[INFO] Update Dash coin data", flush=True)
+                update_coin_data("dash", yesterday, today)
+            else:
+                print('[WARN] Skipped updating Dash coin data')
+
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def update_zec_data():
 
         print('[INFO] Check for Zcash updates')
-        today, yesterday = get_times()
-        result = check_for_updates(yesterday, "zec")
 
-        if result is True:
-            print("[INFO] Update Zcash coin data", flush=True)
-            update_coin_data("zec", yesterday, today)
-        else:
-            print('[WARN] Skipped updating Zcash coin data')
+        try:
+            today, yesterday = get_times()
+            result = check_for_updates(yesterday, "zec")
+
+            if result is True:
+                print("[INFO] Update Zcash coin data", flush=True)
+                update_coin_data("zec", yesterday, today)
+            else:
+                print('[WARN] Skipped updating Zcash coin data')
+
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def update_grin_data():
 
         print('[INFO] Check for Grin updates')
-        today, yesterday = get_times()
-        result = check_for_updates(yesterday, "grin")
 
-        if result is True:
-            print("[INFO] Update Grin coin data", flush=True)
-            update_coin_data("grin", yesterday, today)
-        else:
-            print('[WARN] Skipped updating Grin coin data')
+        try:
+            today, yesterday = get_times()
+            result = check_for_updates(yesterday, "grin")
+
+            if result is True:
+                print("[INFO] Update Grin coin data", flush=True)
+                update_coin_data("grin", yesterday, today)
+            else:
+                print('[WARN] Skipped updating Grin coin data')
+
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def update_database():
 
         print('[INFO] Check for Daily data updates')
-        today, yesterday = get_times()
-        result = check_daily_objects_for_updates(yesterday)
 
-        if result is True:
-            print(f'[INFO] Update daily data for {yesterday}', flush=True)
-            daily_objects_updates(yesterday)
-        else:
-            print('[WARN] Skipped updating daily data')
+        try:
+            today, yesterday = get_times()
+            result = check_daily_objects_for_updates(yesterday)
 
-        print('[INFO] Perform marketcap updates')
-        recalculate_sf_model()
-        recalculate_daily_data()
+            if result is True:
+                print(f'[INFO] Update daily data for {yesterday}', flush=True)
+                daily_objects_updates(yesterday)
+            else:
+                print('[WARN] Skipped updating daily data')
+
+            print('[INFO] Perform marketcap updates')
+            recalculate_sf_model()
+            recalculate_daily_data()
+
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def mining_data_updates():
         print('[INFO] perform P2Pool updates')
-        update_p2pool_data()
+
+        try:
+            update_p2pool_data()
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def social_data_updates():
         print('[INFO] Perform Dread updates')
-        today, yesterday = get_times()
-        update_dread_subscriber_count(today)
 
-        print('[INFO] Perform Reddit updates')
-        update_reddit_data()
+        try:
+            today, yesterday = get_times()
+            update_dread_subscriber_count(today)
+
+            print('[INFO] Perform Reddit updates')
+            update_reddit_data()
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def merchants_data_updates():
         print('[INFO] Perform merchant adoption data updates')
-        update_merchants_data()
+        try:
+            update_merchants_data()
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def transactions_data_updates():
         print('[INFO] Perform transaction data updates')
-        update_shielded_transactions()
+        try:
+            update_shielded_transactions()
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     @agent.task
     def volume_data_updates():
         print('[INFO] Perform Dex volume updates')
-        update_dex_volume()
+        try:
+            update_dex_volume()
+        except Exception as error:
+            print(f'[ERROR] Something went wrong while fetching data: {error}')
 
     ## Run all tasks
     update_xmr_data()
